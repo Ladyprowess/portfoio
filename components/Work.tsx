@@ -9,6 +9,7 @@ const projects = [
     title: 'Kivora Pay',
     desc: 'Founded and launched a crypto bill payment platform for Africa. Led product architecture, wallet infrastructure, payment integrations, and all go-to-market content including pitch decks and a 14-day social calendar.',
     tag: 'Founder / Web3',
+    href: 'https://kivorapay.com/',
     gradient: 'from-[#2fd6c5]/20 via-[#a78bfa]/10 to-transparent',
     accent: '#2fd6c5',
   },
@@ -17,6 +18,7 @@ const projects = [
     title: 'Prowess Digital Solutions',
     desc: 'Built five autonomous outreach scripts, three PDF training manuals, a full Next.js site with four service pillars, a team management dashboard, and a business planning calculator tool.',
     tag: 'Consulting / Tech',
+    href: 'https://www.prowessdigitalsolutions.com',
     gradient: 'from-[#f5a623]/20 via-[#ff6b6b]/10 to-transparent',
     accent: '#f5a623',
   },
@@ -25,6 +27,7 @@ const projects = [
     title: 'Dritchwear Collections',
     desc: 'Full content calendar across three pillars, Canva campaign production, and mobile app in React Native with Supabase integration - real-time notifications and utility bill payments included.',
     tag: 'Brand / Tech',
+    href: 'https://dritchwear.com',
     gradient: 'from-[#a78bfa]/20 via-[#2fd6c5]/10 to-transparent',
     accent: '#a78bfa',
   },
@@ -76,12 +79,15 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
   const inView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
-    <motion.div
+    <motion.a
       ref={ref}
+      href={project.href}
+      target="_blank"
+      rel="noopener noreferrer"
       initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.75, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative bg-surface border border-ink-border overflow-hidden flex flex-col cursor-default hover:border-primary/30 transition-colors duration-300"
+      className="group relative bg-surface border border-ink-border overflow-hidden flex flex-col hover:border-primary/30 transition-colors duration-300"
     >
       {/* Gradient header area */}
       <div className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5`}>
@@ -132,6 +138,6 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
         className="absolute bottom-0 left-0 h-px w-0 group-hover:w-full transition-all duration-500 ease-out"
         style={{ background: `linear-gradient(90deg, ${project.accent}, transparent)` }}
       />
-    </motion.div>
+    </motion.a>
   )
 }

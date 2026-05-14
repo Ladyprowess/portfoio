@@ -8,9 +8,9 @@ const clients = [
   { name: 'CoinTime ATM',              industry: 'Crypto',         href: 'https://cointimeatm.com/' },
   { name: 'Point22',                   industry: 'Fintech',        href: 'https://pt22.io/' },
   { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/' },
-  { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: '#' },
-  { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: '#' },
-  { name: 'Dritchwear Collections',    industry: 'Fashion / Tech', href: '#' },
+  { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/' },
+  { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com' },
+  { name: 'Dritchwear Collections',    industry: 'Fashion / Tech', href: 'https://dritchwear.com' },
   { name: 'CWallet',                   industry: 'Crypto',         href: '#' },
   { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/' },
 ]
