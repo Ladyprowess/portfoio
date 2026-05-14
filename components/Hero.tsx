@@ -75,7 +75,7 @@ export default function Hero() {
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
           <span className="font-head text-[0.65rem] font-bold tracking-[0.18em] uppercase text-primary">
-            Lagos, Nigeria - Available Worldwide
+          Remote - Available Worldwide
           </span>
         </motion.div>
 
