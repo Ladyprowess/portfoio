@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const links = [
-  { href: '#about',    label: 'About' },
-  { href: '#services', label: 'Services' },
-  { href: '#work',     label: 'Work' },
-  { href: '#clients',  label: 'Clients' },
-  { href: '#contact',  label: 'Contact' },
+  { href: '#about',        label: 'About' },
+  { href: '#services',     label: 'Services' },
+  { href: '#work',         label: 'Work' },
+  { href: '#writing',      label: 'Writing' },
+  { href: '#case-studies', label: 'Case Studies' },
+  { href: '#clients',      label: 'Clients' },
+  { href: '#contact',      label: 'Contact' },
 ]
 
 export default function Nav() {
@@ -55,6 +57,16 @@ export default function Nav() {
               </a>
             </li>
           ))}
+          <li>
+            <a
+              href="https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-head text-[0.67rem] font-bold tracking-[0.14em] uppercase text-muted border border-ink-border px-4 py-2 hover:border-primary/40 hover:text-parchment transition-all duration-200"
+            >
+              CV ↗
+            </a>
+          </li>
           <li>
             <a
               href="mailto:hello@ladyprowess.com"

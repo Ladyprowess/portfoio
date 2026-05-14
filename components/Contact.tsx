@@ -4,9 +4,14 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const socials = [
-  { label: 'LinkedIn',     href: '#' },
-  { label: 'Twitter / X',  href: '#' },
-  { label: 'Instagram',    href: '#' },
+  { label: 'LinkedIn',    href: '#' },
+  { label: 'Twitter / X', href: '#' },
+  { label: 'Instagram',   href: '#' },
+]
+
+const docs = [
+  { label: 'Download CV',        href: 'https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing' },
+  { label: 'Recommendation',     href: 'https://drive.google.com/file/d/1AtpOwk6TLtV6mj10E2GkU8Ohfa20Q8Bd/view?usp=sharing' },
 ]
 
 export default function Contact() {
@@ -93,6 +98,22 @@ export default function Contact() {
               Get In Touch
               <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </a>
+
+            {/* CV + Recommendation */}
+            <div className="flex items-center gap-4 flex-wrap">
+              {docs.map((d) => (
+                <a
+                  key={d.label}
+                  href={d.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 font-head text-[0.65rem] font-bold tracking-[0.12em] uppercase text-muted border border-ink-border px-4 py-2 hover:border-primary/40 hover:text-parchment transition-all duration-200"
+                >
+                  {d.label}
+                  <span className="opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200">↗</span>
+                </a>
+              ))}
+            </div>
 
             {/* Socials */}
             <div className="flex items-center gap-6 pt-2">

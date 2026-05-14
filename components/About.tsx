@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import Image from 'next/image'
 
 const stats = [
   { num: '6+',  label: 'Years',    sub: 'of experience' },
@@ -64,25 +65,22 @@ export default function About() {
           {/* Portrait */}
           <Reveal delay={0.15}>
             <div className="relative">
-              {/* Portrait box with gradient top edge */}
-              <div className="relative w-full bg-surface-2 border border-ink-border overflow-hidden" style={{ aspectRatio: '3/4' }}>
+              {/* Portrait */}
+              <div className="relative w-full border border-ink-border overflow-hidden" style={{ aspectRatio: '3/4' }}>
                 <div
-                  className="absolute top-0 left-0 right-0 h-1"
+                  className="absolute top-0 left-0 right-0 h-[3px] z-10"
                   style={{ background: 'linear-gradient(90deg, #2fd6c5, #a78bfa)' }}
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                  <span
-                    className="font-display font-light italic gradient-text select-none"
-                    style={{ fontSize: '6rem' }}
-                  >
-                    N
-                  </span>
-                  <span className="font-head text-[0.6rem] tracking-[0.16em] uppercase text-muted">
-                    Photo coming soon
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4">
-                  <span className="font-head text-[0.56rem] tracking-[0.12em] uppercase text-muted/60">
+                <Image
+                  src="/NST_2067.jpg"
+                  alt="Ngozi Peace Okafor — Lady Prowess"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 100vw, 320px"
+                  priority
+                />
+                <div className="absolute bottom-4 left-4 z-10">
+                  <span className="font-head text-[0.56rem] tracking-[0.12em] uppercase text-parchment/80 bg-bg/60 backdrop-blur-sm px-2 py-1">
                     Ngozi Peace Okafor
                   </span>
                 </div>

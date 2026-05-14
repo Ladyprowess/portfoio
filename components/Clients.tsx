@@ -4,15 +4,15 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const clients = [
-  { name: 'CustomersChain',          industry: 'Web3' },
-  { name: 'CoinTime ATM',            industry: 'Crypto' },
-  { name: 'Point22',                 industry: 'Fintech' },
-  { name: 'txFusion',                industry: 'Web3' },
-  { name: 'Kivora Pay',              industry: 'DeFi / Africa' },
-  { name: 'Prowess Digital Solutions', industry: 'Consulting' },
-  { name: 'Dritchwear Collections',  industry: 'Fashion / Tech' },
-  { name: 'CWallet',                 industry: 'Crypto' },
-  { name: 'Bullring Finance',        industry: 'DeFi' },
+  { name: 'CustomersChain',            industry: 'Web3',          href: 'https://customerschain.com/' },
+  { name: 'CoinTime ATM',              industry: 'Crypto',         href: 'https://cointimeatm.com/' },
+  { name: 'Point22',                   industry: 'Fintech',        href: 'https://pt22.io/' },
+  { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/' },
+  { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: '#' },
+  { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: '#' },
+  { name: 'Dritchwear Collections',    industry: 'Fashion / Tech', href: '#' },
+  { name: 'CWallet',                   industry: 'Crypto',         href: '#' },
+  { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/' },
 ]
 
 export default function Clients() {
@@ -58,8 +58,11 @@ export default function Clients() {
           className="grid grid-cols-2 md:grid-cols-3 border-l border-t border-ink-border"
         >
           {clients.map((client, i) => (
-            <motion.div
+            <motion.a
               key={client.name}
+              href={client.href}
+              target={client.href === '#' ? undefined : '_blank'}
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 16 }}
               animate={gridInView ? { opacity: 1, y: 0 } : {}}
               transition={{
@@ -67,7 +70,7 @@ export default function Clients() {
                 delay: i * 0.06,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="group relative flex flex-col items-center justify-center gap-2 p-10 border-r border-b border-ink-border bg-surface cursor-default overflow-hidden transition-colors duration-300 hover:bg-surface-2"
+              className="group relative flex flex-col items-center justify-center gap-2 p-10 border-r border-b border-ink-border bg-surface overflow-hidden transition-colors duration-300 hover:bg-surface-2"
             >
               {/* Hover top-edge gradient line */}
               <div
@@ -94,7 +97,7 @@ export default function Clients() {
               <span className="relative z-10 font-head text-[0.58rem] font-bold tracking-[0.14em] uppercase text-muted/40 group-hover:text-primary/70 transition-colors duration-250">
                 {client.industry}
               </span>
-            </motion.div>
+            </motion.a>
           ))}
         </div>
       </div>
