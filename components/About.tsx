@@ -6,8 +6,8 @@ import Image from 'next/image'
 
 const stats = [
   { num: 'Web3',  label: 'Technical markets', sub: 'crypto, fintech, SaaS' },
-  { num: 'Africa', label: 'Founder lens', sub: 'local insight, global standard' },
-  { num: 'Global', label: 'Delivery', sub: 'remote and cross-border' },
+  { num: 'Africa', label: 'Founder lens', sub: 'market insight, practical execution' },
+  { num: 'Remote', label: 'Delivery', sub: 'cross-border and async' },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -67,7 +67,7 @@ export default function About() {
                 />
               </div>
               <p className="font-head text-[0.6rem] font-bold tracking-[0.16em] uppercase text-muted mt-4">
-                Remote / Available worldwide
+                Lagos, Nigeria / Remote engagements
               </p>
             </div>
           </Reveal>

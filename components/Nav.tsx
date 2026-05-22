@@ -128,7 +128,7 @@ export default function Nav() {
               transition={{ delay: 0.52 }}
               className="absolute bottom-10 font-head text-[0.6rem] tracking-[0.14em] uppercase text-muted"
             >
-              Remote - Available Worldwide
+              Remote Engagements
             </motion.p>
           </motion.div>
         )}

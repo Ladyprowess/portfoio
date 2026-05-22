@@ -27,7 +27,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Lady Prowess - Ngozi Peace Okafor',
   description:
-    'Copywriter, Content Strategist, Technical Writer, and Web3 Educator working remotely. Available worldwide.',
+    'Copywriter, Content Strategist, Technical Writer, and Web3 Educator working remotely.',
   openGraph: {
     title: 'Lady Prowess - Ngozi Peace Okafor',
     description: 'Words, systems, and Web3.',

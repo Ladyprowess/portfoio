@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 
 const proof = [
-  { value: '10+', label: 'global brands served' },
+  { value: '10+', label: 'brands served across sectors' },
   { value: '6+', label: 'years across content, Web3 and business' },
   { value: '3', label: 'ventures built from idea to market' },
 ]
@@ -34,7 +34,7 @@ export default function Hero() {
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
               className="font-head text-[0.68rem] font-bold tracking-[0.2em] uppercase text-primary mb-8"
             >
-              Global copywriter / technical writer / founder
+              Copywriter / technical writer / founder
             </motion.p>
 
             <div className="overflow-hidden">

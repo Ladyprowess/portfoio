@@ -71,7 +71,7 @@ export default function Services() {
             </h2>
           </div>
           <p className="text-[0.98rem] text-muted max-w-md leading-[1.85] mb-1">
-            I am strongest where the subject is technical, the audience is global, and the business needs words that carry commercial weight.
+            I am strongest where the subject is technical, the audience is discerning, and the business needs words that carry commercial weight.
           </p>
         </motion.div>
 

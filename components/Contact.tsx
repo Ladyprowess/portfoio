@@ -110,7 +110,7 @@ export default function Contact() {
             </div>
 
             <p className="font-head text-[0.6rem] tracking-[0.12em] uppercase text-muted/60 pt-2">
-              Remote engagements / Lagos based / global clients
+              Remote engagements / Lagos based / cross-border projects
             </p>
           </motion.div>
         </div>

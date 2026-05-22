@@ -6,7 +6,7 @@ import { motion, useInView } from 'framer-motion'
 const studies = [
   {
     name: 'Prospult',
-    desc: 'Content strategy and copywriting for a B2B prospecting platform — positioning, messaging hierarchy, and conversion-focused web copy.',
+    desc: 'Content strategy and copywriting for a B2B prospecting platform - positioning, messaging hierarchy, and conversion-focused web copy.',
     href: 'https://docs.google.com/document/d/1sV_J_iikUSUtBztg6H3dezYifhoyEXZaX8YDkxAPTPg/edit?usp=sharing',
     accent: '#2fd6c5',
   },
@@ -72,7 +72,7 @@ export default function CaseStudies() {
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
-            Deep-dives into real projects — the brief, the approach, and the outcome.
+            Deep-dives into real projects - the brief, the approach, and the outcome.
           </p>
         </motion.div>
 
