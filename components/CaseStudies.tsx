@@ -6,37 +6,37 @@ import { motion, useInView } from 'framer-motion'
 const studies = [
   {
     name: 'Prospult',
-    desc: 'Content strategy and copywriting for a B2B prospecting platform - positioning, messaging hierarchy, and conversion-focused web copy.',
+    desc: 'A written brand case study for a B2B prospecting platform, focused on positioning, messaging clarity, and product value.',
     href: 'https://docs.google.com/document/d/1sV_J_iikUSUtBztg6H3dezYifhoyEXZaX8YDkxAPTPg/edit?usp=sharing',
     accent: '#2fd6c5',
   },
   {
     name: 'Three Movers',
-    desc: 'SEO-driven editorial content and brand voice development for a relocation and moving services company.',
+    desc: 'A written case study for a relocation and moving services brand, shaped for clarity, search relevance, and reader confidence.',
     href: 'https://docs.google.com/document/d/1oZSJHBPZ8JBrAYQ5kfU5XOZucHAbV1ORX1S27ZZVdkc/edit?usp=sharing',
     accent: '#a78bfa',
   },
   {
     name: 'Giftvant',
-    desc: 'Go-to-market copy, onboarding content, and email sequences for a digital gifting and loyalty rewards platform.',
+    desc: 'A written case study for a digital gifting and loyalty rewards platform, translating product use cases into a clear brand story.',
     href: 'https://docs.google.com/document/d/1L-47UUPHsd0reieSVOV2cex3_PV1Qh-XxuilbkIiwpA/edit?usp=sharing',
     accent: '#f5a623',
   },
   {
     name: 'UEEX',
-    desc: 'Blog content, exchange education series, and technical explainers for a centralised crypto trading platform.',
+    desc: 'A written case study for a centralised crypto trading platform, covering exchange education and technical product communication.',
     href: 'https://docs.google.com/document/d/1LwssJU3c6CfrqO2fW8Tvr1nm6OAYNLttNYa1Dgxnowc/edit?usp=sharing',
     accent: '#2fd6c5',
   },
   {
     name: 'Solevant',
-    desc: 'Brand identity copy, product descriptions, and social media content strategy for a fashion-forward lifestyle brand.',
+    desc: 'A written case study for a lifestyle brand, focused on brand identity, product language, and audience-facing storytelling.',
     href: 'https://docs.google.com/document/d/19BrIcrzEP3RWCV89YtYub1ogclLR_Or5UZCKGOLHgeM/edit?tab=t.0',
     accent: '#a78bfa',
   },
   {
     name: 'UPay',
-    desc: 'Technical documentation, user onboarding flows, and educational content for a multi-currency payment solution.',
+    desc: 'A written case study for a multi-currency payment solution, explaining product value, onboarding, and user education.',
     href: 'https://docs.google.com/document/d/1HNnhHOL3BQYMgUe4RW-73Bm8Nfq7IOME2Ca7eWJ3WVU/edit?usp=sharing',
     accent: '#f5a623',
   },
@@ -66,13 +66,13 @@ export default function CaseStudies() {
               className="font-display font-light leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
-              Evidence over
+              Case studies
               <br />
-              <em className="italic text-parchment/70">presentation.</em>
+              <em className="italic text-parchment/70">written for brands.</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
-            Deep-dives into real projects - the brief, the approach, and the outcome.
+            Selected brand case studies I authored as a writer across technology, crypto, payments, lifestyle, and service businesses.
           </p>
         </motion.div>
 
@@ -140,7 +140,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
           style={{ color: study.accent }}
         >
           <span className="font-head text-[0.65rem] font-bold tracking-[0.1em] uppercase opacity-60 group-hover:opacity-100 transition-opacity duration-200">
-            View Case Study
+            Read Writing Sample
           </span>
           <span className="text-sm opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200">
             ↗
