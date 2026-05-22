@@ -73,7 +73,7 @@ export default function Nav() {
               href="mailto:hello@ladyprowess.com"
               className="font-head text-[0.67rem] font-bold tracking-[0.14em] uppercase text-bg bg-primary px-5 py-2.5 hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
             >
-              Hire Me
+              Work With Me
             </a>
           </li>
         </ul>
@@ -99,39 +99,41 @@ export default function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-40 bg-bg/97 backdrop-blur-2xl flex flex-col items-center justify-center gap-3 xl:hidden"
+            className="fixed inset-0 z-40 bg-bg/97 backdrop-blur-2xl xl:hidden overflow-y-auto px-8 pt-32 pb-28"
           >
-            {links.map((l, i) => (
+            <div className="min-h-full flex flex-col items-center justify-center gap-2">
+              {links.map((l, i) => (
+                <motion.a
+                  key={l.href}
+                  href={l.href}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.055, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                  onClick={() => setMenuOpen(false)}
+                  className="font-display font-light text-[clamp(2.6rem,11vw,3.45rem)] leading-[1.05] italic text-parchment hover:text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors py-1"
+                >
+                  {l.label}
+                </motion.a>
+              ))}
               <motion.a
-                key={l.href}
-                href={l.href}
-                initial={{ opacity: 0, y: 18 }}
+                href="mailto:hello@ladyprowess.com"
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.44, duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
                 onClick={() => setMenuOpen(false)}
-                className="font-display font-light text-5xl italic text-parchment hover:text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors py-1"
+                className="mt-6 min-h-11 inline-flex items-center justify-center font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase text-bg bg-primary px-8 py-4 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
-                {l.label}
+                Work With Me
               </motion.a>
-            ))}
-            <motion.a
-              href="mailto:hello@ladyprowess.com"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.42 }}
-              onClick={() => setMenuOpen(false)}
-              className="mt-6 font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase text-bg bg-primary px-8 py-4"
-            >
-              Hire Me
-            </motion.a>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.52 }}
-              className="absolute bottom-10 font-head text-[0.6rem] tracking-[0.14em] uppercase text-muted"
-            >
-              Remote Engagements
-            </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.52 }}
+                className="mt-5 font-head text-[0.6rem] tracking-[0.14em] uppercase text-muted"
+              >
+                Remote Engagements
+              </motion.p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
