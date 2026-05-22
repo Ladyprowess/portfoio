@@ -59,7 +59,7 @@ export default function About() {
             <div className="border border-ink-border bg-surface p-4">
               <div className="relative w-full overflow-hidden" style={{ aspectRatio: '5/6' }}>
                 <Image
-                  src="/NST_2067.jpg"
+                  src="/personal%20photo/headshot2.png"
                   alt="Ngozi Peace Okafor"
                   fill
                   className="object-cover object-top grayscale-[20%]"

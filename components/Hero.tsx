@@ -91,7 +91,7 @@ export default function Hero() {
             <div className="relative border border-ink-border bg-surface">
               <div className="relative aspect-[4/5] overflow-hidden">
                 <Image
-                  src="/NST_2067.jpg"
+                  src="/personal%20photo/headshot1.png"
                   alt="Ngozi Peace Okafor"
                   fill
                   className="object-cover object-top grayscale-[15%]"
