@@ -13,6 +13,7 @@ const clients = [
   { name: 'Dritchwear Collections',    industry: 'Fashion / Tech', href: 'https://dritchwear.com' },
   { name: 'CWallet',                   industry: 'Crypto',         href: '#' },
   { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/' },
+  { name: 'WriteTech Hub',             industry: 'Tech Writing',   href: 'https://writetechhub.org/author/ladyprowess/' },
 ]
 
 export default function Clients() {
