@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const links = [
-  { href: '#about',        label: 'About' },
-  { href: '#services',     label: 'Services' },
-  { href: '#work',         label: 'Work' },
-  { href: '#writing',      label: 'Writing' },
-  { href: '#media',        label: 'Media' },
+  { href: '/#about',       label: 'About' },
+  { href: '/#services',    label: 'Services' },
+  { href: '/#work',        label: 'Work' },
+  { href: '/#writing',     label: 'Writing' },
+  { href: '/awards',       label: 'Awards' },
+  { href: '/media',        label: 'Media' },
   { href: '/blog',         label: 'Blog' },
-  { href: '#contact',      label: 'Contact' },
+  { href: '/#contact',     label: 'Contact' },
 ]
 
 export default function Nav() {
@@ -39,14 +40,14 @@ export default function Nav() {
         }`}
       >
         <a
-          href="#hero"
+          href="/"
           className="font-display font-semibold italic text-parchment tracking-wide text-[1.1rem] hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         >
           Lady Prowess
         </a>
 
         {/* Desktop */}
-        <ul className="hidden lg:flex items-center gap-8">
+        <ul className="hidden xl:flex items-center gap-6">
           {links.map((l) => (
             <li key={l.href}>
               <a
@@ -79,7 +80,7 @@ export default function Nav() {
 
         {/* Mobile toggle */}
         <button
-          className="lg:hidden relative z-50 flex min-h-11 min-w-11 flex-col items-center justify-center gap-[5px] p-2 -mr-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          className="xl:hidden relative z-50 flex min-h-11 min-w-11 flex-col items-center justify-center gap-[5px] p-2 -mr-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -98,7 +99,7 @@ export default function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-40 bg-bg/97 backdrop-blur-2xl flex flex-col items-center justify-center gap-3 lg:hidden"
+            className="fixed inset-0 z-40 bg-bg/97 backdrop-blur-2xl flex flex-col items-center justify-center gap-3 xl:hidden"
           >
             {links.map((l, i) => (
               <motion.a
