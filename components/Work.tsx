@@ -47,17 +47,20 @@ export default function Work() {
         >
           <div>
             <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
-              Selected Work
+              Founder Projects
             </span>
             <h2
               className="font-display font-light leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
-              Built, written,
+              Ventures I
               <br />
-              <em className="italic text-parchment/70">and shipped.</em>
+              <em className="italic text-parchment/70">built from scratch.</em>
             </h2>
           </div>
+          <p className="text-[0.98rem] text-muted max-w-md leading-[1.85] mb-1">
+            These are businesses and products I founded, shaped, launched, and continue to build.
+          </p>
         </motion.div>
 
         {/* Cards grid */}

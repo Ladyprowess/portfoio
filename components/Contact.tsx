@@ -8,6 +8,13 @@ const docs = [
   { label: 'Recommendation',     href: 'https://drive.google.com/file/d/1AtpOwk6TLtV6mj10E2GkU8Ohfa20Q8Bd/view?usp=sharing' },
 ]
 
+const socials = [
+  { label: 'X', href: 'https://x.com/ladyprowess' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/peace-ngozi-okafor' },
+  { label: 'Instagram', href: 'https://www.instagram.com/ladyprowess_' },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@ladyprowess' },
+]
+
 export default function Contact() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
@@ -107,6 +114,25 @@ export default function Contact() {
                   <span className="opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200">↗</span>
                 </a>
               ))}
+            </div>
+
+            <div className="flex flex-col gap-3 pt-2">
+              <span className="font-head text-[0.6rem] tracking-[0.12em] uppercase text-muted/60">
+                Social
+              </span>
+              <div className="flex items-center gap-4 flex-wrap">
+                {socials.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-head text-[0.64rem] font-bold tracking-[0.12em] uppercase text-muted hover:text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
             </div>
 
             <p className="font-head text-[0.6rem] tracking-[0.12em] uppercase text-muted/60 pt-2">
