@@ -13,6 +13,7 @@ const socials = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/peace-ngozi-okafor' },
   { label: 'Instagram', href: 'https://www.instagram.com/ladyprowess_' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@ladyprowess' },
+  { label: 'Substack', href: 'https://ladyprowess.substack.com' },
 ]
 
 export default function Contact() {

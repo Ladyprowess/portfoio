@@ -22,6 +22,7 @@ const freelance = [
 
 const personal = [
   { name: 'Medium',    href: 'https://ladyprowess.medium.com/',      tag: 'Essays & Analysis' },
+  { name: 'Substack',  href: 'https://ladyprowess.substack.com',      tag: 'Newsletter' },
   { name: 'Dev.to',    href: 'https://dev.to/ladyprowess',           tag: 'Technical' },
   { name: 'Hashnode',  href: 'https://ladyprowess.hashnode.dev/',    tag: 'Web3 & Tech' },
 ]
