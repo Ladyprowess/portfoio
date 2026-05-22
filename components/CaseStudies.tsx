@@ -66,9 +66,9 @@ export default function CaseStudies() {
               className="font-display font-light leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
-              Proof in
+              Evidence over
               <br />
-              <em className="italic gradient-text">the work</em>
+              <em className="italic text-parchment/70">presentation.</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">

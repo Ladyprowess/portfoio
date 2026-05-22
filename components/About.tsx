@@ -5,9 +5,9 @@ import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
 const stats = [
-  { num: '6+',  label: 'Years',    sub: 'of experience' },
-  { num: '3',   label: 'Ventures', sub: 'active & growing' },
-  { num: '10+', label: 'Brands',   sub: 'served globally' },
+  { num: 'Web3',  label: 'Technical markets', sub: 'crypto, fintech, SaaS' },
+  { num: 'Africa', label: 'Founder lens', sub: 'local insight, global standard' },
+  { num: 'Global', label: 'Delivery', sub: 'remote and cross-border' },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -31,8 +31,8 @@ export default function About() {
   const statsInView = useInView(statsRef, { once: true, margin: '-60px' })
 
   return (
-    <section id="about" className="px-8 md:px-20 py-36 border-t border-ink-border">
-      <div className="max-w-[1400px] mx-auto">
+    <section id="about" className="px-8 md:px-20 py-32 border-t border-ink-border">
+      <div className="max-w-[1480px] mx-auto">
 
         {/* ── Section label ── */}
         <Reveal>
@@ -42,54 +42,33 @@ export default function About() {
         </Reveal>
 
         {/* ── Pull quote - the real opener ── */}
-        <Reveal delay={0.1} className="mt-8 mb-20">
+        <Reveal delay={0.1} className="mt-8 mb-16">
           <blockquote
-            className="font-display font-light italic leading-[1.1] max-w-5xl"
-            style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)' }}
+            className="font-display font-light leading-[1.1] max-w-6xl"
+            style={{ fontSize: 'clamp(2.4rem, 5.2vw, 5.8rem)' }}
           >
-            &ldquo;I understand the difference between{' '}
-            <span className="gradient-text not-italic font-semibold">
-              writing for visibility
-            </span>{' '}
-            and{' '}
-            <span className="gradient-text not-italic font-semibold">
-              writing for action
-            </span>
-            - and I build content strategies around that distinction.&rdquo;
+            I operate where language, product, and trust meet.
           </blockquote>
         </Reveal>
 
         {/* ── Two-column layout ── */}
-        <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-14 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-24 items-start">
 
           {/* Portrait */}
           <Reveal delay={0.15}>
-            <div className="relative">
-              {/* Portrait */}
-              <div className="relative w-full border border-ink-border overflow-hidden" style={{ aspectRatio: '3/4' }}>
-                <div
-                  className="absolute top-0 left-0 right-0 h-[3px] z-10"
-                  style={{ background: 'linear-gradient(90deg, #2fd6c5, #a78bfa)' }}
-                />
+            <div className="border border-ink-border bg-surface p-4">
+              <div className="relative w-full overflow-hidden" style={{ aspectRatio: '5/6' }}>
                 <Image
                   src="/NST_2067.jpg"
-                  alt="Ngozi Peace Okafor — Lady Prowess"
+                  alt="Ngozi Peace Okafor"
                   fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 768px) 100vw, 320px"
-                  priority
+                  className="object-cover object-top grayscale-[20%]"
+                  sizes="(max-width: 1024px) 100vw, 520px"
                 />
-                <div className="absolute bottom-4 left-4 z-10">
-                  <span className="font-head text-[0.56rem] tracking-[0.12em] uppercase text-parchment/80 bg-bg/60 backdrop-blur-sm px-2 py-1">
-                    Ngozi Peace Okafor
-                  </span>
-                </div>
               </div>
-              {/* Offset accent */}
-              <div
-                className="absolute -bottom-3 -right-3 w-full border border-primary/10 pointer-events-none"
-                style={{ aspectRatio: '3/4' }}
-              />
+              <p className="font-head text-[0.6rem] font-bold tracking-[0.16em] uppercase text-muted mt-4">
+                Remote / Available worldwide
+              </p>
             </div>
           </Reveal>
 
@@ -98,24 +77,26 @@ export default function About() {
             <Reveal delay={0.2}>
               <p className="font-display font-light text-[1.5rem] leading-[1.7] text-parchment/90">
                 I am <span className="text-parchment font-normal">Ngozi Peace Okafor</span>, known
-                professionally as Lady Prowess - a Lagos-based copywriter, technical writer, and Web3
-                educator with a background that spans crypto content, business consulting, and product
-                building.
+                professionally as Lady Prowess. I write for companies that need more than content volume:
+                they need positioning, education, conversion, and credibility working together.
               </p>
             </Reveal>
 
             <Reveal delay={0.25}>
               <p className="text-[0.98rem] text-muted leading-[1.95]">
-                I also operate on the founder side. I built and launched{' '}
+                My background spans copywriting, technical writing, Web3 education, business consulting,
+                and product building. I have written for crypto, fintech, and technology brands while also
+                operating on the founder side. I built and launched{' '}
                 <span className="text-parchment font-medium">Kivora Pay</span>, a crypto bill payment
                 platform for Africa, and run{' '}
                 <span className="text-parchment font-medium">Prowess Digital Solutions</span>, a
-                business consulting firm serving African entrepreneurs across four service pillars.{' '}
+                business consulting firm serving African entrepreneurs across multiple service pillars.{' '}
                 <span className="text-parchment font-medium">Dritchwear Collections</span>, my branded
                 streetwear company, operates with its own mobile app.
               </p>
               <p className="text-[0.98rem] text-muted leading-[1.95] mt-4">
-                If the work requires clear thinking and precise communication, I handle it.
+                That founder lens matters. I understand what it means for writing to carry growth,
+                onboarding, trust, and revenue pressure at the same time.
               </p>
             </Reveal>
 
@@ -128,7 +109,7 @@ export default function About() {
                   animate={statsInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="font-display font-light gradient-text leading-none" style={{ fontSize: '2.4rem' }}>
+                  <div className="font-display font-light text-parchment leading-none" style={{ fontSize: '2.2rem' }}>
                     {s.num}
                   </div>
                   <div className="font-head text-[0.7rem] font-bold tracking-[0.06em] text-parchment mt-1">

@@ -4,13 +4,13 @@
 
 /* ── Design tokens ─────────────────────────────── */
 :root {
-  --bg:          #07070d;
-  --surface:     #0e0e1a;
-  --primary:     #2fd6c5;
-  --amber:       #f5a623;
+  --bg:          #08090b;
+  --surface:     #111319;
+  --primary:     #41d7c7;
+  --amber:       #d7b46a;
   --parchment:   #f0ece3;
-  --muted:       #5e6a80;
-  --border:      #1c1c2e;
+  --muted:       #a2a7b3;
+  --border:      #272b35;
 }
 
 /* ── Base ──────────────────────────────────────── */
@@ -35,14 +35,14 @@ body::before {
 
 /* ── Typography utilities ──────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #2fd6c5 0%, #a78bfa 100%);
+  background: linear-gradient(135deg, #41d7c7 0%, #d7b46a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-gold {
-  background: linear-gradient(135deg, #f5a623 0%, #ff6b6b 100%);
+  background: linear-gradient(135deg, #d7b46a 0%, #f0ece3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -71,14 +71,6 @@ body::before {
   width: max-content;
 }
 .animate-marquee:hover { animation-play-state: paused; }
-
-/* ── Ambient orb animation ─────────────────────── */
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(40px, -30px) scale(1.04); }
-  66%       { transform: translate(-20px, 20px) scale(0.97); }
-}
-.orb { animation: float 14s ease-in-out infinite; }
 
 /* ── Accessibility ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

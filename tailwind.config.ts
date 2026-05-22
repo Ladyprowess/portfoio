@@ -9,17 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg:       '#07070d',
-        surface:  '#0e0e1a',
-        'surface-2': '#141424',
-        primary:  '#2fd6c5',
-        'primary-dim': '#1a7a72',
-        'primary-glow': 'rgba(47,214,197,0.12)',
-        amber:    '#f5a623',
-        'amber-dim': '#7a4e0a',
+        bg:       '#08090b',
+        surface:  '#111319',
+        'surface-2': '#171a22',
+        primary:  '#41d7c7',
+        'primary-dim': '#1b8f86',
+        'primary-glow': 'rgba(65,215,199,0.12)',
+        amber:    '#d7b46a',
+        'amber-dim': '#7d6636',
         parchment: '#f0ece3',
-        muted:    '#5e6a80',
-        'ink-border': '#1c1c2e',
+        muted:    '#a2a7b3',
+        'ink-border': '#272b35',
       },
       fontFamily: {
         display: ['var(--font-cormorant)', 'Georgia', 'serif'],

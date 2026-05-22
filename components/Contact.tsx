@@ -3,12 +3,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
-const socials = [
-  { label: 'LinkedIn',    href: '#' },
-  { label: 'Twitter / X', href: '#' },
-  { label: 'Instagram',   href: '#' },
-]
-
 const docs = [
   { label: 'Download CV',        href: 'https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing' },
   { label: 'Recommendation',     href: 'https://drive.google.com/file/d/1AtpOwk6TLtV6mj10E2GkU8Ohfa20Q8Bd/view?usp=sharing' },
@@ -58,7 +52,7 @@ export default function Contact() {
             >
               Let&apos;s work
               <br />
-              <em className="italic gradient-text">together</em>
+              <em className="italic text-parchment/70">together</em>
             </h2>
             <p className="text-[1rem] text-muted leading-[1.85] max-w-sm">
               Whether it&apos;s a launch campaign, technical documentation, or a full brand build -
@@ -115,21 +109,9 @@ export default function Contact() {
               ))}
             </div>
 
-            {/* Socials */}
-            <div className="flex items-center gap-6 pt-2">
-              <span className="font-head text-[0.6rem] tracking-[0.12em] uppercase text-muted/50">
-                Find me on
-              </span>
-              {socials.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  className="font-head text-[0.64rem] font-bold tracking-[0.12em] uppercase text-muted hover:text-primary transition-colors duration-200"
-                >
-                  {s.label}
-                </a>
-              ))}
-            </div>
+            <p className="font-head text-[0.6rem] tracking-[0.12em] uppercase text-muted/60 pt-2">
+              Remote engagements / Lagos based / global clients
+            </p>
           </motion.div>
         </div>
       </div>

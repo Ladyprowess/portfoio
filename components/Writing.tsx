@@ -65,7 +65,7 @@ export default function Writing() {
             >
               Words published
               <br />
-              <em className="italic gradient-text">across the web</em>
+              <em className="italic text-parchment/70">across the web</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">

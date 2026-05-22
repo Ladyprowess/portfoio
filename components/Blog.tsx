@@ -25,6 +25,10 @@ function Reveal({ children, delay = 0, className }: { children: React.ReactNode;
 export default function Blog() {
   const hasPosts = blogPosts.length > 0
 
+  if (!hasPosts) {
+    return null
+  }
+
   return (
     <section id="blog" className="px-8 md:px-20 py-36 border-t border-ink-border">
       <div className="max-w-[1400px] mx-auto">
@@ -72,58 +76,45 @@ export default function Blog() {
             </div>
           </Reveal>
 
-          {hasPosts ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-border border border-ink-border">
-              {blogPosts.map((post, index) => (
-                <Reveal key={post.title} delay={0.14 + index * 0.08} className="bg-surface">
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="group min-h-[24rem] h-full p-7 lg:p-8 flex flex-col hover:bg-surface-2 transition-colors duration-300"
-                  >
-                    <div className="flex items-start justify-between gap-4 mb-8">
-                      <span
-                        className="font-head text-[0.56rem] font-bold tracking-[0.12em] uppercase px-3 py-1.5 rounded-full"
-                        style={{ color: post.accent, background: `${post.accent}14` }}
-                      >
-                        {post.category}
-                      </span>
-                      <span className="font-head text-[0.58rem] font-bold tracking-[0.12em] uppercase text-muted">
-                        {post.readTime}
-                      </span>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-border border border-ink-border">
+            {blogPosts.map((post, index) => (
+              <Reveal key={post.title} delay={0.14 + index * 0.08} className="bg-surface">
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="group min-h-[24rem] h-full p-7 lg:p-8 flex flex-col hover:bg-surface-2 transition-colors duration-300"
+                >
+                  <div className="flex items-start justify-between gap-4 mb-8">
+                    <span
+                      className="font-head text-[0.56rem] font-bold tracking-[0.12em] uppercase px-3 py-1.5 rounded-full"
+                      style={{ color: post.accent, background: `${post.accent}14` }}
+                    >
+                      {post.category}
+                    </span>
+                    <span className="font-head text-[0.58rem] font-bold tracking-[0.12em] uppercase text-muted">
+                      {post.readTime}
+                    </span>
+                  </div>
 
-                    <h3 className="font-head font-bold text-[1.35rem] leading-[1.25] text-parchment group-hover:text-primary transition-colors duration-200">
-                      {post.title}
-                    </h3>
-                    <p className="text-[0.9rem] text-muted leading-[1.8] mt-5 flex-1">{post.excerpt}</p>
+                  <h3 className="font-head font-bold text-[1.35rem] leading-[1.25] text-parchment group-hover:text-primary transition-colors duration-200">
+                    {post.title}
+                  </h3>
+                  <p className="text-[0.9rem] text-muted leading-[1.8] mt-5 flex-1">{post.excerpt}</p>
 
-                    <div className="pt-8 mt-8 border-t border-ink-border flex items-center justify-between">
-                      <span className="font-head text-[0.65rem] font-bold tracking-[0.12em] uppercase text-parchment/70">
-                        {post.date}
-                      </span>
-                      <span
-                        className="text-sm opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200"
-                        style={{ color: post.accent }}
-                      >
-                        -&gt;
-                      </span>
-                    </div>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          ) : (
-            <Reveal delay={0.14}>
-              <div className="border border-ink-border bg-surface p-8 lg:p-10 min-h-[18rem] flex flex-col justify-between">
-                <span className="font-head text-[0.58rem] font-bold tracking-[0.16em] uppercase text-muted">
-                  No Posts Published
-                </span>
-                <p className="font-display font-light italic leading-[1.25] text-parchment/90 mt-6 max-w-xl" style={{ fontSize: 'clamp(1.8rem, 3vw, 3.2rem)' }}>
-                  Your first article will appear here when you add it.
-                </p>
-              </div>
-            </Reveal>
-          )}
+                  <div className="pt-8 mt-8 border-t border-ink-border flex items-center justify-between">
+                    <span className="font-head text-[0.65rem] font-bold tracking-[0.12em] uppercase text-parchment/70">
+                      {post.date}
+                    </span>
+                    <span
+                      className="text-sm opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200"
+                      style={{ color: post.accent }}
+                    >
+                      -&gt;
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
         </div>
 
         <Reveal delay={0.22} className="mt-10">

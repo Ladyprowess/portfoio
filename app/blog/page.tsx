@@ -30,7 +30,7 @@ export default function BlogIndexPage() {
           >
             Essays from
             <br />
-            <em className="italic gradient-text">my own desk</em>
+            <em className="italic text-parchment/70">my own desk</em>
           </h1>
         </header>
 
@@ -77,7 +77,7 @@ export default function BlogIndexPage() {
         ) : (
           <div className="border border-ink-border bg-surface p-8 lg:p-10">
             <span className="font-head text-[0.58rem] font-bold tracking-[0.16em] uppercase text-muted">
-              No Posts Published
+              No essays published yet
             </span>
             <p className="font-display font-light italic leading-[1.25] text-parchment/90 mt-6" style={{ fontSize: 'clamp(1.8rem, 3vw, 3.2rem)' }}>
               Your first article will appear here when you add it.

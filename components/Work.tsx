@@ -7,28 +7,25 @@ const projects = [
   {
     num: '01',
     title: 'Kivora Pay',
-    desc: 'Founded and launched a crypto bill payment platform for Africa. Led product architecture, wallet infrastructure, payment integrations, and all go-to-market content including pitch decks and a 14-day social calendar.',
+    desc: 'Founded and launched a crypto bill payment platform for Africa, shaping the product narrative, wallet/payment flows, pitch materials, and launch content.',
     tag: 'Founder / Web3',
     href: 'https://kivorapay.com/',
-    gradient: 'from-[#2fd6c5]/20 via-[#a78bfa]/10 to-transparent',
     accent: '#2fd6c5',
   },
   {
     num: '02',
     title: 'Prowess Digital Solutions',
-    desc: 'Built five autonomous outreach scripts, three PDF training manuals, a full Next.js site with four service pillars, a team management dashboard, and a business planning calculator tool.',
+    desc: 'Built a consulting brand with service architecture, training materials, automated outreach systems, a full website, and internal business tools.',
     tag: 'Consulting / Tech',
     href: 'https://www.prowessdigitalsolutions.com',
-    gradient: 'from-[#f5a623]/20 via-[#ff6b6b]/10 to-transparent',
     accent: '#f5a623',
   },
   {
     num: '03',
     title: 'Dritchwear Collections',
-    desc: 'Full content calendar across three pillars, Canva campaign production, and mobile app in React Native with Supabase integration - real-time notifications and utility bill payments included.',
+    desc: 'Developed a fashion-tech brand with campaign content, product storytelling, and a mobile app layer for customer engagement and utility.',
     tag: 'Brand / Tech',
     href: 'https://dritchwear.com',
-    gradient: 'from-[#a78bfa]/20 via-[#2fd6c5]/10 to-transparent',
     accent: '#a78bfa',
   },
 ]
@@ -38,8 +35,8 @@ export default function Work() {
   const titleInView = useInView(titleRef, { once: true, margin: '-80px' })
 
   return (
-    <section id="work" className="px-8 md:px-20 py-36 border-t border-ink-border">
-      <div className="max-w-[1400px] mx-auto">
+    <section id="work" className="px-8 md:px-20 py-32 border-t border-ink-border">
+      <div className="max-w-[1480px] mx-auto">
 
         <motion.div
           ref={titleRef}
@@ -56,9 +53,9 @@ export default function Work() {
               className="font-display font-light leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
-              Projects that
+              Built, written,
               <br />
-              <em className="italic gradient-text">shipped and delivered</em>
+              <em className="italic text-parchment/70">and shipped.</em>
             </h2>
           </div>
         </motion.div>
@@ -87,10 +84,10 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
       initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.75, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative bg-surface border border-ink-border overflow-hidden flex flex-col hover:border-primary/30 transition-colors duration-300"
+      className="group relative bg-surface border border-ink-border overflow-hidden flex flex-col hover:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-300"
     >
       {/* Gradient header area */}
-      <div className={`relative h-36 bg-gradient-to-br ${project.gradient} flex items-end p-5`}>
+      <div className="relative h-36 flex items-end p-5 border-b border-ink-border">
         <div
           aria-hidden
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -116,10 +113,7 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
 
       {/* Content */}
       <div className="p-7 flex flex-col gap-3 flex-1">
-        <h3
-          className="font-head font-bold text-xl text-parchment group-hover:text-primary transition-colors duration-200"
-          style={{ color: '' }}
-        >
+        <h3 className="font-head font-bold text-xl text-parchment group-hover:text-primary transition-colors duration-200">
           {project.title}
         </h3>
         <p className="text-[0.9rem] text-muted leading-[1.8] flex-1">{project.desc}</p>

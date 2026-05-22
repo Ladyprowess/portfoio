@@ -42,9 +42,9 @@ export default function Clients() {
               className="font-display font-light leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
-              Brands I have
+              Trusted by
               <br />
-              <em className="italic gradient-text">worked with</em>
+              <em className="italic text-parchment/70">serious teams.</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
@@ -58,11 +58,8 @@ export default function Clients() {
           className="grid grid-cols-2 md:grid-cols-3 border-l border-t border-ink-border"
         >
           {clients.map((client, i) => (
-            <motion.a
+            <motion.div
               key={client.name}
-              href={client.href}
-              target={client.href === '#' ? undefined : '_blank'}
-              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 16 }}
               animate={gridInView ? { opacity: 1, y: 0 } : {}}
               transition={{
@@ -76,7 +73,7 @@ export default function Clients() {
               <div
                 aria-hidden
                 className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: 'linear-gradient(90deg, #2fd6c5, #a78bfa)' }}
+                style={{ background: 'linear-gradient(90deg, #41d7c7, #d7b46a)' }}
               />
 
               {/* Ambient glow on hover */}
@@ -97,7 +94,7 @@ export default function Clients() {
               <span className="relative z-10 font-head text-[0.58rem] font-bold tracking-[0.14em] uppercase text-muted/40 group-hover:text-primary/70 transition-colors duration-250">
                 {client.industry}
               </span>
-            </motion.a>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -6,45 +6,39 @@ import { motion, useInView } from 'framer-motion'
 const services = [
   {
     num: '01',
-    name: 'Copywriting',
-    desc: 'Web copy, landing pages, email campaigns, ad copy, and brand messaging. Written to move people toward a decision - not just to fill space.',
+    name: 'Market Narrative',
+    desc: 'Positioning, messaging architecture, landing-page copy, sales pages, and campaign language for brands that need to explain why they matter.',
     featured: true,
-    color: 'from-primary/10 to-transparent',
   },
   {
     num: '02',
-    name: 'Content Strategy',
-    desc: 'Multi-platform content calendars and long-form planning across LinkedIn, YouTube, Instagram, TikTok, X, and more.',
+    name: 'Content Systems',
+    desc: 'Editorial pillars, multi-platform calendars, founder-led content, social campaigns, and long-form strategy built around measurable business goals.',
     featured: false,
-    color: 'from-violet-500/8 to-transparent',
   },
   {
     num: '03',
     name: 'Technical Writing',
-    desc: 'Product docs, API guides, onboarding materials, and technical explainers. Complex information made accessible.',
+    desc: 'Product docs, API guides, onboarding flows, knowledge bases, and technical explainers that make complex products easier to adopt.',
     featured: false,
-    color: 'from-amber/8 to-transparent',
   },
   {
     num: '04',
     name: 'Web3 Education',
-    desc: 'Blockchain explainers, crypto onboarding, DeFi guides, and educational series for real audiences - not just insiders.',
+    desc: 'Crypto, DeFi, wallet, exchange, and blockchain education written for users who need clarity before they commit trust or capital.',
     featured: false,
-    color: 'from-primary/8 to-transparent',
   },
   {
     num: '05',
-    name: 'Business Consulting',
-    desc: 'Advisory, pitch decks, business frameworks, and training materials for African entrepreneurs at every stage.',
+    name: 'Founder Collateral',
+    desc: 'Pitch decks, launch plans, training manuals, service frameworks, and business materials that help teams communicate and execute.',
     featured: false,
-    color: 'from-rose-500/8 to-transparent',
   },
   {
     num: '06',
-    name: 'Brand Founding',
-    desc: 'From product concept to market presence - full infrastructure including content, design, legal docs, and GTM strategy.',
+    name: 'Go-to-Market Support',
+    desc: 'Product launches, offer refinement, conversion journeys, email sequences, and GTM content for founder-led companies.',
     featured: false,
-    color: 'from-amber/8 to-transparent',
   },
 ]
 
@@ -53,8 +47,8 @@ export default function Services() {
   const titleInView = useInView(titleRef, { once: true, margin: '-80px' })
 
   return (
-    <section id="services" className="px-8 md:px-20 py-36 border-t border-ink-border">
-      <div className="max-w-[1400px] mx-auto">
+    <section id="services" className="px-8 md:px-20 py-32 border-t border-ink-border">
+      <div className="max-w-[1480px] mx-auto">
 
         <motion.div
           ref={titleRef}
@@ -71,13 +65,13 @@ export default function Services() {
               className="font-display font-light leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
-              Six disciplines.
+              Strategic writing
               <br />
-              <em className="italic gradient-text">One standard.</em>
+              <em className="italic text-parchment/70">for serious brands.</em>
             </h2>
           </div>
-          <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
-            From strategy to execution - every engagement is treated as if the brand is my own.
+          <p className="text-[0.98rem] text-muted max-w-md leading-[1.85] mb-1">
+            I am strongest where the subject is technical, the audience is global, and the business needs words that carry commercial weight.
           </p>
         </motion.div>
 
@@ -102,16 +96,10 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: (index % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative bg-surface p-10 overflow-hidden cursor-default transition-colors duration-300 hover:bg-surface-2 ${
+      className={`group relative bg-surface p-8 md:p-10 overflow-hidden cursor-default transition-colors duration-300 hover:bg-surface-2 ${
         service.featured ? 'lg:col-span-2' : ''
       }`}
     >
-      {/* Per-card gradient wash */}
-      <div
-        aria-hidden
-        className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
-      />
-
       {/* Large decorative number - top right */}
       <span
         aria-hidden
@@ -120,14 +108,13 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
         {service.num}
       </span>
 
-      {/* Left accent line */}
       <div className="absolute left-0 top-0 w-px bg-primary origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out" style={{ height: '100%' }} />
 
       <div className="relative z-10">
         <span className="font-display italic text-primary/50 text-[0.95rem] block mb-6">
           {service.num}
         </span>
-        <h3 className={`font-head font-bold text-parchment mb-4 tracking-wide ${service.featured ? 'text-2xl' : 'text-lg'}`}>
+        <h3 className={`font-head font-bold text-parchment mb-4 tracking-wide ${service.featured ? 'text-2xl md:text-3xl' : 'text-lg'}`}>
           {service.name}
         </h3>
         <p className="text-[0.92rem] text-muted leading-[1.85]">{service.desc}</p>
