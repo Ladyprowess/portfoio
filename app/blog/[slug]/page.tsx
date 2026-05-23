@@ -37,7 +37,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <main className="min-h-screen px-8 md:px-20 py-16 md:py-24">
-      <article className="max-w-3xl mx-auto">
+      <article className="max-w-4xl mx-auto">
         <Link
           href="/blog"
           className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted hover:text-primary transition-colors"
@@ -67,15 +67,35 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           >
             {post.title}
           </h1>
-          <p className="text-[1.08rem] text-muted leading-[1.9] mt-8">{post.excerpt}</p>
+          <p className="text-[1.08rem] text-muted leading-[1.9] mt-8 max-w-2xl">{post.excerpt}</p>
         </header>
 
-        <div className="py-12 space-y-7">
-          {post.body.map((paragraph) => (
-            <p key={paragraph} className="text-[1.05rem] md:text-[1.12rem] text-parchment/84 leading-[2]">
-              {paragraph}
-            </p>
-          ))}
+        <div className="py-14 space-y-7 max-w-3xl">
+          {post.body.map((block, index) => {
+            if (block.type === 'quote') {
+              return (
+                <blockquote
+                  key={`${block.type}-${index}`}
+                  className="my-12 border-l border-primary pl-6 font-display text-[2rem] font-light italic leading-[1.25] text-parchment md:text-[3rem]"
+                >
+                  {block.text}
+                </blockquote>
+              )
+            }
+
+            if (block.type === 'divider') {
+              return <div key={`${block.type}-${index}`} className="my-12 h-px w-full bg-ink-border" />
+            }
+
+            return (
+              <p
+                key={`${block.type}-${index}`}
+                className="text-justify text-[1.05rem] leading-[2] text-parchment/84 md:text-[1.12rem]"
+              >
+                {block.text}
+              </p>
+            )
+          })}
         </div>
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
