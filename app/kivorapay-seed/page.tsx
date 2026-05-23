@@ -50,15 +50,15 @@ const funds = [
 
 const videos = [
   {
-    title: 'KivoraPay overview',
+    title: 'Crypto invoice flow',
     src: 'https://www.youtube-nocookie.com/embed/3jajJ3nSWHM?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3',
   },
   {
-    title: 'Founder short',
+    title: 'Wallet top-up flow',
     src: 'https://www.youtube-nocookie.com/embed/oLnbfwoeNBU?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3',
   },
   {
-    title: 'Product short',
+    title: 'Bill payment flow',
     src: 'https://www.youtube-nocookie.com/embed/12gAqZI4-RQ?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3',
   },
 ]
@@ -194,11 +194,15 @@ export default function KivoraPaySeedPage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 max-w-3xl">
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
-              Founder Videos
+              Product Recordings
             </span>
             <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
-              Watch the story and the product.
+              See how KivoraPay works.
             </h2>
+            <p className="mt-6 max-w-2xl text-[1rem] leading-[1.85] text-muted">
+              Short product recordings showing core user flows: creating invoices, topping up a wallet,
+              and paying bills with crypto.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
