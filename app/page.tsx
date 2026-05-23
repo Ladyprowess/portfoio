@@ -4,7 +4,6 @@ import About from '@/components/About'
 import Services from '@/components/Services'
 import Work from '@/components/Work'
 import Writing from '@/components/Writing'
-import Blog from '@/components/Blog'
 import CaseStudies from '@/components/CaseStudies'
 import Clients from '@/components/Clients'
 import Contact from '@/components/Contact'
@@ -19,7 +18,6 @@ export default function Home() {
       <Services />
       <Work />
       <Writing />
-      <Blog />
       <CaseStudies />
       <Clients />
       <Contact />
