@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 const stats = [
   { value: '26M+', label: 'Nigerians holding crypto' },
-  { value: '8', label: 'Active bill categories' },
-  { value: '$5K', label: 'Monthly recurring revenue' },
+  { value: '10+', label: 'Active bill categories' },
+  { value: '$1K', label: 'Monthly recurring revenue' },
   { value: '$500B+', label: 'Africa bill payments market' },
 ]
 
@@ -52,17 +52,14 @@ const videos = [
   {
     title: 'KivoraPay overview',
     src: 'https://www.youtube.com/embed/3jajJ3nSWHM',
-    aspect: 'aspect-video',
   },
   {
     title: 'Founder short',
     src: 'https://www.youtube.com/embed/oLnbfwoeNBU',
-    aspect: 'aspect-[9/16]',
   },
   {
     title: 'Product short',
     src: 'https://www.youtube.com/embed/12gAqZI4-RQ',
-    aspect: 'aspect-[9/16]',
   },
 ]
 
@@ -78,7 +75,7 @@ export default function KivoraPaySeedPage() {
             href="#interest"
             className="inline-flex min-h-10 items-center justify-center bg-primary px-5 font-head text-[0.68rem] font-bold uppercase tracking-[0.14em] text-bg transition-colors hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           >
-            Email Ngozi
+            Express Interest
           </a>
         </div>
       </header>
@@ -107,7 +104,7 @@ export default function KivoraPaySeedPage() {
             </h1>
             <p className="mt-8 max-w-2xl text-[1.06rem] leading-[1.9] text-muted md:text-[1.18rem]">
               I am Ngozi Peace Okafor, known professionally as Lady Prowess. I am raising for KivoraPay,
-              the crypto bill payment platform I founded to help Africans receive crypto, pay everyday
+              the spending layer for Crypto; a platform I founded to help Africans receive crypto, pay everyday
               bills, create invoices, and use stablecoins in real life.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -144,7 +141,7 @@ export default function KivoraPaySeedPage() {
                 Ngozi Peace Okafor
               </p>
               <p className="mt-2 text-[0.95rem] leading-[1.8] text-muted">
-                Founder of KivoraPay, Prowess Digital Solutions, and Dritchwear Collections.
+              Founder KivoraPay | Helping Africans spend crypto in real life | Visioner Prowess Digital Solutions and Dritchwear Collections.
               </p>
             </div>
           </aside>
@@ -206,8 +203,8 @@ export default function KivoraPaySeedPage() {
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {videos.map((video) => (
-              <div key={video.title} className="border border-ink-border bg-bg p-4">
-                <div className={`${video.aspect} bg-surface-2`}>
+              <div key={video.title} className="flex h-full flex-col border border-ink-border bg-bg p-4">
+                <div className="h-[520px] bg-surface-2 md:h-[560px]">
                   <iframe
                     className="h-full w-full"
                     src={video.src}
