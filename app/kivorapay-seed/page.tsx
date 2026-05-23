@@ -51,15 +51,15 @@ const funds = [
 const videos = [
   {
     title: 'KivoraPay overview',
-    src: 'https://www.youtube.com/embed/3jajJ3nSWHM',
+    src: 'https://www.youtube-nocookie.com/embed/3jajJ3nSWHM?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3',
   },
   {
     title: 'Founder short',
-    src: 'https://www.youtube.com/embed/oLnbfwoeNBU',
+    src: 'https://www.youtube-nocookie.com/embed/oLnbfwoeNBU?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3',
   },
   {
     title: 'Product short',
-    src: 'https://www.youtube.com/embed/12gAqZI4-RQ',
+    src: 'https://www.youtube-nocookie.com/embed/12gAqZI4-RQ?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3',
   },
 ]
 
@@ -75,7 +75,7 @@ export default function KivoraPaySeedPage() {
             href="#interest"
             className="inline-flex min-h-10 items-center justify-center bg-primary px-5 font-head text-[0.68rem] font-bold uppercase tracking-[0.14em] text-bg transition-colors hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           >
-            Express Interest
+            Email Ngozi
           </a>
         </div>
       </header>
