@@ -148,6 +148,30 @@ export default function KivoraPaySeedPage() {
         </div>
       </section>
 
+      <section className="border-y border-ink-border bg-surface/45 px-6 py-16 md:px-10">
+        <div className="mx-auto max-w-4xl">
+          <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
+            Why I Built KivoraPay
+          </span>
+          <div className="mt-6 space-y-5 text-[1.05rem] leading-[1.9] text-muted md:text-[1.16rem]">
+            <p>
+              I was already in the crypto space. I understood it. I was holding USDT like most people who earn or transact in digital assets.
+            </p>
+            <p>Then a regular life moment happened.</p>
+            <p>
+              I tried to pay my electricity bill. I had the money. It was sitting right there in my wallet. But before I could pay a single bill I had to find a P2P buyer, negotiate a rate, wait for the transfer, watch the rate shift between when we agreed and when it landed, and end up with less than I expected.
+            </p>
+            <p>The money was there. It just could not get where it needed to go.</p>
+            <p>
+              I kept thinking this should not be this hard. Crypto was supposed to make money easier to use, not harder. And yet for something as simple as paying an electricity bill, it was creating more steps than a regular bank transfer.
+            </p>
+            <p className="font-display text-[1.8rem] leading-[1.35] text-parchment md:text-[2.4rem]">
+              That is KivoraPay. Not a trading platform. Not an exchange. Just a straightforward answer to one question.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="border-y border-ink-border bg-surface px-6 py-10">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px bg-ink-border md:grid-cols-4">
           {stats.map((stat) => (
