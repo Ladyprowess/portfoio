@@ -8,38 +8,26 @@ const photos = [
   {
     src: '/personal%20photo/headshot1.png',
     alt: 'Ngozi Peace Okafor professional headshot.',
-    className: 'lg:row-span-2',
-    aspect: 'aspect-[1023/1537]',
   },
   {
     src: '/personal%20photo/headshot2.png',
     alt: 'Ngozi Peace Okafor seated professional portrait.',
-    className: '',
-    aspect: 'aspect-[1023/1537]',
   },
   {
     src: '/personal%20photo/headshot3.png',
     alt: 'Ngozi Peace Okafor professional portrait.',
-    className: '',
-    aspect: 'aspect-[1023/1537]',
   },
   {
     src: '/personal%20photo/headshot4.png',
     alt: 'Ngozi Peace Okafor media portrait.',
-    className: '',
-    aspect: 'aspect-[1122/1402]',
   },
   {
     src: '/personal%20photo/headshot5.png',
     alt: 'Ngozi Peace Okafor media headshot.',
-    className: '',
-    aspect: 'aspect-[1122/1402]',
   },
   {
     src: '/personal%20photo/headshot6.jpg',
     alt: 'Ngozi Peace Okafor high-resolution media portrait.',
-    className: 'lg:col-span-2',
-    aspect: 'aspect-[2880/1800]',
   },
 ]
 
@@ -85,14 +73,14 @@ export default function Media() {
               initial={{ opacity: 0, y: 24 }}
               animate={gridInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
-              className={`bg-surface border border-ink-border overflow-hidden ${photo.className}`}
+              className="bg-surface border border-ink-border overflow-hidden"
             >
-              <div className={`relative ${photo.aspect}`}>
+              <div className="relative flex aspect-[4/5] items-center justify-center bg-surface-2 p-3">
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
-                  className="object-cover object-top grayscale-[12%]"
+                  className="object-contain p-3 grayscale-[12%]"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
               </div>

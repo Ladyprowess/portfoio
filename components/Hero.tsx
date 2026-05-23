@@ -68,10 +68,10 @@ export default function Hero() {
               className="mt-10 flex flex-col sm:flex-row gap-4"
             >
               <a
-                href="#case-studies"
+                href="#work"
                 className="inline-flex min-h-11 items-center justify-center font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase bg-primary text-bg px-7 py-4 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
               >
-                Read Case Studies
+                View My Work
               </a>
               <a
                 href="mailto:hello@ladyprowess.com"
