@@ -5,7 +5,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'KivoraPay Seed Round - Lady Prowess',
   description:
-    'Investor interest page for KivoraPay, a crypto bill payment platform for Africa founded by Ngozi Peace Okafor.',
+    'A founder-led investor interest page from Ngozi Peace Okafor for the KivoraPay seed round.',
 }
 
 const stats = [
@@ -70,20 +70,20 @@ export default function KivoraPaySeedPage() {
   return (
     <main className="min-h-screen bg-bg text-parchment">
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-ink-border bg-bg/90 backdrop-blur-2xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="font-display text-[1rem] font-semibold italic text-parchment hover:text-primary">
+        <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:px-10">
+          <Link href="/" className="font-display text-[1.05rem] font-semibold italic text-parchment hover:text-primary">
             Lady Prowess
           </Link>
           <a
             href="#interest"
             className="inline-flex min-h-10 items-center justify-center bg-primary px-5 font-head text-[0.68rem] font-bold uppercase tracking-[0.14em] text-bg transition-colors hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           >
-            Investor Interest
+            Email Ngozi
           </a>
         </div>
       </header>
 
-      <section className="relative overflow-hidden px-6 pb-24 pt-36 md:pt-44">
+      <section className="relative overflow-hidden px-6 pb-20 pt-28 md:px-10 md:pb-24 md:pt-36">
         <div
           aria-hidden
           className="absolute inset-0 opacity-30"
@@ -93,21 +93,22 @@ export default function KivoraPaySeedPage() {
             backgroundSize: '88px 88px',
           }}
         />
-        <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-          <div>
-            <div className="mb-8 inline-flex items-center gap-2 border border-primary/25 bg-primary/10 px-4 py-2 font-head text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">
+        <div className="relative z-10 mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-[1.08fr_0.72fr] lg:items-center">
+          <div className="max-w-4xl">
+            <div className="mb-7 inline-flex items-center gap-2 border border-primary/25 bg-primary/10 px-4 py-2 font-head text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Seed Round Open
+              Founder-led seed round
             </div>
             <h1
-              className="max-w-4xl font-head font-extrabold leading-[0.98] tracking-[-0.04em] text-parchment"
-              style={{ fontSize: 'clamp(3.5rem, 9vw, 7.5rem)' }}
+              className="font-display font-light leading-[0.98] text-parchment"
+              style={{ fontSize: 'clamp(3.15rem, 7vw, 7rem)' }}
             >
-              KivoraPay is building the spending layer for crypto in Africa.
+              A personal invitation to invest in KivoraPay.
             </h1>
-            <p className="mt-8 max-w-2xl text-[1.05rem] leading-[1.9] text-muted md:text-[1.18rem]">
-              Founded by Ngozi Peace Okafor, KivoraPay lets people receive crypto, pay everyday bills,
-              create crypto invoices, and move closer to real-world stablecoin utility.
+            <p className="mt-8 max-w-2xl text-[1.06rem] leading-[1.9] text-muted md:text-[1.18rem]">
+              I am Ngozi Peace Okafor, known professionally as Lady Prowess. I am raising for KivoraPay,
+              the crypto bill payment platform I founded to help Africans receive crypto, pay everyday
+              bills, create invoices, and use stablecoins in real life.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <a
@@ -130,7 +131,7 @@ export default function KivoraPaySeedPage() {
           <aside className="border border-ink-border bg-surface p-4">
             <div className="relative aspect-[4/5] overflow-hidden bg-surface-2">
               <Image
-                src="/personal%20photo/headshot1.png"
+                src="/personal%20photo/headshot2.png"
                 alt="Ngozi Peace Okafor, founder of KivoraPay"
                 fill
                 priority
@@ -140,10 +141,10 @@ export default function KivoraPaySeedPage() {
             </div>
             <div className="border-t border-ink-border pt-5">
               <p className="font-head text-[0.62rem] font-bold uppercase tracking-[0.16em] text-primary">
-                Founder-led raise
+                Ngozi Peace Okafor
               </p>
               <p className="mt-2 text-[0.95rem] leading-[1.8] text-muted">
-                A personal investor page from Lady Prowess for people interested in the next phase of KivoraPay.
+                Founder of KivoraPay, Prowess Digital Solutions, and Dritchwear Collections.
               </p>
             </div>
           </aside>
@@ -169,7 +170,7 @@ export default function KivoraPaySeedPage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               The Opportunity
             </span>
-            <h2 className="mt-5 font-head text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.03em] md:text-[4rem]">
+            <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
               The infrastructure for spending crypto in Africa is still early.
             </h2>
             <p className="mt-6 text-[1rem] leading-[1.9] text-muted">
@@ -198,7 +199,7 @@ export default function KivoraPaySeedPage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               Founder Videos
             </span>
-            <h2 className="mt-5 font-head text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.03em] md:text-[4rem]">
+            <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
               Watch the story and the product.
             </h2>
           </div>
@@ -230,7 +231,7 @@ export default function KivoraPaySeedPage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               Why Now
             </span>
-            <h2 className="mt-5 font-head text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.03em] md:text-[4rem]">
+            <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
               The timing is practical, not theoretical.
             </h2>
           </div>
@@ -253,7 +254,7 @@ export default function KivoraPaySeedPage() {
           <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
             The Raise
           </span>
-          <div className="mt-7 font-head text-[4rem] font-extrabold leading-none tracking-[-0.05em] md:text-[6.5rem]">
+          <div className="mt-7 font-display text-[4.5rem] font-light leading-none md:text-[7rem]">
             $500K
           </div>
           <p className="mt-4 font-head text-[0.72rem] font-bold uppercase tracking-[0.16em] text-muted">
@@ -296,26 +297,26 @@ export default function KivoraPaySeedPage() {
 
       <section id="interest" className="border-t border-ink-border px-6 py-24 text-center">
         <div className="mx-auto max-w-3xl">
-          <h2 className="font-head text-[2.6rem] font-extrabold leading-[1.05] tracking-[-0.03em] md:text-[4.5rem]">
+          <h2 className="font-display text-[3rem] font-light leading-[1.05] md:text-[5.5rem]">
             Interested in the round?
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-[1rem] leading-[1.85] text-muted">
-            Send a direct message and we will respond with more details, including the full investor deck.
+            Send me a direct message and I will respond with more details, including the full investor deck.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
-              href="mailto:hello@kivorapay.com?subject=KivoraPay%20Seed%20Round%20Interest"
+              href="mailto:hello@ladyprowess.com?subject=KivoraPay%20Seed%20Round%20Interest"
               className="inline-flex min-h-12 items-center justify-center border border-ink-border bg-surface px-7 py-4 font-head text-[0.72rem] font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:border-primary/50"
             >
-              hello@kivorapay.com
+              hello@ladyprowess.com
             </a>
             <a
-              href="https://x.com/kivorapay"
+              href="https://x.com/ladyprowess"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-12 items-center justify-center border border-ink-border bg-surface px-7 py-4 font-head text-[0.72rem] font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:border-primary/50"
             >
-              @kivorapay
+              @ladyprowess
             </a>
           </div>
           <p className="mx-auto mt-8 max-w-2xl text-[0.78rem] leading-[1.7] text-muted/75">
@@ -325,7 +326,7 @@ export default function KivoraPaySeedPage() {
       </section>
 
       <footer className="border-t border-ink-border px-6 py-8 text-center text-[0.82rem] text-muted">
-        © 2026 KivoraPay Inc. /{' '}
+        © 2026 Ngozi Peace Okafor / KivoraPay /{' '}
         <a href="https://kivorapay.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
           kivorapay.com
         </a>
