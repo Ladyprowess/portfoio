@@ -63,8 +63,16 @@ type Payload = {
   cc?: string
   bcc?: string
   subject?: string
+  preview?: string
   bodyHtml?: string
   attachments?: Attachment[]
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
 }
 
 // Split a comma/semicolon/newline separated string into a clean address list.
@@ -156,8 +164,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Write a message.' }, { status: 400 })
   }
 
+  // Hidden preheader = the preview snippet shown in the inbox after the subject.
+  // The trailing spacer characters stop the body text from leaking into it.
+  const preview = (payload.preview ?? '').trim()
+  const preheader = preview
+    ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">${escapeHtml(preview)}${'&#8204;&nbsp;'.repeat(60)}</div>`
+    : ''
+
   // Wrap the formatted body, then append the branded signature footer.
-  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${safeHtml}</div>${SIGNATURE_HTML}`
+  const html = `${preheader}<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${safeHtml}</div>${SIGNATURE_HTML}`
   const text = `${bodyText}${SIGNATURE_TEXT}`
 
   // --- Attachments ---

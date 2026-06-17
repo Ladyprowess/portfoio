@@ -73,6 +73,7 @@ export default function ComposePage() {
   const [bcc, setBcc] = useState('')
   const [showCc, setShowCc] = useState(false)
   const [subject, setSubject] = useState('')
+  const [preview, setPreview] = useState('')
   const [bodyHtml, setBodyHtml] = useState('')
   const [files, setFiles] = useState<PendingFile[]>([])
 
@@ -130,6 +131,7 @@ export default function ComposePage() {
           cc,
           bcc,
           subject,
+          preview,
           bodyHtml,
           attachments: files.map((f) => ({ filename: f.filename, content: f.content })),
         }),
@@ -145,6 +147,7 @@ export default function ComposePage() {
       setCc('')
       setBcc('')
       setSubject('')
+      setPreview('')
       setBodyHtml('')
       if (editorRef.current) editorRef.current.innerHTML = ''
       setFiles([])
@@ -281,6 +284,22 @@ export default function ComposePage() {
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Partnership proposal"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className={labelClass}>Preview</label>
+              <span className="font-head text-[0.55rem] uppercase tracking-[0.12em] text-muted/60">
+                Inbox snippet · optional
+              </span>
+            </div>
+            <input
+              type="text"
+              value={preview}
+              onChange={(e) => setPreview(e.target.value)}
+              placeholder="Short line shown after the subject in the inbox"
               className={inputClass}
             />
           </div>
