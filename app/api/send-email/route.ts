@@ -10,6 +10,48 @@ export const runtime = 'nodejs'
 const FROM = 'Lady Prowess <hello@ladyprowess.com>'
 const REPLY_TO = 'hello@ladyprowess.com'
 
+// Social links for the signature footer.
+const SOCIALS: { label: string; url: string }[] = [
+  { label: 'X', url: 'https://x.com/ladyprowess' },
+  { label: 'Instagram', url: 'https://www.instagram.com/ladyprowess_' },
+  { label: 'LinkedIn', url: 'https://www.linkedin.com/in/peace-ngozi-okafor' },
+  { label: 'TikTok', url: 'https://www.tiktok.com/@ladyprowess' },
+  { label: 'Medium', url: 'https://ladyprowess.medium.com/' },
+  { label: 'Substack', url: 'https://ladyprowess.substack.com' },
+]
+
+// Branded signature footer appended to every email, using the brand background.
+const SIGNATURE_HTML = `
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;border-radius:10px;background-color:#08090b;">
+  <tr>
+    <td style="padding:26px 28px;font-family:Arial,Helvetica,sans-serif;">
+      <div style="font-size:18px;font-weight:bold;color:#f0ece3;line-height:1.2;">Ngozi Peace Okafor</div>
+      <div style="font-size:12px;font-weight:bold;letter-spacing:1.4px;text-transform:uppercase;color:#41d7c7;margin-top:6px;">Lady Prowess</div>
+      <div style="font-size:13px;color:#a2a7b3;margin-top:14px;line-height:1.6;">
+        <a href="mailto:hello@ladyprowess.com" style="color:#a2a7b3;text-decoration:none;">hello@ladyprowess.com</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://kivorapay.com" style="color:#a2a7b3;text-decoration:none;">kivorapay.com</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://ladyprowess.com" style="color:#a2a7b3;text-decoration:none;">ladyprowess.com</a>
+      </div>
+      <div style="font-size:13px;margin-top:16px;line-height:1.6;">
+        ${SOCIALS.map(
+          (s) =>
+            `<a href="${s.url}" style="color:#41d7c7;text-decoration:none;font-weight:bold;">${s.label}</a>`,
+        ).join('<span style="color:#272b35;">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>')}
+      </div>
+    </td>
+  </tr>
+</table>`
+
+const SIGNATURE_TEXT = `
+
+-
+Ngozi Peace Okafor
+Lady Prowess
+hello@ladyprowess.com · kivorapay.com · ladyprowess.com
+${SOCIALS.map((s) => `${s.label}: ${s.url}`).join('\n')}`
+
 type Attachment = {
   filename: string
   content: string // base64-encoded file contents (no data: prefix)
@@ -21,7 +63,7 @@ type Payload = {
   cc?: string
   bcc?: string
   subject?: string
-  body?: string
+  bodyHtml?: string
   attachments?: Attachment[]
 }
 
@@ -35,6 +77,34 @@ function parseAddresses(value?: string): string[] {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// The body is owner-authored rich text, but we still strip anything dangerous
+// before it goes out as email: scripts, styles, inline event handlers, and
+// javascript: URLs.
+function sanitizeHtml(input: string): string {
+  let html = input
+    .replace(/<\s*(script|style|iframe|object|embed)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, '')
+    .replace(/\son\w+\s*=\s*"[^"]*"/gi, '')
+    .replace(/\son\w+\s*=\s*'[^']*'/gi, '')
+    .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
+    .replace(/(href|src)\s*=\s*"(\s*javascript:[^"]*)"/gi, '$1="#"')
+    .replace(/(href|src)\s*=\s*'(\s*javascript:[^']*)'/gi, "$1='#'")
+  return html.trim()
+}
+
+// Plain-text fallback for email clients that don't render HTML.
+function htmlToText(html: string): string {
+  return html
+    .replace(/<\s*(br|\/p|\/div|\/li|\/h[1-6])\s*\/?>/gi, '\n')
+    .replace(/<\s*li[^>]*>/gi, '• ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
 
 export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY
@@ -77,20 +147,18 @@ export async function POST(req: Request) {
   }
 
   const subject = (payload.subject ?? '').trim()
-  const body = (payload.body ?? '').trim()
+  const safeHtml = sanitizeHtml(payload.bodyHtml ?? '')
+  const bodyText = htmlToText(safeHtml)
   if (!subject) {
     return NextResponse.json({ error: 'Add a subject.' }, { status: 400 })
   }
-  if (!body) {
+  if (!bodyText) {
     return NextResponse.json({ error: 'Write a message.' }, { status: 400 })
   }
 
-  // Turn the plain-text body into simple HTML (preserve line breaks).
-  const escaped = body
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;white-space:pre-wrap;">${escaped}</div>`
+  // Wrap the formatted body, then append the branded signature footer.
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${safeHtml}</div>${SIGNATURE_HTML}`
+  const text = `${bodyText}${SIGNATURE_TEXT}`
 
   // --- Attachments ---
   const attachments = (payload.attachments ?? [])
@@ -110,7 +178,7 @@ export async function POST(req: Request) {
       ...(bcc.length ? { bcc } : {}),
       replyTo: REPLY_TO,
       subject,
-      text: body,
+      text,
       html,
       ...(attachments.length ? { attachments } : {}),
     })

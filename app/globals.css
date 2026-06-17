@@ -72,6 +72,19 @@ body::before {
 }
 .animate-marquee:hover { animation-play-state: paused; }
 
+/* ── Compose rich-text editor ──────────────────── */
+.compose-editor:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(162, 167, 179, 0.5);
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+.compose-editor ul { list-style: disc;    margin: 0.25rem 0; padding-left: 1.4rem; }
+.compose-editor ol { list-style: decimal; margin: 0.25rem 0; padding-left: 1.4rem; }
+.compose-editor li { margin: 0.15rem 0; }
+.compose-editor a  { color: var(--primary); text-decoration: underline; }
+.compose-editor b, .compose-editor strong { font-weight: 700; }
+
 /* ── Accessibility ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

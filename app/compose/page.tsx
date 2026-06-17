@@ -38,6 +38,32 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+function ToolbarButton({
+  label,
+  onClick,
+  className = '',
+  children,
+}: {
+  label: string
+  onClick: () => void
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      // onMouseDown + preventDefault keeps the editor's text selection intact
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className={`min-h-8 rounded-sm px-2 py-1 font-head text-[0.7rem] font-bold text-muted transition-colors hover:bg-surface-2 hover:text-primary ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
+
 export default function ComposePage() {
   const [password, setPassword] = useState('')
   const [unlocked, setUnlocked] = useState(false)
@@ -47,12 +73,27 @@ export default function ComposePage() {
   const [bcc, setBcc] = useState('')
   const [showCc, setShowCc] = useState(false)
   const [subject, setSubject] = useState('')
-  const [body, setBody] = useState('')
+  const [bodyHtml, setBodyHtml] = useState('')
   const [files, setFiles] = useState<PendingFile[]>([])
 
   const [sending, setSending] = useState(false)
   const [status, setStatus] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const editorRef = useRef<HTMLDivElement>(null)
+
+  // Apply a formatting command to the selected text in the rich editor.
+  function format(command: string, value?: string) {
+    editorRef.current?.focus()
+    document.execCommand(command, false, value)
+    setBodyHtml(editorRef.current?.innerHTML ?? '')
+  }
+
+  function insertLink() {
+    const url = window.prompt('Link URL (https://…)')
+    if (!url) return
+    const href = /^https?:\/\//i.test(url) ? url : `https://${url}`
+    format('createLink', href)
+  }
 
   async function handleFiles(list: FileList | null) {
     if (!list) return
@@ -89,7 +130,7 @@ export default function ComposePage() {
           cc,
           bcc,
           subject,
-          body,
+          bodyHtml,
           attachments: files.map((f) => ({ filename: f.filename, content: f.content })),
         }),
       })
@@ -104,7 +145,8 @@ export default function ComposePage() {
       setCc('')
       setBcc('')
       setSubject('')
-      setBody('')
+      setBodyHtml('')
+      if (editorRef.current) editorRef.current.innerHTML = ''
       setFiles([])
     } catch {
       setStatus({ type: 'error', text: 'Network error. Try again.' })
@@ -245,13 +287,43 @@ export default function ComposePage() {
 
           <div className="space-y-2">
             <label className={labelClass}>Message</label>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              rows={12}
-              placeholder={'Hi there,\n\n...'}
-              className={`${inputClass} resize-y leading-[1.7]`}
-            />
+            <div className="border border-ink-border bg-bg focus-within:border-primary/60">
+              <div className="flex flex-wrap items-center gap-1 border-b border-ink-border px-2 py-1.5">
+                <ToolbarButton label="Bold" onClick={() => format('bold')} className="font-bold">
+                  B
+                </ToolbarButton>
+                <ToolbarButton label="Italic" onClick={() => format('italic')} className="italic">
+                  I
+                </ToolbarButton>
+                <ToolbarButton label="Underline" onClick={() => format('underline')} className="underline">
+                  U
+                </ToolbarButton>
+                <span className="mx-1 h-4 w-px bg-ink-border" />
+                <ToolbarButton label="Bulleted list" onClick={() => format('insertUnorderedList')}>
+                  • List
+                </ToolbarButton>
+                <ToolbarButton label="Numbered list" onClick={() => format('insertOrderedList')}>
+                  1. List
+                </ToolbarButton>
+                <span className="mx-1 h-4 w-px bg-ink-border" />
+                <ToolbarButton label="Insert link" onClick={insertLink}>
+                  🔗 Link
+                </ToolbarButton>
+                <ToolbarButton label="Clear formatting" onClick={() => format('removeFormat')}>
+                  Clear
+                </ToolbarButton>
+              </div>
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                role="textbox"
+                aria-multiline="true"
+                data-placeholder="Hi there,&#10;&#10;..."
+                onInput={(e) => setBodyHtml((e.target as HTMLDivElement).innerHTML)}
+                className="compose-editor min-h-[240px] px-4 py-3 text-[0.95rem] leading-[1.7] text-parchment outline-none"
+              />
+            </div>
           </div>
 
           <div className="space-y-3">
