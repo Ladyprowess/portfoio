@@ -15,7 +15,7 @@ export default function AboutHero() {
         className="absolute inset-0 pointer-events-none opacity-40"
         style={{
           backgroundImage:
-            'linear-gradient(to right, rgba(28,26,23,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(28,26,23,0.05) 1px, transparent 1px)',
+            'linear-gradient(to right, rgba(20,32,31,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(20,32,31,0.05) 1px, transparent 1px)',
           backgroundSize: '96px 96px',
         }}
       />

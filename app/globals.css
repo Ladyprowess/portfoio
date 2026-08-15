@@ -51,7 +51,7 @@ body::before {
 /* ── Custom scrollbar ──────────────────────────── */
 ::-webkit-scrollbar       { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--primary-dim, #1a7a72); }
+::-webkit-scrollbar-thumb { background: var(--primary-dim, #35555A); }
 
 /* ── Selection ─────────────────────────────────── */
 ::selection {

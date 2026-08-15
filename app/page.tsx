@@ -1,13 +1,12 @@
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
-import Impact from '@/components/Impact'
+import Credibility from '@/components/Credibility'
 import About from '@/components/About'
-import Services from '@/components/Services'
 import Work from '@/components/Work'
-import Writing from '@/components/Writing'
-import CaseStudies from '@/components/CaseStudies'
-import Clients from '@/components/Clients'
-import Contact from '@/components/Contact'
+import Services from '@/components/Services'
+import Testimonials from '@/components/Testimonials'
+import Insights from '@/components/Insights'
+import CTABanner from '@/components/CTABanner'
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -15,14 +14,13 @@ export default function Home() {
     <main>
       <Nav />
       <Hero />
-      <Impact />
+      <Credibility />
       <About />
-      <Services />
       <Work />
-      <Writing />
-      <CaseStudies />
-      <Clients />
-      <Contact />
+      <Services />
+      <Testimonials />
+      <Insights />
+      <CTABanner />
       <Footer />
     </main>
   )

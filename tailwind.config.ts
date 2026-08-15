@@ -20,6 +20,11 @@ const config: Config = {
         parchment: '#14201F',
         muted:    '#55625F',
         'ink-border': '#DCE2DE',
+        dark:      '#0A0C0D',
+        'dark-surface': '#131718',
+        'dark-border': '#22292A',
+        'dark-ink': '#F2F1ED',
+        'dark-muted': '#9CA3A3',
       },
       fontFamily: {
         display: ['var(--font-bricolage)', 'system-ui', 'sans-serif'],

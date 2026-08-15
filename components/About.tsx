@@ -5,9 +5,10 @@ import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
 const stats = [
-  { num: 'Web3',  label: 'Technical markets', sub: 'crypto, fintech, SaaS' },
-  { num: 'Africa', label: 'Founder lens', sub: 'market insight, practical execution' },
-  { num: 'Remote', label: 'Delivery', sub: 'cross-border and async' },
+  { num: '2', label: 'Businesses Founded', sub: 'Kivora Pay, Prowess Digital Solutions' },
+  { num: '200+', label: 'Businesses & Individuals Trained', sub: 'through Prowess Digital Solutions' },
+  { num: '5', label: 'Countries Worked Across', sub: 'Nigeria, Europe, the UK, Serbia, Brazil' },
+  { num: '9+', label: 'Years Building & Writing', sub: 'since 2016' },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -33,87 +34,53 @@ export default function About() {
   return (
     <section id="about" className="px-8 md:px-20 py-32 border-t border-ink-border">
       <div className="max-w-[1480px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-24 items-center">
 
-        {/* ── Section label ── */}
-        <Reveal>
-          <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary">
-            About
-          </span>
-        </Reveal>
-
-        {/* ── Pull quote - the real opener ── */}
-        <Reveal delay={0.1} className="mt-8 mb-16">
-          <blockquote
-            className="font-display font-extrabold leading-[1.1] max-w-6xl"
-            style={{ fontSize: 'clamp(2.4rem, 5.2vw, 5.8rem)' }}
-          >
-            I operate where language, product, and trust meet.
-          </blockquote>
-        </Reveal>
-
-        {/* ── Two-column layout ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-24 items-start">
-
-          {/* Portrait */}
-          <Reveal delay={0.15}>
-            <div className="border border-ink-border bg-surface p-4">
-              <div className="relative w-full overflow-hidden" style={{ aspectRatio: '5/6' }}>
-                <Image
-                  src="/personal%20photo/headshot2.png"
-                  alt="Ngozi Peace Okafor"
-                  fill
-                  className="object-cover object-top grayscale-[20%]"
-                  sizes="(max-width: 1024px) 100vw, 520px"
-                />
-              </div>
-              <p className="font-head text-[0.6rem] font-bold tracking-[0.16em] uppercase text-muted mt-4">
-                Lagos, Nigeria / Remote engagements
-              </p>
+          <Reveal delay={0.1}>
+            <div className="relative w-full overflow-hidden border border-ink-border" style={{ aspectRatio: '4/5' }}>
+              <Image
+                src="/personal%20photo/headshot2.png"
+                alt="Ngozi Peace Okafor"
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 1024px) 100vw, 560px"
+              />
             </div>
           </Reveal>
 
-          {/* Copy */}
-          <div className="space-y-6">
-            <Reveal delay={0.2}>
-              <p className="font-display font-extrabold text-[1.5rem] leading-[1.7] text-parchment/90">
-                I am <span className="text-parchment font-normal">Ngozi Peace Okafor</span>, known
-                professionally as Lady Prowess. I write for companies that need more than content volume:
-                they need positioning, education, conversion, and credibility working together.
+          <div>
+            <Reveal>
+              <span className="font-head text-[0.64rem] font-semibold tracking-[0.2em] uppercase text-primary block mb-6">
+                About Me
+              </span>
+              <h2
+                className="font-display font-extrabold leading-[1.08] mb-6"
+                style={{ fontSize: 'clamp(2.2rem, 4.4vw, 3.4rem)' }}
+              >
+                I&apos;m Peace, a builder with a passion for <span className="text-primary">impact.</span>
+              </h2>
+              <p className="text-[1.02rem] text-muted leading-[1.9] max-w-xl">
+                I found writing on a phone screen with no audience in 2016, taught myself to code at a
+                cyber café, and spent nine years turning that into technical documentation, content
+                strategy, and two ventures I founded and now run: Kivora Pay and Prowess Digital
+                Solutions.
               </p>
             </Reveal>
 
-            <Reveal delay={0.25}>
-              <p className="text-[0.98rem] text-muted leading-[1.95]">
-                My background spans copywriting, technical writing, Web3 education, business consulting,
-                and product building. I have written for crypto, fintech, and technology brands while also
-                operating on the founder side. I built and launched{' '}
-                <span className="text-parchment font-medium">Kivora Pay</span>, a crypto bill payment
-                platform for Africa, and run{' '}
-                <span className="text-parchment font-medium">Prowess Digital Solutions</span>, a
-                business consulting firm serving African entrepreneurs across multiple service pillars.
-              </p>
-              <p className="text-[0.98rem] text-muted leading-[1.95] mt-4">
-                That founder lens matters. I understand what it means for writing to carry growth,
-                onboarding, trust, and revenue pressure at the same time.
-              </p>
-            </Reveal>
-
-            {/* Stats */}
-            <div ref={statsRef} className="grid grid-cols-3 gap-6 pt-8 border-t border-ink-border mt-8">
+            <div ref={statsRef} className="grid grid-cols-2 gap-6 mt-12 pt-10 border-t border-ink-border">
               {stats.map((s, i) => (
                 <motion.div
                   key={s.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={statsInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  className="border border-ink-border bg-surface p-6"
                 >
-                  <div className="font-display font-extrabold text-parchment leading-none" style={{ fontSize: '2.2rem' }}>
+                  <div className="font-display font-extrabold text-primary leading-none" style={{ fontSize: '2.4rem' }}>
                     {s.num}
                   </div>
-                  <div className="font-head text-[0.7rem] font-bold tracking-[0.06em] text-parchment mt-1">
-                    {s.label}
-                  </div>
-                  <div className="font-body text-[0.75rem] text-muted">{s.sub}</div>
+                  <div className="font-head text-[0.78rem] font-bold text-parchment mt-3">{s.label}</div>
+                  <div className="font-body text-[0.75rem] text-muted mt-1">{s.sub}</div>
                 </motion.div>
               ))}
             </div>
@@ -121,7 +88,7 @@ export default function About() {
             <Reveal delay={0.3}>
               <a
                 href="/about"
-                className="group inline-flex items-center gap-2 font-head text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary hover:text-parchment focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
+                className="group inline-flex items-center gap-2 font-head text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary hover:text-parchment focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200 mt-8"
               >
                 Read My Full Story
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
