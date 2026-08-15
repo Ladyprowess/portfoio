@@ -20,14 +20,6 @@ const projects = [
     href: 'https://www.prowessdigitalsolutions.com',
     accent: '#f5a623',
   },
-  {
-    num: '03',
-    title: 'Dritchwear Collections',
-    desc: 'Developed a fashion-tech brand with campaign content, product storytelling, and a mobile app layer for customer engagement and utility.',
-    tag: 'Brand / Tech',
-    href: 'https://dritchwear.com',
-    accent: '#a78bfa',
-  },
 ]
 
 export default function Work() {

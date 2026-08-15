@@ -10,7 +10,6 @@ const clients = [
   { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/' },
   { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/' },
   { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com' },
-  { name: 'Dritchwear Collections',    industry: 'Fashion / Tech', href: 'https://dritchwear.com' },
   { name: 'CWallet',                   industry: 'Crypto',         href: '#' },
   { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/' },
   { name: 'WriteTech Hub',             industry: 'Tech Writing',   href: 'https://writetechhub.org/author/ladyprowess/' },
@@ -49,7 +48,7 @@ export default function Clients() {
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
-            Across Web3, fintech, consulting, and fashion - each brand treated with full attention.
+            Across Web3, fintech, and consulting - each brand treated with full attention.
           </p>
         </motion.div>
 

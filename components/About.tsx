@@ -90,9 +90,7 @@ export default function About() {
                 <span className="text-parchment font-medium">Kivora Pay</span>, a crypto bill payment
                 platform for Africa, and run{' '}
                 <span className="text-parchment font-medium">Prowess Digital Solutions</span>, a
-                business consulting firm serving African entrepreneurs across multiple service pillars.{' '}
-                <span className="text-parchment font-medium">Dritchwear Collections</span>, my branded
-                streetwear company, operates with its own mobile app.
+                business consulting firm serving African entrepreneurs across multiple service pillars.
               </p>
               <p className="text-[0.98rem] text-muted leading-[1.95] mt-4">
                 That founder lens matters. I understand what it means for writing to carry growth,
