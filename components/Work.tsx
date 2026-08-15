@@ -10,7 +10,7 @@ const projects = [
     desc: 'Founded and launched a crypto bill payment platform for Africa, shaping the product narrative, wallet/payment flows, pitch materials, and launch content.',
     tag: 'Founder / Web3',
     href: 'https://kivorapay.com/',
-    accent: '#2fd6c5',
+    accent: '#507B80',
   },
   {
     num: '02',
@@ -18,7 +18,7 @@ const projects = [
     desc: 'Built a consulting brand with service architecture, training materials, automated outreach systems, a full website, and internal business tools.',
     tag: 'Consulting / Tech',
     href: 'https://www.prowessdigitalsolutions.com',
-    accent: '#f5a623',
+    accent: '#35555A',
   },
 ]
 

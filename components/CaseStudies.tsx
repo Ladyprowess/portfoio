@@ -8,37 +8,37 @@ const studies = [
     name: 'Prospult',
     desc: 'A written brand case study for a B2B prospecting platform, focused on positioning, messaging clarity, and product value.',
     href: 'https://docs.google.com/document/d/1sV_J_iikUSUtBztg6H3dezYifhoyEXZaX8YDkxAPTPg/edit?usp=sharing',
-    accent: '#2fd6c5',
+    accent: '#507B80',
   },
   {
     name: 'Three Movers',
     desc: 'A written case study for a relocation and moving services brand, shaped for clarity, search relevance, and reader confidence.',
     href: 'https://docs.google.com/document/d/1oZSJHBPZ8JBrAYQ5kfU5XOZucHAbV1ORX1S27ZZVdkc/edit?usp=sharing',
-    accent: '#a78bfa',
+    accent: '#35555A',
   },
   {
     name: 'Giftvant',
     desc: 'A written case study for a digital gifting and loyalty rewards platform, translating product use cases into a clear brand story.',
     href: 'https://docs.google.com/document/d/1L-47UUPHsd0reieSVOV2cex3_PV1Qh-XxuilbkIiwpA/edit?usp=sharing',
-    accent: '#f5a623',
+    accent: '#507B80',
   },
   {
     name: 'UEEX',
     desc: 'A written case study for a centralised crypto trading platform, covering exchange education and technical product communication.',
     href: 'https://docs.google.com/document/d/1LwssJU3c6CfrqO2fW8Tvr1nm6OAYNLttNYa1Dgxnowc/edit?usp=sharing',
-    accent: '#2fd6c5',
+    accent: '#507B80',
   },
   {
     name: 'Solevant',
     desc: 'A written case study for a lifestyle brand, focused on brand identity, product language, and audience-facing storytelling.',
     href: 'https://docs.google.com/document/d/19BrIcrzEP3RWCV89YtYub1ogclLR_Or5UZCKGOLHgeM/edit?tab=t.0',
-    accent: '#a78bfa',
+    accent: '#35555A',
   },
   {
     name: 'UPay',
     desc: 'A written case study for a multi-currency payment solution, explaining product value, onboarding, and user education.',
     href: 'https://docs.google.com/document/d/1HNnhHOL3BQYMgUe4RW-73Bm8Nfq7IOME2Ca7eWJ3WVU/edit?usp=sharing',
-    accent: '#f5a623',
+    accent: '#507B80',
   },
 ]
 

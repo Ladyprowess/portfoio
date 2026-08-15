@@ -8,7 +8,7 @@ const chapters = [
     num: '01',
     title: 'The Origin',
     years: '2016 – 2022',
-    accent: '#2fd6c5',
+    accent: '#507B80',
     paragraphs: [
       'I started writing on my phone in 2016 with no audience and no plan, just because I loved putting words together. To get through university, I wrote seminar papers and assignments for other students, then landed my first paid writing role in 2017: five blog posts a day, six days a week, for five thousand naira a month.',
       'I taught myself HTML, CSS, JavaScript, and PHP at a cyber café after school, freelanced wherever the payment platforms would let me, and kept writing through a pandemic, a business that collapsed, and years without steady income. In July 2022, that six-year stretch became my first full-time role, as a Technical Writer at WriteTech Hub.',
@@ -20,7 +20,7 @@ const chapters = [
     num: '02',
     title: 'The Work',
     years: '2022 – 2025',
-    accent: '#f5a623',
+    accent: '#507B80',
     paragraphs: [
       "Since then I've documented and written for fintech, blockchain, and cross-border payment products across five countries. At WriteTech Hub I managed a technical writing team and cut documentation turnaround time by 20%. At Cwallet, my blog posts, newsletters, and technical guides drove a 50% increase in user engagement.",
       'At Hawkish Group I built content strategy for client-facing business and technical documentation. At txFusion I documented complex cross-border payment APIs and automated content deployment with Jenkins and GitHub Actions, lifting developer satisfaction by 25% and cutting support queries by 15%. At Bullring Finance, a short content strategy sprint grew user engagement by 200%.',
@@ -36,7 +36,7 @@ const chapters = [
     num: '03',
     title: 'The Founder',
     years: '2023 – Present',
-    accent: '#a78bfa',
+    accent: '#35555A',
     paragraphs: [
       "In July 2023 I founded Prowess Digital Solutions, a remote consulting agency producing technical writing, content strategy, and digital marketing for fintech and emerging-market clients. I've since trained over 200 businesses and individuals across that work.",
       'I also built and launched Kivora Pay, a crypto bill payment platform for Africa, taking a product from idea to a live venture rather than just writing about one.',
@@ -48,7 +48,7 @@ const chapters = [
     num: '04',
     title: 'The Community',
     years: '2022 – Present',
-    accent: '#2fd6c5',
+    accent: '#507B80',
     paragraphs: [
       "Alongside client work, I contributed to Jenkins' open-source documentation, updating version-control guides and improving clarity across the project. I've since built on that through certifications in developer relations, blockchain and Web3 development, and open-source contribution, staying close to the communities that first showed me what was possible.",
     ],
