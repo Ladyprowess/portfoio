@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const links = [
-  { href: '/#about',       label: 'About' },
+  { href: '/about',        label: 'About' },
   { href: '/#services',    label: 'Services' },
   { href: '/#work',        label: 'Work' },
   { href: '/#writing',     label: 'Writing' },

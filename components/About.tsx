@@ -117,6 +117,16 @@ export default function About() {
                 </motion.div>
               ))}
             </div>
+
+            <Reveal delay={0.3}>
+              <a
+                href="/about"
+                className="group inline-flex items-center gap-2 font-head text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary hover:text-parchment focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
+              >
+                Read My Full Story
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </Reveal>
           </div>
         </div>
       </div>
