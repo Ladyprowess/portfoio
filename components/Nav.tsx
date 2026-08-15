@@ -36,7 +36,7 @@ export default function Nav() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-20 py-5 transition-colors duration-300 ${
-          scrolled ? 'bg-bg/92 backdrop-blur-2xl border-b border-ink-border' : 'bg-transparent'
+          scrolled ? 'bg-bg/[0.98] backdrop-blur-2xl border-b border-ink-border' : 'bg-transparent'
         }`}
       >
         <a
@@ -99,7 +99,7 @@ export default function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-40 bg-bg/97 backdrop-blur-2xl xl:hidden overflow-y-auto px-8 pt-32 pb-28"
+            className="fixed inset-0 z-40 bg-bg/[0.97] backdrop-blur-2xl xl:hidden overflow-y-auto px-8 pt-32 pb-28"
           >
             <div className="min-h-full flex flex-col items-center justify-center gap-2">
               {links.map((l, i) => (

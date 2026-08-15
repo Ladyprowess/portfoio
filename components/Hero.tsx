@@ -20,7 +20,7 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none opacity-35"
         style={{
           backgroundImage:
-            'linear-gradient(to right, rgba(240,236,227,0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(240,236,227,0.035) 1px, transparent 1px)',
+            'linear-gradient(to right, rgba(28,26,23,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(28,26,23,0.05) 1px, transparent 1px)',
           backgroundSize: '96px 96px',
         }}
       />

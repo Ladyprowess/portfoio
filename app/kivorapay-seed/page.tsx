@@ -86,7 +86,7 @@ export default function KivoraPaySeedPage() {
           className="absolute inset-0 opacity-30"
           style={{
             backgroundImage:
-              'linear-gradient(to right, rgba(240,236,227,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(240,236,227,0.04) 1px, transparent 1px)',
+              'linear-gradient(to right, rgba(28,26,23,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(28,26,23,0.05) 1px, transparent 1px)',
             backgroundSize: '88px 88px',
           }}
         />
