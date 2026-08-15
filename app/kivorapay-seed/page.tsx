@@ -68,7 +68,7 @@ export default function KivoraPaySeedPage() {
     <main className="min-h-screen bg-bg text-parchment">
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-ink-border bg-bg/90 backdrop-blur-2xl">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:px-10">
-          <Link href="/" className="font-display text-[1.05rem] font-semibold italic text-parchment hover:text-primary">
+          <Link href="/" className="font-display text-[1.05rem] font-semibold text-parchment hover:text-primary">
             Lady Prowess
           </Link>
           <a
@@ -97,7 +97,7 @@ export default function KivoraPaySeedPage() {
               Founder-led seed round
             </div>
             <h1
-              className="font-display font-light leading-[0.98] text-parchment"
+              className="font-display font-extrabold leading-[0.98] text-parchment"
               style={{ fontSize: 'clamp(3.15rem, 7vw, 7rem)' }}
             >
               A personal invitation to invest in KivoraPay.
@@ -191,7 +191,7 @@ export default function KivoraPaySeedPage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               The Opportunity
             </span>
-            <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
+            <h2 className="mt-5 font-display text-[2.8rem] font-extrabold leading-[1.05] md:text-[4.8rem]">
               The infrastructure for spending crypto in Africa is still early.
             </h2>
             <p className="mt-6 text-[1rem] leading-[1.9] text-muted">
@@ -220,7 +220,7 @@ export default function KivoraPaySeedPage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               Product Recordings
             </span>
-            <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
+            <h2 className="mt-5 font-display text-[2.8rem] font-extrabold leading-[1.05] md:text-[4.8rem]">
               See how KivoraPay works.
             </h2>
             <p className="mt-6 max-w-2xl text-[1rem] leading-[1.85] text-muted">
@@ -256,7 +256,7 @@ export default function KivoraPaySeedPage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               Why Now
             </span>
-            <h2 className="mt-5 font-display text-[2.8rem] font-light leading-[1.05] md:text-[4.8rem]">
+            <h2 className="mt-5 font-display text-[2.8rem] font-extrabold leading-[1.05] md:text-[4.8rem]">
               The timing is practical, not theoretical.
             </h2>
           </div>
@@ -279,7 +279,7 @@ export default function KivoraPaySeedPage() {
           <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
             The Raise
           </span>
-          <div className="mt-7 font-display text-[4.5rem] font-light leading-none md:text-[7rem]">
+          <div className="mt-7 font-display text-[4.5rem] font-extrabold leading-none md:text-[7rem]">
             $500K
           </div>
           <p className="mt-4 font-head text-[0.72rem] font-bold uppercase tracking-[0.16em] text-muted">
@@ -322,7 +322,7 @@ export default function KivoraPaySeedPage() {
 
       <section id="interest" className="border-t border-ink-border px-6 py-24 text-center">
         <div className="mx-auto max-w-3xl">
-          <h2 className="font-display text-[3rem] font-light leading-[1.05] md:text-[5.5rem]">
+          <h2 className="font-display text-[3rem] font-extrabold leading-[1.05] md:text-[5.5rem]">
             Interested in the round?
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-[1rem] leading-[1.85] text-muted">

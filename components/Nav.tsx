@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 const links = [
   { href: '/about',        label: 'About' },
@@ -41,9 +42,9 @@ export default function Nav() {
       >
         <a
           href="/"
-          className="font-display font-semibold italic text-parchment tracking-wide text-[1.1rem] hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         >
-          Lady Prowess
+          <Image src="/Logo.png" alt="Lady Prowess" width={132} height={38} className="h-7 w-auto" priority />
         </a>
 
         {/* Desktop */}
@@ -110,7 +111,7 @@ export default function Nav() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.055, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                   onClick={() => setMenuOpen(false)}
-                  className="font-display font-light text-[clamp(2.6rem,11vw,3.45rem)] leading-[1.05] italic text-parchment hover:text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors py-1"
+                  className="font-display font-extrabold text-[clamp(2.6rem,11vw,3.45rem)] leading-[1.05] text-parchment hover:text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors py-1"
                 >
                   {l.label}
                 </motion.a>

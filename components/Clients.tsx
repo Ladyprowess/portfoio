@@ -39,12 +39,12 @@ export default function Clients() {
               Clients and Brands
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Trusted by
               <br />
-              <em className="italic text-parchment/70">serious teams.</em>
+              <em className="not-italic text-primary">serious teams.</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">

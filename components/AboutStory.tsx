@@ -75,12 +75,12 @@ export default function AboutStory() {
             The Story
           </span>
           <h2
-            className="font-display font-light leading-[1.04]"
+            className="font-display font-extrabold leading-[1.04]"
             style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
           >
             From a phone screen
             <br />
-            <em className="italic text-parchment/70">to a career.</em>
+            <em className="not-italic text-primary">to a career.</em>
           </h2>
         </motion.div>
 
@@ -112,7 +112,7 @@ function ChapterCard({ chapter, index }: { chapter: (typeof chapters)[0]; index:
         <div className="flex flex-wrap items-baseline justify-between gap-3 mb-6">
           <div className="flex items-baseline gap-4">
             <span
-              className="font-display italic font-light text-[1.1rem]"
+              className="font-display font-extrabold text-[1.1rem]"
               style={{ color: chapter.accent, opacity: 0.7 }}
             >
               {chapter.num}
@@ -136,7 +136,7 @@ function ChapterCard({ chapter, index }: { chapter: (typeof chapters)[0]; index:
           {chapter.stats.map((s) => (
             <div key={s.label}>
               <div
-                className="font-display font-light leading-none"
+                className="font-display font-extrabold leading-none"
                 style={{ fontSize: '1.7rem', color: chapter.accent }}
               >
                 {s.value}

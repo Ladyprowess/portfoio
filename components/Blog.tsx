@@ -38,12 +38,12 @@ export default function Blog() {
               Blog
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Ideas worth
               <br />
-              <em className="italic gradient-text">thinking through</em>
+              <em className="not-italic gradient-text">thinking through</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-sm leading-[1.8] mb-1">
@@ -58,7 +58,7 @@ export default function Blog() {
                 Editor&apos;s Note
               </span>
               <p
-                className="font-display font-light italic leading-[1.25] text-parchment/90 mt-5"
+                className="font-display font-extrabold leading-[1.25] text-parchment/90 mt-5"
                 style={{ fontSize: 'clamp(1.7rem, 3vw, 3rem)' }}
               >
                 Clear writing is not decoration. It is how complex ideas become usable.

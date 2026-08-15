@@ -62,7 +62,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
 
           <h1
-            className="font-display font-light leading-[1.05] text-parchment"
+            className="font-display font-extrabold leading-[1.05] text-parchment"
             style={{ fontSize: 'clamp(2.7rem, 6vw, 5.6rem)' }}
           >
             {post.title}
@@ -76,7 +76,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               return (
                 <blockquote
                   key={`${block.type}-${index}`}
-                  className="my-12 border-l border-primary pl-6 font-display text-[2rem] font-light italic leading-[1.25] text-parchment md:text-[3rem]"
+                  className="my-12 border-l border-primary pl-6 font-display text-[2rem] font-extrabold leading-[1.25] text-parchment md:text-[3rem]"
                 >
                   {block.text}
                 </blockquote>

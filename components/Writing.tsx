@@ -61,12 +61,12 @@ export default function Writing() {
               Writing Portfolio
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Words published
               <br />
-              <em className="italic text-parchment/70">across the web</em>
+              <em className="not-italic text-primary">across the web</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">

@@ -62,12 +62,12 @@ export default function Services() {
               What I Do
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Strategic writing
               <br />
-              <em className="italic text-parchment/70">for serious brands.</em>
+              <em className="not-italic text-primary">for serious brands.</em>
             </h2>
           </div>
           <p className="text-[0.98rem] text-muted max-w-md leading-[1.85] mb-1">
@@ -103,7 +103,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
       {/* Large decorative number - top right */}
       <span
         aria-hidden
-        className="absolute top-4 right-6 font-display font-light text-[5rem] leading-none text-parchment/[0.03] select-none pointer-events-none group-hover:text-parchment/[0.06] transition-colors duration-500"
+        className="absolute top-4 right-6 font-display font-extrabold text-[5rem] leading-none text-parchment/[0.03] select-none pointer-events-none group-hover:text-parchment/[0.06] transition-colors duration-500"
       >
         {service.num}
       </span>
@@ -111,7 +111,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
       <div className="absolute left-0 top-0 w-px bg-primary origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out" style={{ height: '100%' }} />
 
       <div className="relative z-10">
-        <span className="font-display italic text-primary/50 text-[0.95rem] block mb-6">
+        <span className="font-display font-extrabold text-primary/50 text-[0.95rem] block mb-6">
           {service.num}
         </span>
         <h3 className={`font-head font-bold text-parchment mb-4 tracking-wide ${service.featured ? 'text-2xl md:text-3xl' : 'text-lg'}`}>

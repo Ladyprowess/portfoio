@@ -3,10 +3,25 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 
+const facts = [
+  {
+    label: 'Builder, not observer',
+    body: 'Founded and shipped Kivora Pay and Prowess Digital Solutions instead of just writing about the industries they sit in.',
+  },
+  {
+    label: 'Cross-border',
+    body: 'Documented and written for teams across Nigeria, Europe, the UK, Serbia, and Brazil.',
+  },
+  {
+    label: 'Technical-to-business',
+    body: 'Written for engineers without losing the business or user context.',
+  },
+]
+
 const proof = [
-  { value: '10+', label: 'brands served across sectors' },
-  { value: '6+', label: 'years across content, Web3 and business' },
-  { value: '3', label: 'ventures built from idea to market' },
+  { value: '200+', label: 'businesses and individuals trained' },
+  { value: '6', label: 'years self-taught before full-time' },
+  { value: '5', label: 'countries worked across' },
 ]
 
 export default function Hero() {
@@ -20,21 +35,21 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none opacity-35"
         style={{
           backgroundImage:
-            'linear-gradient(to right, rgba(28,26,23,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(28,26,23,0.05) 1px, transparent 1px)',
+            'linear-gradient(to right, rgba(20,32,31,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(20,32,31,0.05) 1px, transparent 1px)',
           backgroundSize: '96px 96px',
         }}
       />
 
       <div className="max-w-[1480px] mx-auto w-full relative z-10 pt-32 md:pt-36 pb-16 md:pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-20 items-start">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="font-head text-[0.68rem] font-bold tracking-[0.2em] uppercase text-primary mb-8"
+              className="font-head text-[0.72rem] font-medium tracking-[0.05em] text-muted mb-6"
             >
-              Copywriter / technical writer / founder
+              Hi, I&apos;m Ngozi Peace Okafor.
             </motion.p>
 
             <div className="overflow-hidden">
@@ -42,12 +57,12 @@ export default function Hero() {
                 initial={{ y: '110%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-light text-parchment leading-[0.9] max-w-6xl"
-                style={{ fontSize: 'clamp(4.6rem, 11vw, 12rem)' }}
+                className="font-display font-extrabold text-parchment leading-[1.02] tracking-tight max-w-4xl"
+                style={{ fontSize: 'clamp(2.6rem, 6.2vw, 4.6rem)' }}
               >
-                Ngozi Peace
+                I&apos;ve documented the systems.
                 <br />
-                <em className="italic text-parchment/72">Okafor</em>
+                I&apos;ve also <span className="text-primary">built inside them.</span>
               </motion.h1>
             </div>
 
@@ -55,30 +70,48 @@ export default function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 max-w-2xl text-[1.08rem] md:text-[1.22rem] leading-[1.9] text-muted"
+              className="mt-8 max-w-2xl text-[1.05rem] md:text-[1.18rem] leading-[1.85] text-muted"
             >
-              I help ambitious technology, Web3, fintech, and founder-led brands turn complex ideas
-              into content systems, documentation, campaigns, and market narratives people can trust.
+              Nine years into this, I own the full range, from{' '}
+              <strong className="text-parchment font-semibold">
+                API documentation, content strategy, and Web3 education
+              </strong>{' '}
+              to the fintech product and consulting agency I built to prove I understand these
+              systems, not just describe them.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.78, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 flex flex-col sm:flex-row gap-4"
+              className="mt-9 flex flex-col sm:flex-row gap-4"
             >
               <a
                 href="#work"
-                className="inline-flex min-h-11 items-center justify-center font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase bg-primary text-bg px-7 py-4 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
+                className="inline-flex min-h-11 items-center justify-center font-display text-[0.9rem] font-bold bg-primary text-bg px-7 py-4 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
               >
-                View My Work
+                Explore My Work
               </a>
               <a
-                href="mailto:hello@ladyprowess.com"
-                className="inline-flex min-h-11 items-center justify-center font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase text-parchment border border-ink-border px-7 py-4 hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
+                href="/about"
+                className="inline-flex min-h-11 items-center justify-center font-display text-[0.9rem] font-bold text-parchment border border-ink-border px-7 py-4 hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
               >
-                Start a Project
+                How I Got Here →
               </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.95, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8 border-t border-ink-border"
+            >
+              {facts.map((f) => (
+                <div key={f.label}>
+                  <p className="font-display font-bold text-[1rem] text-primary mb-2">{f.label}</p>
+                  <p className="text-[0.88rem] text-muted leading-[1.7]">{f.body}</p>
+                </div>
+              ))}
             </motion.div>
           </div>
 
@@ -102,8 +135,8 @@ export default function Hero() {
               <div className="grid grid-cols-3 border-t border-ink-border">
                 {proof.map((item) => (
                   <div key={item.label} className="p-5 border-r border-ink-border last:border-r-0">
-                    <div className="font-display text-[2.2rem] leading-none text-parchment">{item.value}</div>
-                    <div className="mt-3 font-head text-[0.58rem] font-bold tracking-[0.12em] uppercase text-muted leading-relaxed">
+                    <div className="font-display font-extrabold text-[1.8rem] leading-none text-parchment">{item.value}</div>
+                    <div className="mt-3 font-head text-[0.58rem] font-semibold tracking-[0.06em] uppercase text-muted leading-relaxed">
                       {item.label}
                     </div>
                   </div>

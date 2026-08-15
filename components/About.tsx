@@ -44,7 +44,7 @@ export default function About() {
         {/* ── Pull quote - the real opener ── */}
         <Reveal delay={0.1} className="mt-8 mb-16">
           <blockquote
-            className="font-display font-light leading-[1.1] max-w-6xl"
+            className="font-display font-extrabold leading-[1.1] max-w-6xl"
             style={{ fontSize: 'clamp(2.4rem, 5.2vw, 5.8rem)' }}
           >
             I operate where language, product, and trust meet.
@@ -75,7 +75,7 @@ export default function About() {
           {/* Copy */}
           <div className="space-y-6">
             <Reveal delay={0.2}>
-              <p className="font-display font-light text-[1.5rem] leading-[1.7] text-parchment/90">
+              <p className="font-display font-extrabold text-[1.5rem] leading-[1.7] text-parchment/90">
                 I am <span className="text-parchment font-normal">Ngozi Peace Okafor</span>, known
                 professionally as Lady Prowess. I write for companies that need more than content volume:
                 they need positioning, education, conversion, and credibility working together.
@@ -107,7 +107,7 @@ export default function About() {
                   animate={statsInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="font-display font-light text-parchment leading-none" style={{ fontSize: '2.2rem' }}>
+                  <div className="font-display font-extrabold text-parchment leading-none" style={{ fontSize: '2.2rem' }}>
                     {s.num}
                   </div>
                   <div className="font-head text-[0.7rem] font-bold tracking-[0.06em] text-parchment mt-1">

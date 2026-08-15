@@ -63,12 +63,12 @@ export default function CaseStudies() {
               Case Studies
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Case studies
               <br />
-              <em className="italic text-parchment/70">written for brands.</em>
+              <em className="not-italic text-primary">written for brands.</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
@@ -120,7 +120,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
       <div className="p-8 flex flex-col gap-4 flex-1 relative z-10">
         {/* Number */}
         <span
-          className="font-display italic text-[0.9rem] font-light"
+          className="font-display text-[0.9rem] font-extrabold"
           style={{ color: study.accent, opacity: 0.6 }}
         >
           {String(index + 1).padStart(2, '0')}

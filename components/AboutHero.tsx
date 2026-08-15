@@ -32,12 +32,12 @@ export default function AboutHero() {
               About
             </span>
             <h1
-              className="font-display font-light leading-[0.98] text-parchment"
+              className="font-display font-extrabold leading-[0.98] text-parchment"
               style={{ fontSize: 'clamp(3.2rem, 7vw, 6.4rem)' }}
             >
               Ngozi Peace
               <br />
-              <em className="italic text-parchment/70">Okafor.</em>
+              <em className="not-italic text-primary">Okafor.</em>
             </h1>
             <p className="mt-8 font-head text-[0.72rem] font-bold tracking-[0.16em] uppercase text-muted">
               Copywriter / Technical Writer / Founder

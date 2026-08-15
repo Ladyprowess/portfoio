@@ -4,13 +4,13 @@
 
 /* ── Design tokens ─────────────────────────────── */
 :root {
-  --bg:          #f7f3ea;
+  --bg:          #F9FAF9;
   --surface:     #ffffff;
-  --primary:     #0f766e;
-  --amber:       #b45309;
-  --parchment:   #1c1a17;
-  --muted:       #6b655c;
-  --border:      #e3dcc9;
+  --primary:     #507B80;
+  --amber:       #35555A;
+  --parchment:   #14201F;
+  --muted:       #55625F;
+  --border:      #DCE2DE;
 }
 
 /* ── Base ──────────────────────────────────────── */
@@ -35,14 +35,14 @@ body::before {
 
 /* ── Typography utilities ──────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #0f766e 0%, #b45309 100%);
+  background: linear-gradient(135deg, #507B80 0%, #14201F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-gold {
-  background: linear-gradient(135deg, #b45309 0%, #1c1a17 100%);
+  background: linear-gradient(135deg, #35555A 0%, #14201F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -55,7 +55,7 @@ body::before {
 
 /* ── Selection ─────────────────────────────────── */
 ::selection {
-  background: rgba(47, 214, 197, 0.22);
+  background: rgba(80, 123, 128, 0.28);
   color: var(--parchment);
 }
 

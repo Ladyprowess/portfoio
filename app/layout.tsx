@@ -1,19 +1,18 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Syne, DM_Sans } from 'next/font/google'
+import { Bricolage_Grotesque, IBM_Plex_Mono, DM_Sans } from 'next/font/google'
 import './globals.css'
 
-const cormorant = Cormorant_Garamond({
+const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
-  weight: ['300', '400', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-cormorant',
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-bricolage',
   display: 'swap',
 })
 
-const syne = Syne({
+const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-  variable: '--font-syne',
+  weight: ['500', '600'],
+  variable: '--font-plex-mono',
   display: 'swap',
 })
 
@@ -39,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body
-        className={`${cormorant.variable} ${syne.variable} ${dmSans.variable} font-body bg-bg text-parchment antialiased`}
+        className={`${bricolage.variable} ${plexMono.variable} ${dmSans.variable} font-body bg-bg text-parchment antialiased`}
       >
         {children}
       </body>

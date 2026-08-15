@@ -72,12 +72,12 @@ export default function AboutCredentials() {
               Education &amp; Recognition
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}
             >
               Where the foundation
               <br />
-              <em className="italic text-parchment/70">was built.</em>
+              <em className="not-italic text-primary">was built.</em>
             </h2>
           </Reveal>
 
@@ -123,19 +123,19 @@ export default function AboutCredentials() {
               Areas of Expertise
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}
             >
               Where I bring
               <br />
-              <em className="italic text-parchment/70">the most value.</em>
+              <em className="not-italic text-primary">the most value.</em>
             </h2>
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {expertise.map((item, i) => (
               <Reveal key={item.num} delay={i * 0.08} className="bg-surface border border-ink-border p-8">
-                <span className="font-display italic font-light text-primary/60 text-[0.9rem]">{item.num}</span>
+                <span className="font-display font-extrabold text-primary/60 text-[0.9rem]">{item.num}</span>
                 <h3 className="font-head font-bold text-lg text-parchment mt-2 mb-3">{item.title}</h3>
                 <p className="text-[0.9rem] text-muted leading-[1.85]">{item.desc}</p>
               </Reveal>
@@ -152,12 +152,12 @@ export default function AboutCredentials() {
               Tools &amp; Skills
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}
             >
               What I work
               <br />
-              <em className="italic text-parchment/70">with day to day.</em>
+              <em className="not-italic text-primary">with day to day.</em>
             </h2>
           </Reveal>
 

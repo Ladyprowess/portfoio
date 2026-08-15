@@ -55,12 +55,12 @@ export default function Contact() {
               Contact
             </span>
             <h2
-              className="font-display font-light leading-[0.96] mb-8"
+              className="font-display font-extrabold leading-[0.96] mb-8"
               style={{ fontSize: 'clamp(3.5rem, 7vw, 7rem)' }}
             >
               Let&apos;s work
               <br />
-              <em className="italic text-parchment/70">together</em>
+              <em className="not-italic text-primary">together</em>
             </h2>
             <p className="text-[1rem] text-muted leading-[1.85] max-w-sm">
               Whether it&apos;s a launch campaign, technical documentation, or a full brand build -
@@ -84,7 +84,7 @@ export default function Contact() {
                 Email
               </span>
               <span
-                className="font-display italic text-parchment group-hover:gradient-text transition-all duration-300 block"
+                className="font-display font-extrabold text-parchment group-hover:gradient-text transition-all duration-300 block"
                 style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)' }}
               >
                 hello@ladyprowess.com

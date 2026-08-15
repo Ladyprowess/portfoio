@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
+import Impact from '@/components/Impact'
 import About from '@/components/About'
 import Services from '@/components/Services'
 import Work from '@/components/Work'
@@ -14,6 +15,7 @@ export default function Home() {
     <main>
       <Nav />
       <Hero />
+      <Impact />
       <About />
       <Services />
       <Work />

@@ -25,12 +25,12 @@ export default function BlogIndexPage() {
             Lady Prowess Blog
           </span>
           <h1
-            className="font-display font-light leading-[1.02] max-w-5xl"
+            className="font-display font-extrabold leading-[1.02] max-w-5xl"
             style={{ fontSize: 'clamp(3.25rem, 7vw, 7rem)' }}
           >
             Essays from
             <br />
-            <em className="italic text-parchment/70">my own desk</em>
+            <em className="not-italic text-primary">my own desk</em>
           </h1>
         </header>
 
@@ -79,7 +79,7 @@ export default function BlogIndexPage() {
             <span className="font-head text-[0.58rem] font-bold tracking-[0.16em] uppercase text-muted">
               No essays published yet
             </span>
-            <p className="font-display font-light italic leading-[1.25] text-parchment/90 mt-6" style={{ fontSize: 'clamp(1.8rem, 3vw, 3.2rem)' }}>
+            <p className="font-display font-extrabold leading-[1.25] text-parchment/90 mt-6" style={{ fontSize: 'clamp(1.8rem, 3vw, 3.2rem)' }}>
               Your first article will appear here when you add it.
             </p>
           </div>

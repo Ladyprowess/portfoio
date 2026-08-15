@@ -172,7 +172,7 @@ export default function ComposePage() {
           <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
             Private
           </span>
-          <h1 className="mt-3 font-display text-[2.4rem] font-light leading-none">Compose</h1>
+          <h1 className="mt-3 font-display text-[2.4rem] font-extrabold leading-none">Compose</h1>
           <p className="mt-3 text-[0.9rem] leading-[1.7] text-muted">
             Enter your password to send email from hello@ladyprowess.com.
           </p>
@@ -210,7 +210,7 @@ export default function ComposePage() {
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               New message
             </span>
-            <h1 className="mt-2 font-display text-[2.8rem] font-light leading-none">Compose</h1>
+            <h1 className="mt-2 font-display text-[2.8rem] font-extrabold leading-none">Compose</h1>
           </div>
           <Link
             href="/"

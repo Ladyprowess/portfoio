@@ -53,12 +53,12 @@ export default function Media() {
               Media
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Photos for
               <br />
-              <em className="italic text-parchment/70">press and profiles.</em>
+              <em className="not-italic text-primary">press and profiles.</em>
             </h2>
           </div>
           <p className="text-[0.95rem] text-muted max-w-sm leading-[1.8] mb-1">

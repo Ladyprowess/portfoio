@@ -42,12 +42,12 @@ export default function Work() {
               Founder Projects
             </span>
             <h2
-              className="font-display font-light leading-[1.04]"
+              className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
             >
               Ventures I
               <br />
-              <em className="italic text-parchment/70">built from scratch.</em>
+              <em className="not-italic text-primary">built from scratch.</em>
             </h2>
           </div>
           <p className="text-[0.98rem] text-muted max-w-md leading-[1.85] mb-1">
@@ -92,7 +92,7 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
         />
         <div className="relative z-10 flex items-end justify-between w-full">
           <span
-            className="font-display font-light italic text-[4rem] leading-none"
+            className="font-display font-extrabold text-[4rem] leading-none"
             style={{ color: project.accent, opacity: 0.4 }}
           >
             {project.num}
