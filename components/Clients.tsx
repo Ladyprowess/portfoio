@@ -1,19 +1,20 @@
 'use client'
 
 import { useRef } from 'react'
+import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 
 const clients = [
-  { name: 'CustomersChain',            industry: 'Web3',          href: 'https://customerschain.com/' },
-  { name: 'CoinTime ATM',              industry: 'Crypto',         href: 'https://cointimeatm.com/' },
-  { name: 'Point22',                   industry: 'Fintech',        href: 'https://pt22.io/' },
-  { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/' },
-  { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/' },
-  { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com' },
-  { name: 'Dritchwear',                industry: 'Merch / Branded Items', href: 'https://app.dritchwear.com/shop' },
-  { name: 'CWallet',                   industry: 'Crypto',         href: '#' },
-  { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/' },
-  { name: 'WriteTech Hub',             industry: 'Tech Writing',   href: 'https://writetechhub.org/author/ladyprowess/' },
+  { name: 'CustomersChain',            industry: 'Web3',          href: 'https://customerschain.com/',                                logo: '/brands/customerschain.png' },
+  { name: 'CoinTime ATM',              industry: 'Crypto',         href: 'https://cointimeatm.com/',                                   logo: '/brands/cointime.png' },
+  { name: 'Point22',                   industry: 'Fintech',        href: 'https://pt22.io/',                                           logo: null },
+  { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/',                                   logo: '/brands/txfusion.png' },
+  { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/',                                     logo: '/brands/kivorapay.png' },
+  { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com',                    logo: '/brands/pds.png' },
+  { name: 'Dritchwear',                industry: 'Merch / Branded Items', href: 'https://app.dritchwear.com/shop',                     logo: '/brands/dritchwear.png' },
+  { name: 'CWallet',                   industry: 'Crypto',         href: '#',                                                          logo: '/brands/cwallet.png' },
+  { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/',   logo: '/brands/BF.svg' },
+  { name: 'WriteTech Hub',             industry: 'Tech Writing',   href: 'https://writetechhub.org/author/ladyprowess/',                logo: '/brands/writechtechhub.webp' },
 ]
 
 export default function Clients() {
@@ -87,11 +88,23 @@ export default function Clients() {
                 }}
               />
 
-              <span className="relative z-10 font-head font-bold text-center text-muted group-hover:text-parchment transition-colors duration-250 leading-snug"
-                style={{ fontSize: 'clamp(0.85rem, 1.2vw, 1rem)' }}
-              >
-                {client.name}
-              </span>
+              {client.logo ? (
+                <div className="relative z-10 h-9 w-full flex items-center justify-center grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
+                  <Image
+                    src={client.logo}
+                    alt={client.name}
+                    width={160}
+                    height={64}
+                    className="h-full w-auto max-w-[80%] object-contain"
+                  />
+                </div>
+              ) : (
+                <span className="relative z-10 font-head font-bold text-center text-muted group-hover:text-parchment transition-colors duration-250 leading-snug"
+                  style={{ fontSize: 'clamp(0.85rem, 1.2vw, 1rem)' }}
+                >
+                  {client.name}
+                </span>
+              )}
               <span className="relative z-10 font-head text-[0.58rem] font-bold tracking-[0.14em] uppercase text-muted/40 group-hover:text-primary/70 transition-colors duration-250">
                 {client.industry}
               </span>
