@@ -84,7 +84,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: 'paragraph',
-        text: `Today, Lady Prowess runs Prowess Digital Solutions, a remote business consulting firm built for African entrepreneurs. She built Kivora Pay, a crypto bill payment platform on Solana for the African market. She leads teams. She produces strategy for brands. She thinks in systems, not in single tasks. She gets paid in Bitcoin and USDT. She is not just writing about Web3 and the future of African finance. She is living inside it, from the inside out.`,
+        text: `Today, Lady Prowess runs Prowess Digital Solutions, a remote business consulting firm built for African entrepreneurs. She built Kivora Pay, a crypto bill payment platform on Solana for the African market. She founded Dritchwear, a streetwear and branded merchandise label. She leads teams. She produces strategy for brands. She thinks in systems, not in single tasks. She gets paid in Bitcoin and USDT. She is not just writing about Web3 and the future of African finance. She is living inside it, from the inside out.`,
       },
       {
         type: 'paragraph',

@@ -141,7 +141,7 @@ export default function KivoraPaySeedPage() {
                 Ngozi Peace Okafor
               </p>
               <p className="mt-2 text-[0.95rem] leading-[1.8] text-muted">
-              Founder KivoraPay | Helping Africans spend crypto in real life | Visioner Prowess Digital Solutions.
+              Founder KivoraPay | Helping Africans spend crypto in real life | Visioner Prowess Digital Solutions and Dritchwear.
               </p>
             </div>
           </aside>

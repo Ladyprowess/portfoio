@@ -20,6 +20,14 @@ const projects = [
     href: 'https://www.prowessdigitalsolutions.com',
     accent: '#35555A',
   },
+  {
+    title: 'Dritchwear',
+    category: 'Merch / Branded Items',
+    desc: 'Founded a streetwear and branded merchandise label selling premium apparel direct to customers, plus a live ordering platform that handles bulk merch for companies and events.',
+    tag: 'Founder',
+    href: 'https://app.dritchwear.com/shop',
+    accent: '#507B80',
+  },
 ]
 
 export default function Work() {
@@ -51,12 +59,12 @@ export default function Work() {
             </h2>
           </div>
           <p className="text-[0.98rem] text-muted max-w-md leading-[1.85] mb-1">
-            Two ventures I founded, shaped, launched, and continue to build, told as case studies rather
+            Three ventures I founded, shaped, launched, and continue to build, told as case studies rather
             than a résumé line.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((p, i) => (
             <ProjectCard key={p.title} project={p} index={i} />
           ))}

@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
 const stats = [
-  { num: '2', label: 'Businesses Founded', sub: 'Kivora Pay, Prowess Digital Solutions' },
+  { num: '3', label: 'Businesses Founded', sub: 'Kivora Pay, Prowess Digital Solutions, Dritchwear' },
   { num: '200+', label: 'Businesses & Individuals Trained', sub: 'through Prowess Digital Solutions' },
   { num: '5', label: 'Countries Worked Across', sub: 'Nigeria, Europe, the UK, Serbia, Brazil' },
   { num: '9+', label: 'Years Building & Writing', sub: 'since 2016' },
@@ -62,8 +62,8 @@ export default function About() {
               <p className="text-[1.02rem] text-muted leading-[1.9] max-w-xl">
                 I found writing on a phone screen with no audience in 2016, taught myself to code at a
                 cyber café, and spent nine years turning that into technical documentation, content
-                strategy, and two ventures I founded and now run: Kivora Pay and Prowess Digital
-                Solutions.
+                strategy, and three ventures I founded and now run: Kivora Pay, Prowess Digital
+                Solutions, and Dritchwear.
               </p>
             </Reveal>
 

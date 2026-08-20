@@ -10,6 +10,7 @@ const clients = [
   { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/' },
   { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/' },
   { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com' },
+  { name: 'Dritchwear',                industry: 'Merch / Branded Items', href: 'https://app.dritchwear.com/shop' },
   { name: 'CWallet',                   industry: 'Crypto',         href: '#' },
   { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/' },
   { name: 'WriteTech Hub',             industry: 'Tech Writing',   href: 'https://writetechhub.org/author/ladyprowess/' },
@@ -73,7 +74,7 @@ export default function Clients() {
               <div
                 aria-hidden
                 className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: 'linear-gradient(90deg, #41d7c7, #d7b46a)' }}
+                style={{ background: 'linear-gradient(90deg, #507B80, #35555A)' }}
               />
 
               {/* Ambient glow on hover */}
@@ -82,7 +83,7 @@ export default function Clients() {
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                 style={{
                   background:
-                    'radial-gradient(circle at 50% 50%, rgba(47,214,197,0.06), transparent 70%)',
+                    'radial-gradient(circle at 50% 50%, rgba(80,123,128,0.08), transparent 70%)',
                 }}
               />
 

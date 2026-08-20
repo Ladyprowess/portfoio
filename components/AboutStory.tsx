@@ -39,10 +39,10 @@ const chapters = [
     accent: '#35555A',
     paragraphs: [
       "In July 2023 I founded Prowess Digital Solutions, a remote consulting agency producing technical writing, content strategy, and digital marketing for fintech and emerging-market clients. I've since trained over 200 businesses and individuals across that work.",
-      'I also built and launched Kivora Pay, a crypto bill payment platform for Africa, taking a product from idea to a live venture rather than just writing about one.',
+      'I also built and launched Kivora Pay, a crypto bill payment platform for Africa, and founded Dritchwear, a streetwear label with its own bulk ordering platform for corporate and event merchandise, taking products from idea to live ventures rather than just writing about them.',
     ],
     stats: [{ value: '200+', label: 'businesses and individuals trained' }],
-    chips: ['Prowess Digital Solutions', 'Kivora Pay'],
+    chips: ['Prowess Digital Solutions', 'Kivora Pay', 'Dritchwear'],
   },
   {
     num: '04',

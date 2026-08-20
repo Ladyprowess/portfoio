@@ -59,8 +59,9 @@ export default function Hero() {
               className="mt-8 max-w-xl text-[1.05rem] md:text-[1.15rem] leading-[1.8] text-dark-muted"
             >
               Founder of{' '}
-              <span className="text-dark-ink font-medium">Prowess Digital Solutions</span> and{' '}
-              <span className="text-dark-ink font-medium">Kivora Pay</span>.
+              <span className="text-dark-ink font-medium">Prowess Digital Solutions</span>,{' '}
+              <span className="text-dark-ink font-medium">Kivora Pay</span>, and{' '}
+              <span className="text-dark-ink font-medium">Dritchwear</span>.
             </motion.p>
 
             <motion.div
