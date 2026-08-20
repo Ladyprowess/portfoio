@@ -28,7 +28,7 @@ export default function Hero() {
       />
 
       <div className="max-w-[1480px] mx-auto w-full relative z-10 pt-32 md:pt-36 pb-16 md:pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
           <div className="flex flex-col justify-center">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
@@ -91,7 +91,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[4/5] lg:aspect-auto lg:min-h-[560px] lg:self-stretch"
+            className="relative w-full aspect-[4/5] max-h-[640px]"
           >
             <div className="absolute inset-0 border border-dark-border bg-dark-surface overflow-hidden">
               <div

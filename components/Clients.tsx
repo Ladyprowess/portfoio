@@ -7,7 +7,6 @@ import { motion, useInView } from 'framer-motion'
 const clients = [
   { name: 'CustomersChain',            industry: 'Web3',          href: 'https://customerschain.com/',                                logo: '/brands/customerschain.png' },
   { name: 'CoinTime ATM',              industry: 'Crypto',         href: 'https://cointimeatm.com/',                                   logo: '/brands/cointime.png' },
-  { name: 'Point22',                   industry: 'Fintech',        href: 'https://pt22.io/',                                           logo: null },
   { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/',                                   logo: '/brands/txfusion.png' },
   { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/',                                     logo: '/brands/kivorapay.png' },
   { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com',                    logo: '/brands/pds.png' },
