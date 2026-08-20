@@ -21,13 +21,16 @@ export default function Credibility() {
       <div className="animate-marquee gap-16 items-center">
         {row.map((brand, i) =>
           brand.logo ? (
-            <div key={`${brand.name}-${i}`} className="h-7 shrink-0 flex items-center px-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <div
+              key={`${brand.name}-${i}`}
+              className="h-12 shrink-0 flex items-center justify-center px-5 mx-3 bg-dark-ink/95 rounded-md opacity-85 hover:opacity-100 transition-opacity duration-300"
+            >
               <Image
                 src={brand.logo}
                 alt={brand.name}
                 width={140}
                 height={56}
-                className="h-full w-auto max-w-[190px] object-contain grayscale brightness-[1.8] contrast-[0.9]"
+                className="h-7 w-auto max-w-[150px] object-contain"
               />
             </div>
           ) : (
