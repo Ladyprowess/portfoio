@@ -91,7 +91,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative min-h-[420px] lg:min-h-0"
+            className="relative aspect-[4/5] lg:aspect-auto lg:min-h-[560px] lg:self-stretch"
           >
             <div className="absolute inset-0 border border-dark-border bg-dark-surface overflow-hidden">
               <div
