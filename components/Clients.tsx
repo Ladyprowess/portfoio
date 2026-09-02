@@ -88,7 +88,7 @@ export default function Clients() {
               />
 
               {client.logo ? (
-                <div className="relative z-10 h-9 w-full flex items-center justify-center grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
+                <div className="relative z-10 h-9 w-full flex items-center justify-center grayscale opacity-70 motion-safe:transition-[filter,opacity] motion-safe:duration-150 group-hover:grayscale-0 group-hover:opacity-100">
                   <Image
                     src={client.logo}
                     alt={client.name}

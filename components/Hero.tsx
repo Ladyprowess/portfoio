@@ -1,25 +1,38 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
 
+const proofPoints = [
+  { label: 'Ventures founded', value: '3' },
+  { label: 'People trained', value: '200+' },
+  { label: 'Years shipping', value: '9+' },
+]
+
+const focusAreas = ['Fintech', 'Web3 education', 'Technical content', 'Founder advisory']
+
 export default function Hero() {
+  const reduceMotion = useReducedMotion()
+  const enter = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.55, ease: [0.23, 1, 0.32, 1] }
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen px-8 md:px-20 overflow-hidden bg-dark border-b border-dark-border"
+      className="relative min-h-screen overflow-hidden bg-dark border-b border-dark-border"
     >
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 900px 600px at 80% 10%, rgba(80,123,128,0.20), transparent 60%)',
+            'radial-gradient(ellipse 880px 620px at 78% 14%, rgba(80,123,128,0.22), transparent 62%)',
         }}
       />
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-40"
+        className="absolute inset-0 pointer-events-none opacity-35"
         style={{
           backgroundImage:
             'linear-gradient(to right, rgba(242,241,237,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(242,241,237,0.04) 1px, transparent 1px)',
@@ -27,77 +40,88 @@ export default function Hero() {
         }}
       />
 
-      <div className="max-w-[1480px] mx-auto w-full relative z-10 pt-32 md:pt-36 pb-16 md:pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
-          <div className="flex flex-col justify-center">
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1480px] flex-col px-6 pb-10 pt-28 sm:px-8 md:px-20 md:pb-12 md:pt-32">
+        <div className="grid flex-1 grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_0.92fr] lg:gap-16">
+          <div className="max-w-4xl">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="font-head text-[0.7rem] font-semibold tracking-[0.2em] uppercase text-primary mb-8"
+              transition={enter}
+              className="mb-6 font-head text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary"
             >
-              Founder. Builder. Problem Solver.
+              Ngozi Peace Okafor / Lady Prowess
             </motion.p>
 
-            <div className="overflow-hidden">
-              <motion.h1
-                initial={{ y: '110%' }}
-                animate={{ y: 0 }}
-                transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-extrabold text-dark-ink leading-[1.05] max-w-3xl"
-                style={{ fontSize: 'clamp(2.6rem, 5.4vw, 4.4rem)' }}
-              >
-                I build digital products and brands that solve real problems and create{' '}
-                <span className="text-primary">impact.</span>
-              </motion.h1>
-            </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.08 }}
+              className="max-w-4xl font-display text-5xl font-extrabold leading-[0.98] text-dark-ink sm:text-6xl lg:text-7xl"
+            >
+              I turn messy ideas into products, stories, and businesses people can trust.
+            </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-8 max-w-xl text-[1.05rem] md:text-[1.15rem] leading-[1.8] text-dark-muted"
+              transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.18 }}
+              className="mt-8 max-w-2xl text-base leading-[1.85] text-dark-muted md:text-lg"
             >
-              Founder of{' '}
-              <span className="text-dark-ink font-medium">Prowess Digital Solutions</span>,{' '}
-              <span className="text-dark-ink font-medium">Kivora Pay</span>, and{' '}
-              <span className="text-dark-ink font-medium">Dritchwear</span>.
+              I am a founder, technical writer, content strategist, and Web3 educator building across
+              fintech, commerce, and digital education. My work sits where clarity, execution, and
+              ownership meet.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.78, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 flex flex-col sm:flex-row gap-4"
+              transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.28 }}
+              className="mt-10 flex flex-col gap-3 sm:flex-row"
             >
               <a
                 href="#work"
-                className="inline-flex min-h-11 items-center justify-center font-display text-[0.9rem] font-bold bg-primary text-dark px-7 py-4 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark transition-colors duration-200"
+                className="inline-flex min-h-12 items-center justify-center bg-primary px-7 py-4 font-display text-[0.9rem] font-bold text-dark motion-safe:transition-colors motion-safe:duration-150 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
               >
-                View My Work →
+                See the Work
               </a>
               <a
                 href="https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center font-display text-[0.9rem] font-bold text-dark-ink border border-dark-border px-7 py-4 hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark transition-colors duration-200"
+                className="inline-flex min-h-12 items-center justify-center border border-dark-border px-7 py-4 font-display text-[0.9rem] font-bold text-dark-ink motion-safe:transition-colors motion-safe:duration-150 hover:border-primary/60 hover:bg-dark-surface focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark"
               >
-                Download Resume ↓
+                Download Resume
               </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.38 }}
+              className="mt-10 flex flex-wrap gap-2"
+            >
+              {focusAreas.map((area) => (
+                <span
+                  key={area}
+                  className="border border-dark-border bg-dark-surface px-3 py-2 font-head text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-dark-muted"
+                >
+                  {area}
+                </span>
+              ))}
             </motion.div>
           </div>
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full aspect-[4/5] max-h-[640px]"
+            transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.16 }}
+            className="relative mx-auto w-full max-w-[560px] lg:ml-auto"
           >
-            <div className="absolute inset-0 border border-dark-border bg-dark-surface overflow-hidden">
+            <div className="relative aspect-[4/5] overflow-hidden border border-dark-border bg-dark-surface">
               <div
                 aria-hidden
                 className="absolute inset-0 z-10 pointer-events-none"
-                style={{ background: 'linear-gradient(180deg, transparent 55%, rgba(10,12,13,0.85) 100%)' }}
+                style={{ background: 'linear-gradient(180deg, transparent 48%, rgba(10,12,13,0.88) 100%)' }}
               />
               <Image
                 src="/personal%20photo/headshot1.png"
@@ -107,8 +131,36 @@ export default function Hero() {
                 sizes="(max-width: 1024px) 100vw, 560px"
                 priority
               />
+              <div className="absolute bottom-0 left-0 right-0 z-20 p-6 md:p-8">
+                <p className="font-head text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-primary">
+                  Current focus
+                </p>
+                <p className="mt-2 max-w-sm font-display text-2xl font-extrabold leading-tight text-dark-ink md:text-3xl">
+                  Building useful products and clearer ways to explain them.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 border-x border-b border-dark-border bg-dark-surface">
+              {proofPoints.map((point) => (
+                <div key={point.label} className="border-r border-dark-border p-4 last:border-r-0 md:p-5">
+                  <p className="font-display text-2xl font-extrabold leading-none text-primary md:text-3xl">
+                    {point.value}
+                  </p>
+                  <p className="mt-2 font-head text-[0.56rem] font-semibold uppercase tracking-[0.1em] text-dark-muted">
+                    {point.label}
+                  </p>
+                </div>
+              ))}
             </div>
           </motion.div>
+        </div>
+
+        <div className="mt-10 border-t border-dark-border pt-6">
+          <p className="max-w-4xl font-head text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-dark-muted">
+            Founder of Kivora Pay, Prowess Digital Solutions, and Dritchwear. Trusted by teams across
+            Web3, fintech, technical writing, and digital commerce.
+          </p>
         </div>
       </div>
     </section>
