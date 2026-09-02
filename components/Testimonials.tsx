@@ -35,7 +35,7 @@ export default function Testimonials() {
   const titleInView = useInView(titleRef, { once: true, margin: '-80px' })
 
   return (
-    <section className="bg-dark px-8 md:px-20 py-32 border-b border-dark-border">
+    <section className="bg-surface px-6 py-28 sm:px-8 md:px-20 md:py-32 border-b border-ink-border">
       <div className="max-w-[1480px] mx-auto">
         <motion.div
           ref={titleRef}
@@ -48,7 +48,7 @@ export default function Testimonials() {
             Testimonials
           </span>
           <h2
-            className="font-display font-extrabold text-dark-ink leading-[1.08]"
+            className="font-display font-extrabold text-parchment leading-[1.08]"
             style={{ fontSize: 'clamp(2.4rem, 4.6vw, 3.6rem)' }}
           >
             Kind words from
@@ -83,13 +83,13 @@ function TestimonialCard({
       initial={{ opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="bg-dark-surface border border-dark-border p-7 flex flex-col gap-6"
+      className="bg-bg border border-ink-border p-7 flex flex-col gap-6"
     >
       <span className="font-display text-primary/50 text-[2.5rem] leading-none">&ldquo;</span>
-      <p className="text-[0.9rem] text-dark-muted leading-[1.8] flex-1 -mt-4">{testimonial.quote}</p>
-      <div className="border-t border-dark-border pt-4">
-        <p className="font-head font-bold text-[0.85rem] text-dark-ink">{testimonial.name}</p>
-        <p className="font-body text-[0.72rem] text-dark-muted mt-0.5">{testimonial.role}</p>
+      <p className="text-[0.9rem] text-muted leading-[1.8] flex-1 -mt-4">{testimonial.quote}</p>
+      <div className="border-t border-ink-border pt-4">
+        <p className="font-head font-bold text-[0.85rem] text-parchment">{testimonial.name}</p>
+        <p className="font-body text-[0.72rem] text-muted mt-0.5">{testimonial.role}</p>
       </div>
     </motion.div>
   )

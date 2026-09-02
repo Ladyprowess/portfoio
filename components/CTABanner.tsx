@@ -28,7 +28,7 @@ export default function CTABanner() {
         </div>
         <a
           href="mailto:hello@ladyprowess.com"
-          className="group inline-flex shrink-0 min-h-12 items-center justify-center gap-3 font-display text-[0.95rem] font-bold bg-dark text-dark-ink px-8 py-4 hover:bg-dark-surface transition-colors duration-200"
+          className="group inline-flex shrink-0 min-h-12 items-center justify-center gap-3 font-display text-[0.95rem] font-bold bg-surface text-parchment px-8 py-4 hover:bg-bg focus-visible:ring-2 focus-visible:ring-parchment focus-visible:ring-offset-2 focus-visible:ring-offset-primary transition-colors duration-200"
         >
           Let&apos;s Work Together
           <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
