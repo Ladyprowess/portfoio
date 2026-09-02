@@ -26,7 +26,7 @@ export default function BlogIndexPage() {
           </span>
           <h1
             className="font-display font-extrabold leading-[1.02] max-w-5xl"
-            style={{ fontSize: 'clamp(3.25rem, 7vw, 7rem)' }}
+            style={{ fontSize: 'clamp(2.1rem, 4vw, 3.6rem)' }}
           >
             Essays from
             <br />

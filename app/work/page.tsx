@@ -72,7 +72,7 @@ export default function WorkPage() {
   return (
     <main>
       <Nav />
-      <section className="relative overflow-hidden border-b border-ink-border bg-bg px-6 pb-20 pt-36 sm:px-8 md:px-20 md:pb-24 md:pt-40">
+      <section className="relative overflow-hidden border-b border-ink-border bg-bg px-6 pb-16 pt-32 sm:px-8 md:px-20 md:pb-20 md:pt-36">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none opacity-70"
@@ -82,12 +82,12 @@ export default function WorkPage() {
             backgroundSize: '96px 96px',
           }}
         />
-        <div className="relative z-10 mx-auto grid max-w-[1480px] grid-cols-1 gap-12 lg:grid-cols-[0.95fr_0.85fr] lg:items-end">
+        <div className="relative z-10 mx-auto grid max-w-[1480px] grid-cols-1 gap-10 lg:grid-cols-[0.9fr_0.85fr] lg:items-end">
           <div>
             <p className="mb-5 font-head text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary">
               Selected Work
             </p>
-            <h1 className="max-w-4xl font-display text-5xl font-extrabold leading-[0.98] text-parchment sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl font-display text-3xl font-extrabold leading-[1.08] text-parchment sm:text-4xl lg:text-5xl">
               Founder-led ventures, product stories, and technical clarity.
             </h1>
           </div>
@@ -108,7 +108,7 @@ export default function WorkPage() {
               <p className="mb-4 font-head text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-primary">
                 Ventures
               </p>
-              <h2 className="font-display text-4xl font-extrabold leading-tight text-parchment md:text-5xl">
+              <h2 className="font-display text-2xl font-extrabold leading-tight text-parchment md:text-3xl">
                 Built, shaped, and launched.
               </h2>
             </div>
@@ -149,7 +149,7 @@ export default function WorkPage() {
                     </span>
                   </div>
 
-                  <h3 className="font-display text-3xl font-extrabold leading-tight text-parchment md:text-5xl">
+                  <h3 className="font-display text-2xl font-extrabold leading-tight text-parchment md:text-3xl">
                     {venture.title}
                   </h3>
                   <p className="mt-5 max-w-3xl text-[1rem] leading-[1.85] text-muted">{venture.summary}</p>
@@ -204,7 +204,7 @@ export default function WorkPage() {
             <p className="mb-4 font-head text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-primary">
               Writing Samples
             </p>
-            <h2 className="font-display text-4xl font-extrabold leading-tight text-parchment md:text-5xl">
+            <h2 className="font-display text-2xl font-extrabold leading-tight text-parchment md:text-3xl">
               Case studies and technical communication.
             </h2>
             <p className="mt-5 max-w-lg text-[0.96rem] leading-[1.8] text-muted">
@@ -242,7 +242,7 @@ export default function WorkPage() {
             <p className="font-head text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-white/80">
               Work With Me
             </p>
-            <h2 className="mt-3 max-w-3xl font-display text-3xl font-extrabold leading-tight text-white md:text-5xl">
+            <h2 className="mt-3 max-w-3xl font-display text-2xl font-extrabold leading-tight text-white md:text-3xl">
               Need a product story, technical content, or founder-level clarity?
             </h2>
           </div>

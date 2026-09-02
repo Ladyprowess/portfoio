@@ -31,7 +31,7 @@ export default function Insights() {
           </span>
           <h2
             className="font-display font-extrabold text-parchment leading-[1.08]"
-            style={{ fontSize: 'clamp(2.4rem, 4.6vw, 3.6rem)' }}
+            style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
           >
             Things I share
             <br />

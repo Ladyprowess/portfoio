@@ -63,7 +63,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
           <h1
             className="font-display font-extrabold leading-[1.05] text-parchment"
-            style={{ fontSize: 'clamp(2.7rem, 6vw, 5.6rem)' }}
+            style={{ fontSize: 'clamp(2rem, 3.8vw, 3.3rem)' }}
           >
             {post.title}
           </h1>

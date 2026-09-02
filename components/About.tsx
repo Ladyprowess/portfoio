@@ -55,7 +55,7 @@ export default function About() {
               </span>
               <h2
                 className="font-display font-extrabold leading-[1.08] mb-6"
-                style={{ fontSize: 'clamp(2.2rem, 4.4vw, 3.4rem)' }}
+                style={{ fontSize: 'clamp(1.85rem, 3vw, 2.5rem)' }}
               >
                 I&apos;m Peace, a builder with a passion for <span className="text-primary">impact.</span>
               </h2>

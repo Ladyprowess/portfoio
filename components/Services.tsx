@@ -50,7 +50,7 @@ export default function Services() {
               What I Do
             </span>
             <h2
-              className="max-w-3xl font-display text-4xl font-extrabold leading-[1.04] text-parchment md:text-5xl"
+              className="max-w-3xl font-display text-3xl font-extrabold leading-[1.08] text-parchment md:text-4xl"
             >
               Clear thinking for products that need people to believe, understand, and act.
             </h2>

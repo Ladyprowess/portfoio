@@ -55,7 +55,7 @@ export default function Work() {
             </span>
             <h2
               className="font-display font-extrabold leading-[1.08]"
-              style={{ fontSize: 'clamp(2.35rem, 4.3vw, 3.6rem)' }}
+              style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
               The ventures say more than a job title can.
             </h2>

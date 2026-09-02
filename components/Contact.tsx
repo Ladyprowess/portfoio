@@ -56,7 +56,7 @@ export default function Contact() {
             </span>
             <h2
               className="font-display font-extrabold leading-[0.96] mb-8"
-              style={{ fontSize: 'clamp(3.5rem, 7vw, 7rem)' }}
+              style={{ fontSize: 'clamp(2.1rem, 4vw, 3.6rem)' }}
             >
               Let&apos;s work
               <br />

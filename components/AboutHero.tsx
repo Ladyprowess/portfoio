@@ -33,7 +33,7 @@ export default function AboutHero() {
             </span>
             <h1
               className="font-display font-extrabold leading-[0.98] text-parchment"
-              style={{ fontSize: 'clamp(3.2rem, 7vw, 6.4rem)' }}
+              style={{ fontSize: 'clamp(2.1rem, 4vw, 3.6rem)' }}
             >
               Ngozi Peace
               <br />

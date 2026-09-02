@@ -98,7 +98,7 @@ export default function KivoraPaySeedPage() {
             </div>
             <h1
               className="font-display font-extrabold leading-[0.98] text-parchment"
-              style={{ fontSize: 'clamp(3.15rem, 7vw, 7rem)' }}
+              style={{ fontSize: 'clamp(2.1rem, 4vw, 3.6rem)' }}
             >
               A personal invitation to invest in KivoraPay.
             </h1>

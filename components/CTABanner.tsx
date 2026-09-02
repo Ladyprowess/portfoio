@@ -18,7 +18,7 @@ export default function CTABanner() {
         <div>
           <h2
             className="font-display font-extrabold text-dark leading-[1.1]"
-            style={{ fontSize: 'clamp(2rem, 4.4vw, 3.2rem)' }}
+            style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.3rem)' }}
           >
             Have a project in mind?
           </h2>

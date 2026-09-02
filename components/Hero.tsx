@@ -56,7 +56,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.08 }}
-              className="max-w-4xl font-display text-5xl font-extrabold leading-[0.98] text-parchment sm:text-6xl lg:text-7xl"
+              className="max-w-3xl font-display text-3xl font-extrabold leading-[1.08] text-parchment sm:text-4xl lg:text-5xl"
             >
               I turn messy ideas into products, stories, and businesses people can trust.
             </motion.h1>

@@ -55,7 +55,7 @@ export default function Testimonials() {
           </span>
           <h2
             className="font-display font-extrabold text-parchment leading-[1.08]"
-            style={{ fontSize: 'clamp(2.4rem, 4.6vw, 3.6rem)' }}
+            style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
           >
             Kind words from
             <br />
@@ -83,7 +83,7 @@ export default function Testimonials() {
                 transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.23, 1, 0.32, 1] }}
                 className="-mt-8 flex min-h-[300px] flex-col justify-between"
               >
-                <p className="max-w-4xl font-display text-3xl font-extrabold leading-[1.18] text-parchment md:text-5xl">
+                <p className="max-w-4xl font-display text-2xl font-extrabold leading-[1.25] text-parchment md:text-4xl">
                   {testimonial.quote}
                 </p>
 

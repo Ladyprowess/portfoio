@@ -76,7 +76,7 @@ export default function AboutStory() {
           </span>
           <h2
             className="font-display font-extrabold leading-[1.04]"
-            style={{ fontSize: 'clamp(2.8rem, 5vw, 4.8rem)' }}
+            style={{ fontSize: 'clamp(1.9rem, 3.2vw, 2.9rem)' }}
           >
             From a phone screen
             <br />

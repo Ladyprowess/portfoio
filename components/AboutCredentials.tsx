@@ -73,7 +73,7 @@ export default function AboutCredentials() {
             </span>
             <h2
               className="font-display font-extrabold leading-[1.04]"
-              style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}
+              style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
               Where the foundation
               <br />
@@ -124,7 +124,7 @@ export default function AboutCredentials() {
             </span>
             <h2
               className="font-display font-extrabold leading-[1.04]"
-              style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}
+              style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
               Where I bring
               <br />
@@ -153,7 +153,7 @@ export default function AboutCredentials() {
             </span>
             <h2
               className="font-display font-extrabold leading-[1.04]"
-              style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}
+              style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
               What I work
               <br />
