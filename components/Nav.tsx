@@ -9,7 +9,7 @@ const links = [
   { href: '/about',        label: 'About' },
   { href: '/work',         label: 'Work' },
   { href: '/#services',    label: 'Services' },
-  { href: '/blog',         label: 'Resources' },
+  { href: 'https://www.prowessdigitalsolutions.com/resources', label: 'Resources' },
   { href: '/#contact',     label: 'Contact' },
 ]
 
@@ -42,6 +42,8 @@ export default function Nav() {
             <li key={l.href}>
               <a
                 href={l.href}
+                target={l.href.startsWith('http') ? '_blank' : undefined}
+                rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className="font-head text-[0.67rem] font-bold tracking-[0.14em] uppercase text-muted hover:text-parchment focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
               >
                 {l.label}
@@ -87,6 +89,8 @@ export default function Nav() {
                 <motion.a
                   key={l.href}
                   href={l.href}
+                  target={l.href.startsWith('http') ? '_blank' : undefined}
+                  rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.055, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}

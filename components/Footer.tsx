@@ -22,7 +22,7 @@ const columns = [
   {
     title: 'Resources',
     links: [
-      { label: 'Blog', href: '/blog' },
+      { label: 'Resources', href: 'https://www.prowessdigitalsolutions.com/resources' },
       { label: 'Media', href: '/media' },
       { label: 'Awards', href: '/awards' },
       {
