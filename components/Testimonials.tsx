@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion'
 
 const testimonials = [
   {
@@ -33,6 +33,12 @@ const testimonials = [
 export default function Testimonials() {
   const titleRef = useRef(null)
   const titleInView = useInView(titleRef, { once: true, margin: '-80px' })
+  const reduceMotion = useReducedMotion()
+  const [active, setActive] = useState(0)
+
+  const testimonial = testimonials[active]
+  const previous = () => setActive((current) => (current === 0 ? testimonials.length - 1 : current - 1))
+  const next = () => setActive((current) => (current === testimonials.length - 1 ? 0 : current + 1))
 
   return (
     <section className="bg-surface px-6 py-28 sm:px-8 md:px-20 md:py-32 border-b border-ink-border">
@@ -57,40 +63,87 @@ export default function Testimonials() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {testimonials.map((t, i) => (
-            <TestimonialCard key={t.name} testimonial={t} index={i} />
-          ))}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={titleInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55, delay: 0.08, ease: [0.23, 1, 0.32, 1] }}
+          className="grid grid-cols-1 overflow-hidden border border-ink-border bg-bg lg:grid-cols-[1fr_340px]"
+        >
+          <div className="relative min-h-[420px] p-7 sm:p-10 md:p-14">
+            <span className="font-display text-primary/40 text-[4.5rem] leading-none" aria-hidden>
+              &ldquo;
+            </span>
+
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={testimonial.name}
+                initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -12 }}
+                transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.23, 1, 0.32, 1] }}
+                className="-mt-8 flex min-h-[300px] flex-col justify-between"
+              >
+                <p className="max-w-4xl font-display text-3xl font-extrabold leading-[1.18] text-parchment md:text-5xl">
+                  {testimonial.quote}
+                </p>
+
+                <div className="mt-10 border-t border-ink-border pt-6">
+                  <p className="font-head text-[0.85rem] font-bold text-parchment">
+                    {testimonial.name}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-muted">{testimonial.role}</p>
+                </div>
+              </motion.article>
+            </AnimatePresence>
+          </div>
+
+          <aside className="flex flex-col border-t border-ink-border bg-surface lg:border-l lg:border-t-0">
+            <div className="grid grid-cols-2 border-b border-ink-border">
+              <button
+                type="button"
+                onClick={previous}
+                className="min-h-14 border-r border-ink-border px-5 font-head text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted motion-safe:transition-colors motion-safe:duration-150 hover:bg-bg hover:text-parchment focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                aria-label="Show previous testimonial"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                onClick={next}
+                className="min-h-14 px-5 font-head text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted motion-safe:transition-colors motion-safe:duration-150 hover:bg-bg hover:text-parchment focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                aria-label="Show next testimonial"
+              >
+                Next
+              </button>
+            </div>
+
+            <div className="flex flex-1 flex-col">
+              {testimonials.map((item, index) => {
+                const selected = index === active
+
+                return (
+                  <button
+                    key={item.name}
+                    type="button"
+                    onClick={() => setActive(index)}
+                    className={`min-h-20 border-b border-ink-border px-6 py-5 text-left motion-safe:transition-colors motion-safe:duration-150 last:border-b-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${
+                      selected ? 'bg-bg' : 'hover:bg-bg/70'
+                    }`}
+                    aria-pressed={selected}
+                  >
+                    <span className="block font-head text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary">
+                      0{index + 1}
+                    </span>
+                    <span className="mt-2 block font-display text-lg font-extrabold leading-tight text-parchment">
+                      {item.name}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </aside>
+        </motion.div>
       </div>
     </section>
-  )
-}
-
-function TestimonialCard({
-  testimonial,
-  index,
-}: {
-  testimonial: (typeof testimonials)[0]
-  index: number
-}) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-50px' })
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="bg-bg border border-ink-border p-7 flex flex-col gap-6"
-    >
-      <span className="font-display text-primary/50 text-[2.5rem] leading-none">&ldquo;</span>
-      <p className="text-[0.9rem] text-muted leading-[1.8] flex-1 -mt-4">{testimonial.quote}</p>
-      <div className="border-t border-ink-border pt-4">
-        <p className="font-head font-bold text-[0.85rem] text-parchment">{testimonial.name}</p>
-        <p className="font-body text-[0.72rem] text-muted mt-0.5">{testimonial.role}</p>
-      </div>
-    </motion.div>
   )
 }

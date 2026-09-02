@@ -71,6 +71,15 @@ export default function Work() {
             <ProjectCard key={p.title} project={p} index={i} />
           ))}
         </div>
+
+        <div className="mt-10 flex justify-center">
+          <a
+            href="/work"
+            className="inline-flex min-h-12 items-center justify-center border border-ink-border bg-surface px-7 py-4 font-display text-[0.9rem] font-bold text-parchment motion-safe:transition-colors motion-safe:duration-150 hover:border-primary/50 hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          >
+            View Full Work Page
+          </a>
+        </div>
       </div>
     </section>
   )
