@@ -77,7 +77,7 @@ export default function CaseStudies() {
             </h2>
           </div>
           <p className="mb-1 max-w-md text-sm leading-6 text-muted">
-            I wrote these case studies for companies across technology, crypto, payments, lifestyle, and professional services. Each preview opens the original document I delivered as a writer.
+            I wrote these case studies for companies across technology, crypto, payments, lifestyle, and professional services.
           </p>
         </motion.div>
 

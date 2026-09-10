@@ -49,8 +49,8 @@ const groups = [
     title: 'Practical learning for business, technology, and Web3.',
     introduction: 'I create workshops, video lessons, ebooks, guides, and learning resources that make unfamiliar topics easier to understand.',
     items: [
-      { title: 'Learn Web3 with Lady Prowess', description: 'Lessons and practical explanations for people building confidence in Web3 and emerging technology.', image: '/service-proof/web3-training.jpg', href: 'https://ladyprowess.substack.com/', linkLabel: 'Explore the lessons' },
       { title: 'Video Learning Library', description: 'Practical video lessons covering Web3, business, career growth, and useful digital skills.', image: '/service-proof/video-library.png', href: 'https://www.prowessdigitalsolutions.com/videos', linkLabel: 'Watch the lessons' },
+      { title: 'Learn Web3 with Lady Prowess', description: 'Lessons and practical explanations for people building confidence in Web3 and emerging technology.', image: '/service-proof/web3-training.jpg', href: 'https://ladyprowess.substack.com/', linkLabel: 'Explore the lessons' },
       { title: 'Ebook and Resource Library', description: 'A digital library where readers can discover and buy ebooks, guides, templates, checklists, and other useful resources.', image: '/service-proof/digital-library.png', href: 'https://www.prowessdigitalsolutions.com/resources', linkLabel: 'Visit the library' },
     ] as Proof[],
   },
@@ -67,7 +67,7 @@ export default function ServiceProof() {
             <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Selected work</p>
             <h2 className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">What I do, shown through real projects.</h2>
           </div>
-          <p className="max-w-2xl text-base leading-7 text-muted">Choose a category to browse websites I designed, writing published by brands, and learning experiences I created.</p>
+          <p className="max-w-2xl text-base leading-7 text-muted">Browse websites I designed, writing published by brands, and learning experiences I created.</p>
         </div>
 
         <div className="mt-10 flex gap-2 overflow-x-auto border-b border-ink-border pb-4" role="tablist" aria-label="Service proof categories">
