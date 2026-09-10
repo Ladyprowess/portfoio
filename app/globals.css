@@ -103,6 +103,12 @@ body::before {
 .blog-editor blockquote, .blog-content blockquote { margin: 2rem 0; border-left: 3px solid #2563EB; padding-left: 1.25rem; font-family: var(--font-jakarta); font-size: 1.25rem; font-weight: 600; line-height: 1.6; }
 .blog-editor a, .blog-content a { color: #2563EB; text-decoration: underline; }
 .blog-editor img, .blog-content img { margin: 2rem 0; max-width: 100%; border-radius: 1rem; }
+.blog-editor .blog-table-wrap, .blog-content .blog-table-wrap { margin: 1.75rem 0; max-width: 100%; overflow-x: auto; border: 1px solid #DDE1E8; border-radius: 0.9rem; }
+.blog-editor table, .blog-content table { width: 100%; min-width: 520px; border-collapse: collapse; background: #FFFFFF; font-size: 0.95rem; line-height: 1.55; }
+.blog-editor th, .blog-content th { background: #F3F6FB; color: #121212; font-weight: 700; text-align: left; }
+.blog-editor th, .blog-editor td, .blog-content th, .blog-content td { min-width: 120px; border-right: 1px solid #DDE1E8; border-bottom: 1px solid #DDE1E8; padding: 0.8rem 0.95rem; vertical-align: top; }
+.blog-editor th:last-child, .blog-editor td:last-child, .blog-content th:last-child, .blog-content td:last-child { border-right: 0; }
+.blog-editor tbody tr:last-child td, .blog-content tbody tr:last-child td { border-bottom: 0; }
 
 /* ── Accessibility ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

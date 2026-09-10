@@ -27,7 +27,7 @@ const brands = [
   { name: 'WriteTech Hub', image: '/brands/writechtechhub.webp', href: 'https://writetechhub.org/' },
   { name: 'CoinTime ATM', image: '/brands/cointime.png', href: 'https://cointimeatm.com/' },
   { name: 'CustomersChain', image: '/brands/customerschain.png', href: 'https://customerschain.com/' },
-  { name: 'LW Commerce', image: null, href: 'https://lwcommerce.org/' },
+  { name: 'LW Commerce', image: '/brands/moc.png', href: 'https://lwcommerce.org/' },
   { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/' },
   { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/' },
   { name: 'UPay', image: '/brands/upay.jpeg', href: 'https://upay.com/' },
