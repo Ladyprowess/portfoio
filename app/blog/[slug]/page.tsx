@@ -4,6 +4,8 @@ import type { Metadata } from 'next'
 import { blogPosts, getBlogPost } from '@/lib/blog-posts'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Image from 'next/image'
+import { getPublishedPost, readTime } from '@/lib/blog-cms'
 
 type BlogPostPageProps = {
   params: {
@@ -15,8 +17,8 @@ export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }))
 }
 
-export function generateMetadata({ params }: BlogPostPageProps): Metadata {
-  const post = getBlogPost(params.slug)
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const post = getBlogPost(params.slug) || await getPublishedPost(params.slug)
 
   if (!post) {
     return {
@@ -30,12 +32,15 @@ export function generateMetadata({ params }: BlogPostPageProps): Metadata {
   }
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getBlogPost(params.slug)
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const staticPost = getBlogPost(params.slug)
+  const cmsPost = staticPost ? null : await getPublishedPost(params.slug)
+  const post = staticPost || cmsPost
 
   if (!post) {
     notFound()
   }
+  const accent = 'accent' in post ? post.accent : '#2563EB'
 
   return (
     <main className="min-h-screen bg-bg">
@@ -52,34 +57,36 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="flex flex-wrap items-center gap-3 mb-8">
             <span
               className="font-head text-[0.58rem] font-bold tracking-[0.12em] uppercase px-3 py-1.5 rounded-full"
-              style={{ color: post.accent, background: `${post.accent}14` }}
+              style={{ color: accent, background: `${accent}14` }}
             >
               {post.category}
             </span>
             <span className="font-head text-[0.6rem] font-bold tracking-[0.12em] uppercase text-muted">
-              {post.date}
+              {'date' in post ? post.date : post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', day: 'numeric', year: 'numeric' }) : ''}
             </span>
             <span className="font-head text-[0.6rem] font-bold tracking-[0.12em] uppercase text-muted">
-              {post.readTime}
+              {'readTime' in post ? post.readTime : readTime(post.content_html)}
             </span>
           </div>
 
           <h1
             className="font-display font-extrabold leading-[1.05] text-parchment"
-            style={{ fontSize: 'clamp(2rem, 3.8vw, 3.3rem)' }}
+            style={{ fontSize: 'clamp(1.9rem, 3vw, 2.8rem)' }}
           >
             {post.title}
           </h1>
           <p className="text-[1.08rem] text-muted leading-[1.9] mt-8 max-w-2xl">{post.excerpt}</p>
         </header>
 
-        <div className="py-14 space-y-7 max-w-3xl">
+        {'cover_image' in post && post.cover_image && <div className="relative mt-8 aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
+
+        {'content_html' in post ? <div className="blog-content max-w-3xl py-14" dangerouslySetInnerHTML={{ __html: post.content_html }} /> : <div className="py-14 space-y-7 max-w-3xl">
           {post.body.map((block, index) => {
             if (block.type === 'quote') {
               return (
                 <blockquote
                   key={`${block.type}-${index}`}
-                  className="my-12 border-l border-primary pl-6 font-display text-[2rem] font-extrabold leading-[1.25] text-parchment md:text-[3rem]"
+                  className="my-12 border-l border-primary pl-6 font-display text-[1.55rem] font-semibold leading-[1.4] text-parchment md:text-[2rem]"
                 >
                   {block.text}
                 </blockquote>
@@ -99,7 +106,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               </p>
             )
           })}
-        </div>
+        </div>}
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <span className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted">

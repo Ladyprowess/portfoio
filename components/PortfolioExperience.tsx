@@ -3,6 +3,8 @@
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import Nav from './Nav'
+import Footer from './Footer'
 
 const roles = [
   { key: 'product', label: 'Product marketing', title: 'I help products make sense to the people they are built for.', body: 'Positioning, product messaging, launch campaigns, onboarding, customer education, and go to market support, especially for fintech, payments, and Web3.', tools: ['Positioning', 'Launch strategy', 'User education', 'Campaigns'] },
@@ -50,19 +52,13 @@ export default function PortfolioExperience() {
   }, [])
 
   return <main className="min-h-screen bg-bg text-parchment">
-    <nav className="sticky top-0 z-50 border-b border-ink-border bg-bg/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-5 md:px-8">
-        <a href="/" className="flex items-center"><Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" priority /></a>
-        <div className="hidden items-center gap-7 text-sm text-muted md:flex"><a href="/about" className="hover:text-parchment">About</a><a href="/work" className="hover:text-parchment">Work</a><a href="/services" className="hover:text-parchment">Services</a><a href="/blog" className="hover:text-parchment">Blog</a><a href="/media" className="hover:text-parchment">Media</a></div>
-        <a href="mailto:hello@ladyprowess.com" className="rounded-full bg-parchment px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary">Start a conversation</a>
-      </div>
-    </nav>
+    <Nav />
 
-    <section id="top" className="mx-auto max-w-[1240px] px-5 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24">
+    <section id="top" className="mx-auto max-w-[1240px] px-5 pb-20 pt-28 md:px-8 md:pb-28 md:pt-36">
       <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_.88fr]">
         <div>
           <div className="mb-6 flex items-center gap-2 text-sm text-muted"><span className="h-2 w-2 rounded-full bg-[#84CC16]" />Available for selected projects</div>
-          <h1 className="max-w-3xl font-display text-[clamp(2.7rem,5.3vw,4.8rem)] font-semibold leading-[1.04] tracking-[-0.055em]">I connect products, content and business.</h1>
+          <h1 className="max-w-3xl font-display text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.045em]">I connect products, content and business.</h1>
           <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor, a product marketer, technical writer, copywriter, WordPress designer, Web3 educator, and founder. I make complex ideas clear enough to use, market, and grow.</p>
           <div className="mt-9 flex flex-wrap gap-3"><a href="/services" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dim">Explore my work</a><a href="https://docs.google.com/document/d/15iD1V-k-C9JkuVPbByPX07DpW3ADhczd/edit?usp=sharing&ouid=101585197199462740286&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-slate">View résumé ↗</a></div>
           <div className="mt-12 grid max-w-xl grid-cols-3 border-t border-ink-border pt-6"><div><strong className="block font-display text-xl">9+</strong><span className="text-xs text-muted">Years building</span></div><div><strong className="block font-display text-xl">200+</strong><span className="text-xs text-muted">People trained</span></div><div><strong className="block font-display text-xl">3</strong><span className="text-xs text-muted">Ventures founded</span></div></div>
@@ -113,9 +109,9 @@ export default function PortfolioExperience() {
       </div>
     </section>
 
-    <section className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28"><div className="grid overflow-hidden rounded-3xl bg-parchment text-white md:grid-cols-[1.2fr_.8fr]"><div className="p-8 md:p-14"><p className="font-head text-[10px] uppercase tracking-wider text-blue-300">Have something to build?</p><h2 className="mt-4 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-4xl">Tell me what feels unclear. We can start there.</h2><p className="mt-5 max-w-lg leading-7 text-white/65">Products, websites, technical content, education, AI workflows, or business systems.</p></div><div className="flex items-end border-t border-white/10 p-8 md:border-l md:border-t-0 md:p-14"><a href="mailto:hello@ladyprowess.com" className="w-full rounded-full bg-white px-6 py-4 text-center text-sm font-semibold text-parchment hover:bg-blue-50">hello@ladyprowess.com</a></div></div></section>
+    <section id="contact" className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28"><div className="grid overflow-hidden rounded-3xl bg-parchment text-white md:grid-cols-[1.2fr_.8fr]"><div className="p-8 md:p-14"><p className="font-head text-[10px] uppercase tracking-wider text-blue-300">Have something to build?</p><h2 className="mt-4 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-4xl">Tell me what feels unclear. We can start there.</h2><p className="mt-5 max-w-lg leading-7 text-white/65">Products, websites, technical content, education, AI workflows, or business systems.</p></div><div className="flex items-end border-t border-white/10 p-8 md:border-l md:border-t-0 md:p-14"><a href="mailto:hello@ladyprowess.com" className="w-full rounded-full bg-white px-6 py-4 text-center text-sm font-semibold text-parchment hover:bg-blue-50">hello@ladyprowess.com</a></div></div></section>
 
-    <footer className="border-t border-ink-border py-8"><div className="mx-auto flex max-w-[1240px] flex-col gap-4 px-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between md:px-8"><span>© 2026 Ngozi Peace Okafor</span><div className="flex gap-5"><a href="https://www.linkedin.com/in/peace-ngozi-okafor">LinkedIn</a><a href="https://x.com/ladyprowess">X</a><a href="https://www.instagram.com/ladyprowess_">Instagram</a></div></div></footer>
+    <Footer />
 
     <AnimatePresence>{project && <motion.div className="fixed inset-0 z-[80] flex items-end justify-center bg-slate-950/30 p-3 backdrop-blur-sm md:items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setProject(null)}><motion.div role="dialog" aria-modal="true" initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} onClick={e => e.stopPropagation()} className="w-full max-w-xl rounded-3xl bg-white p-7 shadow-2xl md:p-9"><div className="flex items-start justify-between"><div><p className="font-head text-[10px] uppercase tracking-wider text-primary">{project.type}</p><h3 className="mt-2 font-display text-3xl font-semibold tracking-[-.035em]">{project.name}</h3></div><button onClick={() => setProject(null)} className="rounded-full bg-surface-2 px-3 py-2 text-sm text-muted hover:text-parchment">Close</button></div><p className="mt-5 leading-7 text-muted">{project.summary}</p><p className="mt-7 text-xs font-semibold uppercase tracking-wider">My work</p><div className="mt-3 flex flex-wrap gap-2">{project.work.map(item => <span key={item} className="rounded-full border border-ink-border px-4 py-2 text-xs">{item}</span>)}</div><a href={project.href} target="_blank" className="mt-8 block rounded-full bg-primary px-6 py-3 text-center text-sm font-semibold text-white">Visit project ↗</a></motion.div></motion.div>}</AnimatePresence>
   </main>

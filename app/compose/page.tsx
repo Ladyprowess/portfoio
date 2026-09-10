@@ -1,7 +1,8 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import AdminNav from '@/components/AdminNav'
 
 // Private compose page. Public URL, but the form is gated by a password that is
 // checked on the server (COMPOSE_PASSWORD). Sends from hello@ladyprowess.com via Resend.
@@ -88,6 +89,11 @@ export default function ComposePage() {
   const [loadingHistory, setLoadingHistory] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('ladyprowess_admin_password')
+    if (saved) { setPassword(saved); setUnlocked(true) }
+  }, [])
 
   // Apply a formatting command to the selected text in the rich editor.
   function format(command: string, value?: string) {
@@ -187,7 +193,10 @@ export default function ComposePage() {
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            if (password.trim()) setUnlocked(true)
+            if (password.trim()) {
+              sessionStorage.setItem('ladyprowess_admin_password', password)
+              setUnlocked(true)
+            }
           }}
           className="w-full max-w-sm border border-ink-border bg-surface p-8"
         >
@@ -225,20 +234,20 @@ export default function ComposePage() {
 
   // --- Compose form ---
   return (
-    <main className="min-h-screen bg-bg px-6 py-16 text-parchment md:px-10">
+    <><AdminNav /><main className="min-h-screen bg-bg px-6 py-12 text-parchment md:px-10">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
               New message
             </span>
-            <h1 className="mt-2 font-display text-[2.8rem] font-extrabold leading-none">Compose</h1>
+            <h1 className="mt-2 font-display text-[2.2rem] font-semibold leading-none">Compose</h1>
           </div>
           <Link
-            href="/"
+            href="/admin"
             className="font-head text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted transition-colors hover:text-primary"
           >
-            Close
+            Admin home
           </Link>
         </div>
 
@@ -447,6 +456,6 @@ export default function ComposePage() {
       </div>
 
       {selectedEmail && <div className="fixed inset-0 z-50 flex justify-end bg-black/25 backdrop-blur-sm" onClick={() => setSelectedEmail(null)}><aside className="h-full w-full max-w-2xl overflow-y-auto border-l border-ink-border bg-bg p-7 md:p-10" onClick={event => event.stopPropagation()}><div className="flex items-start justify-between"><div><span className={labelClass}>Email details</span><h2 className="mt-2 font-display text-2xl font-bold">{selectedEmail.subject}</h2></div><button onClick={() => setSelectedEmail(null)} className="rounded-full border border-ink-border bg-white px-4 py-2 text-xs">Close</button></div><dl className="mt-8 grid gap-4 rounded-2xl border border-ink-border bg-white p-5 text-sm sm:grid-cols-2"><div><dt className="text-xs text-muted">To</dt><dd className="mt-1">{selectedEmail.recipients.join(', ')}</dd></div><div><dt className="text-xs text-muted">Sent</dt><dd className="mt-1">{new Date(selectedEmail.sent_at).toLocaleString()}</dd></div><div><dt className="text-xs text-muted">Status</dt><dd className="mt-1 capitalize">{selectedEmail.status}</dd></div><div><dt className="text-xs text-muted">Activity</dt><dd className="mt-1">{selectedEmail.events.filter(e => e.event_type === 'open').length} opens · {selectedEmail.events.filter(e => e.event_type === 'click').length} clicks</dd></div></dl><div className="mt-7"><p className={labelClass}>Email sent</p><div className="mt-3 rounded-2xl border border-ink-border bg-white p-6 leading-7" dangerouslySetInnerHTML={{ __html: selectedEmail.body_html }} /></div><div className="mt-7"><p className={labelClass}>Activity timeline</p><div className="mt-3 overflow-hidden rounded-2xl border border-ink-border bg-white">{selectedEmail.events.length ? selectedEmail.events.map(event => <div key={event.id} className="flex items-start justify-between gap-5 border-b border-ink-border p-4 last:border-0"><div><p className="text-sm font-semibold capitalize">{event.event_type}</p>{event.url && <p className="mt-1 break-all text-xs text-primary">{event.url}</p>}</div><time className="shrink-0 text-xs text-muted">{new Date(event.occurred_at).toLocaleString()}</time></div>) : <p className="p-5 text-sm text-muted">No opens or clicks recorded yet.</p>}</div></div></aside></div>}
-    </main>
+    </main></>
   )
 }

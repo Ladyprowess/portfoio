@@ -3,7 +3,7 @@ type Row = Record<string, unknown>
 function config() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !key) throw new Error('Email tracking database is not configured.')
+  if (!url || !key) throw new Error('The database is not configured.')
   return { url, key }
 }
 
@@ -14,7 +14,7 @@ export async function db(path: string, init: RequestInit = {}) {
     headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=representation', ...(init.headers || {}) },
     cache: 'no-store',
   })
-  if (!response.ok) throw new Error(`Email tracking database error: ${await response.text()}`)
+  if (!response.ok) throw new Error(`Database error: ${await response.text()}`)
   const text = await response.text()
   return text ? JSON.parse(text) as Row[] : []
 }

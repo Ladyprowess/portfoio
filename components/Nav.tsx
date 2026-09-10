@@ -63,13 +63,12 @@ export default function Nav() {
 
         {/* Mobile toggle */}
         <button
-          className="xl:hidden relative z-50 flex min-h-11 min-w-11 flex-col items-center justify-center gap-[5px] p-2 -mr-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          className="relative z-50 -mr-2 flex min-h-11 items-center justify-center gap-2 rounded-full border border-ink-border bg-white px-3 py-2 text-sm font-semibold xl:hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle menu"
         >
-          <span className={`block h-px bg-parchment transition-transform duration-300 ${menuOpen ? 'w-6 rotate-45 translate-y-[5px]' : 'w-6'}`} />
-          <span className={`block h-px bg-parchment transition-opacity duration-300 ${menuOpen ? 'w-0 opacity-0' : 'w-4'}`} />
-          <span className={`block h-px bg-parchment transition-transform duration-300 ${menuOpen ? 'w-6 -rotate-45 -translate-y-[5px]' : 'w-5'}`} />
+          <span>{menuOpen ? 'Close' : 'Menu'}</span>
+          <span className="flex w-5 flex-col gap-1" aria-hidden="true"><span className={`block h-px bg-parchment transition-transform ${menuOpen ? 'translate-y-[5px] rotate-45' : ''}`} /><span className={`block h-px bg-parchment transition-opacity ${menuOpen ? 'opacity-0' : ''}`} /><span className={`block h-px bg-parchment transition-transform ${menuOpen ? '-translate-y-[5px] -rotate-45' : ''}`} /></span>
         </button>
       </motion.nav>
 

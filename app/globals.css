@@ -93,6 +93,17 @@ body::before {
 .compose-editor a  { color: var(--primary); text-decoration: underline; }
 .compose-editor b, .compose-editor strong { font-weight: 700; }
 
+.blog-editor:empty::before { content: attr(data-placeholder); color: #9CA3AF; pointer-events: none; }
+.blog-editor h2, .blog-content h2 { margin: 2rem 0 0.75rem; font-family: var(--font-jakarta); font-size: 1.75rem; font-weight: 700; line-height: 1.25; }
+.blog-editor h3, .blog-content h3 { margin: 1.6rem 0 0.6rem; font-family: var(--font-jakarta); font-size: 1.3rem; font-weight: 700; line-height: 1.35; }
+.blog-editor p, .blog-content p { margin: 0 0 1.25rem; font-size: 1.05rem; line-height: 1.9; }
+.blog-editor ul, .blog-content ul { margin: 1rem 0 1.5rem; list-style: disc; padding-left: 1.5rem; }
+.blog-editor ol, .blog-content ol { margin: 1rem 0 1.5rem; list-style: decimal; padding-left: 1.5rem; }
+.blog-editor li, .blog-content li { margin: 0.4rem 0; line-height: 1.8; }
+.blog-editor blockquote, .blog-content blockquote { margin: 2rem 0; border-left: 3px solid #2563EB; padding-left: 1.25rem; font-family: var(--font-jakarta); font-size: 1.25rem; font-weight: 600; line-height: 1.6; }
+.blog-editor a, .blog-content a { color: #2563EB; text-decoration: underline; }
+.blog-editor img, .blog-content img { margin: 2rem 0; max-width: 100%; border-radius: 1rem; }
+
 /* ── Accessibility ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
