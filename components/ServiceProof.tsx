@@ -17,12 +17,12 @@ const groups = [
     key: 'websites',
     label: 'Websites',
     eyebrow: 'WordPress design',
-    title: 'WordPress websites built for real people.',
+    title: 'Websites built for real people.',
     introduction: 'I design responsive websites with clear navigation, useful content, and straightforward paths that help visitors take action.',
     items: [
       { title: 'Prowess Digital Solutions', description: 'A practical platform connecting people with learning, opportunities, tools, and business support.', image: '/service-proof/prowess-digital-solutions.png', href: 'https://www.prowessdigitalsolutions.com', linkLabel: 'Visit website' },
-      { title: 'Testers Connect', description: 'A community website built to connect quality assurance professionals with resources, events, jobs, and mentorship.', image: '/service-proof/testers-connect.png', href: '/service-proof/testers-connect.png', linkLabel: 'View project preview' },
-      { title: 'Dritchwear', description: 'A merchandise commerce experience for custom apparel, corporate gifts, event kits, and branded products.', image: '/service-proof/dritchwear.png', href: 'https://app.dritchwear.com/shop', linkLabel: 'Visit website' },
+      { title: 'Testers Connect', description: 'A community website built to connect quality assurance professionals with resources, events, jobs, and mentorship.', image: '/service-proof/testers-connect.png', href: 'https://testersconnect.com', linkLabel: 'View project preview' },
+      { title: 'Dritchwear', description: 'A merchandise commerce experience for custom apparel, corporate gifts, event kits, and branded products.', image: '/service-proof/dritchwear.png', href: 'https://dritchwear.com', linkLabel: 'Visit website' },
     ] as Proof[],
   },
   {
@@ -67,7 +67,7 @@ export default function ServiceProof() {
             <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Selected work</p>
             <h2 className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">What I do, shown through real projects.</h2>
           </div>
-          <p className="max-w-2xl text-base leading-7 text-muted">Browse websites I designed, writing published by brands, and learning experiences I created.</p>
+          <p className="max-w-2xl text-base leading-7 text-muted">Browse websites I designed, writing I publish for brands, and learning experiences I created.</p>
         </div>
 
         <div className="mt-10 flex gap-2 overflow-x-auto border-b border-ink-border pb-4" role="tablist" aria-label="Service proof categories">
