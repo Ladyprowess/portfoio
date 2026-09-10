@@ -44,8 +44,10 @@ function flattenChecklistWrappers(list: HTMLUListElement | HTMLOListElement) {
 
       const visibleCopy = item.cloneNode(true) as HTMLElement
       visibleCopy.querySelectorAll('ul, ol').forEach(childList => childList.remove())
+      visibleCopy.querySelectorAll('input[type="checkbox"], [aria-hidden="true"]').forEach(element => element.remove())
       const ownText = (visibleCopy.textContent || '').replace(checklistMarker, '').replace(/\u200B/g, '').trim()
-      if (ownText || visibleCopy.querySelector('img, table')) return
+      const hasWrittenContent = /[A-Za-z0-9]/.test(ownText)
+      if (hasWrittenContent || visibleCopy.querySelector('img, table')) return
 
       Array.from(nestedList.children).forEach(nestedItem => list.insertBefore(nestedItem, item))
       item.remove()
@@ -58,15 +60,24 @@ function prepareChecklist(list: HTMLUListElement | HTMLOListElement, removeEmpty
   flattenChecklistWrappers(list)
   list.className = 'blog-checklist'
   list.querySelectorAll(':scope > li').forEach(item => {
-    if (item.querySelector('input[type="checkbox"]')) return
+    const sourceCheckboxes = Array.from(item.querySelectorAll('input[type="checkbox"]')) as HTMLInputElement[]
     const itemText = (item.textContent || '').replace(checklistMarker, '').replace(/\u200B/g, '').trim()
     if (removeEmptyItems && !itemText && !item.querySelector('img, table')) {
       item.remove()
       return
     }
-    const checked = /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(item.textContent?.trim() || '') || item.getAttribute('aria-checked') === 'true'
-    const firstText = document.createTreeWalker(item, NodeFilter.SHOW_TEXT).nextNode()
-    if (firstText?.textContent) firstText.textContent = firstText.textContent.replace(checklistMarker, '')
+    const checked = sourceCheckboxes.some(checkbox => checkbox.checked || checkbox.hasAttribute('checked')) || /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(item.textContent?.trim() || '') || item.getAttribute('aria-checked') === 'true'
+    sourceCheckboxes.forEach(checkbox => checkbox.remove())
+    item.querySelectorAll('label').forEach(sourceLabel => sourceLabel.replaceWith(...Array.from(sourceLabel.childNodes)))
+    const textWalker = document.createTreeWalker(item, NodeFilter.SHOW_TEXT)
+    let textNode = textWalker.nextNode()
+    while (textNode) {
+      if (textNode.textContent && checklistMarker.test(textNode.textContent)) {
+        textNode.textContent = textNode.textContent.replace(checklistMarker, '')
+        break
+      }
+      textNode = textWalker.nextNode()
+    }
     const contents = document.createElement('span')
     while (item.firstChild) contents.appendChild(item.firstChild)
     const label = document.createElement('label')
