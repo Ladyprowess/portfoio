@@ -18,7 +18,7 @@ export type BlogArchivePost = {
 
 const POSTS_PER_PAGE = 6
 
-export default function BlogArchive({ posts, categories, activeCategory = 'All' }: { posts: BlogArchivePost[]; categories: string[]; activeCategory?: string }) {
+export default function BlogArchive({ posts, categories, activeCategory = 'All', showCategories = true }: { posts: BlogArchivePost[]; categories: string[]; activeCategory?: string; showCategories?: boolean }) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
   const filtered = posts.filter(post => {
@@ -32,7 +32,7 @@ export default function BlogArchive({ posts, categories, activeCategory = 'All' 
 
   return <>
     <div className="mb-10 space-y-4">
-      <nav className="flex flex-wrap gap-2" aria-label="Blog categories"><Link href="/blog" aria-current={activeCategory === 'All' ? 'page' : undefined} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeCategory === 'All' ? 'border-primary bg-primary text-white' : 'border-ink-border bg-white text-muted hover:border-primary/40 hover:text-parchment'}`}>All</Link>{categories.map(item => <Link key={item} href={`/blog/category/${categorySlug(item)}`} aria-current={activeCategory === item ? 'page' : undefined} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeCategory === item ? 'border-primary bg-primary text-white' : 'border-ink-border bg-white text-muted hover:border-primary/40 hover:text-parchment'}`}>{item}</Link>)}</nav>
+      {showCategories && <nav className="flex flex-wrap gap-2" aria-label="Blog categories"><Link href="/blog" aria-current={activeCategory === 'All' ? 'page' : undefined} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeCategory === 'All' ? 'border-primary bg-primary text-white' : 'border-ink-border bg-white text-muted hover:border-primary/40 hover:text-parchment'}`}>All</Link>{categories.map(item => <Link key={item} href={`/${categorySlug(item)}`} aria-current={activeCategory === item ? 'page' : undefined} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeCategory === item ? 'border-primary bg-primary text-white' : 'border-ink-border bg-white text-muted hover:border-primary/40 hover:text-parchment'}`}>{item}</Link>)}</nav>}
       <label className="relative block rounded-2xl border border-ink-border bg-white p-3"><span className="sr-only">Search blog posts</span><svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="absolute left-7 top-1/2 h-5 w-5 -translate-y-1/2 text-muted"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg><input value={query} onChange={event => { setQuery(event.target.value); setPage(1) }} placeholder={`Search ${activeCategory === 'All' ? 'all articles' : activeCategory}`} className="w-full rounded-xl bg-bg py-3 pl-12 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary/25" /></label>
     </div>
     <div className="mb-6 flex items-center justify-between"><p className="text-sm text-muted">{filtered.length} {filtered.length === 1 ? 'article' : 'articles'}</p>{totalPages > 1 && <p className="text-sm text-muted">Page {safePage} of {totalPages}</p>}</div>
