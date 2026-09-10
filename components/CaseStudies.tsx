@@ -73,11 +73,11 @@ export default function CaseStudies() {
               className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(1.9rem, 3.2vw, 2.9rem)' }}
             >
-              Brand case studies with documented results.
+              Case studies I wrote for companies.
             </h2>
           </div>
           <p className="mb-1 max-w-md text-sm leading-6 text-muted">
-            These original case studies show the strategy, writing, search results, and product communication behind the work.
+            I wrote these case studies for companies across technology, crypto, payments, lifestyle, and professional services. Each preview opens the original document I delivered as a writer.
           </p>
         </motion.div>
 
