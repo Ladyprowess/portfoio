@@ -2,42 +2,49 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import Image from 'next/image'
 
 const studies = [
   {
     name: 'Prospult',
     desc: 'A written brand case study for a B2B prospecting platform, focused on positioning, messaging clarity, and product value.',
     href: 'https://docs.google.com/document/d/1sV_J_iikUSUtBztg6H3dezYifhoyEXZaX8YDkxAPTPg/edit?usp=sharing',
+    image: '/service-proof/brand-case-prospult.jpg',
     accent: '#507B80',
   },
   {
     name: 'Three Movers',
     desc: 'A written case study for a relocation and moving services brand, shaped for clarity, search relevance, and reader confidence.',
     href: 'https://docs.google.com/document/d/1oZSJHBPZ8JBrAYQ5kfU5XOZucHAbV1ORX1S27ZZVdkc/edit?usp=sharing',
+    image: '/service-proof/brand-case-three-movers.jpg',
     accent: '#35555A',
   },
   {
     name: 'Giftvant',
     desc: 'A written case study for a digital gifting and loyalty rewards platform, translating product use cases into a clear brand story.',
     href: 'https://docs.google.com/document/d/1L-47UUPHsd0reieSVOV2cex3_PV1Qh-XxuilbkIiwpA/edit?usp=sharing',
+    image: '/service-proof/brand-case-giftvant.jpg',
     accent: '#507B80',
   },
   {
     name: 'UEEX',
     desc: 'A written case study for a centralised crypto trading platform, covering exchange education and technical product communication.',
     href: 'https://docs.google.com/document/d/1LwssJU3c6CfrqO2fW8Tvr1nm6OAYNLttNYa1Dgxnowc/edit?usp=sharing',
+    image: '/service-proof/brand-case-ueex.jpg',
     accent: '#507B80',
   },
   {
     name: 'Solevant',
-    desc: 'A written case study for a lifestyle brand, focused on brand identity, product language, and audience-facing storytelling.',
+    desc: 'A written case study for a lifestyle brand, focused on brand identity, product language, and storytelling for its audience.',
     href: 'https://docs.google.com/document/d/19BrIcrzEP3RWCV89YtYub1ogclLR_Or5UZCKGOLHgeM/edit?tab=t.0',
+    image: '/service-proof/brand-case-solevant.jpg',
     accent: '#35555A',
   },
   {
     name: 'UPay',
     desc: 'A written case study for a multi-currency payment solution, explaining product value, onboarding, and user education.',
     href: 'https://docs.google.com/document/d/1HNnhHOL3BQYMgUe4RW-73Bm8Nfq7IOME2Ca7eWJ3WVU/edit?usp=sharing',
+    image: '/service-proof/brand-case-upay.jpg',
     accent: '#507B80',
   },
 ]
@@ -47,8 +54,8 @@ export default function CaseStudies() {
   const titleInView = useInView(titleRef, { once: true, margin: '-80px' })
 
   return (
-    <section id="case-studies" className="px-8 md:px-20 py-36 border-t border-ink-border">
-      <div className="max-w-[1400px] mx-auto">
+    <section id="case-studies" className="border-t border-ink-border bg-bg px-5 py-20 md:px-8 md:py-24">
+      <div className="mx-auto max-w-[1240px]">
 
         {/* Header */}
         <motion.div
@@ -56,7 +63,7 @@ export default function CaseStudies() {
           initial={{ opacity: 0, y: 28 }}
           animate={titleInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16"
+          className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end"
         >
           <div>
             <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
@@ -66,18 +73,16 @@ export default function CaseStudies() {
               className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(1.9rem, 3.2vw, 2.9rem)' }}
             >
-              Case studies
-              <br />
-              <em className="not-italic text-primary">written for brands.</em>
+              Brand case studies with documented results.
             </h2>
           </div>
-          <p className="text-[0.95rem] text-muted max-w-xs leading-[1.8] mb-1">
-            Selected brand case studies I authored as a writer across technology, crypto, payments, lifestyle, and service businesses.
+          <p className="mb-1 max-w-md text-sm leading-6 text-muted">
+            These original case studies show the strategy, writing, search results, and product communication behind the work.
           </p>
         </motion.div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {studies.map((s, i) => (
             <CaseCard key={s.name} study={s} index={i} />
           ))}
@@ -100,13 +105,11 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
       initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex flex-col bg-surface border border-ink-border overflow-hidden hover:border-primary/30 transition-colors duration-300 cursor-pointer"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-ink-border bg-white transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]"
     >
-      {/* Top accent */}
-      <div
-        className="h-px w-full"
-        style={{ background: `linear-gradient(90deg, ${study.accent}, transparent)` }}
-      />
+      <div className="relative aspect-[16/10] overflow-hidden bg-surface-2">
+        <Image src={study.image} alt={`Preview of the ${study.name} case study`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover object-top transition duration-500 group-hover:scale-[1.025]" />
+      </div>
 
       {/* Hover glow */}
       <div
@@ -117,22 +120,22 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
         }}
       />
 
-      <div className="p-8 flex flex-col gap-4 flex-1 relative z-10">
+      <div className="relative z-10 flex flex-1 flex-col gap-3 p-5">
         {/* Number */}
         <span
-          className="font-display text-[0.9rem] font-extrabold"
+          className="font-head text-[10px] font-semibold uppercase tracking-[.14em]"
           style={{ color: study.accent, opacity: 0.6 }}
         >
           {String(index + 1).padStart(2, '0')}
         </span>
 
         {/* Name */}
-        <h3 className="font-head font-bold text-xl text-parchment group-hover:text-primary transition-colors duration-200">
+        <h3 className="font-display text-lg font-semibold text-parchment transition-colors duration-200 group-hover:text-primary">
           {study.name}
         </h3>
 
         {/* Description */}
-        <p className="text-[0.88rem] text-muted leading-[1.8] flex-1">{study.desc}</p>
+        <p className="flex-1 text-sm leading-6 text-muted">{study.desc}</p>
 
         {/* CTA */}
         <div
