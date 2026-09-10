@@ -28,8 +28,8 @@ const brands = [
   { name: 'CoinTime ATM', image: '/brands/cointime.png', href: 'https://cointimeatm.com/', relationship: 'Content writing' },
   { name: 'CustomersChain', image: '/brands/customerschain.png', href: 'https://customerschain.com/', relationship: 'Content marketing' },
   { name: 'LW Commerce', image: '/brands/moc.png', href: 'https://lwcommerce.org/', relationship: 'WordPress design and content' },
-  { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/', relationship: 'Content writing' },
-  { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/', relationship: 'Content strategy' },
+  { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/', relationship: 'API and developer documentation' },
+  { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/', relationship: 'Technical content writer' },
   { name: 'UPay', image: '/brands/upay.jpeg', href: 'https://upay.com/', relationship: 'Content writing' },
   { name: 'UEEx', image: '/brands/ueex.png', href: 'https://ueex.com/', relationship: 'Content writing' },
 ]
