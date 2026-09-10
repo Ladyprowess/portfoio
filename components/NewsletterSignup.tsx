@@ -5,13 +5,16 @@ import { newsletterTopics } from "@/lib/newsletter";
 
 export default function NewsletterSignup({
   compact = false,
+  availableTopics,
 }: {
   compact?: boolean;
+  availableTopics?: string[];
 }) {
   const [email, setEmail] = useState("");
   const [topics, setTopics] = useState<string[]>(["All"]);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const topicChoices = Array.from(new Set([...(availableTopics || []), ...newsletterTopics]));
 
   function toggle(topic: string) {
     if (topic === "All") return setTopics(["All"]);
@@ -60,12 +63,12 @@ export default function NewsletterSignup({
         Subscribe to the topics you care about.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Choose everything or select Web3, AI, technology, business, or
-        lifestyle. Web3 emails are published as Decode Web3.
+        Choose everything or select the subjects you want to receive. Web3
+        emails are published as Decode Web3.
       </p>
       <form onSubmit={subscribe} className="mt-6">
         <div className="flex flex-wrap gap-2">
-          {["All", ...newsletterTopics].map((topic) => (
+          {["All", ...topicChoices].map((topic) => (
             <button
               key={topic}
               type="button"

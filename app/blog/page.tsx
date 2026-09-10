@@ -18,6 +18,7 @@ export default async function BlogIndexPage() {
     ...blogPosts.map(post => ({ ...post, cover: null as string | null })),
   ]
   const hasPosts = posts.length > 0
+  const categories = Array.from(new Set(posts.map(post => post.category))).sort()
 
   return (
     <main className="min-h-screen bg-bg">
@@ -36,8 +37,6 @@ export default async function BlogIndexPage() {
           </h1>
         </header>
 
-        <div className="mb-12"><NewsletterSignup /></div>
-
         {hasPosts ? <BlogArchive posts={posts} /> : (
           <div className="border border-ink-border bg-surface p-8 lg:p-10">
             <span className="font-head text-[0.58rem] font-bold tracking-[0.16em] uppercase text-muted">
@@ -48,6 +47,8 @@ export default async function BlogIndexPage() {
             </p>
           </div>
         )}
+
+        <div className="mt-16"><NewsletterSignup availableTopics={categories} /></div>
       </div>
       <Footer />
     </main>

@@ -7,8 +7,12 @@ export default function UnsubscribePage() {
   const [message, setMessage] = useState("Updating your subscription...");
 
   useEffect(() => {
-    const token =
-      new URLSearchParams(window.location.search).get("token") || "";
+    const parameters = new URLSearchParams(window.location.search);
+    if (parameters.get("preview") === "1") {
+      setMessage("This is the unsubscribe link preview. Live emails contain a personal unsubscribe link.");
+      return;
+    }
+    const token = parameters.get("token") || "";
     if (!token) {
       setMessage("This unsubscribe link is incomplete.");
       return;

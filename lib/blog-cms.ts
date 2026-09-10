@@ -16,7 +16,7 @@ export type CmsPost = {
 
 export async function getPublishedPosts(): Promise<CmsPost[]> {
   try {
-    return await db('blog_posts?select=*&status=eq.published&order=published_at.desc') as CmsPost[]
+    return await db(`blog_posts?select=*&status=eq.published&published_at=lte.${encodeURIComponent(new Date().toISOString())}&order=published_at.desc`) as CmsPost[]
   } catch {
     return []
   }
@@ -24,7 +24,7 @@ export async function getPublishedPosts(): Promise<CmsPost[]> {
 
 export async function getPublishedPost(slug: string): Promise<CmsPost | null> {
   try {
-    const posts = await db(`blog_posts?select=*&status=eq.published&slug=eq.${encodeURIComponent(slug)}&limit=1`) as CmsPost[]
+    const posts = await db(`blog_posts?select=*&status=eq.published&published_at=lte.${encodeURIComponent(new Date().toISOString())}&slug=eq.${encodeURIComponent(slug)}&limit=1`) as CmsPost[]
     return posts[0] || null
   } catch {
     return null

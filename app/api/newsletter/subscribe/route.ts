@@ -15,9 +15,9 @@ export async function POST(request: Request) {
     const selected: string[] = Array.isArray(payload.topics)
       ? payload.topics.map(String)
       : [];
-    const topics = selected.filter(
-      (topic) => topic === "All" || newsletterTopics.includes(topic as never),
-    );
+    const topics = Array.from(new Set(selected
+      .map((topic) => topic.trim())
+      .filter((topic) => topic === "All" || (/^[A-Za-z0-9 &]{2,40}$/.test(topic) && (newsletterTopics.includes(topic as never) || topic.length > 1)))));
     if (!emailPattern.test(email))
       return NextResponse.json(
         { error: "Enter a valid email address." },

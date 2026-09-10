@@ -68,6 +68,7 @@ export async function POST(request: Request) {
           topic,
           postUrl: payload.postUrl,
           subscribeUrl: `${siteUrl}/blog`,
+          unsubscribeUrl: `${siteUrl}/unsubscribe?preview=1`,
         }),
       });
       if (error)

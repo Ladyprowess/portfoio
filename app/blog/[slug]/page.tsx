@@ -109,7 +109,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           })}
         </div>}
 
-        <div className="mb-12"><NewsletterSignup compact /></div>
+        <div className="mb-12"><NewsletterSignup compact availableTopics={[post.category]} /></div>
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <span className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted">

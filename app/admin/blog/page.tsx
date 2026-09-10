@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import AdminNav from "@/components/AdminNav";
 import type { CmsPost } from "@/lib/blog-cms";
 
@@ -9,6 +9,21 @@ const fieldClass =
 const toolbarButtonClass =
   "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-primary";
 const POSTS_PER_PAGE = 5;
+type PostState = "draft" | "published" | "scheduled";
+
+function postState(post: Pick<CmsPost, "status" | "published_at">): PostState {
+  if (post.status === "draft") return "draft";
+  return post.published_at && new Date(post.published_at).getTime() > Date.now()
+    ? "scheduled"
+    : "published";
+}
+
+function dateTimeInputValue(value: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
 
 type IconName =
   | "left"
@@ -349,13 +364,11 @@ export default function BlogCmsPage() {
   const [saving, setSaving] = useState(false);
   const [uploadMode, setUploadMode] = useState<"cover" | "article">("cover");
   const [postSearch, setPostSearch] = useState("");
-  const [postFilter, setPostFilter] = useState<"all" | "draft" | "published">(
+  const [postFilter, setPostFilter] = useState<"all" | PostState>(
     "all",
   );
   const [postPage, setPostPage] = useState(1);
-  const [editingStatus, setEditingStatus] = useState<
-    "draft" | "published" | ""
-  >("");
+  const [editingStatus, setEditingStatus] = useState<PostState | "">("");
   const [publishedAt, setPublishedAt] = useState<string | null>(null);
   const [newsletterTopic, setNewsletterTopic] = useState("Web3");
   const [subscriberTier, setSubscriberTier] = useState<"all" | "free" | "paid">(
@@ -366,6 +379,10 @@ export default function BlogCmsPage() {
   const [showPreview, setShowPreview] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const categoryOptions = useMemo(
+    () => Array.from(new Set(["Web3", "AI", "Technology", "Business", "Lifestyle", ...posts.map((post) => post.category), category].filter(Boolean))).sort(),
+    [posts, category],
+  );
 
   useEffect(() => {
     const saved = sessionStorage.getItem("ladyprowess_admin_password") || "";
@@ -540,7 +557,7 @@ export default function BlogCmsPage() {
     setCategory(post.category);
     setCoverImage(post.cover_image || "");
     setContentHtml(post.content_html);
-    setEditingStatus(post.status);
+    setEditingStatus(postState(post));
     setPublishedAt(post.published_at);
     if (editorRef.current) editorRef.current.innerHTML = post.content_html;
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -605,7 +622,7 @@ export default function BlogCmsPage() {
     }
   }
 
-  async function save(postStatus: "draft" | "published") {
+  async function save(postStatus: PostState) {
     setSaving(true);
     setStatus("");
     try {
@@ -617,6 +634,15 @@ export default function BlogCmsPage() {
           "This article is still too large. Remove embedded images and upload them with the image button.",
         );
       setContentHtml(compactContent);
+      if (postStatus === "scheduled" && (!publishedAt || new Date(publishedAt).getTime() <= Date.now()))
+        throw new Error("Choose a future date and time before scheduling.");
+      const effectivePublishedAt = postStatus === "scheduled"
+        ? publishedAt
+        : postStatus === "published" && publishedAt && new Date(publishedAt).getTime() <= Date.now()
+          ? publishedAt
+          : postStatus === "published"
+            ? new Date().toISOString()
+            : null;
       const data = await request({
         action: "save",
         id,
@@ -626,11 +652,13 @@ export default function BlogCmsPage() {
         category,
         coverImage,
         contentHtml: compactContent,
-        status: postStatus,
-        publishedAt,
+        status: postStatus === "draft" ? "draft" : "published",
+        publishedAt: effectivePublishedAt,
       });
       let message =
-        postStatus === "published"
+        postStatus === "scheduled"
+          ? `Post scheduled for ${new Date(effectivePublishedAt as string).toLocaleString()}.`
+          : postStatus === "published"
           ? id
             ? "Live post updated."
             : "Post published."
@@ -718,7 +746,7 @@ export default function BlogCmsPage() {
       !query ||
       post.title.toLowerCase().includes(query) ||
       post.category.toLowerCase().includes(query);
-    return matchesText && (postFilter === "all" || post.status === postFilter);
+    return matchesText && (postFilter === "all" || postState(post) === postFilter);
   });
   const totalPostPages = Math.max(
     1,
@@ -804,8 +832,11 @@ export default function BlogCmsPage() {
               <input
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
+                list="blog-category-options"
                 className={`mt-2 ${fieldClass}`}
+                placeholder="Type a new category or choose one"
               />
+              <datalist id="blog-category-options">{categoryOptions.map((item) => <option key={item} value={item} />)}</datalist>
             </label>
             <label className="text-sm font-semibold">
               Cover image
@@ -815,6 +846,16 @@ export default function BlogCmsPage() {
                 className={`mt-2 ${fieldClass}`}
                 placeholder="Image URL or upload an image"
               />
+            </label>
+            <label className="text-sm font-semibold md:col-span-2">
+              Publication date and time
+              <input
+                type="datetime-local"
+                value={dateTimeInputValue(publishedAt)}
+                onChange={(event) => setPublishedAt(event.target.value ? new Date(event.target.value).toISOString() : null)}
+                className={`mt-2 ${fieldClass}`}
+              />
+              <span className="mt-2 block text-xs font-normal leading-5 text-muted">Choose a past date to backdate the post. Choose a future date to schedule it.</span>
             </label>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -848,11 +889,7 @@ export default function BlogCmsPage() {
                   className={`mt-2 ${fieldClass}`}
                 >
                   <option value="All">All subscribers</option>
-                  <option>Web3</option>
-                  <option>AI</option>
-                  <option>Technology</option>
-                  <option>Business</option>
-                  <option>Lifestyle</option>
+                  {categoryOptions.map((item) => <option key={item} value={item}>{item}</option>)}
                 </select>
               </label>
               <label className="text-sm font-semibold">
@@ -1070,6 +1107,13 @@ export default function BlogCmsPage() {
                   ? "Update live post"
                   : "Publish"}
             </button>
+            <button
+              disabled={saving || !publishedAt || new Date(publishedAt).getTime() <= Date.now()}
+              onClick={() => save("scheduled")}
+              className="rounded-full border border-primary bg-white px-6 py-3 text-sm font-semibold text-primary disabled:opacity-40"
+            >
+              {editingStatus === "scheduled" ? "Reschedule" : "Schedule"}
+            </button>
             {editingStatus === "published" && slug && (
               <a
                 href={`/blog/${slug}`}
@@ -1146,7 +1190,7 @@ export default function BlogCmsPage() {
                 value={postFilter}
                 onChange={(event) => {
                   setPostFilter(
-                    event.target.value as "all" | "draft" | "published",
+                    event.target.value as "all" | PostState,
                   );
                   setPostPage(1);
                 }}
@@ -1154,6 +1198,7 @@ export default function BlogCmsPage() {
               >
                 <option value="all">All statuses</option>
                 <option value="published">Published</option>
+                <option value="scheduled">Scheduled</option>
                 <option value="draft">Drafts</option>
               </select>
             </div>
@@ -1164,10 +1209,8 @@ export default function BlogCmsPage() {
                     key={post.id}
                     className={`rounded-2xl border p-4 ${id === post.id ? "border-primary bg-blue-50/40" : "border-ink-border"}`}
                   >
-                    <span
-                      className={`text-[11px] font-semibold uppercase tracking-wider ${post.status === "published" ? "text-green-700" : "text-amber"}`}
-                    >
-                      {post.status}
+                    <span className={`text-[11px] font-semibold uppercase tracking-wider ${postState(post) === "published" ? "text-green-700" : "text-amber"}`}>
+                      {postState(post)}
                     </span>
                     <h3 className="mt-1 text-sm font-semibold leading-5">
                       {post.title}
@@ -1180,7 +1223,7 @@ export default function BlogCmsPage() {
                       >
                         Edit
                       </button>
-                      {post.status === "published" && (
+                      {postState(post) === "published" && (
                         <a
                           href={`/blog/${post.slug}`}
                           target="_blank"
