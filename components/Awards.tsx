@@ -43,7 +43,6 @@ export default function Awards() {
               <div className="bg-bg p-5"><p className="font-display text-2xl font-extrabold text-primary">{totalAwards}</p><p className="mt-1 text-xs text-muted">Awards received</p></div>
             </div>
           </div>
-          <p className="mt-7 max-w-2xl text-[0.96rem] leading-7 text-muted">Each collection keeps the awards from one organisation together, so the recognition and its source are clear.</p>
         </div>
       </section>
 
