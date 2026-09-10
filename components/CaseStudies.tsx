@@ -42,7 +42,7 @@ const studies = [
   },
   {
     name: 'UPay',
-    desc: 'A written case study for a multi-currency payment solution, explaining product value, onboarding, and user education.',
+    desc: 'A written case study for a payment solution supporting multiple currencies, explaining product value, onboarding, and user education.',
     href: 'https://docs.google.com/document/d/1HNnhHOL3BQYMgUe4RW-73Bm8Nfq7IOME2Ca7eWJ3WVU/edit?usp=sharing',
     image: '/service-proof/brand-case-upay.jpg',
     accent: '#507B80',

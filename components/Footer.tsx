@@ -7,7 +7,7 @@ const columns = [
       { label: 'Home', href: '/' },
       { label: 'About', href: '/about' },
       { label: 'Work', href: '/work' },
-      { label: 'Services', href: '/#services' },
+      { label: 'Services', href: '/services' },
       { label: 'Contact', href: '/#contact' },
     ],
   },
@@ -20,14 +20,13 @@ const columns = [
     ],
   },
   {
-    title: 'Resources',
+    title: 'More',
     links: [
-      { label: 'Resources', href: 'https://www.prowessdigitalsolutions.com/resources' },
       { label: 'Media', href: '/media' },
       { label: 'Awards', href: '/awards' },
       {
         label: 'CV',
-        href: 'https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing',
+        href: 'https://docs.google.com/document/d/15iD1V-k-C9JkuVPbByPX07DpW3ADhczd/edit?usp=sharing&ouid=101585197199462740286&rtpof=true&sd=true',
       },
     ],
   },

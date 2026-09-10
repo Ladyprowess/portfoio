@@ -17,8 +17,8 @@ const groups = [
     key: 'websites',
     label: 'Websites',
     eyebrow: 'WordPress design',
-    title: 'Websites designed around real user journeys.',
-    introduction: 'Three recent website projects showing information structure, responsive design, clear navigation, and conversion focused pages.',
+    title: 'WordPress websites built for real people.',
+    introduction: 'I design responsive websites with clear navigation, useful content, and straightforward paths that help visitors take action.',
     items: [
       { title: 'Prowess Digital Solutions', description: 'A practical platform connecting people with learning, opportunities, tools, and business support.', image: '/service-proof/prowess-digital-solutions.png', href: 'https://www.prowessdigitalsolutions.com', linkLabel: 'Visit website' },
       { title: 'Testers Connect', description: 'A community website built to connect quality assurance professionals with resources, events, jobs, and mentorship.', image: '/service-proof/testers-connect.png', href: '/service-proof/testers-connect.png', linkLabel: 'View project preview' },
@@ -29,8 +29,8 @@ const groups = [
     key: 'writing',
     label: 'Writing',
     eyebrow: 'Copywriting and technical writing',
-    title: 'Published work for technology and Web3 brands.',
-    introduction: 'Selected author pages with case studies, product education, industry analysis, tutorials, and search focused content.',
+    title: 'Writing that makes complex products easier to understand.',
+    introduction: 'My work includes copywriting, technical articles, product education, industry analysis, tutorials, and content written for search.',
     items: [
       { title: 'LBank', description: 'Crypto market education, industry coverage, and product focused articles.', image: '/service-proof/case-study-lbank.jpg', href: 'https://www.lbank.com/creator/profile/ladyprowess', linkLabel: 'Read my work' },
       { title: 'Bullring Finance', description: 'DeFi education, protocol explainers, and practical blockchain content.', image: '/service-proof/case-study-bullring.jpg', href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/', linkLabel: 'Read my work' },
@@ -45,11 +45,13 @@ const groups = [
   {
     key: 'education',
     label: 'Education',
-    eyebrow: 'Web3 education',
-    title: 'Learning made practical and understandable.',
-    introduction: 'I teach people how Web3 works, connecting unfamiliar ideas to the decisions they make in real life.',
+    eyebrow: 'Education and learning',
+    title: 'Practical learning for business, technology, and Web3.',
+    introduction: 'I create workshops, video lessons, ebooks, guides, and learning resources that make unfamiliar topics easier to understand.',
     items: [
       { title: 'Learn Web3 with Lady Prowess', description: 'Lessons and practical explanations for people building confidence in Web3 and emerging technology.', image: '/service-proof/web3-training.jpg', href: 'https://ladyprowess.substack.com/', linkLabel: 'Explore the lessons' },
+      { title: 'Video Learning Library', description: 'Practical video lessons covering Web3, business, career growth, and useful digital skills.', image: '/service-proof/video-library.png', href: 'https://www.prowessdigitalsolutions.com/videos', linkLabel: 'Watch the lessons' },
+      { title: 'Ebook and Resource Library', description: 'A digital library where readers can discover and buy ebooks, guides, templates, checklists, and other useful resources.', image: '/service-proof/digital-library.png', href: 'https://www.prowessdigitalsolutions.com/resources', linkLabel: 'Visit the library' },
     ] as Proof[],
   },
 ]
@@ -62,10 +64,10 @@ export default function ServiceProof() {
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
           <div>
-            <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Proof of work</p>
-            <h2 className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">See the work, then explore the source.</h2>
+            <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Selected work</p>
+            <h2 className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">What I do, shown through real projects.</h2>
           </div>
-          <p className="max-w-2xl text-base leading-7 text-muted">Every preview is connected to published work, a live website, or a real teaching experience.</p>
+          <p className="max-w-2xl text-base leading-7 text-muted">Choose a category to browse websites I designed, writing published by brands, and learning experiences I created.</p>
         </div>
 
         <div className="mt-10 flex gap-2 overflow-x-auto border-b border-ink-border pb-4" role="tablist" aria-label="Service proof categories">
