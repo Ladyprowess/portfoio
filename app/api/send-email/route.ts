@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { db } from '@/lib/email-store'
 
 // This route sends real email from hello@ladyprowess.com via Resend.
 // It is intentionally locked behind COMPOSE_PASSWORD so that, even though the
@@ -172,7 +173,7 @@ export async function POST(req: Request) {
     : ''
 
   // Wrap the formatted body, then append the branded signature footer.
-  const html = `${preheader}<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${safeHtml}</div>${SIGNATURE_HTML}`
+  const baseHtml = `${preheader}<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${safeHtml}</div>${SIGNATURE_HTML}`
   const text = `${bodyText}${SIGNATURE_TEXT}`
 
   // --- Attachments ---
@@ -186,6 +187,18 @@ export async function POST(req: Request) {
   const resend = new Resend(apiKey)
 
   try {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
+    if (!siteUrl) throw new Error('Set NEXT_PUBLIC_SITE_URL to enable email tracking.')
+    const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: to, cc, bcc, subject, preview, body_html: safeHtml }) })
+    const emailId = String(records[0]?.id || '')
+    if (!emailId) throw new Error('Could not create the email tracking record.')
+
+    const trackedHtml = baseHtml.replace(/href=(['"])(https?:\/\/[^'"]+)\1/gi, (_match, quote, url) => {
+      const tracked = `${siteUrl}/api/track/click?id=${encodeURIComponent(emailId)}&url=${encodeURIComponent(url)}`
+      return `href=${quote}${tracked}${quote}`
+    })
+    const html = `${trackedHtml}<img src="${siteUrl}/api/track/open?id=${encodeURIComponent(emailId)}" width="1" height="1" alt="" style="display:block;border:0;width:1px;height:1px;opacity:0" />`
+
     const { data, error } = await resend.emails.send({
       from: FROM,
       to,
@@ -199,10 +212,12 @@ export async function POST(req: Request) {
     })
 
     if (error) {
+      await db(`sent_emails?id=eq.${emailId}`, { method: 'PATCH', body: JSON.stringify({ status: 'failed' }) }).catch(() => null)
       return NextResponse.json({ error: error.message || 'Resend rejected the email.' }, { status: 502 })
     }
 
-    return NextResponse.json({ ok: true, id: data?.id })
+    await db(`sent_emails?id=eq.${emailId}`, { method: 'PATCH', body: JSON.stringify({ status: 'sent', resend_id: data?.id }) })
+    return NextResponse.json({ ok: true, id: data?.id, emailId })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to send email.'
     return NextResponse.json({ error: message }, { status: 500 })

@@ -14,6 +14,9 @@ type PendingFile = {
   size: number
 }
 
+type EmailEvent = { id: number; event_type: 'open' | 'click'; url?: string; occurred_at: string }
+type SentEmail = { id: string; recipients: string[]; cc: string[]; bcc: string[]; subject: string; preview?: string; body_html: string; status: string; sent_at: string; events: EmailEvent[] }
+
 const inputClass =
   'w-full bg-bg border border-ink-border px-4 py-3 text-[0.95rem] text-parchment placeholder:text-muted/50 outline-none transition-colors focus:border-primary/60'
 const labelClass =
@@ -79,6 +82,9 @@ export default function ComposePage() {
 
   const [sending, setSending] = useState(false)
   const [status, setStatus] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
+  const [history, setHistory] = useState<SentEmail[]>([])
+  const [selectedEmail, setSelectedEmail] = useState<SentEmail | null>(null)
+  const [loadingHistory, setLoadingHistory] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
 
@@ -117,6 +123,19 @@ export default function ComposePage() {
     setFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
+  async function loadHistory() {
+    setLoadingHistory(true)
+    try {
+      const response = await fetch('/api/email-history', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Could not load email activity.')
+      setHistory(data.emails || [])
+      if (selectedEmail) setSelectedEmail((data.emails || []).find((email: SentEmail) => email.id === selectedEmail.id) || null)
+    } catch (error) {
+      setStatus({ type: 'error', text: error instanceof Error ? error.message : 'Could not load email activity.' })
+    } finally { setLoadingHistory(false) }
+  }
+
   async function handleSend(e: React.FormEvent) {
     e.preventDefault()
     setSending(true)
@@ -151,6 +170,7 @@ export default function ComposePage() {
       setBodyHtml('')
       if (editorRef.current) editorRef.current.innerHTML = ''
       setFiles([])
+      await loadHistory()
     } catch {
       setStatus({ type: 'error', text: 'Network error. Try again.' })
     } finally {
@@ -204,7 +224,7 @@ export default function ComposePage() {
   // --- Compose form ---
   return (
     <main className="min-h-screen bg-bg px-6 py-16 text-parchment md:px-10">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-5xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary">
@@ -220,7 +240,7 @@ export default function ComposePage() {
           </Link>
         </div>
 
-        <form onSubmit={handleSend} className="space-y-5 border border-ink-border bg-surface p-6 md:p-8">
+        <form onSubmit={handleSend} className="mx-auto max-w-2xl space-y-5 rounded-3xl border border-ink-border bg-surface p-6 md:p-8">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className={labelClass}>From</label>
@@ -413,7 +433,18 @@ export default function ComposePage() {
             </span>
           </div>
         </form>
+
+        <section className="mt-16 border-t border-ink-border pt-10">
+          <div className="mb-6 flex items-end justify-between gap-4"><div><span className={labelClass}>Tracking dashboard</span><h2 className="mt-2 font-display text-2xl font-bold">Sent email activity</h2></div><button onClick={loadHistory} disabled={loadingHistory} className="rounded-full border border-ink-border bg-white px-4 py-2 text-xs font-semibold hover:border-primary disabled:opacity-50">{loadingHistory ? 'Loading…' : history.length ? 'Refresh' : 'Load emails'}</button></div>
+          {history.length === 0 ? <div className="rounded-2xl border border-dashed border-ink-border bg-white p-8 text-center text-sm text-muted">Load your sent emails to see delivery, opens, and clicks.</div> : <div className="overflow-hidden rounded-2xl border border-ink-border bg-white"><div className="hidden grid-cols-[1fr_1.4fr_110px_100px] gap-4 border-b border-ink-border bg-surface-2 px-5 py-3 font-head text-[10px] uppercase tracking-wider text-muted md:grid"><span>Recipient</span><span>Subject</span><span>Activity</span><span>Sent</span></div>{history.map(email => {
+            const opens = email.events.filter(event => event.event_type === 'open').length
+            const clicks = email.events.filter(event => event.event_type === 'click').length
+            return <button key={email.id} onClick={() => setSelectedEmail(email)} className="grid w-full gap-2 border-b border-ink-border px-5 py-4 text-left last:border-0 hover:bg-blue-50/40 md:grid-cols-[1fr_1.4fr_110px_100px] md:items-center md:gap-4"><span className="truncate text-sm">{email.recipients.join(', ')}</span><span className="truncate text-sm font-semibold">{email.subject}</span><span className="flex gap-2 text-xs"><span className="rounded-full bg-blue-50 px-2 py-1 text-primary">{opens} open{opens === 1 ? '' : 's'}</span><span className="rounded-full bg-lime-50 px-2 py-1 text-lime-700">{clicks} click{clicks === 1 ? '' : 's'}</span></span><span className="text-xs text-muted">{new Date(email.sent_at).toLocaleDateString()}</span></button>
+          })}</div>}
+        </section>
       </div>
+
+      {selectedEmail && <div className="fixed inset-0 z-50 flex justify-end bg-black/25 backdrop-blur-sm" onClick={() => setSelectedEmail(null)}><aside className="h-full w-full max-w-2xl overflow-y-auto border-l border-ink-border bg-bg p-7 md:p-10" onClick={event => event.stopPropagation()}><div className="flex items-start justify-between"><div><span className={labelClass}>Email details</span><h2 className="mt-2 font-display text-2xl font-bold">{selectedEmail.subject}</h2></div><button onClick={() => setSelectedEmail(null)} className="rounded-full border border-ink-border bg-white px-4 py-2 text-xs">Close</button></div><dl className="mt-8 grid gap-4 rounded-2xl border border-ink-border bg-white p-5 text-sm sm:grid-cols-2"><div><dt className="text-xs text-muted">To</dt><dd className="mt-1">{selectedEmail.recipients.join(', ')}</dd></div><div><dt className="text-xs text-muted">Sent</dt><dd className="mt-1">{new Date(selectedEmail.sent_at).toLocaleString()}</dd></div><div><dt className="text-xs text-muted">Status</dt><dd className="mt-1 capitalize">{selectedEmail.status}</dd></div><div><dt className="text-xs text-muted">Activity</dt><dd className="mt-1">{selectedEmail.events.filter(e => e.event_type === 'open').length} opens · {selectedEmail.events.filter(e => e.event_type === 'click').length} clicks</dd></div></dl><div className="mt-7"><p className={labelClass}>Email sent</p><div className="mt-3 rounded-2xl border border-ink-border bg-white p-6 leading-7" dangerouslySetInnerHTML={{ __html: selectedEmail.body_html }} /></div><div className="mt-7"><p className={labelClass}>Activity timeline</p><div className="mt-3 overflow-hidden rounded-2xl border border-ink-border bg-white">{selectedEmail.events.length ? selectedEmail.events.map(event => <div key={event.id} className="flex items-start justify-between gap-5 border-b border-ink-border p-4 last:border-0"><div><p className="text-sm font-semibold capitalize">{event.event_type}</p>{event.url && <p className="mt-1 break-all text-xs text-primary">{event.url}</p>}</div><time className="shrink-0 text-xs text-muted">{new Date(event.occurred_at).toLocaleString()}</time></div>) : <p className="p-5 text-sm text-muted">No opens or clicks recorded yet.</p>}</div></div></aside></div>}
     </main>
   )
 }
