@@ -32,7 +32,7 @@ export default function Media() {
     <section className="border-b border-ink-border bg-white px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto grid max-w-[1240px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:gap-16">
         <div><p className="font-head text-xs font-bold uppercase tracking-[0.18em] text-primary">About</p><h2 className="mt-4 font-display text-2xl font-extrabold">Short biography</h2></div>
-        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Okafor, known as Lady Prowess, is a product marketer, technical writer, WordPress designer, Web3 educator, and business strategist. She is the founder of Prowess Digital Solutions and builds practical products, content, and learning experiences for businesses and technology audiences.</p>
+        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Okafor, known as Lady Prowess, is a product marketer, technical writer, WordPress designer, Web3 educator, and business strategist. She is a founder that builds practical products, content, and learning experiences for businesses and technical audiences.</p>
       </div>
     </section>
 
@@ -40,7 +40,7 @@ export default function Media() {
       <div className="mx-auto max-w-[1240px]">
         <div className="mb-12 grid gap-5 md:grid-cols-[0.8fr_1.2fr] md:items-end">
           <div><p className="font-head text-xs font-bold uppercase tracking-[0.18em] text-primary">Portrait library</p><h2 className="mt-4 font-display text-[clamp(1.9rem,3vw,2.8rem)] font-extrabold leading-tight">Choose the photo that fits.</h2></div>
-          <p className="max-w-xl text-base leading-8 text-muted md:justify-self-end">Each image is available in its original resolution. Please keep the image proportions and use the name Ngozi Peace Okafor or Lady Prowess in the credit.</p>
+          <p className="max-w-xl text-base leading-8 text-muted md:justify-self-end">Each image is available in its original resolution.</p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {photos.map(photo => <article key={photo.src} className="overflow-hidden rounded-3xl border border-ink-border bg-white">
