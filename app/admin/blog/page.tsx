@@ -538,17 +538,69 @@ export default function BlogCmsPage() {
     setContentHtml(editorRef.current?.innerHTML || "");
   }
 
-  function pasteFromDocument(event: React.ClipboardEvent<HTMLDivElement>) {
+  async function pasteFromDocument(event: React.ClipboardEvent<HTMLDivElement>) {
     const html = event.clipboardData.getData("text/html");
-    if (!html) return;
+    const imageFiles = Array.from(event.clipboardData.items)
+      .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+      .map((item) => item.getAsFile())
+      .filter((file): file is File => Boolean(file));
+    const containsEmbeddedImages = /<img\b[^>]*src=["']data:image\//i.test(html);
+
+    if (!html && !imageFiles.length) return;
     event.preventDefault();
-    const cleaned = normaliseGoogleDocsPaste(html);
-    document.execCommand("insertHTML", false, cleaned);
-    if (/src=["']data:/i.test(html))
-      setStatus(
-        "The text was pasted. Embedded document images were removed. Add them with the image button so the article can save correctly.",
-      );
-    setContentHtml(editorRef.current?.innerHTML || "");
+
+    const selection = window.getSelection();
+    const savedRange = selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+    const restoreSelection = () => {
+      if (!savedRange) return;
+      const currentSelection = window.getSelection();
+      currentSelection?.removeAllRanges();
+      currentSelection?.addRange(savedRange);
+    };
+
+    try {
+      setStatus(imageFiles.length || containsEmbeddedImages ? "Uploading pasted image..." : "Pasting article...");
+      let preparedHtml = html;
+
+      if (containsEmbeddedImages) {
+        const pastedDocument = new DOMParser().parseFromString(html, "text/html");
+        const embeddedImages = Array.from(pastedDocument.querySelectorAll("img")).filter((image) =>
+          /^data:image\//i.test(image.getAttribute("src") || ""),
+        );
+        for (let index = 0; index < embeddedImages.length; index += 1) {
+          const image = embeddedImages[index];
+          const source = image.getAttribute("src") || "";
+          const blob = await fetch(source).then((response) => response.blob());
+          const extension = blob.type.split("/")[1] || "png";
+          const file = new File([blob], `pasted-image-${index + 1}.${extension}`, { type: blob.type });
+          image.setAttribute("src", await uploadBlogImage(file));
+        }
+        preparedHtml = pastedDocument.body.innerHTML;
+      }
+
+      let uploadedClipboardImages = "";
+      if (imageFiles.length && !containsEmbeddedImages) {
+        const imageUrls: string[] = [];
+        for (const file of imageFiles) imageUrls.push(await uploadBlogImage(file));
+        uploadedClipboardImages = imageUrls
+          .map((imageUrl) => `<p><img src="${imageUrl}" alt="" /></p>`)
+          .join("");
+        if (/<img\b/i.test(preparedHtml)) {
+          const pastedDocument = new DOMParser().parseFromString(preparedHtml, "text/html");
+          pastedDocument.querySelectorAll("img").forEach((image) => image.remove());
+          preparedHtml = pastedDocument.body.innerHTML;
+        }
+      }
+
+      restoreSelection();
+      const cleanedHtml = preparedHtml ? normaliseGoogleDocsPaste(preparedHtml) : "";
+      document.execCommand("insertHTML", false, `${cleanedHtml}${uploadedClipboardImages}<p><br></p>`);
+
+      setContentHtml(editorRef.current?.innerHTML || "");
+      setStatus(imageFiles.length || containsEmbeddedImages ? "Image pasted and uploaded." : "Article pasted.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Could not paste the image.");
+    }
   }
 
   function syncEditor(event: React.FormEvent<HTMLDivElement>) {
@@ -723,9 +775,7 @@ export default function BlogCmsPage() {
     }
   }
 
-  async function upload(file?: File) {
-    if (!file) return;
-    setStatus("Uploading image...");
+  async function uploadBlogImage(file: File) {
     const content = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(String(reader.result).split(",")[1]);
@@ -742,18 +792,26 @@ export default function BlogCmsPage() {
         content,
       }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-      setStatus(data.error || "Could not upload the image.");
-      return;
-    }
-    if (uploadMode === "cover") setCoverImage(data.url);
+    const data = await parseResponse(response);
+    if (!response.ok) throw new Error(data.error || "Could not upload the image.");
+    return String(data.url);
+  }
+
+  async function upload(file?: File) {
+    if (!file) return;
+    setStatus("Uploading image...");
+    try {
+      const imageUrl = await uploadBlogImage(file);
+    if (uploadMode === "cover") setCoverImage(imageUrl);
     else {
-      const next = `${editorRef.current?.innerHTML || contentHtml}<p><img src="${data.url}" alt="" /></p>`;
+      const next = `${editorRef.current?.innerHTML || contentHtml}<p><img src="${imageUrl}" alt="" /></p>`;
       setContentHtml(next);
       if (editorRef.current) editorRef.current.innerHTML = next;
     }
     setStatus("Image uploaded.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Could not upload the image.");
+    }
     if (fileRef.current) fileRef.current.value = "";
   }
 
