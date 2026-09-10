@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const docs = [
-  { label: 'Download CV',        href: 'https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing' },
+  { label: 'View Resume',        href: 'https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing' },
   { label: 'Recommendation',     href: 'https://drive.google.com/file/d/1AtpOwk6TLtV6mj10E2GkU8Ohfa20Q8Bd/view?usp=sharing' },
 ]
 
@@ -63,7 +63,7 @@ export default function Contact() {
               <em className="not-italic text-primary">together</em>
             </h2>
             <p className="text-[1rem] text-muted leading-[1.85] max-w-sm">
-              Whether it&apos;s a launch campaign, technical documentation, or a full brand build -
+              Whether it&apos;s a launch campaign, technical documentation, or a full brand build,
               I bring the same level of craft to every project.
             </p>
           </motion.div>
@@ -137,7 +137,7 @@ export default function Contact() {
             </div>
 
             <p className="font-head text-[0.6rem] tracking-[0.12em] uppercase text-muted/60 pt-2">
-              Remote engagements / Lagos based / cross-border projects
+              Remote engagements / Lagos based / global projects
             </p>
           </motion.div>
         </div>

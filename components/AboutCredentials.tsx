@@ -18,31 +18,31 @@ const certifications = [
 const expertise = [
   {
     num: '01',
-    title: 'API & Technical Documentation',
-    desc: 'End-to-end documentation for fintech and blockchain products: API references, integration guides, system manuals, and technical whitepapers.',
+    title: 'Technical Documentation',
+    desc: 'Clear documentation for fintech and blockchain products, including API references, integration guides, system manuals, and technical whitepapers.',
   },
   {
     num: '02',
     title: 'Content Strategy & Copywriting',
-    desc: 'Editorial calendars, SEO-led copy, and consistency audits that keep brand voice aligned across every channel.',
+    desc: 'Copy, editorial planning, SEO content, and messaging systems that keep brands clear and consistent.',
   },
   {
     num: '03',
     title: 'Web3 & Fintech Education',
-    desc: 'Blockchain explainers, crypto onboarding guides, and DeFi content that make complex financial products make sense to real audiences.',
+    desc: 'Blockchain explainers, crypto guides, workshops, and learning experiences that make complex ideas easier to understand.',
   },
   {
     num: '04',
-    title: 'Founder & Business Consulting',
-    desc: 'Advisory, training, and hands-on venture building, from Prowess Digital Solutions to Kivora Pay.',
+    title: 'Business and Product Strategy',
+    desc: 'Practical support for founders, from shaping an offer and its message to planning the customer experience.',
   },
 ]
 
 const toolGroups = [
   { title: 'Documentation', tools: ['API Documentation', 'User Guides', 'System Integration Manuals', 'Whitepapers'] },
   { title: 'Strategy & Growth', tools: ['SEO', 'Audience Analysis', 'Content Strategy', 'Community Management'] },
-  { title: 'Workflow & Automation', tools: ['Jenkins', 'GitHub Actions', 'Editorial Calendars'] },
-  { title: 'Craft', tools: ['Copywriting', 'Proofreading', 'Consistency Audits', 'Cross-functional Collaboration'] },
+  { title: 'Workflow and Automation', tools: ['Jenkins', 'GitHub Actions', 'Editorial Calendars'] },
+  { title: 'Craft', tools: ['Copywriting', 'Proofreading', 'Consistency Audits', 'Team Collaboration'] },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -64,28 +64,27 @@ function Reveal({ children, delay = 0, className }: { children: React.ReactNode;
 export default function AboutCredentials() {
   return (
     <>
-      {/* Education & Recognition */}
-      <section className="px-8 md:px-20 py-32 border-b border-ink-border">
-        <div className="max-w-[1100px] mx-auto">
-          <Reveal className="mb-14">
+      <section className="border-b border-ink-border bg-white px-6 py-20 sm:px-8 md:px-20 md:py-28">
+        <div className="mx-auto max-w-[1180px]">
+          <Reveal className="mb-10">
             <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
-              Education &amp; Recognition
+              Background
             </span>
             <h2
               className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
-              Where the foundation
-              <br />
-              <em className="not-italic text-primary">was built.</em>
+              Education and credentials.
             </h2>
           </Reveal>
 
-          <Reveal delay={0.1} className="border-t border-ink-border">
+          <div className="grid gap-5 lg:grid-cols-2">
+          <Reveal delay={0.1} className="rounded-2xl border border-ink-border bg-bg p-6 md:p-8">
+            <span className="mb-5 block font-head text-[0.6rem] font-bold uppercase tracking-[0.14em] text-muted">Education and experience</span>
             {education.map((e) => (
               <div
                 key={e.title}
-                className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 py-6 border-b border-ink-border"
+                className="flex flex-col gap-2 border-b border-ink-border py-5 first:pt-0 last:border-b-0 last:pb-0 sm:flex-row sm:items-center sm:gap-6"
               >
                 <span className="font-head text-[0.7rem] font-bold tracking-[0.1em] text-primary w-16 shrink-0">
                   {e.year}
@@ -96,9 +95,9 @@ export default function AboutCredentials() {
             ))}
           </Reveal>
 
-          <Reveal delay={0.15} className="mt-12">
+          <Reveal delay={0.15} className="rounded-2xl border border-ink-border bg-bg p-6 md:p-8">
             <span className="font-head text-[0.6rem] font-bold tracking-[0.14em] uppercase text-muted block mb-5">
-              Certifications
+              Certifications and training
             </span>
             <div className="flex flex-col gap-1">
               {certifications.map((c) => (
@@ -112,13 +111,13 @@ export default function AboutCredentials() {
               ))}
             </div>
           </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* Areas of Expertise */}
-      <section className="px-8 md:px-20 py-32 border-b border-ink-border">
-        <div className="max-w-[1100px] mx-auto">
-          <Reveal className="mb-14">
+      <section className="border-b border-ink-border bg-bg px-6 py-20 sm:px-8 md:px-20 md:py-28">
+        <div className="mx-auto max-w-[1180px]">
+          <Reveal className="mb-10">
             <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
               Areas of Expertise
             </span>
@@ -126,15 +125,13 @@ export default function AboutCredentials() {
               className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
-              Where I bring
-              <br />
-              <em className="not-italic text-primary">the most value.</em>
+              What I can help you do.
             </h2>
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {expertise.map((item, i) => (
-              <Reveal key={item.num} delay={i * 0.08} className="bg-surface border border-ink-border p-8">
+              <Reveal key={item.num} delay={i * 0.08} className="rounded-2xl border border-ink-border bg-white p-7 transition-shadow hover:shadow-[0_18px_50px_rgba(18,18,18,0.06)]">
                 <span className="font-display font-extrabold text-primary/60 text-[0.9rem]">{item.num}</span>
                 <h3 className="font-head font-bold text-lg text-parchment mt-2 mb-3">{item.title}</h3>
                 <p className="text-[0.9rem] text-muted leading-[1.85]">{item.desc}</p>
@@ -144,10 +141,9 @@ export default function AboutCredentials() {
         </div>
       </section>
 
-      {/* Tools & Skills */}
-      <section className="px-8 md:px-20 py-32">
-        <div className="max-w-[1100px] mx-auto">
-          <Reveal className="mb-14">
+      <section className="bg-white px-6 py-20 sm:px-8 md:px-20 md:py-24">
+        <div className="mx-auto max-w-[1180px]">
+          <Reveal className="mb-10">
             <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
               Tools &amp; Skills
             </span>
@@ -155,13 +151,11 @@ export default function AboutCredentials() {
               className="font-display font-extrabold leading-[1.04]"
               style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
             >
-              What I work
-              <br />
-              <em className="not-italic text-primary">with day to day.</em>
+              Skills I use in practice.
             </h2>
           </Reveal>
 
-          <div className="flex flex-col gap-10">
+          <div className="grid gap-8 md:grid-cols-2">
             {toolGroups.map((group, i) => (
               <Reveal key={group.title} delay={i * 0.06}>
                 <span className="font-head text-[0.6rem] font-bold tracking-[0.14em] uppercase text-muted block mb-4">

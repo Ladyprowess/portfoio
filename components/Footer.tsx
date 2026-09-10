@@ -26,7 +26,7 @@ const columns = [
       { label: 'Awards', href: '/awards' },
       {
         label: 'CV',
-        href: 'https://docs.google.com/document/d/15iD1V-k-C9JkuVPbByPX07DpW3ADhczd/edit?usp=sharing&ouid=101585197199462740286&rtpof=true&sd=true',
+        href: 'https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing',
       },
     ],
   },

@@ -7,9 +7,9 @@ import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'About - Lady Prowess',
+  title: 'About | Lady Prowess',
   description:
-    'The story of Ngozi Peace Okafor (Lady Prowess): copywriter, technical writer, and founder. Career timeline, education, certifications, and areas of expertise.',
+    'Meet Ngozi Peace Okafor, also known as Lady Prowess. Founder, product marketer, WordPress designer, writer, and educator.',
 }
 
 export default function AboutPage() {
