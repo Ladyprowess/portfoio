@@ -14,6 +14,7 @@ function cleanHtml(input: string) {
     .replace(/\son\w+\s*=\s*'[^']*'/gi, '')
     .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
     .replace(/(href|src)\s*=\s*"\s*javascript:[^"]*"/gi, '$1="#"')
+    .replace(/<img[^>]+src=["']data:[^"']+["'][^>]*>/gi, '')
     .trim()
 }
 
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
     const title = String(payload.title || '').trim()
     const excerpt = String(payload.excerpt || '').trim()
     const contentHtml = cleanHtml(String(payload.contentHtml || ''))
+    if (Buffer.byteLength(contentHtml, 'utf8') > 900000) return NextResponse.json({ error: 'The article is too large. Upload images separately instead of pasting embedded images.' }, { status: 413 })
     const plainText = contentHtml.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim()
     if (!title || !excerpt || !plainText) return NextResponse.json({ error: 'Add a title, summary, and article content.' }, { status: 400 })
 

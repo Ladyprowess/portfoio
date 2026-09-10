@@ -4,6 +4,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import BlogArchive from '@/components/BlogArchive'
 import { getPublishedPosts, readTime } from '@/lib/blog-cms'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 export const metadata: Metadata = {
   title: 'Blog | Lady Prowess',
@@ -34,6 +35,8 @@ export default async function BlogIndexPage() {
             Useful ideas about products, business, writing, and Web3.
           </h1>
         </header>
+
+        <div className="mb-12"><NewsletterSignup /></div>
 
         {hasPosts ? <BlogArchive posts={posts} /> : (
           <div className="border border-ink-border bg-surface p-8 lg:p-10">

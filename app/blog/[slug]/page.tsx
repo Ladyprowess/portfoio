@@ -6,6 +6,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Image from 'next/image'
 import { getPublishedPost, readTime } from '@/lib/blog-cms'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 type BlogPostPageProps = {
   params: {
@@ -107,6 +108,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )
           })}
         </div>}
+
+        <div className="mb-12"><NewsletterSignup compact /></div>
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <span className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted">
