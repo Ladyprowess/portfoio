@@ -16,6 +16,7 @@ export type Venture = {
   model: string[]
   priorities: string[]
   support: string[]
+  paymentUrl?: string
   videos?: { title: string; src: string }[]
   raise?: {
     amount: string
@@ -58,6 +59,7 @@ export const ventures: Venture[] = [
     model: ['Transaction fees on crypto bill payments', 'Merchant subscriptions for advanced store tools', 'Fees on selected payment and payout services', 'Future card and business payment services'],
     priorities: ['Improve reliability across every bill category', 'Grow merchant tools and business adoption', 'Strengthen compliance and operational systems', 'Expand customer acquisition and support', 'Continue card product development'],
     support: ['Seed investment', 'Fintech and compliance expertise', 'Distribution partnerships', 'Merchant introductions', 'Product and infrastructure partnerships'],
+    paymentUrl: 'https://kivorapay.com/pay/7632295',
     videos: [
       { title: 'Crypto invoice flow', src: 'https://www.youtube-nocookie.com/embed/3jajJ3nSWHM?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3' },
       { title: 'Wallet funding flow', src: 'https://www.youtube-nocookie.com/embed/oLnbfwoeNBU?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3' },

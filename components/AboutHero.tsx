@@ -79,12 +79,12 @@ export default function AboutHero() {
             <div className="relative mx-auto max-w-[540px]">
               <div className="absolute -bottom-5 -left-5 h-32 w-32 bg-blue-100" aria-hidden />
               <div className="relative overflow-hidden border border-ink-border bg-surface p-3 shadow-[0_24px_70px_rgba(18,18,18,0.09)] sm:p-4">
-              <div className="relative w-full overflow-hidden bg-surface-2" style={{ aspectRatio: '5/4' }}>
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-2 sm:aspect-[5/4]">
                 <Image
                   src="/personal%20photo/headshot3.png"
                   alt="Ngozi Peace Okafor"
                   fill
-                  className="object-cover object-top"
+                  className="object-cover object-[center_18%]"
                   sizes="(max-width: 1024px) 100vw, 520px"
                   priority
                 />

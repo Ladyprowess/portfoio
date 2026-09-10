@@ -207,13 +207,25 @@ export default function BlogCmsPage() {
     const selection = window.getSelection()
     if (!selection?.rangeCount) return
     if (selection.isCollapsed) {
-      format('insertHTML', '<ul class="blog-checklist"><li><label><input type="checkbox" /><span>Checklist item</span></label></li></ul><p><br></p>')
+      setStatus('Highlight the lines you want to turn into a checklist, then select the checklist icon.')
       return
     }
-    document.execCommand('insertUnorderedList')
-    const anchor = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement
-    const list = anchor?.closest('ul, ol')
-    if (list) prepareChecklist(list as HTMLUListElement | HTMLOListElement)
+
+    const lines = selection.toString().split(/\n+/).map(line => line.trim()).filter(Boolean)
+    if (!lines.length) {
+      setStatus('Highlight one or more complete lines first.')
+      return
+    }
+
+    const escapeText = (value: string) => value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+    const items = lines.map(line => `<li><label><input type="checkbox" /><span>${escapeText(line)}</span></label></li>`).join('')
+    document.execCommand('insertHTML', false, `<ul class="blog-checklist">${items}</ul><p><br></p>`)
+    setStatus(`${lines.length} checklist ${lines.length === 1 ? 'item' : 'items'} created.`)
     setContentHtml(editorRef.current?.innerHTML || '')
   }
 
