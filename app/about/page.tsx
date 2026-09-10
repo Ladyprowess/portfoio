@@ -9,9 +9,9 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Meet Ngozi Peace Okafor, also known as Lady Prowess. Founder, product marketer, WordPress designer, writer, and educator.',
+    'Meet Ngozi Peace Okafor, a Digital Product and Content Specialist working across technical writing, WordPress design, Web3, fintech, product communication, and content strategy.',
   alternates: { canonical: '/about' },
-  openGraph: { title: 'About Lady Prowess', description: 'Meet Ngozi Peace Okafor, founder, product marketer, WordPress designer, writer, and educator.', url: '/about', images: ['/opengraph-image'] },
+  openGraph: { title: 'About Lady Prowess', description: 'Meet Ngozi Peace Okafor, a Digital Product and Content Specialist working across technology, content, and digital products.', url: '/about', images: ['/opengraph-image'] },
 }
 
 export default function AboutPage() {

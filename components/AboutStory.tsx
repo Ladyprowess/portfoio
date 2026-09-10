@@ -24,6 +24,18 @@ function JourneyCard({ item, index }: { item: (typeof journey)[number]; index: n
 
 export default function AboutStory() {
   return (
+    <>
+    <section className="border-b border-ink-border bg-white px-6 py-20 sm:px-8 md:px-20 md:py-28">
+      <div className="mx-auto grid max-w-[1180px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:gap-16">
+        <div><span className="font-head text-[0.64rem] font-bold uppercase tracking-[0.18em] text-primary">My biography</span><h2 className="mt-4 max-w-sm font-display text-3xl font-extrabold leading-tight text-parchment md:text-4xl">Technology, content, and digital products.</h2></div>
+        <div className="max-w-3xl space-y-5 text-base leading-8 text-muted">
+          <p>Ngozi Peace Okafor is a Digital Product and Content Specialist with experience across technical writing, WordPress design, Web3, fintech, product communication, and content strategy.</p>
+          <p>She works at the intersection of technology, content, and digital products, helping businesses turn complex ideas and systems into clear, functional experiences for their users. Her work ranges from designing and managing WordPress websites to creating technical documentation, developing content strategies, communicating fintech and Web3 products, and building digital solutions that support business operations.</p>
+          <p>She has worked with companies across payments, blockchain, financial technology, and digital products, collaborating with product, engineering, marketing, and business teams. Her experience includes API and developer documentation, cross border payment systems, SEO, user education, website development, product messaging, and digital product implementation.</p>
+          <p>Ngozi has also founded multiple products, where she works with businesses and individuals on digital strategy, content, and technology. Her approach is simple: understand the product, understand the user, and build or communicate the solution in a way that actually makes sense.</p>
+        </div>
+      </div>
+    </section>
     <section className="border-b border-ink-border bg-bg px-6 py-20 sm:px-8 md:px-20 md:py-28">
       <div className="mx-auto max-w-[1180px]">
         <div className="mb-12 grid gap-5 md:grid-cols-[0.8fr_1.2fr] md:items-end">
@@ -33,5 +45,6 @@ export default function AboutStory() {
         <div>{journey.map((item, index) => <JourneyCard key={item.title} item={item} index={index} />)}</div>
       </div>
     </section>
+    </>
   )
 }
