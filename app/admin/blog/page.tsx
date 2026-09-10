@@ -6,8 +6,9 @@ import type { CmsPost } from '@/lib/blog-cms'
 
 const fieldClass = 'w-full rounded-xl border border-ink-border bg-white px-4 py-3 text-sm outline-none focus:border-primary'
 const toolbarButtonClass = 'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-primary'
+const POSTS_PER_PAGE = 5
 
-type IconName = 'left' | 'centre' | 'right' | 'justify' | 'bullets' | 'numbers' | 'link' | 'table' | 'image' | 'clear'
+type IconName = 'left' | 'centre' | 'right' | 'justify' | 'bullets' | 'numbers' | 'checklist' | 'link' | 'table' | 'image' | 'clear'
 
 function EditorIcon({ name }: { name: IconName }) {
   const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
@@ -17,6 +18,7 @@ function EditorIcon({ name }: { name: IconName }) {
   if (name === 'justify') return <svg {...common}><path d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
   if (name === 'bullets') return <svg {...common}><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r="1" fill="currentColor" stroke="none" /><circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="4.5" cy="18" r="1" fill="currentColor" stroke="none" /></svg>
   if (name === 'numbers') return <svg {...common}><path d="M10 6h10M10 12h10M10 18h10M4 5h1v3M4 11h2l-2 3h2M4 17h2l-2 2h2" /></svg>
+  if (name === 'checklist') return <svg {...common}><rect x="3" y="4" width="5" height="5" rx="1" /><path d="m4.5 6.5 1.2 1.2L8 5.2M11 6.5h10" /><rect x="3" y="14" width="5" height="5" rx="1" /><path d="M11 16.5h10" /></svg>
   if (name === 'link') return <svg {...common}><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1" /></svg>
   if (name === 'table') return <svg {...common}><rect x="3" y="4" width="18" height="16" rx="1.5" /><path d="M3 9h18M9 4v16M15 4v16" /></svg>
   if (name === 'image') return <svg {...common}><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="8.5" cy="9" r="1.5" /><path d="m4 17 5-5 4 4 2-2 5 5" /></svg>
@@ -40,6 +42,11 @@ export default function BlogCmsPage() {
   const [status, setStatus] = useState('')
   const [saving, setSaving] = useState(false)
   const [uploadMode, setUploadMode] = useState<'cover' | 'article'>('cover')
+  const [postSearch, setPostSearch] = useState('')
+  const [postFilter, setPostFilter] = useState<'all' | 'draft' | 'published'>('all')
+  const [postPage, setPostPage] = useState(1)
+  const [editingStatus, setEditingStatus] = useState<'draft' | 'published' | ''>('')
+  const [publishedAt, setPublishedAt] = useState<string | null>(null)
   const editorRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -95,22 +102,32 @@ export default function BlogCmsPage() {
     format('insertHTML', table)
   }
 
+  function addChecklist() {
+    const answer = window.prompt('How many checklist items?', '5')
+    if (answer === null) return
+    const count = Math.min(Math.max(Number.parseInt(answer, 10) || 5, 1), 20)
+    const items = Array.from({ length: count }, (_, index) => `<li><label><input type="checkbox" /> <span>Checklist item ${index + 1}</span></label></li>`).join('')
+    format('insertHTML', `<ul class="blog-checklist">${items}</ul><p><br></p>`)
+  }
+
   function edit(post: CmsPost) {
     setId(post.id); setTitle(post.title); setSlug(post.slug); setExcerpt(post.excerpt); setCategory(post.category); setCoverImage(post.cover_image || ''); setContentHtml(post.content_html)
+    setEditingStatus(post.status); setPublishedAt(post.published_at)
     if (editorRef.current) editorRef.current.innerHTML = post.content_html
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function clearForm() {
     setId(''); setTitle(''); setSlug(''); setExcerpt(''); setCategory('Insights'); setCoverImage(''); setContentHtml('')
+    setEditingStatus(''); setPublishedAt(null)
     if (editorRef.current) editorRef.current.innerHTML = ''
   }
 
   async function save(postStatus: 'draft' | 'published') {
     setSaving(true); setStatus('')
     try {
-      await request({ action: 'save', id, title, slug, excerpt, category, coverImage, contentHtml, status: postStatus })
-      setStatus(postStatus === 'published' ? 'Post published.' : 'Draft saved.')
+      await request({ action: 'save', id, title, slug, excerpt, category, coverImage, contentHtml, status: postStatus, publishedAt })
+      setStatus(postStatus === 'published' ? (id ? 'Live post updated.' : 'Post published.') : 'Draft saved.')
       clearForm(); await loadPosts()
     } catch (error) { setStatus(error instanceof Error ? error.message : 'Could not save the post.') }
     finally { setSaving(false) }
@@ -139,6 +156,15 @@ export default function BlogCmsPage() {
     if (fileRef.current) fileRef.current.value = ''
   }
 
+  const matchingPosts = posts.filter(post => {
+    const query = postSearch.trim().toLowerCase()
+    const matchesText = !query || post.title.toLowerCase().includes(query) || post.category.toLowerCase().includes(query)
+    return matchesText && (postFilter === 'all' || post.status === postFilter)
+  })
+  const totalPostPages = Math.max(1, Math.ceil(matchingPosts.length / POSTS_PER_PAGE))
+  const safePostPage = Math.min(postPage, totalPostPages)
+  const visiblePosts = matchingPosts.slice((safePostPage - 1) * POSTS_PER_PAGE, safePostPage * POSTS_PER_PAGE)
+
   if (!password) return <main className="min-h-screen bg-bg"><AdminNav /><div className="mx-auto max-w-lg px-5 py-20 text-center"><h1 className="font-display text-2xl font-semibold">Open the admin dashboard first</h1><a href="/admin" className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white">Go to admin login</a></div></main>
 
   return <main className="min-h-screen bg-bg"><AdminNav /><div className="mx-auto grid max-w-[1400px] gap-7 px-5 py-8 lg:grid-cols-[1fr_340px] lg:px-8">
@@ -162,6 +188,7 @@ export default function BlogCmsPage() {
             <span className="mx-1 h-6 w-px bg-ink-border" aria-hidden />
             <ToolbarButton label="Bullet list" onClick={() => format('insertUnorderedList')}><EditorIcon name="bullets" /></ToolbarButton>
             <ToolbarButton label="Numbered list" onClick={() => format('insertOrderedList')}><EditorIcon name="numbers" /></ToolbarButton>
+            <ToolbarButton label="Checklist" onClick={addChecklist}><EditorIcon name="checklist" /></ToolbarButton>
             <ToolbarButton label="Add link" onClick={addLink}><EditorIcon name="link" /></ToolbarButton>
             <ToolbarButton label="Add table" onClick={addTable}><EditorIcon name="table" /></ToolbarButton>
             <ToolbarButton label="Add image" onClick={() => { setUploadMode('article'); fileRef.current?.click() }}><EditorIcon name="image" /></ToolbarButton>
@@ -170,8 +197,15 @@ export default function BlogCmsPage() {
           <div ref={editorRef} contentEditable suppressContentEditableWarning onInput={event => setContentHtml((event.target as HTMLDivElement).innerHTML)} data-placeholder="Start writing your article..." className="blog-editor min-h-[620px] p-5 text-base leading-8 outline-none" />
         </div>
       </div>
-      <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={event => upload(event.target.files?.[0])} />{status && <p className="mt-4 rounded-xl bg-surface-2 px-4 py-3 text-sm text-muted">{status}</p>}<div className="mt-6 flex flex-wrap gap-3"><button disabled={saving} onClick={() => save('draft')} className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50">Save draft</button><button disabled={saving} onClick={() => save('published')} className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving...' : 'Publish'}</button></div>
+      <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={event => upload(event.target.files?.[0])} />{status && <p className="mt-4 rounded-xl bg-surface-2 px-4 py-3 text-sm text-muted">{status}</p>}<div className="mt-6 flex flex-wrap gap-3"><button disabled={saving} onClick={() => save('draft')} className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50">{id ? 'Save as draft' : 'Save draft'}</button><button disabled={saving} onClick={() => save('published')} className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving...' : editingStatus === 'published' ? 'Update live post' : 'Publish'}</button>{editingStatus === 'published' && slug && <a href={`/blog/${slug}`} target="_blank" rel="noopener noreferrer" className="rounded-full border border-primary/25 bg-blue-50 px-6 py-3 text-sm font-semibold text-primary">View live post ↗</a>}</div>
     </section>
-    <aside className="lg:sticky lg:top-5 lg:self-start"><div className="rounded-3xl border border-ink-border bg-white p-5"><div className="flex items-center justify-between"><h2 className="font-display text-lg font-semibold">All posts</h2><span className="rounded-full bg-surface-2 px-3 py-1 text-xs text-muted">{posts.length}</span></div><div className="mt-4 max-h-[70vh] space-y-3 overflow-y-auto">{posts.length ? posts.map(post => <article key={post.id} className="rounded-2xl border border-ink-border p-4"><div className="flex items-start justify-between gap-3"><div><span className={`text-[11px] font-semibold uppercase tracking-wider ${post.status === 'published' ? 'text-green-700' : 'text-amber'}`}>{post.status}</span><h3 className="mt-1 text-sm font-semibold leading-5">{post.title}</h3><p className="mt-1 text-xs text-muted">{post.category}</p></div></div><div className="mt-4 flex gap-2"><button onClick={() => edit(post)} className="rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold">Edit</button><button onClick={() => remove(post)} className="rounded-full px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Delete</button></div></article>) : <p className="py-8 text-center text-sm text-muted">No CMS posts yet.</p>}</div></div></aside>
+    <aside className="lg:sticky lg:top-5 lg:self-start">
+      <div className="rounded-3xl border border-ink-border bg-white p-5">
+        <div className="flex items-center justify-between"><h2 className="font-display text-lg font-semibold">All posts</h2><span className="rounded-full bg-surface-2 px-3 py-1 text-xs text-muted">{matchingPosts.length}</span></div>
+        <div className="mt-4 space-y-2"><input value={postSearch} onChange={event => { setPostSearch(event.target.value); setPostPage(1) }} placeholder="Search posts" className="w-full rounded-xl border border-ink-border bg-bg px-3 py-2.5 text-sm outline-none focus:border-primary" /><select value={postFilter} onChange={event => { setPostFilter(event.target.value as 'all' | 'draft' | 'published'); setPostPage(1) }} className="w-full rounded-xl border border-ink-border bg-bg px-3 py-2.5 text-sm outline-none focus:border-primary"><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Drafts</option></select></div>
+        <div className="mt-4 space-y-3">{visiblePosts.length ? visiblePosts.map(post => <article key={post.id} className={`rounded-2xl border p-4 ${id === post.id ? 'border-primary bg-blue-50/40' : 'border-ink-border'}`}><span className={`text-[11px] font-semibold uppercase tracking-wider ${post.status === 'published' ? 'text-green-700' : 'text-amber'}`}>{post.status}</span><h3 className="mt-1 text-sm font-semibold leading-5">{post.title}</h3><p className="mt-1 text-xs text-muted">{post.category}</p><div className="mt-4 flex flex-wrap gap-2"><button onClick={() => edit(post)} className="rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold">Edit</button>{post.status === 'published' && <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-primary">View live</a>}<button onClick={() => remove(post)} className="rounded-full px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Delete</button></div></article>) : <p className="py-8 text-center text-sm text-muted">{posts.length ? 'No posts match your search.' : 'No CMS posts yet.'}</p>}</div>
+        {matchingPosts.length > POSTS_PER_PAGE && <div className="mt-5 flex items-center justify-between border-t border-ink-border pt-4"><button disabled={safePostPage === 1} onClick={() => setPostPage(page => Math.max(1, page - 1))} className="rounded-full border border-ink-border px-3 py-1.5 text-xs font-semibold disabled:opacity-35">Previous</button><span className="text-xs text-muted">{safePostPage} of {totalPostPages}</span><button disabled={safePostPage === totalPostPages} onClick={() => setPostPage(page => Math.min(totalPostPages, page + 1))} className="rounded-full border border-ink-border px-3 py-1.5 text-xs font-semibold disabled:opacity-35">Next</button></div>}
+      </div>
+    </aside>
   </div></main>
 }
