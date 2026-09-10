@@ -18,7 +18,7 @@ export default function AdminPage() {
   async function verify(value: string) {
     setLoading(true)
     setError('')
-    const response = await fetch('/api/blog-posts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'list', password: value }) })
+    const response = await fetch('/api/admin-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: value }) })
     const data = await response.json()
     setLoading(false)
     if (!response.ok) { setError(data.error || 'Could not unlock the admin area.'); return }
