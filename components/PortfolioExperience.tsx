@@ -21,17 +21,17 @@ const projects = [
 ]
 
 const brands = [
-  { name: 'txFusion', image: '/brands/txfusion.png', href: 'https://www.txfusion.io/' },
-  { name: 'Cwallet', image: '/brands/cwallet.png', href: 'https://cwallet.com' },
-  { name: 'Bullring Finance', image: '/brands/BF.svg', href: 'https://www.bullring.finance/' },
-  { name: 'WriteTech Hub', image: '/brands/writechtechhub.webp', href: 'https://writetechhub.org/' },
-  { name: 'CoinTime ATM', image: '/brands/cointime.png', href: 'https://cointimeatm.com/' },
-  { name: 'CustomersChain', image: '/brands/customerschain.png', href: 'https://customerschain.com/' },
-  { name: 'LW Commerce', image: '/brands/moc.png', href: 'https://lwcommerce.org/' },
-  { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/' },
-  { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/' },
-  { name: 'UPay', image: '/brands/upay.jpeg', href: 'https://upay.com/' },
-  { name: 'UEEx', image: '/brands/ueex.png', href: 'https://ueex.com/' },
+  { name: 'txFusion', image: '/brands/txfusion.png', href: 'https://www.txfusion.io/', relationship: 'API and developer documentation' },
+  { name: 'Cwallet', image: '/brands/cwallet.png', href: 'https://cwallet.com', relationship: 'Content writing' },
+  { name: 'Bullring Finance', image: '/brands/BF.svg', href: 'https://www.bullring.finance/', relationship: 'Content strategy and writing' },
+  { name: 'WriteTech Hub', image: '/brands/writechtechhub.webp', href: 'https://writetechhub.org/', relationship: 'Technical writer' },
+  { name: 'CoinTime ATM', image: '/brands/cointime.png', href: 'https://cointimeatm.com/', relationship: 'Content writing' },
+  { name: 'CustomersChain', image: '/brands/customerschain.png', href: 'https://customerschain.com/', relationship: 'Content marketing' },
+  { name: 'LW Commerce', image: '/brands/moc.png', href: 'https://lwcommerce.org/', relationship: 'WordPress design and content' },
+  { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/', relationship: 'Content writing' },
+  { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/', relationship: 'Content strategy' },
+  { name: 'UPay', image: '/brands/upay.jpeg', href: 'https://upay.com/', relationship: 'Content writing' },
+  { name: 'UEEx', image: '/brands/ueex.png', href: 'https://ueex.com/', relationship: 'Content writing' },
 ]
 
 const testimonials = [
@@ -58,8 +58,8 @@ export default function PortfolioExperience() {
       <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_.88fr]">
         <div>
           <div className="mb-6 flex items-center gap-2 text-sm text-muted"><span className="h-2 w-2 rounded-full bg-[#84CC16]" />Available for selected projects</div>
-          <h1 className="max-w-3xl font-display text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.045em]">I connect products, content and business.</h1>
-          <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor, a product marketer, technical writer, copywriter, WordPress designer, Web3 educator, and founder. I make complex ideas clear enough to use, market, and grow.</p>
+          <h1 className="max-w-3xl font-display text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.045em]">I help digital products become easier to understand, use and grow.</h1>
+          <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor, a Digital Product and Content Specialist. I combine product communication, content strategy and practical digital execution to turn complex ideas into useful experiences.</p>
           <div className="mt-9 flex flex-wrap gap-3"><a href="/services" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dim">Explore my work</a><a href="https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-slate">View résumé ↗</a></div>
           <div className="mt-12 grid max-w-xl grid-cols-3 border-t border-ink-border pt-6"><div><strong className="block font-display text-xl">9+</strong><span className="text-xs text-muted">Years building</span></div><div><strong className="block font-display text-xl">200+</strong><span className="text-xs text-muted">People trained</span></div><div><strong className="block font-display text-xl">3</strong><span className="text-xs text-muted">Ventures founded</span></div></div>
         </div>
@@ -87,11 +87,12 @@ export default function PortfolioExperience() {
     </section>
 
     <section className="overflow-hidden border-y border-ink-border bg-white py-14">
-      <p className="text-center font-head text-[10px] uppercase tracking-[.14em] text-muted">Work connected to teams across fintech, Web3 and technology</p>
+      <p className="text-center font-head text-[10px] uppercase tracking-[.14em] text-muted">Companies I have supported through writing, product communication, strategy or website work</p>
       <div className="marquee-mask mt-8 overflow-hidden">
         <div className="animate-brand-marquee flex w-max gap-4 px-2 hover:[animation-play-state:paused]">
-          {[...brands, ...brands].map((brand, index) => <a key={`${brand.name}-${index}`} href={brand.href} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${brand.name}`} className="flex h-24 w-52 shrink-0 items-center justify-center rounded-2xl border border-ink-border bg-bg p-6 transition hover:border-primary/40 hover:bg-blue-50/40">
-            {brand.image ? <Image src={brand.image} alt={brand.name} width={135} height={48} className="max-h-10 max-w-[135px] object-contain" /> : <span className="font-display text-base font-bold text-slate">{brand.name}</span>}
+          {[...brands, ...brands].map((brand, index) => <a key={`${brand.name}-${index}`} href={brand.href} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${brand.name}`} className="flex h-32 w-60 shrink-0 flex-col items-center justify-center rounded-2xl border border-ink-border bg-bg p-5 text-center transition hover:border-primary/40 hover:bg-blue-50/40">
+            {brand.image ? <Image src={brand.image} alt={brand.name} width={135} height={48} className="max-h-9 max-w-[135px] object-contain" /> : <span className="font-display text-base font-bold text-slate">{brand.name}</span>}
+            <span className="mt-4 text-[11px] leading-4 text-muted">{brand.relationship}</span>
           </a>)}
         </div>
       </div>
@@ -109,7 +110,7 @@ export default function PortfolioExperience() {
       </div>
     </section>
 
-    <section id="contact" className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28"><div className="grid overflow-hidden rounded-3xl bg-parchment text-white md:grid-cols-[1.2fr_.8fr]"><div className="p-8 md:p-14"><p className="font-head text-[10px] uppercase tracking-wider text-blue-300">Have something to build?</p><h2 className="mt-4 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-4xl">Tell me what feels unclear.</h2><p className="mt-5 max-w-lg leading-7 text-white/65">Products, websites, technical content, education, AI workflows, or business systems.</p></div><div className="flex items-end border-t border-white/10 p-8 md:border-l md:border-t-0 md:p-14"><a href="mailto:hello@ladyprowess.com" className="w-full rounded-full bg-white px-6 py-4 text-center text-sm font-semibold text-parchment hover:bg-blue-50">hello@ladyprowess.com</a></div></div></section>
+    <section id="contact" className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28"><div className="grid overflow-hidden rounded-3xl bg-parchment text-white md:grid-cols-[1.2fr_.8fr]"><div className="p-8 md:p-14"><p className="font-head text-[10px] uppercase tracking-wider text-blue-300">Have something to build?</p><h2 className="mt-4 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-4xl">Discuss your project.</h2><p className="mt-5 max-w-lg leading-7 text-white/65">Tell me what you are building, what is not working and where you need support.</p></div><div className="flex items-end border-t border-white/10 p-8 md:border-l md:border-t-0 md:p-14"><a href="mailto:hello@ladyprowess.com" className="w-full rounded-full bg-white px-6 py-4 text-center text-sm font-semibold text-parchment hover:bg-blue-50">Start a conversation</a></div></div></section>
 
     <Footer />
 

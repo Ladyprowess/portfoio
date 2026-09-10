@@ -18,7 +18,7 @@ export default function NotFound() {
             <h1 className="mt-5 max-w-xl font-display text-[clamp(2rem,4vw,3.35rem)] font-extrabold leading-[1.08] tracking-[-0.04em]">This page is not here.</h1>
             <p className="mt-5 max-w-lg text-base leading-8 text-muted">The address may have changed, or the page may no longer exist. You can return home or continue from one of the main sections.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row"><Link href="/" className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-bold text-white transition hover:bg-primary-dim">Return home</Link><Link href="/blog" className="inline-flex min-h-12 items-center justify-center rounded-full border border-ink-border px-7 py-3 text-sm font-bold transition hover:border-primary/40">Read the blog</Link></div>
-            <nav aria-label="Helpful pages" className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-ink-border pt-7 text-sm font-semibold"><Link href="/about" className="hover:text-primary">About</Link><Link href="/services" className="hover:text-primary">Services</Link><Link href="/media" className="hover:text-primary">Media</Link><Link href="/#contact" className="hover:text-primary">Contact</Link></nav>
+            <nav aria-label="Helpful pages" className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-ink-border pt-7 text-sm font-semibold"><Link href="/about" className="hover:text-primary">About</Link><Link href="/services" className="hover:text-primary">Work</Link><Link href="/media" className="hover:text-primary">Media</Link><Link href="/#contact" className="hover:text-primary">Contact</Link></nav>
           </div>
         </div>
       </div>
