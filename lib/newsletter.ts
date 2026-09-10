@@ -27,7 +27,8 @@ export function publicationName(topic: string) {
 }
 
 export function senderName(topic: string) {
-  return topic === "Web3" ? "Lady Prowess from Decode Web3" : "Lady Prowess";
+  if (topic === "All") return "Lady Prowess";
+  return `Lady Prowess from ${topic === "Web3" ? "Decode Web3" : topic}`;
 }
 
 function emailSafeArticleHtml(contentHtml: string) {
