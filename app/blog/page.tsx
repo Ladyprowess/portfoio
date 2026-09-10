@@ -17,8 +17,8 @@ export const metadata: Metadata = {
 export default async function BlogIndexPage() {
   const cmsPosts = await getPublishedPosts()
   const posts = [
-    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, newsletterTopic: post.newsletter_topic, date: post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', year: 'numeric' }) : '', readTime: readTime(post.content_html), accent: '#2563EB', cover: post.cover_image })),
-    ...blogPosts.map(post => ({ ...post, cover: null as string | null })),
+    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, newsletterTopic: post.newsletter_topic, date: post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', year: 'numeric' }) : '', publishedAt: post.published_at || post.created_at, readTime: readTime(post.content_html), accent: '#2563EB', cover: post.cover_image })),
+    ...blogPosts.map(post => ({ ...post, publishedAt: new Date(post.date).toISOString(), cover: null as string | null })),
   ]
   const hasPosts = posts.length > 0
   const topics = Array.from(new Set(posts.map(post => post.newsletterTopic))).filter(topic => topic && topic !== 'All').sort()

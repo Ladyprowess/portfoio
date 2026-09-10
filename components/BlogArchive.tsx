@@ -12,6 +12,7 @@ export type BlogArchivePost = {
   category: string
   newsletterTopic: string
   date: string
+  publishedAt: string
   readTime: string
   accent: string
   cover: string | null
@@ -22,7 +23,12 @@ const POSTS_PER_PAGE = 6
 export default function BlogArchive({ posts, categories, activeCategory = 'All', showCategories = true }: { posts: BlogArchivePost[]; categories: string[]; activeCategory?: string; showCategories?: boolean }) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
-  const filtered = posts.filter(post => {
+  const orderedPosts = [...posts].sort((first, second) => {
+    const firstTime = Date.parse(first.publishedAt)
+    const secondTime = Date.parse(second.publishedAt)
+    return (Number.isNaN(secondTime) ? 0 : secondTime) - (Number.isNaN(firstTime) ? 0 : firstTime)
+  })
+  const filtered = orderedPosts.filter(post => {
     const search = query.trim().toLowerCase()
     const matchesSearch = !search || post.title.toLowerCase().includes(search) || post.excerpt.toLowerCase().includes(search) || post.category.toLowerCase().includes(search)
     return matchesSearch
