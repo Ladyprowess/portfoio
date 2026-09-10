@@ -1,10 +1,31 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import AdminNav from '@/components/AdminNav'
 import type { CmsPost } from '@/lib/blog-cms'
 
 const fieldClass = 'w-full rounded-xl border border-ink-border bg-white px-4 py-3 text-sm outline-none focus:border-primary'
+const toolbarButtonClass = 'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-primary'
+
+type IconName = 'left' | 'centre' | 'right' | 'justify' | 'bullets' | 'numbers' | 'link' | 'table' | 'image' | 'clear'
+
+function EditorIcon({ name }: { name: IconName }) {
+  const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
+  if (name === 'left') return <svg {...common}><path d="M4 6h16M4 10h11M4 14h16M4 18h9" /></svg>
+  if (name === 'centre') return <svg {...common}><path d="M4 6h16M7 10h10M4 14h16M8 18h8" /></svg>
+  if (name === 'right') return <svg {...common}><path d="M4 6h16M9 10h11M4 14h16M11 18h9" /></svg>
+  if (name === 'justify') return <svg {...common}><path d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+  if (name === 'bullets') return <svg {...common}><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r="1" fill="currentColor" stroke="none" /><circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="4.5" cy="18" r="1" fill="currentColor" stroke="none" /></svg>
+  if (name === 'numbers') return <svg {...common}><path d="M10 6h10M10 12h10M10 18h10M4 5h1v3M4 11h2l-2 3h2M4 17h2l-2 2h2" /></svg>
+  if (name === 'link') return <svg {...common}><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1" /></svg>
+  if (name === 'table') return <svg {...common}><rect x="3" y="4" width="18" height="16" rx="1.5" /><path d="M3 9h18M9 4v16M15 4v16" /></svg>
+  if (name === 'image') return <svg {...common}><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="8.5" cy="9" r="1.5" /><path d="m4 17 5-5 4 4 2-2 5 5" /></svg>
+  return <svg {...common}><path d="m5 5 14 14M19 5 5 19" /></svg>
+}
+
+function ToolbarButton({ label, onClick, children }: { label: string; onClick: () => void; children: ReactNode }) {
+  return <button type="button" aria-label={label} title={label} onMouseDown={event => event.preventDefault()} onClick={onClick} className={toolbarButtonClass}>{children}</button>
+}
 
 export default function BlogCmsPage() {
   const [password, setPassword] = useState('')
@@ -124,7 +145,31 @@ export default function BlogCmsPage() {
     <section className="rounded-3xl border border-ink-border bg-white p-5 md:p-7"><div className="flex items-start justify-between gap-4"><div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Blog CMS</p><h1 className="mt-2 font-display text-2xl font-semibold">{id ? 'Edit post' : 'Create a post'}</h1></div>{id && <button onClick={clearForm} className="rounded-full border border-ink-border px-4 py-2 text-xs font-semibold">New post</button>}</div>
       <div className="mt-7 grid gap-4 md:grid-cols-2"><label className="text-sm font-semibold">Title<input value={title} onChange={event => setTitle(event.target.value)} className={`mt-2 ${fieldClass}`} placeholder="Post title" /></label><label className="text-sm font-semibold">URL name<input value={slug} onChange={event => setSlug(event.target.value)} className={`mt-2 ${fieldClass}`} placeholder="Created from the title if empty" /></label><label className="text-sm font-semibold md:col-span-2">Short summary<textarea value={excerpt} onChange={event => setExcerpt(event.target.value)} className={`mt-2 min-h-24 ${fieldClass}`} placeholder="A short introduction shown on the blog page" /></label><label className="text-sm font-semibold">Category<input value={category} onChange={event => setCategory(event.target.value)} className={`mt-2 ${fieldClass}`} /></label><label className="text-sm font-semibold">Cover image<input value={coverImage} onChange={event => setCoverImage(event.target.value)} className={`mt-2 ${fieldClass}`} placeholder="Image URL or upload an image" /></label></div>
       <div className="mt-4 flex flex-wrap gap-2"><button onClick={() => { setUploadMode('cover'); fileRef.current?.click() }} className="rounded-full border border-ink-border px-4 py-2 text-xs font-semibold hover:border-primary">Upload cover image</button>{coverImage && <a href={coverImage} target="_blank" rel="noopener noreferrer" className="rounded-full bg-blue-50 px-4 py-2 text-xs font-semibold text-primary">View cover</a>}</div>
-      <div className="mt-7"><p className="text-sm font-semibold">Article</p><div className="mt-2 overflow-hidden rounded-2xl border border-ink-border focus-within:border-primary"><div className="flex flex-wrap items-center gap-1 border-b border-ink-border bg-surface-2 p-2"><select onChange={event => format('formatBlock', event.target.value)} className="rounded-lg border border-ink-border bg-white px-2 py-1.5 text-xs"><option value="p">Paragraph</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Quote</option></select><select onChange={event => format('fontName', event.target.value)} className="rounded-lg border border-ink-border bg-white px-2 py-1.5 text-xs"><option value="Inter">Sans</option><option value="Georgia">Serif</option><option value="monospace">Mono</option></select><button onClick={() => format('bold')} className="rounded-lg px-3 py-1.5 text-sm font-bold hover:bg-white">B</button><button onClick={() => format('italic')} className="rounded-lg px-3 py-1.5 text-sm italic hover:bg-white">I</button><button onClick={() => format('underline')} className="rounded-lg px-3 py-1.5 text-sm underline hover:bg-white">U</button><span className="mx-1 h-6 w-px bg-ink-border" aria-hidden /><button onClick={() => format('justifyLeft')} title="Align left" className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Left</button><button onClick={() => format('justifyCenter')} title="Align centre" className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Centre</button><button onClick={() => format('justifyRight')} title="Align right" className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Right</button><button onClick={() => format('justifyFull')} title="Justify text" className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Justify</button><span className="mx-1 h-6 w-px bg-ink-border" aria-hidden /><button onClick={() => format('insertUnorderedList')} className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Bullets</button><button onClick={() => format('insertOrderedList')} className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Numbers</button><button onClick={addLink} className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Link</button><button onClick={addTable} className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Table</button><button onClick={() => { setUploadMode('article'); fileRef.current?.click() }} className="rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-white">Image</button><button onClick={() => format('removeFormat')} className="rounded-lg px-3 py-1.5 text-xs font-semibold text-muted hover:bg-white">Clear</button></div><div ref={editorRef} contentEditable suppressContentEditableWarning onInput={event => setContentHtml((event.target as HTMLDivElement).innerHTML)} data-placeholder="Start writing your article..." className="blog-editor min-h-[420px] p-5 text-base leading-8 outline-none" /></div></div>
+      <div className="mt-7">
+        <p className="text-sm font-semibold">Article</p>
+        <div className="mt-2 rounded-2xl border border-ink-border focus-within:border-primary">
+          <div className="sticky top-0 z-30 flex flex-wrap items-center gap-1 rounded-t-2xl border-b border-ink-border bg-surface-2/95 p-2 shadow-[0_8px_24px_rgba(18,18,18,0.07)] backdrop-blur-xl">
+            <select aria-label="Text style" onChange={event => format('formatBlock', event.target.value)} className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"><option value="p">Paragraph</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Quote</option></select>
+            <select aria-label="Font" onChange={event => format('fontName', event.target.value)} className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"><option value="Inter">Sans</option><option value="Georgia">Serif</option><option value="monospace">Mono</option></select>
+            <ToolbarButton label="Bold" onClick={() => format('bold')}><span className="text-sm font-extrabold">B</span></ToolbarButton>
+            <ToolbarButton label="Italic" onClick={() => format('italic')}><span className="font-serif text-base font-bold italic">I</span></ToolbarButton>
+            <ToolbarButton label="Underline" onClick={() => format('underline')}><span className="text-sm font-bold underline underline-offset-2">U</span></ToolbarButton>
+            <span className="mx-1 h-6 w-px bg-ink-border" aria-hidden />
+            <ToolbarButton label="Align left" onClick={() => format('justifyLeft')}><EditorIcon name="left" /></ToolbarButton>
+            <ToolbarButton label="Align centre" onClick={() => format('justifyCenter')}><EditorIcon name="centre" /></ToolbarButton>
+            <ToolbarButton label="Align right" onClick={() => format('justifyRight')}><EditorIcon name="right" /></ToolbarButton>
+            <ToolbarButton label="Justify text" onClick={() => format('justifyFull')}><EditorIcon name="justify" /></ToolbarButton>
+            <span className="mx-1 h-6 w-px bg-ink-border" aria-hidden />
+            <ToolbarButton label="Bullet list" onClick={() => format('insertUnorderedList')}><EditorIcon name="bullets" /></ToolbarButton>
+            <ToolbarButton label="Numbered list" onClick={() => format('insertOrderedList')}><EditorIcon name="numbers" /></ToolbarButton>
+            <ToolbarButton label="Add link" onClick={addLink}><EditorIcon name="link" /></ToolbarButton>
+            <ToolbarButton label="Add table" onClick={addTable}><EditorIcon name="table" /></ToolbarButton>
+            <ToolbarButton label="Add image" onClick={() => { setUploadMode('article'); fileRef.current?.click() }}><EditorIcon name="image" /></ToolbarButton>
+            <ToolbarButton label="Clear formatting" onClick={() => format('removeFormat')}><EditorIcon name="clear" /></ToolbarButton>
+          </div>
+          <div ref={editorRef} contentEditable suppressContentEditableWarning onInput={event => setContentHtml((event.target as HTMLDivElement).innerHTML)} data-placeholder="Start writing your article..." className="blog-editor min-h-[620px] p-5 text-base leading-8 outline-none" />
+        </div>
+      </div>
       <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={event => upload(event.target.files?.[0])} />{status && <p className="mt-4 rounded-xl bg-surface-2 px-4 py-3 text-sm text-muted">{status}</p>}<div className="mt-6 flex flex-wrap gap-3"><button disabled={saving} onClick={() => save('draft')} className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50">Save draft</button><button disabled={saving} onClick={() => save('published')} className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving...' : 'Publish'}</button></div>
     </section>
     <aside className="lg:sticky lg:top-5 lg:self-start"><div className="rounded-3xl border border-ink-border bg-white p-5"><div className="flex items-center justify-between"><h2 className="font-display text-lg font-semibold">All posts</h2><span className="rounded-full bg-surface-2 px-3 py-1 text-xs text-muted">{posts.length}</span></div><div className="mt-4 max-h-[70vh] space-y-3 overflow-y-auto">{posts.length ? posts.map(post => <article key={post.id} className="rounded-2xl border border-ink-border p-4"><div className="flex items-start justify-between gap-3"><div><span className={`text-[11px] font-semibold uppercase tracking-wider ${post.status === 'published' ? 'text-green-700' : 'text-amber'}`}>{post.status}</span><h3 className="mt-1 text-sm font-semibold leading-5">{post.title}</h3><p className="mt-1 text-xs text-muted">{post.category}</p></div></div><div className="mt-4 flex gap-2"><button onClick={() => edit(post)} className="rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold">Edit</button><button onClick={() => remove(post)} className="rounded-full px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Delete</button></div></article>) : <p className="py-8 text-center text-sm text-muted">No CMS posts yet.</p>}</div></div></aside>
