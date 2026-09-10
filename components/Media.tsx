@@ -31,8 +31,8 @@ export default function Media() {
 
     <section className="border-b border-ink-border bg-white px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto grid max-w-[1240px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:gap-16">
-        <div><p className="font-head text-xs font-bold uppercase tracking-[0.18em] text-primary">About</p><h2 className="mt-4 font-display text-2xl font-extrabold">Short biography</h2></div>
-        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Okafor is a Digital Product and Content Specialist with experience across technical writing, WordPress design, Web3, fintech, product communication, and content strategy. She helps businesses turn complex ideas and systems into clear, functional digital experiences.</p>
+        <div><p className="font-head text-xs font-bold uppercase tracking-[0.18em] text-primary">About</p><h2 className="mt-4 font-display text-2xl font-extrabold">Biography</h2></div>
+        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Okafor is a Digital Product and Content Specialist with experience across technical writing, WordPress design, Web3, fintech, product communication, and content strategy. She has also founded multiple products, where she works with businesses and individuals on digital strategy, content, and technology.</p>
       </div>
     </section>
 
