@@ -1,25 +1,25 @@
 import type { Metadata } from 'next'
-import { Bricolage_Grotesque, IBM_Plex_Mono, DM_Sans } from 'next/font/google'
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
-const bricolage = Bricolage_Grotesque({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
-  variable: '--font-bricolage',
+  variable: '--font-jakarta',
   display: 'swap',
 })
 
-const plexMono = IBM_Plex_Mono({
+const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['500', '600'],
-  variable: '--font-plex-mono',
+  variable: '--font-jetbrains',
   display: 'swap',
 })
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500'],
-  variable: '--font-dm-sans',
+  variable: '--font-inter',
   display: 'swap',
 })
 
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body
-        className={`${bricolage.variable} ${plexMono.variable} ${dmSans.variable} font-body bg-bg text-parchment antialiased`}
+        className={`${jakarta.variable} ${jetbrains.variable} ${inter.variable} font-body bg-bg text-parchment antialiased`}
       >
         {children}
       </body>
