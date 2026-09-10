@@ -63,8 +63,7 @@ export default function NewsletterSignup({
         Subscribe to the topics you care about.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Choose everything or select the subjects you want to receive. Web3
-        emails are published as Decode Web3.
+        Select your preferred topic.
       </p>
       <form onSubmit={subscribe} className="mt-6">
         <div className="flex flex-wrap gap-2">
