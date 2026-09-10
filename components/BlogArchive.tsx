@@ -10,6 +10,7 @@ export type BlogArchivePost = {
   title: string
   excerpt: string
   category: string
+  newsletterTopic: string
   date: string
   readTime: string
   accent: string

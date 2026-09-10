@@ -53,6 +53,7 @@ export async function POST(request: Request) {
       slug: makeSlug(String(payload.slug || title)),
       excerpt,
       category: String(payload.category || 'Insights').trim(),
+      newsletter_topic: String(payload.newsletterTopic || 'Web3').trim(),
       cover_image: String(payload.coverImage || '').trim() || null,
       content_html: contentHtml,
       status,

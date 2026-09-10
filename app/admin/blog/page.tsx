@@ -566,6 +566,7 @@ export default function BlogCmsPage() {
     setSlug(post.slug);
     setExcerpt(post.excerpt);
     setCategory(post.category);
+    setNewsletterTopic(post.newsletter_topic || "Web3");
     setCoverImage(post.cover_image || "");
     setContentHtml(post.content_html);
     setEditingStatus(postState(post));
@@ -665,6 +666,7 @@ export default function BlogCmsPage() {
         slug,
         excerpt,
         category,
+        newsletterTopic,
         coverImage,
         contentHtml: compactContent,
         status: postStatus === "draft" ? "draft" : "published",

@@ -17,11 +17,11 @@ export const metadata: Metadata = {
 export default async function BlogIndexPage() {
   const cmsPosts = await getPublishedPosts()
   const posts = [
-    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, date: post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', year: 'numeric' }) : '', readTime: readTime(post.content_html), accent: '#2563EB', cover: post.cover_image })),
+    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, newsletterTopic: post.newsletter_topic, date: post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', year: 'numeric' }) : '', readTime: readTime(post.content_html), accent: '#2563EB', cover: post.cover_image })),
     ...blogPosts.map(post => ({ ...post, cover: null as string | null })),
   ]
   const hasPosts = posts.length > 0
-  const categories = Array.from(new Set(posts.map(post => post.category))).sort()
+  const topics = Array.from(new Set(posts.map(post => post.newsletterTopic))).filter(topic => topic && topic !== 'All').sort()
 
   return (
     <main className="min-h-screen bg-bg">
@@ -40,7 +40,7 @@ export default async function BlogIndexPage() {
           </h1>
         </header>
 
-        {hasPosts ? <BlogArchive posts={posts} categories={categories} /> : (
+        {hasPosts ? <BlogArchive posts={posts} categories={topics} /> : (
           <div className="border border-ink-border bg-surface p-8 lg:p-10">
             <span className="font-head text-[0.58rem] font-bold tracking-[0.16em] uppercase text-muted">
               No essays published yet
@@ -51,7 +51,7 @@ export default async function BlogIndexPage() {
           </div>
         )}
 
-        <div className="mt-16"><NewsletterSignup availableTopics={categories} /></div>
+        <div className="mt-16"><NewsletterSignup availableTopics={topics} /></div>
       </div>
       <Footer />
     </main>

@@ -6,6 +6,7 @@ create table if not exists public.blog_posts (
   title text not null,
   excerpt text not null,
   category text not null default 'Insights',
+  newsletter_topic text not null default 'Web3',
   cover_image text,
   content_html text not null,
   status text not null default 'draft' check (status in ('draft', 'published')),
@@ -13,6 +14,9 @@ create table if not exists public.blog_posts (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.blog_posts
+add column if not exists newsletter_topic text not null default 'Web3';
 
 create index if not exists blog_posts_public_index on public.blog_posts (status, published_at desc);
 

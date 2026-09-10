@@ -16,6 +16,7 @@ export type BlogPost = {
   title: string
   excerpt: string
   category: string
+  newsletterTopic: string
   date: string
   readTime: string
   accent: string
@@ -29,6 +30,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'The story of Ngozi Peace Okafor, known as Lady Prowess, and the writing journey that grew from a phone screen into strategy, business, and technology.',
     category: 'Personal Story',
+    newsletterTopic: 'All',
     date: 'May 2026',
     readTime: '8 min read',
     accent: '#41d7c7',

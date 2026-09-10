@@ -6,6 +6,7 @@ export type CmsPost = {
   title: string
   excerpt: string
   category: string
+  newsletter_topic: string
   cover_image: string | null
   content_html: string
   status: 'draft' | 'published'
@@ -31,6 +32,7 @@ function normalisePost(value: unknown): CmsPost | null {
     title,
     excerpt: text(row.excerpt),
     category: text(row.category, 'Insights'),
+    newsletter_topic: text(row.newsletter_topic, 'Web3'),
     cover_image: text(row.cover_image).trim() || null,
     content_html: text(row.content_html),
     status: row.status === 'draft' ? 'draft' : 'published',
