@@ -29,6 +29,62 @@ function ToolbarButton({ label, onClick, children }: { label: string; onClick: (
   return <button type="button" aria-label={label} title={label} onMouseDown={event => event.preventDefault()} onClick={onClick} className={toolbarButtonClass}>{children}</button>
 }
 
+const checklistMarker = /^\s*(?:☐|☑|☒|□|✓|✔|\[\s?\]|\[[xX]\])\s*/
+
+function prepareChecklist(list: HTMLUListElement | HTMLOListElement) {
+  list.className = 'blog-checklist'
+  list.querySelectorAll(':scope > li').forEach(item => {
+    if (item.querySelector('input[type="checkbox"]')) return
+    const checked = /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(item.textContent?.trim() || '') || item.getAttribute('aria-checked') === 'true'
+    const firstText = document.createTreeWalker(item, NodeFilter.SHOW_TEXT).nextNode()
+    if (firstText?.textContent) firstText.textContent = firstText.textContent.replace(checklistMarker, '')
+    const contents = document.createElement('span')
+    while (item.firstChild) contents.appendChild(item.firstChild)
+    const label = document.createElement('label')
+    const checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.checked = checked
+    if (checked) checkbox.setAttribute('checked', '')
+    label.append(checkbox, contents)
+    item.replaceChildren(label)
+    item.removeAttribute('aria-checked')
+  })
+}
+
+function normaliseGoogleDocsPaste(html: string) {
+  const documentCopy = new DOMParser().parseFromString(html, 'text/html')
+  const isGoogleDocs = /docs-internal-guid|google-docs|kix-/i.test(html)
+
+  documentCopy.querySelectorAll('script, meta, link').forEach(element => element.remove())
+  documentCopy.querySelectorAll('li').forEach(item => {
+    const text = item.textContent?.trim() || ''
+    const style = item.getAttribute('style') || ''
+    const list = item.closest('ul, ol')
+    const looksLikeChecklist = item.hasAttribute('aria-checked') || checklistMarker.test(text) || (isGoogleDocs && /list-style-type:\s*none/i.test(style))
+    if (looksLikeChecklist && list) prepareChecklist(list as HTMLUListElement | HTMLOListElement)
+  })
+  documentCopy.querySelectorAll('p, div').forEach(block => {
+    if (block.closest('.blog-checklist') || !checklistMarker.test(block.textContent?.trim() || '')) return
+    const list = documentCopy.createElement('ul')
+    list.className = 'blog-checklist'
+    const item = documentCopy.createElement('li')
+    const label = documentCopy.createElement('label')
+    const checkbox = documentCopy.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.checked = /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(block.textContent?.trim() || '')
+    if (checkbox.checked) checkbox.setAttribute('checked', '')
+    const contents = documentCopy.createElement('span')
+    contents.innerHTML = block.innerHTML.replace(checklistMarker, '')
+    label.append(checkbox, contents)
+    item.appendChild(label)
+    list.appendChild(item)
+    block.replaceWith(list)
+  })
+
+  documentCopy.querySelectorAll('style').forEach(element => element.remove())
+  return documentCopy.body.innerHTML
+}
+
 export default function BlogCmsPage() {
   const [password, setPassword] = useState('')
   const [posts, setPosts] = useState<CmsPost[]>([])
@@ -103,11 +159,36 @@ export default function BlogCmsPage() {
   }
 
   function addChecklist() {
-    const answer = window.prompt('How many checklist items?', '5')
-    if (answer === null) return
-    const count = Math.min(Math.max(Number.parseInt(answer, 10) || 5, 1), 20)
-    const items = Array.from({ length: count }, (_, index) => `<li><label><input type="checkbox" /> <span>Checklist item ${index + 1}</span></label></li>`).join('')
-    format('insertHTML', `<ul class="blog-checklist">${items}</ul><p><br></p>`)
+    editorRef.current?.focus()
+    const selection = window.getSelection()
+    if (!selection?.rangeCount) return
+    if (selection.isCollapsed) {
+      format('insertHTML', '<ul class="blog-checklist"><li><label><input type="checkbox" /><span>Checklist item</span></label></li></ul><p><br></p>')
+      return
+    }
+    document.execCommand('insertUnorderedList')
+    const anchor = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement
+    const list = anchor?.closest('ul, ol')
+    if (list) prepareChecklist(list as HTMLUListElement | HTMLOListElement)
+    setContentHtml(editorRef.current?.innerHTML || '')
+  }
+
+  function pasteFromDocument(event: React.ClipboardEvent<HTMLDivElement>) {
+    const html = event.clipboardData.getData('text/html')
+    if (!html) return
+    event.preventDefault()
+    const cleaned = normaliseGoogleDocsPaste(html)
+    document.execCommand('insertHTML', false, cleaned)
+    setContentHtml(editorRef.current?.innerHTML || '')
+  }
+
+  function syncEditor(event: React.FormEvent<HTMLDivElement>) {
+    const target = event.target
+    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+      if (target.checked) target.setAttribute('checked', '')
+      else target.removeAttribute('checked')
+    }
+    setContentHtml(editorRef.current?.innerHTML || '')
   }
 
   function edit(post: CmsPost) {
@@ -194,7 +275,7 @@ export default function BlogCmsPage() {
             <ToolbarButton label="Add image" onClick={() => { setUploadMode('article'); fileRef.current?.click() }}><EditorIcon name="image" /></ToolbarButton>
             <ToolbarButton label="Clear formatting" onClick={() => format('removeFormat')}><EditorIcon name="clear" /></ToolbarButton>
           </div>
-          <div ref={editorRef} contentEditable suppressContentEditableWarning onInput={event => setContentHtml((event.target as HTMLDivElement).innerHTML)} data-placeholder="Start writing your article..." className="blog-editor min-h-[620px] p-5 text-base leading-8 outline-none" />
+          <div ref={editorRef} contentEditable suppressContentEditableWarning onPaste={pasteFromDocument} onInput={syncEditor} onChange={syncEditor} data-placeholder="Start writing your article..." className="blog-editor min-h-[620px] p-5 text-base leading-8 outline-none" />
         </div>
       </div>
       <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={event => upload(event.target.files?.[0])} />{status && <p className="mt-4 rounded-xl bg-surface-2 px-4 py-3 text-sm text-muted">{status}</p>}<div className="mt-6 flex flex-wrap gap-3"><button disabled={saving} onClick={() => save('draft')} className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50">{id ? 'Save as draft' : 'Save draft'}</button><button disabled={saving} onClick={() => save('published')} className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving...' : editingStatus === 'published' ? 'Update live post' : 'Publish'}</button>{editingStatus === 'published' && slug && <a href={`/blog/${slug}`} target="_blank" rel="noopener noreferrer" className="rounded-full border border-primary/25 bg-blue-50 px-6 py-3 text-sm font-semibold text-primary">View live post ↗</a>}</div>
