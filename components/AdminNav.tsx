@@ -7,6 +7,7 @@ export default function AdminNav() {
         <Link href="/admin" className="min-w-max rounded-full px-4 py-2 text-sm font-semibold text-parchment hover:bg-surface-2">Admin home</Link>
         <Link href="/compose" className="min-w-max rounded-full px-4 py-2 text-sm font-semibold text-muted hover:bg-surface-2 hover:text-parchment">Email compose</Link>
         <Link href="/admin/blog" className="min-w-max rounded-full px-4 py-2 text-sm font-semibold text-muted hover:bg-surface-2 hover:text-parchment">Blog CMS</Link>
+        <Link href="/support" className="min-w-max rounded-full px-4 py-2 text-sm font-semibold text-muted hover:bg-surface-2 hover:text-parchment">Venture support</Link>
         <Link href="/blog" className="ml-auto min-w-max rounded-full border border-ink-border px-4 py-2 text-sm font-semibold text-muted hover:border-primary hover:text-primary">View blog</Link>
       </div>
     </nav>

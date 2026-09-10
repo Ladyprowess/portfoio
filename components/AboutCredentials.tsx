@@ -39,10 +39,10 @@ const expertise = [
 ]
 
 const toolGroups = [
-  { title: 'Documentation', tools: ['API Documentation', 'User Guides', 'System Integration Manuals', 'Whitepapers'] },
-  { title: 'Strategy & Growth', tools: ['SEO', 'Audience Analysis', 'Content Strategy', 'Community Management'] },
-  { title: 'Workflow and Automation', tools: ['Jenkins', 'GitHub Actions', 'Editorial Calendars'] },
-  { title: 'Craft', tools: ['Copywriting', 'Proofreading', 'Consistency Audits', 'Team Collaboration'] },
+  { number: '01', title: 'Documentation', description: 'I turn complex products and processes into information people can understand and use.', tools: ['API Documentation', 'User Guides', 'Integration Manuals', 'Whitepapers'] },
+  { number: '02', title: 'Strategy and Growth', description: 'I connect audience needs, content, and distribution to help brands communicate with purpose.', tools: ['SEO', 'Audience Analysis', 'Content Strategy', 'Community Management'] },
+  { number: '03', title: 'Workflow and Automation', description: 'I create practical systems that make publishing, collaboration, and delivery easier to manage.', tools: ['Jenkins', 'GitHub Actions', 'Editorial Calendars', 'AI Workflows'] },
+  { number: '04', title: 'Writing and Quality', description: 'I shape the message, improve clarity, and keep the final work consistent across every channel.', tools: ['Copywriting', 'Proofreading', 'Consistency Audits', 'Team Collaboration'] },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -141,34 +141,21 @@ export default function AboutCredentials() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 sm:px-8 md:px-20 md:py-24">
+      <section className="relative overflow-hidden bg-white px-6 py-20 sm:px-8 md:px-20 md:py-28">
+        <div aria-hidden className="absolute right-0 top-0 h-72 w-72 rounded-full bg-blue-50 blur-3xl" />
         <div className="mx-auto max-w-[1180px]">
-          <Reveal className="mb-10">
-            <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
-              Tools &amp; Skills
-            </span>
-            <h2
-              className="font-display font-extrabold leading-[1.04]"
-              style={{ fontSize: 'clamp(1.85rem, 3vw, 2.6rem)' }}
-            >
-              Skills I use in practice.
-            </h2>
+          <Reveal className="relative mb-12 grid gap-5 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+            <div><span className="mb-4 block font-head text-[0.64rem] font-bold uppercase tracking-[0.2em] text-primary">Tools and skills</span><h2 className="font-display text-3xl font-extrabold leading-tight text-parchment md:text-4xl">How I approach the work.</h2></div>
+            <p className="max-w-xl text-[0.94rem] leading-[1.8] text-muted md:justify-self-end">These skills do not sit separately. I combine them based on what a product, business, or audience needs.</p>
           </Reveal>
 
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="relative grid gap-4 md:grid-cols-2">
             {toolGroups.map((group, i) => (
-              <Reveal key={group.title} delay={i * 0.06}>
-                <span className="font-head text-[0.6rem] font-bold tracking-[0.14em] uppercase text-muted block mb-4">
-                  {group.title}
-                </span>
-                <div className="flex flex-wrap gap-2.5">
+              <Reveal key={group.title} delay={i * 0.06} className="group rounded-2xl border border-ink-border bg-bg p-6 transition duration-300 hover:border-primary/30 hover:bg-white hover:shadow-[0_18px_50px_rgba(18,18,18,0.06)] md:p-7">
+                <div className="flex items-start gap-5"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 font-head text-[0.65rem] font-bold text-primary">{group.number}</span><div><h3 className="font-display text-lg font-extrabold text-parchment">{group.title}</h3><p className="mt-2 text-[0.86rem] leading-6 text-muted">{group.description}</p></div></div>
+                <div className="mt-6 grid grid-cols-1 gap-2 border-t border-ink-border pt-5 sm:grid-cols-2">
                   {group.tools.map((tool) => (
-                    <span
-                      key={tool}
-                      className="font-head text-[0.68rem] font-bold tracking-[0.05em] text-parchment border border-ink-border px-4 py-2 hover:border-primary/40 transition-colors duration-200"
-                    >
-                      {tool}
-                    </span>
+                    <span key={tool} className="flex items-center gap-2 text-[0.78rem] font-semibold text-parchment"><span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />{tool}</span>
                   ))}
                 </div>
               </Reveal>
