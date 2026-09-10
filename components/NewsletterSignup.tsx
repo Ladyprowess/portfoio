@@ -60,10 +60,10 @@ export default function NewsletterSignup({
       <h2
         className={`mt-3 font-display font-extrabold ${compact ? "text-xl" : "text-2xl md:text-3xl"}`}
       >
-        Subscribe to the topics you care about.
+        Get the latest posts delivered to your inbox.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Select your preferred topic.
+        Select the topics you want to receive and subscribe to our newsletter. You can unsubscribe at any time.
       </p>
       <form onSubmit={subscribe} className="mt-6">
         <div className="flex flex-wrap gap-2">
