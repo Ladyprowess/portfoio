@@ -8,7 +8,7 @@ const fieldClass = 'w-full rounded-xl border border-ink-border bg-white px-4 py-
 const toolbarButtonClass = 'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-primary'
 const POSTS_PER_PAGE = 5
 
-type IconName = 'left' | 'centre' | 'right' | 'justify' | 'bullets' | 'numbers' | 'checklist' | 'link' | 'table' | 'image' | 'clear'
+type IconName = 'left' | 'centre' | 'right' | 'justify' | 'quote' | 'code' | 'bullets' | 'numbers' | 'checklist' | 'link' | 'table' | 'image' | 'clear'
 
 function EditorIcon({ name }: { name: IconName }) {
   const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
@@ -16,6 +16,8 @@ function EditorIcon({ name }: { name: IconName }) {
   if (name === 'centre') return <svg {...common}><path d="M4 6h16M7 10h10M4 14h16M8 18h8" /></svg>
   if (name === 'right') return <svg {...common}><path d="M4 6h16M9 10h11M4 14h16M11 18h9" /></svg>
   if (name === 'justify') return <svg {...common}><path d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+  if (name === 'quote') return <svg {...common}><path d="M9.5 11H5.8A1.8 1.8 0 0 0 4 12.8v3.4A1.8 1.8 0 0 0 5.8 18h1.9a1.8 1.8 0 0 0 1.8-1.8V10A4 4 0 0 0 5.5 6M20 11h-3.7a1.8 1.8 0 0 0-1.8 1.8v3.4a1.8 1.8 0 0 0 1.8 1.8h1.9a1.8 1.8 0 0 0 1.8-1.8V10A4 4 0 0 0 16 6" /></svg>
+  if (name === 'code') return <svg {...common}><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14" /></svg>
   if (name === 'bullets') return <svg {...common}><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r="1" fill="currentColor" stroke="none" /><circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="4.5" cy="18" r="1" fill="currentColor" stroke="none" /></svg>
   if (name === 'numbers') return <svg {...common}><path d="M10 6h10M10 12h10M10 18h10M4 5h1v3M4 11h2l-2 3h2M4 17h2l-2 2h2" /></svg>
   if (name === 'checklist') return <svg {...common}><rect x="3" y="4" width="5" height="5" rx="1" /><path d="m4.5 6.5 1.2 1.2L8 5.2M11 6.5h10" /><rect x="3" y="14" width="5" height="5" rx="1" /><path d="M11 16.5h10" /></svg>
@@ -312,11 +314,13 @@ export default function BlogCmsPage() {
         <p className="text-sm font-semibold">Article</p>
         <div className="mt-2 rounded-2xl border border-ink-border focus-within:border-primary">
           <div className="sticky top-0 z-30 flex flex-wrap items-center gap-1 rounded-t-2xl border-b border-ink-border bg-surface-2/95 p-2 shadow-[0_8px_24px_rgba(18,18,18,0.07)] backdrop-blur-xl">
-            <select aria-label="Text style" onChange={event => format('formatBlock', event.target.value)} className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"><option value="p">Paragraph</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Quote</option></select>
+            <select aria-label="Text style" onChange={event => format('formatBlock', event.target.value)} className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"><option value="p">Paragraph</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="blockquote">Blockquote</option><option value="pre">Code block</option></select>
             <select aria-label="Font" onChange={event => format('fontName', event.target.value)} className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"><option value="Inter">Sans</option><option value="Georgia">Serif</option><option value="monospace">Mono</option></select>
             <ToolbarButton label="Bold" onClick={() => format('bold')}><span className="text-sm font-extrabold">B</span></ToolbarButton>
             <ToolbarButton label="Italic" onClick={() => format('italic')}><span className="font-serif text-base font-bold italic">I</span></ToolbarButton>
             <ToolbarButton label="Underline" onClick={() => format('underline')}><span className="text-sm font-bold underline underline-offset-2">U</span></ToolbarButton>
+            <ToolbarButton label="Blockquote" onClick={() => format('formatBlock', 'blockquote')}><EditorIcon name="quote" /></ToolbarButton>
+            <ToolbarButton label="Code block" onClick={() => format('formatBlock', 'pre')}><EditorIcon name="code" /></ToolbarButton>
             <span className="mx-1 h-6 w-px bg-ink-border" aria-hidden />
             <ToolbarButton label="Align left" onClick={() => format('justifyLeft')}><EditorIcon name="left" /></ToolbarButton>
             <ToolbarButton label="Align centre" onClick={() => format('justifyCenter')}><EditorIcon name="centre" /></ToolbarButton>
