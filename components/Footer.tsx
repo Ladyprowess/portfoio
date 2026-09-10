@@ -81,7 +81,7 @@ export default function Footer() {
             © 2026 Ngozi Peace Okafor. All rights reserved.
           </span>
           <span className="font-body text-[0.72rem] tracking-[0.04em] text-muted">
-            Founder Digital Headquarters
+            Digital Headquarters
           </span>
         </div>
       </div>
