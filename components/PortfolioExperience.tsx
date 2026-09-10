@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const roles = [
   { key: 'product', label: 'Product marketing', title: 'I help products make sense to the people they are built for.', body: 'Positioning, product messaging, launch campaigns, onboarding, customer education, and go-to-market support—especially for fintech, payments, and Web3.', tools: ['Positioning', 'Launch strategy', 'User education', 'Campaigns'] },
@@ -19,17 +19,42 @@ const projects = [
   { name: 'CustomersChain', type: 'Crypto content', image: '/brands/customerschain.png', colour: 'bg-[#EEF3FA]', summary: 'Product education, campaigns, and SEO content for a relationship-led crypto OTC desk.', work: ['Technical content', 'SEO', 'Campaigns', 'Email'], href: 'https://customerschain.com/' },
 ]
 
-const brands = ['/brands/txfusion.png', '/brands/cwallet.png', '/brands/BF.svg', '/brands/writechtechhub.webp', '/brands/cointime.png']
+const brands = [
+  { name: 'txFusion', image: '/brands/txfusion.png', href: 'https://www.txfusion.io/' },
+  { name: 'Cwallet', image: '/brands/cwallet.png', href: 'https://cwallet.com' },
+  { name: 'Bullring Finance', image: '/brands/BF.svg', href: 'https://www.bullring.finance/' },
+  { name: 'WriteTech Hub', image: '/brands/writechtechhub.webp', href: 'https://writetechhub.org/' },
+  { name: 'CoinTime ATM', image: '/brands/cointime.png', href: 'https://cointimeatm.com/' },
+  { name: 'CustomersChain', image: '/brands/customerschain.png', href: 'https://customerschain.com/' },
+  { name: 'LW Commerce', image: null, href: 'https://lwcommerce.org/' },
+  { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/' },
+  { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/' },
+  { name: 'UPay', image: '/brands/upay.jpeg', href: 'https://upay.com/' },
+  { name: 'UEEx', image: '/brands/ueex.png', href: 'https://ueex.com/' },
+]
+
+const testimonials = [
+  { quote: 'I got maximum satisfaction from the work Ngozi did for me. She is a great writer, honest in dealing with people, and her work is excellent.', name: 'Mondesce Nigeria Ltd', role: 'Client' },
+  { quote: 'Working with Lady Prowess was an absolute delight. The process was easy, clear, and I would strongly recommend her for guaranteed satisfaction.', name: 'Stanley Williams', role: 'Client' },
+  { quote: 'One of the best technical writers I have come across. Ngozi has a real gift for turning complex ideas into structured, clear, engaging content.', name: 'Abdullah T.', role: 'Data Engineer' },
+  { quote: 'Peace worked quickly, was responsive to learning new things, and delivered great value. Highly recommended.', name: 'Smidh Vadera', role: 'Web App & Odoo ERP Expert' },
+]
 
 export default function PortfolioExperience() {
   const [role, setRole] = useState(roles[0])
   const [project, setProject] = useState<(typeof projects)[0] | null>(null)
+  const [testimonial, setTestimonial] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setTestimonial(current => (current + 1) % testimonials.length), 5500)
+    return () => window.clearInterval(timer)
+  }, [])
 
   return <main className="min-h-screen bg-bg text-parchment">
     <nav className="sticky top-0 z-50 border-b border-ink-border bg-bg/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-5 md:px-8">
-        <a href="#top" className="font-display text-base font-bold tracking-[-0.02em]">Lady Prowess<span className="text-primary">.</span></a>
-        <div className="hidden items-center gap-7 text-sm text-muted md:flex"><a href="#expertise" className="hover:text-parchment">Expertise</a><a href="#work" className="hover:text-parchment">Work</a><a href="/about" className="hover:text-parchment">About</a><a href="/blog" className="hover:text-parchment">Writing</a></div>
+        <a href="/" className="flex items-center"><Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" priority /></a>
+        <div className="hidden items-center gap-7 text-sm text-muted md:flex"><a href="/about" className="hover:text-parchment">About</a><a href="/work" className="hover:text-parchment">Work</a><a href="/services" className="hover:text-parchment">Services</a><a href="/blog" className="hover:text-parchment">Writing</a><a href="/media" className="hover:text-parchment">Media</a></div>
         <a href="mailto:hello@ladyprowess.com" className="rounded-full bg-parchment px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary">Start a conversation</a>
       </div>
     </nav>
@@ -66,7 +91,28 @@ export default function PortfolioExperience() {
       <div className="grid gap-5 md:grid-cols-2">{projects.map(item => <button key={item.name} onClick={() => setProject(item)} className="group overflow-hidden rounded-3xl border border-ink-border bg-white text-left transition hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]"><div className={`flex h-48 items-center justify-center ${item.colour}`}><Image src={item.image} alt={`${item.name} logo`} width={190} height={80} className="max-h-16 max-w-[190px] object-contain transition duration-300 group-hover:scale-105" /></div><div className="p-6"><div className="flex items-center justify-between"><span className="font-head text-[10px] uppercase tracking-wider text-muted">{item.type}</span><span className="text-primary">↗</span></div><h3 className="mt-3 font-display text-xl font-semibold">{item.name}</h3><p className="mt-2 text-sm leading-6 text-muted">{item.summary}</p></div></button>)}</div>
     </section>
 
-    <section className="border-y border-ink-border bg-white py-14"><div className="mx-auto max-w-[1240px] px-5 md:px-8"><p className="text-center font-head text-[10px] uppercase tracking-[.14em] text-muted">Work connected to teams across fintech, Web3 and technology</p><div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">{brands.map(src => <div key={src} className="flex h-20 items-center justify-center rounded-2xl border border-ink-border bg-bg p-5"><Image src={src} alt="Client brand" width={120} height={42} className="max-h-8 max-w-[110px] object-contain" /></div>)}</div></div></section>
+    <section className="overflow-hidden border-y border-ink-border bg-white py-14">
+      <p className="text-center font-head text-[10px] uppercase tracking-[.14em] text-muted">Work connected to teams across fintech, Web3 and technology</p>
+      <div className="marquee-mask mt-8 overflow-hidden">
+        <div className="animate-brand-marquee flex w-max gap-4 px-2 hover:[animation-play-state:paused]">
+          {[...brands, ...brands].map((brand, index) => <a key={`${brand.name}-${index}`} href={brand.href} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${brand.name}`} className="flex h-24 w-52 shrink-0 items-center justify-center rounded-2xl border border-ink-border bg-bg p-6 transition hover:border-primary/40 hover:bg-blue-50/40">
+            {brand.image ? <Image src={brand.image} alt={brand.name} width={135} height={48} className="max-h-10 max-w-[135px] object-contain" /> : <span className="font-display text-base font-bold text-slate">{brand.name}</span>}
+          </a>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28">
+      <div className="grid gap-8 lg:grid-cols-[.68fr_1.32fr] lg:items-start">
+        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Testimonials</p><h2 className="mt-3 max-w-sm font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">What people say after working with me.</h2></div>
+        <div className="overflow-hidden rounded-3xl border border-ink-border bg-white p-7 md:p-10">
+          <div className="min-h-[225px]"><AnimatePresence mode="wait"><motion.div key={testimonial} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: .3 }}>
+            <span className="font-display text-4xl leading-none text-primary">“</span><p className="mt-2 max-w-3xl font-display text-xl font-medium leading-8 tracking-[-.02em] md:text-2xl">{testimonials[testimonial].quote}</p><div className="mt-7 border-t border-ink-border pt-5"><p className="text-sm font-semibold">{testimonials[testimonial].name}</p><p className="mt-1 text-xs text-muted">{testimonials[testimonial].role}</p></div>
+          </motion.div></AnimatePresence></div>
+          <div className="mt-5 flex items-center justify-between border-t border-ink-border pt-5"><div className="flex gap-2">{testimonials.map((item, index) => <button key={item.name} onClick={() => setTestimonial(index)} aria-label={`Show testimonial ${index + 1}`} className={`h-2 rounded-full transition-all ${testimonial === index ? 'w-7 bg-primary' : 'w-2 bg-slate-300'}`} />)}</div><div className="flex gap-2"><button onClick={() => setTestimonial(current => (current - 1 + testimonials.length) % testimonials.length)} aria-label="Previous testimonial" className="flex h-9 w-9 items-center justify-center rounded-full border border-ink-border hover:border-primary">←</button><button onClick={() => setTestimonial(current => (current + 1) % testimonials.length)} aria-label="Next testimonial" className="flex h-9 w-9 items-center justify-center rounded-full border border-ink-border hover:border-primary">→</button></div></div>
+        </div>
+      </div>
+    </section>
 
     <section className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28"><div className="grid overflow-hidden rounded-3xl bg-parchment text-white md:grid-cols-[1.2fr_.8fr]"><div className="p-8 md:p-14"><p className="font-head text-[10px] uppercase tracking-wider text-blue-300">Have something to build?</p><h2 className="mt-4 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-4xl">Tell me what feels unclear. We can start there.</h2><p className="mt-5 max-w-lg leading-7 text-white/65">Products, websites, technical content, education, AI workflows, or business systems.</p></div><div className="flex items-end border-t border-white/10 p-8 md:border-l md:border-t-0 md:p-14"><a href="mailto:hello@ladyprowess.com" className="w-full rounded-full bg-white px-6 py-4 text-center text-sm font-semibold text-parchment hover:bg-blue-50">hello@ladyprowess.com</a></div></div></section>
 

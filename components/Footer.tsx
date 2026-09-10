@@ -48,7 +48,7 @@ export default function Footer() {
       <div className="max-w-[1480px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1fr] gap-12 lg:gap-8 pb-16 border-b border-dark-border">
           <div>
-            <Image src="/Logo.png" alt="Lady Prowess" width={132} height={38} className="h-8 w-auto" />
+            <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" />
             <p className="mt-5 text-[0.9rem] text-dark-muted leading-[1.8] max-w-xs">
               Founder, builder, and technical writer working at the intersection of technology,
               business, and people.

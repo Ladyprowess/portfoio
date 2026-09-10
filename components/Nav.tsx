@@ -8,7 +8,7 @@ const links = [
   { href: '/',             label: 'Home' },
   { href: '/about',        label: 'About' },
   { href: '/work',         label: 'Work' },
-  { href: '/#services',    label: 'Services' },
+  { href: '/services',     label: 'Services' },
   { href: 'https://www.prowessdigitalsolutions.com/resources', label: 'Resources' },
   { href: '/#contact',     label: 'Contact' },
 ]
@@ -33,7 +33,7 @@ export default function Nav() {
           href="/"
           className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         >
-          <Image src="/Logo.png" alt="Lady Prowess" width={132} height={38} className="h-7 w-auto" priority />
+          <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" priority />
         </a>
 
         {/* Desktop */}
