@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 const roles = [
-  { key: 'product', label: 'Product marketing', title: 'I help products make sense to the people they are built for.', body: 'Positioning, product messaging, launch campaigns, onboarding, customer education, and go-to-market support—especially for fintech, payments, and Web3.', tools: ['Positioning', 'Launch strategy', 'User education', 'Campaigns'] },
+  { key: 'product', label: 'Product marketing', title: 'I help products make sense to the people they are built for.', body: 'Positioning, product messaging, launch campaigns, onboarding, customer education, and go to market support, especially for fintech, payments, and Web3.', tools: ['Positioning', 'Launch strategy', 'User education', 'Campaigns'] },
   { key: 'writing', label: 'Technical writing', title: 'I turn difficult subjects into content people can follow.', body: 'Documentation, explainers, SEO articles, help content, and product guides that reduce confusion without removing the important details.', tools: ['Documentation', 'SEO content', 'Tutorials', 'Product copy'] },
   { key: 'web', label: 'WordPress design', title: 'I design websites around the user journey, not decoration.', body: 'Responsive WordPress and Elementor websites with clear structure, useful pages, clean content hierarchy, and practical conversion paths.', tools: ['WordPress', 'Elementor', 'UX structure', 'Landing pages'] },
   { key: 'education', label: 'Education & AI', title: 'I teach technology and use AI as a practical production tool.', body: 'Web3 education and training, plus AI-supported workflows for writing, research, visual design, and video production.', tools: ['Web3 education', 'Training', 'AI writing', 'AI design & video'] },
@@ -54,7 +54,7 @@ export default function PortfolioExperience() {
     <nav className="sticky top-0 z-50 border-b border-ink-border bg-bg/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-5 md:px-8">
         <a href="/" className="flex items-center"><Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" priority /></a>
-        <div className="hidden items-center gap-7 text-sm text-muted md:flex"><a href="/about" className="hover:text-parchment">About</a><a href="/work" className="hover:text-parchment">Work</a><a href="/services" className="hover:text-parchment">Services</a><a href="/blog" className="hover:text-parchment">Writing</a><a href="/media" className="hover:text-parchment">Media</a></div>
+        <div className="hidden items-center gap-7 text-sm text-muted md:flex"><a href="/about" className="hover:text-parchment">About</a><a href="/work" className="hover:text-parchment">Work</a><a href="/services" className="hover:text-parchment">Services</a><a href="/blog" className="hover:text-parchment">Blog</a><a href="/media" className="hover:text-parchment">Media</a></div>
         <a href="mailto:hello@ladyprowess.com" className="rounded-full bg-parchment px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary">Start a conversation</a>
       </div>
     </nav>
@@ -64,14 +64,14 @@ export default function PortfolioExperience() {
         <div>
           <div className="mb-6 flex items-center gap-2 text-sm text-muted"><span className="h-2 w-2 rounded-full bg-[#84CC16]" />Available for selected projects</div>
           <h1 className="max-w-3xl font-display text-[clamp(2.7rem,5.3vw,4.8rem)] font-semibold leading-[1.04] tracking-[-0.055em]">I connect products, content and business.</h1>
-          <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor—a product marketer, technical writer, WordPress designer, Web3 educator, and founder. I make complex ideas clear enough to use, market, and grow.</p>
-          <div className="mt-9 flex flex-wrap gap-3"><a href="#work" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dim">Explore my work</a><a href="https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing" target="_blank" className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-slate">View résumé ↗</a></div>
+          <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor, a product marketer, technical writer, copywriter, WordPress designer, Web3 educator, and founder. I make complex ideas clear enough to use, market, and grow.</p>
+          <div className="mt-9 flex flex-wrap gap-3"><a href="#expertise" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dim">Explore my work</a><a href="https://drive.google.com/file/d/1qWDoVGKY3sps03fPbmNgCeR0FpPj7A0c/view?usp=sharing" target="_blank" className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-slate">View résumé ↗</a></div>
           <div className="mt-12 grid max-w-xl grid-cols-3 border-t border-ink-border pt-6"><div><strong className="block font-display text-xl">9+</strong><span className="text-xs text-muted">Years building</span></div><div><strong className="block font-display text-xl">200+</strong><span className="text-xs text-muted">People trained</span></div><div><strong className="block font-display text-xl">3</strong><span className="text-xs text-muted">Ventures founded</span></div></div>
         </div>
         <div className="relative mx-auto w-full max-w-[460px]">
           <div className="absolute -left-5 -top-5 h-full w-full rounded-[2rem] border border-primary/20 bg-primary/5" />
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2"><Image src="/personal%20photo/headshot1.png" alt="Ngozi Peace Okafor" fill priority className="object-cover object-top" /></div>
-          <div className="absolute -bottom-5 -left-4 rounded-2xl border border-ink-border bg-white p-4 shadow-[0_16px_45px_rgba(17,24,39,.12)]"><p className="font-head text-[10px] uppercase tracking-wider text-muted">Currently building</p><p className="mt-1 text-sm font-semibold">KivoraPay · Prowess · Dritchwear</p></div>
+          <div className="absolute -bottom-5 -left-4 rounded-2xl border border-ink-border bg-white p-4 shadow-[0_16px_45px_rgba(17,24,39,.12)]"><p className="font-head text-[10px] uppercase tracking-wider text-muted">Currently building</p><p className="mt-1 text-sm font-semibold">KivoraPay · Prowess Digital Solutions · Dritchwear</p></div>
         </div>
       </div>
     </section>

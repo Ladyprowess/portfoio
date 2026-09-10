@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { blogPosts, getBlogPost } from '@/lib/blog-posts'
+import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
 
 type BlogPostPageProps = {
   params: {
@@ -18,12 +20,12 @@ export function generateMetadata({ params }: BlogPostPageProps): Metadata {
 
   if (!post) {
     return {
-      title: 'Post Not Found - Lady Prowess',
+      title: 'Post Not Found | Lady Prowess',
     }
   }
 
   return {
-    title: `${post.title} - Lady Prowess`,
+    title: `${post.title} | Lady Prowess`,
     description: post.excerpt,
   }
 }
@@ -36,13 +38,14 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <main className="min-h-screen px-8 md:px-20 py-16 md:py-24">
-      <article className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-bg">
+      <Nav />
+      <article className="mx-auto max-w-4xl px-5 pb-24 pt-28 md:px-8 md:pt-36">
         <Link
           href="/blog"
           className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted hover:text-primary transition-colors"
         >
-          &lt;- All Posts
+          All posts
         </Link>
 
         <header className="mt-16 pb-12 border-b border-ink-border">
@@ -110,6 +113,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
         </footer>
       </article>
+      <Footer />
     </main>
   )
 }

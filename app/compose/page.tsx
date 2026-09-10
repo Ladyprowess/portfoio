@@ -83,6 +83,7 @@ export default function ComposePage() {
   const [sending, setSending] = useState(false)
   const [status, setStatus] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
   const [history, setHistory] = useState<SentEmail[]>([])
+  const [historyPage, setHistoryPage] = useState(1)
   const [selectedEmail, setSelectedEmail] = useState<SentEmail | null>(null)
   const [loadingHistory, setLoadingHistory] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -130,6 +131,7 @@ export default function ComposePage() {
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Could not load email activity.')
       setHistory(data.emails || [])
+      setHistoryPage(1)
       if (selectedEmail) setSelectedEmail((data.emails || []).find((email: SentEmail) => email.id === selectedEmail.id) || null)
     } catch (error) {
       setStatus({ type: 'error', text: error instanceof Error ? error.message : 'Could not load email activity.' })
@@ -436,11 +438,11 @@ export default function ComposePage() {
 
         <section className="mt-16 border-t border-ink-border pt-10">
           <div className="mb-6 flex items-end justify-between gap-4"><div><span className={labelClass}>Tracking dashboard</span><h2 className="mt-2 font-display text-2xl font-bold">Sent email activity</h2></div><button onClick={loadHistory} disabled={loadingHistory} className="rounded-full border border-ink-border bg-white px-4 py-2 text-xs font-semibold hover:border-primary disabled:opacity-50">{loadingHistory ? 'Loading…' : history.length ? 'Refresh' : 'Load emails'}</button></div>
-          {history.length === 0 ? <div className="rounded-2xl border border-dashed border-ink-border bg-white p-8 text-center text-sm text-muted">Load your sent emails to see delivery, opens, and clicks.</div> : <div className="overflow-hidden rounded-2xl border border-ink-border bg-white"><div className="hidden grid-cols-[1fr_1.4fr_110px_100px] gap-4 border-b border-ink-border bg-surface-2 px-5 py-3 font-head text-[10px] uppercase tracking-wider text-muted md:grid"><span>Recipient</span><span>Subject</span><span>Activity</span><span>Sent</span></div>{history.map(email => {
+          {history.length === 0 ? <div className="rounded-2xl border border-dashed border-ink-border bg-white p-8 text-center text-sm text-muted">Load your sent emails to see delivery, opens, and clicks.</div> : <><div className="overflow-hidden rounded-2xl border border-ink-border bg-white"><div className="hidden grid-cols-[1fr_1.4fr_110px_100px] gap-4 border-b border-ink-border bg-surface-2 px-5 py-3 font-head text-[10px] uppercase tracking-wider text-muted md:grid"><span>Recipient</span><span>Subject</span><span>Activity</span><span>Sent</span></div>{history.slice((historyPage - 1) * 5, historyPage * 5).map(email => {
             const opens = email.events.filter(event => event.event_type === 'open').length
             const clicks = email.events.filter(event => event.event_type === 'click').length
             return <button key={email.id} onClick={() => setSelectedEmail(email)} className="grid w-full gap-2 border-b border-ink-border px-5 py-4 text-left last:border-0 hover:bg-blue-50/40 md:grid-cols-[1fr_1.4fr_110px_100px] md:items-center md:gap-4"><span className="truncate text-sm">{email.recipients.join(', ')}</span><span className="truncate text-sm font-semibold">{email.subject}</span><span className="flex gap-2 text-xs"><span className="rounded-full bg-blue-50 px-2 py-1 text-primary">{opens} open{opens === 1 ? '' : 's'}</span><span className="rounded-full bg-lime-50 px-2 py-1 text-lime-700">{clicks} click{clicks === 1 ? '' : 's'}</span></span><span className="text-xs text-muted">{new Date(email.sent_at).toLocaleDateString()}</span></button>
-          })}</div>}
+          })}</div>{history.length > 5 && <div className="mt-4 flex items-center justify-between"><p className="text-xs text-muted">Page {historyPage} of {Math.ceil(history.length / 5)}</p><div className="flex gap-2"><button onClick={() => setHistoryPage(page => Math.max(1, page - 1))} disabled={historyPage === 1} className="rounded-full border border-ink-border bg-white px-4 py-2 text-xs font-semibold hover:border-primary disabled:cursor-not-allowed disabled:opacity-40">Previous</button><button onClick={() => setHistoryPage(page => Math.min(Math.ceil(history.length / 5), page + 1))} disabled={historyPage === Math.ceil(history.length / 5)} className="rounded-full border border-ink-border bg-white px-4 py-2 text-xs font-semibold hover:border-primary disabled:cursor-not-allowed disabled:opacity-40">Next</button></div></div>}</>}
         </section>
       </div>
 

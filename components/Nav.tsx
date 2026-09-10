@@ -9,7 +9,7 @@ const links = [
   { href: '/about',        label: 'About' },
   { href: '/work',         label: 'Work' },
   { href: '/services',     label: 'Services' },
-  { href: 'https://www.prowessdigitalsolutions.com/resources', label: 'Resources' },
+  { href: '/blog',          label: 'Blog' },
   { href: '/#contact',     label: 'Contact' },
 ]
 

@@ -7,7 +7,7 @@ const chapters = [
   {
     num: '01',
     title: 'The Origin',
-    years: '2016 – 2022',
+    years: '2016 to 2022',
     accent: '#507B80',
     paragraphs: [
       'I started writing on my phone in 2016 with no audience and no plan, just because I loved putting words together. To get through university, I wrote seminar papers and assignments for other students, then landed my first paid writing role in 2017: five blog posts a day, six days a week, for five thousand naira a month.',
@@ -19,7 +19,7 @@ const chapters = [
   {
     num: '02',
     title: 'The Work',
-    years: '2022 – 2025',
+    years: '2022 to 2025',
     accent: '#507B80',
     paragraphs: [
       "Since then I've documented and written for fintech, blockchain, and cross-border payment products across five countries. At WriteTech Hub I managed a technical writing team and cut documentation turnaround time by 20%. At Cwallet, my blog posts, newsletters, and technical guides drove a 50% increase in user engagement.",
@@ -35,7 +35,7 @@ const chapters = [
   {
     num: '03',
     title: 'The Founder',
-    years: '2023 – Present',
+    years: '2023 to Present',
     accent: '#35555A',
     paragraphs: [
       "In July 2023 I founded Prowess Digital Solutions, a remote consulting agency producing technical writing, content strategy, and digital marketing for fintech and emerging-market clients. I've since trained over 200 businesses and individuals across that work.",
@@ -47,7 +47,7 @@ const chapters = [
   {
     num: '04',
     title: 'The Community',
-    years: '2022 – Present',
+    years: '2022 to Present',
     accent: '#507B80',
     paragraphs: [
       "Alongside client work, I contributed to Jenkins' open-source documentation, updating version-control guides and improving clarity across the project. I've since built on that through certifications in developer relations, blockchain and Web3 development, and open-source contribution, staying close to the communities that first showed me what was possible.",

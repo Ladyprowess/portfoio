@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { blogPosts } from '@/lib/blog-posts'
+import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Blog - Lady Prowess',
+  title: 'Blog | Lady Prowess',
   description: 'Personal essays and technical notes by Ngozi Peace Okafor on Web3, content strategy, and founder work.',
 }
 
@@ -11,16 +13,11 @@ export default function BlogIndexPage() {
   const hasPosts = blogPosts.length > 0
 
   return (
-    <main className="min-h-screen px-8 md:px-20 py-16 md:py-24">
-      <div className="max-w-[1200px] mx-auto">
-        <Link
-          href="/"
-          className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted hover:text-primary transition-colors"
-        >
-          &lt;- Back Home
-        </Link>
+    <main className="min-h-screen bg-bg">
+      <Nav />
+      <div className="mx-auto max-w-[1240px] px-5 pb-24 pt-28 md:px-8 md:pt-36">
 
-        <header className="mt-16 mb-16 md:mb-20">
+        <header className="mb-14 max-w-3xl md:mb-16">
           <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
             Lady Prowess Blog
           </span>
@@ -28,19 +25,17 @@ export default function BlogIndexPage() {
             className="font-display font-extrabold leading-[1.02] max-w-5xl"
             style={{ fontSize: 'clamp(2.1rem, 4vw, 3.6rem)' }}
           >
-            Essays from
-            <br />
-            <em className="not-italic text-primary">my own desk</em>
+            Useful ideas about products, business, writing, and Web3.
           </h1>
         </header>
 
         {hasPosts ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-border border border-ink-border">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {blogPosts.map((post) => (
-              <article key={post.slug} className="bg-surface">
+              <article key={post.slug} className="overflow-hidden rounded-3xl border border-ink-border bg-white transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]">
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="group min-h-[26rem] h-full p-7 lg:p-8 flex flex-col hover:bg-surface-2 transition-colors duration-300"
+                  className="group flex h-full min-h-[24rem] flex-col p-7 lg:p-8"
                 >
                   <div className="flex items-start justify-between gap-4 mb-8">
                     <span
@@ -67,7 +62,7 @@ export default function BlogIndexPage() {
                       className="text-sm opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200"
                       style={{ color: post.accent }}
                     >
-                      -&gt;
+                      Read
                     </span>
                   </div>
                 </Link>
@@ -85,6 +80,7 @@ export default function BlogIndexPage() {
           </div>
         )}
       </div>
+      <Footer />
     </main>
   )
 }
