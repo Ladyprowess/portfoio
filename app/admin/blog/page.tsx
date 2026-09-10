@@ -31,10 +31,39 @@ function ToolbarButton({ label, onClick, children }: { label: string; onClick: (
 
 const checklistMarker = /^\s*(?:☐|☑|☒|□|✓|✔|\[\s?\]|\[[xX]\])\s*/
 
-function prepareChecklist(list: HTMLUListElement | HTMLOListElement) {
+function flattenChecklistWrappers(list: HTMLUListElement | HTMLOListElement) {
+  let foundWrapper = true
+
+  while (foundWrapper) {
+    foundWrapper = false
+
+    Array.from(list.children).forEach(item => {
+      if (item.tagName !== 'LI') return
+      const nestedList = item.querySelector('ul, ol')
+      if (!nestedList) return
+
+      const visibleCopy = item.cloneNode(true) as HTMLElement
+      visibleCopy.querySelectorAll('ul, ol').forEach(childList => childList.remove())
+      const ownText = (visibleCopy.textContent || '').replace(checklistMarker, '').replace(/\u200B/g, '').trim()
+      if (ownText || visibleCopy.querySelector('img, table')) return
+
+      Array.from(nestedList.children).forEach(nestedItem => list.insertBefore(nestedItem, item))
+      item.remove()
+      foundWrapper = true
+    })
+  }
+}
+
+function prepareChecklist(list: HTMLUListElement | HTMLOListElement, removeEmptyItems = false) {
+  flattenChecklistWrappers(list)
   list.className = 'blog-checklist'
   list.querySelectorAll(':scope > li').forEach(item => {
     if (item.querySelector('input[type="checkbox"]')) return
+    const itemText = (item.textContent || '').replace(checklistMarker, '').replace(/\u200B/g, '').trim()
+    if (removeEmptyItems && !itemText && !item.querySelector('img, table')) {
+      item.remove()
+      return
+    }
     const checked = /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(item.textContent?.trim() || '') || item.getAttribute('aria-checked') === 'true'
     const firstText = document.createTreeWalker(item, NodeFilter.SHOW_TEXT).nextNode()
     if (firstText?.textContent) firstText.textContent = firstText.textContent.replace(checklistMarker, '')
@@ -56,13 +85,17 @@ function normaliseGoogleDocsPaste(html: string) {
   const isGoogleDocs = /docs-internal-guid|google-docs|kix-/i.test(html)
 
   documentCopy.querySelectorAll('script, meta, link').forEach(element => element.remove())
+  const checklistLists = new Set<HTMLUListElement | HTMLOListElement>()
   documentCopy.querySelectorAll('li').forEach(item => {
     const text = item.textContent?.trim() || ''
     const style = item.getAttribute('style') || ''
     const list = item.closest('ul, ol')
     const looksLikeChecklist = item.hasAttribute('aria-checked') || checklistMarker.test(text) || (isGoogleDocs && /list-style-type:\s*none/i.test(style))
-    if (looksLikeChecklist && list) prepareChecklist(list as HTMLUListElement | HTMLOListElement)
+    if (looksLikeChecklist && list) checklistLists.add(list as HTMLUListElement | HTMLOListElement)
   })
+  Array.from(checklistLists)
+    .filter(list => !Array.from(checklistLists).some(otherList => otherList !== list && otherList.contains(list)))
+    .forEach(list => prepareChecklist(list, true))
   documentCopy.querySelectorAll('p, div').forEach(block => {
     if (block.closest('.blog-checklist') || !checklistMarker.test(block.textContent?.trim() || '')) return
     const list = documentCopy.createElement('ul')
