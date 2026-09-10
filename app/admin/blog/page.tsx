@@ -10,6 +10,7 @@ const toolbarButtonClass =
   "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-primary";
 const POSTS_PER_PAGE = 5;
 type PostState = "draft" | "published" | "scheduled";
+type PublicationMode = "now" | "schedule";
 
 function postState(post: Pick<CmsPost, "status" | "published_at">): PostState {
   if (post.status === "draft") return "draft";
@@ -370,6 +371,7 @@ export default function BlogCmsPage() {
   const [postPage, setPostPage] = useState(1);
   const [editingStatus, setEditingStatus] = useState<PostState | "">("");
   const [publishedAt, setPublishedAt] = useState<string | null>(null);
+  const [publicationMode, setPublicationMode] = useState<PublicationMode>("now");
   const [newsletterTopic, setNewsletterTopic] = useState("Web3");
   const [subscriberTier, setSubscriberTier] = useState<"all" | "free" | "paid">(
     "all",
@@ -449,6 +451,15 @@ export default function BlogCmsPage() {
     editorRef.current?.focus();
     document.execCommand(command, false, value);
     setContentHtml(editorRef.current?.innerHTML || "");
+  }
+
+  function clearArticle() {
+    const hasContent = Boolean((editorRef.current?.textContent || "").trim() || contentHtml);
+    if (!hasContent) return;
+    if (!window.confirm("Clear the entire article? This cannot be undone.")) return;
+    if (editorRef.current) editorRef.current.innerHTML = "";
+    setContentHtml("");
+    setStatus("Article content cleared.");
   }
 
   function addLink() {
@@ -559,6 +570,7 @@ export default function BlogCmsPage() {
     setContentHtml(post.content_html);
     setEditingStatus(postState(post));
     setPublishedAt(post.published_at);
+    setPublicationMode(postState(post) === "scheduled" ? "schedule" : "now");
     if (editorRef.current) editorRef.current.innerHTML = post.content_html;
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -573,6 +585,7 @@ export default function BlogCmsPage() {
     setContentHtml("");
     setEditingStatus("");
     setPublishedAt(null);
+    setPublicationMode("now");
     if (editorRef.current) editorRef.current.innerHTML = "";
   }
 
@@ -634,12 +647,14 @@ export default function BlogCmsPage() {
           "This article is still too large. Remove embedded images and upload them with the image button.",
         );
       setContentHtml(compactContent);
-      if (postStatus === "scheduled" && (!publishedAt || new Date(publishedAt).getTime() <= Date.now()))
-        throw new Error("Choose a future date and time before scheduling.");
+      if (publicationMode === "schedule" && !publishedAt)
+        throw new Error("Choose a publication date and time.");
       const effectivePublishedAt = postStatus === "scheduled"
         ? publishedAt
-        : postStatus === "published" && publishedAt && new Date(publishedAt).getTime() <= Date.now()
+        : postStatus === "published" && publicationMode === "schedule"
           ? publishedAt
+          : postStatus === "published" && editingStatus === "published" && publishedAt
+            ? publishedAt
           : postStatus === "published"
             ? new Date().toISOString()
             : null;
@@ -847,16 +862,37 @@ export default function BlogCmsPage() {
                 placeholder="Image URL or upload an image"
               />
             </label>
-            <label className="text-sm font-semibold md:col-span-2">
-              Publication date and time
-              <input
-                type="datetime-local"
-                value={dateTimeInputValue(publishedAt)}
-                onChange={(event) => setPublishedAt(event.target.value ? new Date(event.target.value).toISOString() : null)}
-                className={`mt-2 ${fieldClass}`}
-              />
-              <span className="mt-2 block text-xs font-normal leading-5 text-muted">Choose a past date to backdate the post. Choose a future date to schedule it.</span>
-            </label>
+            <fieldset className="md:col-span-2">
+              <legend className="text-sm font-semibold">When should this post go live?</legend>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {([
+                  { value: "now", title: "Publish immediately", copy: "Make the post live now" },
+                  { value: "schedule", title: "Choose a date", copy: "Use a future or earlier publication date" },
+                ] as const).map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={publicationMode === option.value}
+                    onClick={() => {
+                      setPublicationMode(option.value);
+                      if (option.value === "schedule" && !publishedAt)
+                        setPublishedAt(new Date(Date.now() + 60 * 60 * 1000).toISOString());
+                    }}
+                    className={`rounded-2xl border p-4 text-left transition ${publicationMode === option.value ? "border-primary bg-blue-50/60 ring-1 ring-primary" : "border-ink-border bg-white hover:border-primary/40"}`}
+                  >
+                    <span className="flex items-center gap-2 text-sm font-semibold"><span className={`flex h-4 w-4 items-center justify-center rounded-full border ${publicationMode === option.value ? "border-primary" : "border-muted"}`}>{publicationMode === option.value && <span className="h-2 w-2 rounded-full bg-primary" />}</span>{option.title}</span>
+                    <span className="mt-2 block text-xs leading-5 text-muted">{option.copy}</span>
+                  </button>
+                ))}
+              </div>
+              {publicationMode !== "now" && (
+                <label className="mt-4 block text-sm font-semibold">
+                  Publication date and time
+                  <input type="datetime-local" value={dateTimeInputValue(publishedAt)} onChange={(event) => setPublishedAt(event.target.value ? new Date(event.target.value).toISOString() : null)} className={`mt-2 ${fieldClass}`} />
+                </label>
+              )}
+            </fieldset>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <button
@@ -1044,8 +1080,8 @@ export default function BlogCmsPage() {
                   <EditorIcon name="image" />
                 </ToolbarButton>
                 <ToolbarButton
-                  label="Clear formatting"
-                  onClick={() => format("removeFormat")}
+                  label="Clear article"
+                  onClick={clearArticle}
                 >
                   <EditorIcon name="clear" />
                 </ToolbarButton>
@@ -1098,21 +1134,18 @@ export default function BlogCmsPage() {
             </button>
             <button
               disabled={saving}
-              onClick={() => save("published")}
+              onClick={() => save(publicationMode === "schedule" && publishedAt && new Date(publishedAt).getTime() > Date.now() ? "scheduled" : "published")}
               className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50"
             >
               {saving
                 ? "Saving..."
+                : publicationMode === "schedule"
+                  ? publishedAt && new Date(publishedAt).getTime() > Date.now()
+                    ? editingStatus === "scheduled" ? "Reschedule post" : "Schedule post"
+                    : "Publish with selected date"
                 : editingStatus === "published"
                   ? "Update live post"
-                  : "Publish"}
-            </button>
-            <button
-              disabled={saving || !publishedAt || new Date(publishedAt).getTime() <= Date.now()}
-              onClick={() => save("scheduled")}
-              className="rounded-full border border-primary bg-white px-6 py-3 text-sm font-semibold text-primary disabled:opacity-40"
-            >
-              {editingStatus === "scheduled" ? "Reschedule" : "Schedule"}
+                  : "Publish now"}
             </button>
             {editingStatus === "published" && slug && (
               <a
