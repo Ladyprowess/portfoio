@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   try {
     const [emails, events] = await Promise.all([
       db('sent_emails?select=*&order=sent_at.desc&limit=100'),
-      db('email_events?select=*&order=occurred_at.desc'),
+      db('email_events?select=*&source=eq.resend&order=occurred_at.desc'),
     ])
     return NextResponse.json({ emails: emails.map(email => ({ ...email, events: events.filter(event => event.email_id === email.id) })) })
   } catch (error) {

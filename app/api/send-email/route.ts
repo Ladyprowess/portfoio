@@ -187,17 +187,9 @@ export async function POST(req: Request) {
   const resend = new Resend(apiKey)
 
   try {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '')
-    if (!siteUrl) throw new Error('Set NEXT_PUBLIC_SITE_URL to enable email tracking.')
     const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: to, cc, bcc, subject, preview, body_html: safeHtml }) })
     const emailId = String(records[0]?.id || '')
     if (!emailId) throw new Error('Could not create the email tracking record.')
-
-    const trackedHtml = baseHtml.replace(/href=(['"])(https?:\/\/[^'"]+)\1/gi, (_match, quote, url) => {
-      const tracked = `${siteUrl}/api/track/click?id=${encodeURIComponent(emailId)}&url=${encodeURIComponent(url)}`
-      return `href=${quote}${tracked}${quote}`
-    })
-    const html = `${trackedHtml}<img src="${siteUrl}/api/track/open?id=${encodeURIComponent(emailId)}" width="1" height="1" alt="" style="display:block;border:0;width:1px;height:1px;opacity:0" />`
 
     const { data, error } = await resend.emails.send({
       from: FROM,
@@ -207,7 +199,7 @@ export async function POST(req: Request) {
       replyTo: REPLY_TO,
       subject,
       text,
-      html,
+      html: baseHtml,
       ...(attachments.length ? { attachments } : {}),
     })
 
