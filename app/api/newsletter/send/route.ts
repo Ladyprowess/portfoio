@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { db } from "@/lib/email-store";
 import {
   emailDocument,
-  publicationName,
+  senderName,
   type NewsletterSubscriber,
 } from "@/lib/newsletter";
 
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const from = `${publicationName(topic)} <hello@ladyprowess.com>`;
+    const from = `${senderName(topic)} <hello@ladyprowess.com>`;
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://ladyprowess.com";
 
@@ -82,7 +82,8 @@ export async function POST(request: Request) {
     )) as NewsletterSubscriber[];
     const subscribers = rows.filter(
       (subscriber) =>
-        (subscriber.topics.includes("All") ||
+        (topic === "All" ||
+          subscriber.topics.includes("All") ||
           subscriber.topics.includes(topic)) &&
         (tier === "all" || subscriber.tier === tier),
     );

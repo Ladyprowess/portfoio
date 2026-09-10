@@ -321,7 +321,7 @@ function normaliseGoogleDocsPaste(html: string) {
         const usefulStyles = attribute.value
           .split(";")
           .filter((value) =>
-            /^(?:text-align|font-weight|font-style|text-decoration)\s*:/i.test(
+            /^(?:text-align|font-weight|font-style|text-decoration|color|background-color|border-color)\s*:/i.test(
               value.trim(),
             ),
           );
@@ -847,6 +847,7 @@ export default function BlogCmsPage() {
                   onChange={(event) => setNewsletterTopic(event.target.value)}
                   className={`mt-2 ${fieldClass}`}
                 >
+                  <option value="All">All subscribers</option>
                   <option>Web3</option>
                   <option>AI</option>
                   <option>Technology</option>
@@ -871,7 +872,7 @@ export default function BlogCmsPage() {
                 </select>
               </label>
               <label className="text-sm font-semibold">
-                Test email
+                Send test to this email
                 <input
                   type="email"
                   value={testEmail}
@@ -891,8 +892,8 @@ export default function BlogCmsPage() {
               Email matching subscribers when this post is first published
             </label>
             <p className="mt-3 text-xs leading-5 text-muted">
-              Web3 posts are sent from Decode Web3. Every email contains the
-              complete article, a website link, and an unsubscribe link.
+              Web3 posts are sent from Lady Prowess from Decode Web3. Choose
+              All subscribers when the post should go to every active email.
             </p>
           </div>
           <div className="mt-7">
