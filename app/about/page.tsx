@@ -7,9 +7,11 @@ import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'About | Lady Prowess',
+  title: 'About',
   description:
     'Meet Ngozi Peace Okafor, also known as Lady Prowess. Founder, product marketer, WordPress designer, writer, and educator.',
+  alternates: { canonical: '/about' },
+  openGraph: { title: 'About Lady Prowess', description: 'Meet Ngozi Peace Okafor, founder, product marketer, WordPress designer, writer, and educator.', url: '/about', images: ['/opengraph-image'] },
 }
 
 export default function AboutPage() {

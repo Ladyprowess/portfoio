@@ -6,8 +6,10 @@ import Footer from '@/components/Footer'
 import { ventures } from '@/lib/ventures'
 
 export const metadata: Metadata = {
-  title: 'Venture Support | Lady Prowess',
+  title: 'Venture Support',
   description: 'Explore the businesses founded by Ngozi Peace Okafor and learn how to support their growth.',
+  alternates: { canonical: '/support' },
+  openGraph: { title: 'Venture Support | Lady Prowess', description: 'Explore the businesses founded by Ngozi Peace Okafor and learn how to support their growth.', url: '/support', images: ['/opengraph-image'] },
 }
 
 const waysToSupport = [

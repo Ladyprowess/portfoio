@@ -9,7 +9,7 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const venture = getVenture(params.slug)
-  return venture ? { title: `${venture.name} | Venture Support`, description: venture.summary } : {}
+  return venture ? { title: `${venture.name} | Venture Support`, description: venture.summary, alternates: { canonical: `/support/${venture.slug}` }, openGraph: { title: `${venture.name} | Venture Support`, description: venture.summary, url: `/support/${venture.slug}`, images: ['/opengraph-image'] } } : {}
 }
 
 export default function VenturePage({ params }: { params: { slug: string } }) {

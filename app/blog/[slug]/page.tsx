@@ -14,9 +14,7 @@ type BlogPostPageProps = {
   }
 }
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const post = getBlogPost(params.slug) || await getPublishedPost(params.slug)
@@ -28,8 +26,11 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
 
   return {
-    title: `${post.title} | Lady Prowess`,
+    title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: { title: post.title, description: post.excerpt, url: `/blog/${post.slug}`, siteName: 'Lady Prowess', type: 'article', publishedTime: 'published_at' in post ? post.published_at || undefined : undefined, authors: ['Ngozi Peace Okafor'], section: post.category, images: [{ url: `/blog/${post.slug}/opengraph-image`, width: 1200, height: 630, alt: post.title }] },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.excerpt, images: [`/blog/${post.slug}/opengraph-image`] },
   }
 }
 
@@ -42,9 +43,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
   const accent = 'accent' in post ? post.accent : '#2563EB'
+  const publishedDate = 'date' in post ? undefined : post.published_at || undefined
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: publishedDate,
+    dateModified: 'updated_at' in post ? post.updated_at || publishedDate : publishedDate,
+    mainEntityOfPage: `https://ladyprowess.com/blog/${post.slug}`,
+    image: `https://ladyprowess.com/blog/${post.slug}/opengraph-image`,
+    author: { '@type': 'Person', name: 'Ngozi Peace Okafor', url: 'https://ladyprowess.com/about' },
+    publisher: { '@type': 'Person', name: 'Lady Prowess', url: 'https://ladyprowess.com' },
+  }
 
   return (
     <main className="min-h-screen bg-bg">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }} />
       <Nav />
       <article className="mx-auto max-w-4xl px-5 pb-24 pt-28 md:px-8 md:pt-36">
         <Link

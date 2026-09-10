@@ -7,8 +7,11 @@ import { getPublishedPosts, readTime } from '@/lib/blog-cms'
 import NewsletterSignup from '@/components/NewsletterSignup'
 
 export const metadata: Metadata = {
-  title: 'Blog | Lady Prowess',
+  title: 'Blog',
   description: 'Personal essays and technical notes by Ngozi Peace Okafor on Web3, content strategy, and founder work.',
+  alternates: { canonical: '/blog' },
+  openGraph: { title: 'Lady Prowess Blog', description: 'Ideas about products, business, writing, AI, and Web3 by Ngozi Peace Okafor.', url: '/blog', type: 'website', images: [{ url: '/blog/opengraph-image', width: 1200, height: 630, alt: 'Lady Prowess Blog' }] },
+  twitter: { card: 'summary_large_image', title: 'Lady Prowess Blog', description: 'Ideas about products, business, writing, AI, and Web3 by Ngozi Peace Okafor.', images: ['/blog/opengraph-image'] },
 }
 
 export default async function BlogIndexPage() {
@@ -37,7 +40,7 @@ export default async function BlogIndexPage() {
           </h1>
         </header>
 
-        {hasPosts ? <BlogArchive posts={posts} /> : (
+        {hasPosts ? <BlogArchive posts={posts} categories={categories} /> : (
           <div className="border border-ink-border bg-surface p-8 lg:p-10">
             <span className="font-head text-[0.58rem] font-bold tracking-[0.16em] uppercase text-muted">
               No essays published yet
