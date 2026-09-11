@@ -70,7 +70,6 @@ export async function POST(request: Request) {
           contentHtml,
           topic,
           postUrl,
-          subscribeUrl: `${siteUrl}/blog`,
           unsubscribeUrl: `${siteUrl}/unsubscribe?preview=1`,
         }),
       });
@@ -104,7 +103,6 @@ export async function POST(request: Request) {
           contentHtml,
           topic,
           postUrl,
-          subscribeUrl: `${siteUrl}/blog`,
           unsubscribeUrl: `${siteUrl}/unsubscribe?token=${encodeURIComponent(subscriber.unsubscribe_token)}`,
         }),
       }));

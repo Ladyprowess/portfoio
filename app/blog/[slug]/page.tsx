@@ -14,6 +14,66 @@ type BlogPostPageProps = {
   }
 }
 
+const voidElements = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
+
+function splitArticleHtml(html: string): [string, string] {
+  const tokens = html.match(/<!--[\s\S]*?-->|<![^>]*>|<\/?[a-z][^>]*>|[^<]+/gi) || [html]
+  const blocks: string[] = []
+  let block = ''
+  let depth = 0
+
+  for (const token of tokens) {
+    const closingTag = token.match(/^<\/([a-z0-9-]+)/i)
+    const openingTag = token.match(/^<([a-z0-9-]+)/i)
+
+    if (closingTag) {
+      block += token
+      depth = Math.max(0, depth - 1)
+      if (depth === 0 && block.trim()) {
+        blocks.push(block)
+        block = ''
+      }
+      continue
+    }
+
+    if (openingTag) {
+      block += token
+      const tag = openingTag[1].toLowerCase()
+      const selfClosing = /\/>$/.test(token) || voidElements.has(tag)
+      if (!selfClosing) depth += 1
+      else if (depth === 0 && block.trim()) {
+        blocks.push(block)
+        block = ''
+      }
+      continue
+    }
+
+    if (depth > 0) block += token
+    else if (token.trim()) blocks.push(token)
+    else if (blocks.length) blocks[blocks.length - 1] += token
+  }
+
+  if (block.trim()) blocks.push(block)
+  if (blocks.length < 2) return [html, '']
+
+  const lengths = blocks.map((item) => item.replace(/<[^>]+>/g, ' ').replace(/&[a-z0-9#]+;/gi, ' ').replace(/\s+/g, ' ').trim().length)
+  const target = lengths.reduce((total, length) => total + length, 0) / 2
+  let runningTotal = 0
+  let splitIndex = 1
+  let smallestDifference = Number.POSITIVE_INFINITY
+
+  for (let index = 0; index < blocks.length - 1; index += 1) {
+    runningTotal += lengths[index]
+    const difference = Math.abs(target - runningTotal)
+    if (difference < smallestDifference) {
+      smallestDifference = difference
+      splitIndex = index + 1
+    }
+  }
+
+  return [blocks.slice(0, splitIndex).join(''), blocks.slice(splitIndex).join('')]
+}
+
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
@@ -43,7 +103,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
   const accent = 'accent' in post ? post.accent : '#2563EB'
+  const newsletterTopic = 'newsletter_topic' in post ? post.newsletter_topic : post.newsletterTopic
   const publishedDate = 'date' in post ? undefined : post.published_at || undefined
+  const cmsArticleParts = 'content_html' in post ? splitArticleHtml(post.content_html) : null
+  const staticArticleMiddle = 'body' in post ? Math.ceil(post.body.length / 2) : 0
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -96,8 +159,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {'cover_image' in post && post.cover_image && <div className="relative mt-8 aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
 
-        {'content_html' in post ? <div className="blog-content w-full min-w-0 max-w-3xl py-14" dangerouslySetInnerHTML={{ __html: post.content_html }} /> : <div className="w-full min-w-0 max-w-3xl space-y-7 py-14">
+        {'content_html' in post ? <div className="w-full min-w-0 max-w-3xl py-14">
+          <div className="blog-content" dangerouslySetInnerHTML={{ __html: cmsArticleParts?.[0] || post.content_html }} />
+          <div className="my-10"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
+          {cmsArticleParts?.[1] && <div className="blog-content" dangerouslySetInnerHTML={{ __html: cmsArticleParts[1] }} />}
+        </div> : <div className="w-full min-w-0 max-w-3xl space-y-7 py-14">
           {post.body.map((block, index) => {
+            const articleBlock = (() => {
             if (block.type === 'quote') {
               return (
                 <blockquote
@@ -121,10 +189,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {block.text}
               </p>
             )
+            })()
+
+            return <div key={`${block.type}-${index}`}>
+              {articleBlock}
+              {index + 1 === staticArticleMiddle && <div className="my-10"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>}
+            </div>
           })}
         </div>}
 
-        <div className="mb-12"><NewsletterSignup compact availableTopics={[post.category]} /></div>
+        <div className="mb-12"><NewsletterSignup compact availableTopics={[newsletterTopic]} defaultTopics={[newsletterTopic]} /></div>
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <span className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted">
