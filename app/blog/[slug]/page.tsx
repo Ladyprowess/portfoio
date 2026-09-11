@@ -58,10 +58,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-bg">
+    <main className="min-h-screen overflow-x-hidden bg-bg">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }} />
       <Nav />
-      <article className="mx-auto max-w-4xl px-5 pb-24 pt-28 md:px-8 md:pt-36">
+      <article className="mx-auto w-full min-w-0 max-w-4xl px-5 pb-24 pt-28 md:px-8 md:pt-36">
         <Link
           href="/blog"
           className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted hover:text-primary transition-colors"
@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {'cover_image' in post && post.cover_image && <div className="relative mt-8 aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
 
-        {'content_html' in post ? <div className="blog-content max-w-3xl py-14" dangerouslySetInnerHTML={{ __html: post.content_html }} /> : <div className="py-14 space-y-7 max-w-3xl">
+        {'content_html' in post ? <div className="blog-content w-full min-w-0 max-w-3xl py-14" dangerouslySetInnerHTML={{ __html: post.content_html }} /> : <div className="w-full min-w-0 max-w-3xl space-y-7 py-14">
           {post.body.map((block, index) => {
             if (block.type === 'quote') {
               return (

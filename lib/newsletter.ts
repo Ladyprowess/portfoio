@@ -32,11 +32,16 @@ export function senderName(topic: string) {
 }
 
 function emailSafeArticleHtml(contentHtml: string) {
+  const cleanDimensions = (style: string) =>
+    style
+      .split(";")
+      .filter((rule) => !/^\s*(?:width|min-width|max-width|height|min-height|max-height|white-space)\s*:/i.test(rule))
+      .join(";");
   const styleTag = (html: string, tag: string, baseStyle: string) =>
     html.replace(
       new RegExp(`<${tag}\\b([^>]*)>`, "gi"),
       (_match, rawAttributes: string) => {
-        const existingStyle = rawAttributes.match(/\sstyle=["']([^"']*)["']/i)?.[1] || "";
+        const existingStyle = cleanDimensions(rawAttributes.match(/\sstyle=["']([^"']*)["']/i)?.[1] || "");
         const attributes = rawAttributes.replace(/\sstyle=["'][^"']*["']/i, "");
         return `<${tag}${attributes} style="${baseStyle}${existingStyle}">`;
       },
@@ -44,12 +49,16 @@ function emailSafeArticleHtml(contentHtml: string) {
 
   let html = contentHtml
     .replace(/text-align\s*:\s*justify\s*;?/gi, "text-align:left;")
-    .replace(/<div\b([^>]*class=["'][^"']*blog-table-wrap[^"']*["'][^>]*)>/gi, '<div style="width:100%;margin:24px 0;">');
+    .replace(/<div\b([^>]*class=["'][^"']*blog-table-wrap[^"']*["'][^>]*)>/gi, '<div style="width:100%;max-width:100%;margin:24px 0;overflow:hidden;">')
+    .replace(/<(table|th|td|img)\b([^>]*)>/gi, (_match, tag: string, attributes: string) =>
+      `<${tag}${attributes.replace(/\s(?:width|height)=["'][^"']*["']/gi, "")}>`,
+    );
 
   html = styleTag(html, "table", "width:100%;border-collapse:collapse;table-layout:fixed;background:#FFFFFF;font-size:13px;line-height:1.45;")
     .replace(/<table\b/i, '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"')
   html = styleTag(html, "th", "border:1px solid #DDE1E8;background:#EEF4FF;color:#17191D;padding:10px 8px;text-align:left;vertical-align:top;font-weight:700;overflow-wrap:anywhere;");
   html = styleTag(html, "td", "border:1px solid #DDE1E8;padding:10px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere;");
+  html = styleTag(html, "img", "display:block;max-width:100%;height:auto;margin:20px auto;");
 
   html = html.replace(
     /<ul\b[^>]*class=["'][^"']*blog-checklist[^"']*["'][^>]*>([\s\S]*?)<\/ul>/gi,
@@ -73,6 +82,34 @@ function emailSafeArticleHtml(contentHtml: string) {
   return html;
 }
 
+function visibleCharacterCount(html: string) {
+  return html.replace(/<[^>]+>/g, " ").replace(/&[a-z0-9#]+;/gi, " ").replace(/\s+/g, " ").trim().length;
+}
+
+function emailArticlePreview(contentHtml: string, postUrl?: string) {
+  if (!postUrl || visibleCharacterCount(contentHtml) <= 6500) {
+    return { html: contentHtml, shortened: false };
+  }
+
+  const blocks = Array.from(
+    contentHtml.matchAll(/<(h[1-6]|p|blockquote|pre|ul|ol|table)\b[^>]*>[\s\S]*?<\/\1>/gi),
+  ).map((match) => match[0]);
+  const selected: string[] = [];
+  let characterCount = 0;
+
+  for (const block of blocks) {
+    const blockLength = visibleCharacterCount(block);
+    if (selected.length >= 3 && characterCount + blockLength > 2800) break;
+    selected.push(block);
+    characterCount += blockLength;
+  }
+
+  return {
+    html: selected.length ? selected.join("") : `<p>${contentHtml.replace(/<[^>]+>/g, " ").slice(0, 2800)}</p>`,
+    shortened: true,
+  };
+}
+
 export function emailDocument(input: {
   title: string;
   excerpt: string;
@@ -83,9 +120,10 @@ export function emailDocument(input: {
   unsubscribeUrl?: string;
 }) {
   const publication = publicationName(input.topic);
-  const articleHtml = emailSafeArticleHtml(input.contentHtml);
+  const preview = emailArticlePreview(input.contentHtml, input.postUrl);
+  const articleHtml = emailSafeArticleHtml(preview.html);
   const button = input.postUrl
-    ? `<a href="${input.postUrl}" style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:8px;">Read on the website</a>`
+    ? `<a href="${input.postUrl}" style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:8px;">Read the full article</a>`
     : "";
   const unsubscribe = input.unsubscribeUrl
     ? `<p style="margin:24px 0 0;text-align:center;font-size:12px;line-height:1.6;color:#8A909B;">You received this email because you subscribed to ${publication}.<br><a href="${input.unsubscribeUrl}" style="color:#4B5563;text-decoration:underline;">Unsubscribe from these emails</a></p>`
@@ -94,5 +132,5 @@ export function emailDocument(input: {
     ? `<p style="margin:24px 0 0;font-size:14px;color:#4B5563;">If someone forwarded this email to you, <a href="${input.subscribeUrl}" style="color:#2563EB;font-weight:700;">subscribe here</a> to receive future posts.</p>`
     : "";
 
-  return `<!doctype html><html><body style="margin:0;background:#F5F6F8;color:#17191D;"><div style="display:none;max-height:0;overflow:hidden;opacity:0;">${input.excerpt}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:28px 10px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;margin:0 auto;background:#FFFFFF;border:1px solid #E5E7EB;"><tr><td style="padding:34px 24px;font-family:Arial,Helvetica,sans-serif;"><p style="margin:0 0 32px;color:#2563EB;font-size:13px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;">${publication}</p><h1 style="margin:0;font-size:32px;line-height:1.18;letter-spacing:-0.5px;">${input.title}</h1><p style="margin:16px 0 0;color:#6B7280;font-size:17px;line-height:1.65;text-align:left;">${input.excerpt}</p><p style="margin:22px 0 0;color:#6B7280;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Ngozi Peace Okafor</p><div style="height:1px;background:#E5E7EB;margin:28px 0;"></div><div style="font-size:16px;line-height:1.8;color:#25282D;text-align:left;">${articleHtml}</div>${button ? `<div style="margin-top:32px;">${button}</div>` : ""}${subscribe}<div style="height:1px;background:#E5E7EB;margin:34px 0 22px;"></div><p style="margin:0;font-size:13px;color:#6B7280;">© ${new Date().getFullYear()} ${publication}</p>${unsubscribe}</td></tr></table></td></tr></table></body></html>`;
+  return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media only screen and (max-width:520px){.email-outer{padding:12px 6px!important}.email-content{padding:24px 16px!important}.email-title{font-size:26px!important;line-height:1.2!important}}</style></head><body style="margin:0;padding:0;width:100%;background:#F5F6F8;color:#17191D;"><div style="display:none;max-height:0;overflow:hidden;opacity:0;">${input.excerpt}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;table-layout:fixed;"><tr><td class="email-outer" style="padding:28px 10px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:680px;margin:0 auto;border-collapse:collapse;table-layout:fixed;background:#FFFFFF;border:1px solid #E5E7EB;"><tr><td class="email-content" style="min-width:0;padding:34px 24px;font-family:Arial,Helvetica,sans-serif;overflow-wrap:anywhere;word-break:break-word;"><p style="margin:0 0 32px;color:#2563EB;font-size:13px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;">${publication}</p><h1 class="email-title" style="margin:0;font-size:32px;line-height:1.18;letter-spacing:-0.5px;overflow-wrap:anywhere;">${input.title}</h1><p style="margin:16px 0 0;color:#6B7280;font-size:17px;line-height:1.65;text-align:left;">${input.excerpt}</p><p style="margin:22px 0 0;color:#6B7280;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Ngozi Peace Okafor</p><div style="height:1px;background:#E5E7EB;margin:28px 0;"></div><div style="width:100%;max-width:100%;font-size:16px;line-height:1.8;color:#25282D;text-align:left;overflow-wrap:anywhere;word-break:break-word;">${articleHtml}</div>${preview.shortened ? `<p style="margin:28px 0 0;color:#6B7280;font-size:14px;line-height:1.6;">Continue reading the complete article on the website.</p>` : ""}${button ? `<div style="margin-top:20px;">${button}</div>` : ""}${subscribe}<div style="height:1px;background:#E5E7EB;margin:34px 0 22px;"></div><p style="margin:0;font-size:13px;color:#6B7280;">© ${new Date().getFullYear()} ${publication}</p>${unsubscribe}</td></tr></table></td></tr></table></body></html>`;
 }

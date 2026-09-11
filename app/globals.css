@@ -94,6 +94,8 @@ body::before {
 .compose-editor b, .compose-editor strong { font-weight: 700; }
 
 .blog-editor:empty::before { content: attr(data-placeholder); color: #9CA3AF; pointer-events: none; }
+.blog-editor, .blog-content { width: 100%; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.blog-editor *, .blog-content * { box-sizing: border-box; }
 .blog-editor h2, .blog-content h2 { margin: 2rem 0 0.75rem; font-family: var(--font-jakarta); font-size: 1.75rem; font-weight: 700; line-height: 1.25; }
 .blog-editor h3, .blog-content h3 { margin: 1.6rem 0 0.6rem; font-family: var(--font-jakarta); font-size: 1.3rem; font-weight: 700; line-height: 1.35; }
 .blog-editor p, .blog-content p { margin: 0 0 1.25rem; font-size: 1.05rem; line-height: 1.9; }
@@ -104,9 +106,10 @@ body::before {
 .blog-editor pre, .blog-content pre { margin: 1.75rem 0; max-width: 100%; overflow-x: auto; border: 1px solid #273244; border-radius: 0.9rem; background: #121820; padding: 1.15rem 1.25rem; color: #E7EDF6; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9rem; line-height: 1.7; tab-size: 2; white-space: pre; }
 .blog-editor code:not(pre code), .blog-content code:not(pre code) { border-radius: 0.35rem; background: #EEF2F7; padding: 0.12rem 0.35rem; color: #1E3A5F; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9em; }
 .blog-editor a, .blog-content a { color: #2563EB; text-decoration: underline; }
-.blog-editor img, .blog-content img { margin: 2rem 0; max-width: 100%; border-radius: 1rem; }
-.blog-editor .blog-table-wrap, .blog-content .blog-table-wrap { margin: 1.75rem 0; max-width: 100%; overflow-x: auto; border: 1px solid #DDE1E8; border-radius: 0.9rem; }
-.blog-editor table, .blog-content table { width: 100%; min-width: 520px; border-collapse: collapse; background: #FFFFFF; font-size: 0.95rem; line-height: 1.55; }
+.blog-editor img, .blog-content img { display: block; width: auto; height: auto; margin: 2rem 0; max-width: 100% !important; border-radius: 1rem; }
+.blog-editor .blog-table-wrap, .blog-content .blog-table-wrap { width: 100% !important; margin: 1.75rem 0; max-width: 100% !important; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; border: 1px solid #DDE1E8; border-radius: 0.9rem; }
+.blog-editor table, .blog-content table { width: 100% !important; max-width: 100%; min-width: 520px; border-collapse: collapse; background: #FFFFFF; font-size: 0.95rem; line-height: 1.55; }
+.blog-editor > table, .blog-content > table { display: block; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
 .blog-editor th, .blog-content th { background: #F3F6FB; color: #121212; font-weight: 700; text-align: left; }
 .blog-editor th, .blog-editor td, .blog-content th, .blog-content td { min-width: 120px; border-right: 1px solid #DDE1E8; border-bottom: 1px solid #DDE1E8; padding: 0.8rem 0.95rem; vertical-align: top; }
 .blog-editor th:last-child, .blog-editor td:last-child, .blog-content th:last-child, .blog-content td:last-child { border-right: 0; }
@@ -119,6 +122,15 @@ body::before {
 .blog-editor .blog-checklist label > span input[type="checkbox"], .blog-content .blog-checklist label > span input[type="checkbox"] { display: none; }
 .blog-editor .blog-checklist .blog-checklist, .blog-content .blog-checklist .blog-checklist { margin: 0; padding: 0; list-style: none; }
 .blog-editor .blog-checklist ul, .blog-editor .blog-checklist ol, .blog-content .blog-checklist ul, .blog-content .blog-checklist ol { list-style: none; padding-left: 0; }
+
+@media (max-width: 640px) {
+  .blog-content p, .blog-content li { font-size: 1rem; line-height: 1.8; }
+  .blog-content [style*="text-align:justify"], .blog-content [style*="text-align: justify"] { text-align: left !important; }
+  .blog-content blockquote { width: 100% !important; margin-left: 0; margin-right: 0; padding-left: 1rem; font-size: 1.08rem; }
+  .blog-content .blog-table-wrap { border-radius: 0.65rem; }
+  .blog-content table { min-width: 480px; font-size: 0.86rem; }
+  .blog-content th, .blog-content td { min-width: 110px; padding: 0.7rem; }
+}
 
 /* ── Accessibility ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

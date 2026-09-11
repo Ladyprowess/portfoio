@@ -48,6 +48,9 @@ export async function POST(request: Request) {
     const from = `${senderName(topic)} <hello@ladyprowess.com>`;
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://ladyprowess.com";
+    const postUrl = payload.slug
+      ? `${siteUrl}/blog/${encodeURIComponent(payload.slug)}`
+      : undefined;
 
     if (payload.action === "test") {
       const recipient = String(payload.email || "").trim();
@@ -66,7 +69,7 @@ export async function POST(request: Request) {
           excerpt,
           contentHtml,
           topic,
-          postUrl: payload.postUrl,
+          postUrl,
           subscribeUrl: `${siteUrl}/blog`,
           unsubscribeUrl: `${siteUrl}/unsubscribe?preview=1`,
         }),
@@ -89,10 +92,6 @@ export async function POST(request: Request) {
         (tier === "all" || subscriber.tier === tier),
     );
     if (!subscribers.length) return NextResponse.json({ ok: true, count: 0 });
-    const postUrl = payload.slug
-      ? `${siteUrl}/blog/${encodeURIComponent(payload.slug)}`
-      : undefined;
-
     for (let index = 0; index < subscribers.length; index += 100) {
       const batch = subscribers.slice(index, index + 100).map((subscriber) => ({
         from,
