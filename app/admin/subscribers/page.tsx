@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import AdminNav from "@/components/AdminNav";
+import NewsletterQueuePanel from "@/components/NewsletterQueuePanel";
 import { newsletterTopics, type NewsletterSubscriber } from "@/lib/newsletter";
 
 const PAGE_SIZE = 10;
@@ -200,6 +201,7 @@ export default function SubscribersPage() {
             {message}
           </p>
         )}
+        <NewsletterQueuePanel password={password} />
         <div className="mt-7 grid gap-3 rounded-2xl border border-ink-border bg-white p-3 md:grid-cols-[1fr_220px_160px]">
           <input
             value={query}

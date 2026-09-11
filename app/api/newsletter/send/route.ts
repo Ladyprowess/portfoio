@@ -7,6 +7,16 @@ import {
   type NewsletterSubscriber,
 } from "@/lib/newsletter";
 import { makeBlogSlug } from "@/lib/blog-cms";
+import {
+  campaignProgress,
+  emailsAlreadyReceived,
+  processNewsletterQueue,
+  queueCampaign,
+  queueStatus,
+} from "@/lib/newsletter-queue";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 function authorised(password?: string) {
   return Boolean(
@@ -30,6 +40,10 @@ export async function POST(request: Request) {
     const payload = await request.json();
     if (!authorised(payload.password))
       return NextResponse.json({ error: "Wrong password." }, { status: 401 });
+    if (payload.action === "queue-status")
+      return NextResponse.json(await queueStatus());
+    if (payload.action === "process-queue")
+      return NextResponse.json({ ok: true, ...(await processNewsletterQueue()) });
     if (!process.env.RESEND_API_KEY)
       return NextResponse.json(
         { error: "Resend is not configured." },
@@ -45,7 +59,6 @@ export async function POST(request: Request) {
         { error: "Add the title, summary, and article before sending." },
         { status: 400 },
       );
-    const resend = new Resend(process.env.RESEND_API_KEY);
     const from = `${senderName(topic)} <hello@ladyprowess.com>`;
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://ladyprowess.com";
@@ -59,6 +72,7 @@ export async function POST(request: Request) {
           { error: "Enter a valid test email." },
           { status: 400 },
         );
+      const resend = new Resend(process.env.RESEND_API_KEY);
       const { error } = await resend.emails.send({
         from,
         to: recipient,
@@ -78,10 +92,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, count: 1 });
     }
 
+    if (payload.action !== "send" && payload.action !== "catch-up")
+      return NextResponse.json({ error: "Invalid action." }, { status: 400 });
+
     const tier =
       payload.tier === "paid" || payload.tier === "free" ? payload.tier : "all";
     const rows = (await db(
-      "newsletter_subscribers?select=*&status=eq.active",
+      "newsletter_subscribers?select=*&status=eq.active&order=created_at.asc",
     )) as NewsletterSubscriber[];
     const subscribers = rows.filter(
       (subscriber) =>
@@ -90,27 +107,30 @@ export async function POST(request: Request) {
           subscriber.topics.includes(topic)) &&
         (tier === "all" || subscriber.tier === tier),
     );
-    if (!subscribers.length) return NextResponse.json({ ok: true, count: 0 });
-    for (let index = 0; index < subscribers.length; index += 100) {
-      const batch = subscribers.slice(index, index + 100).map((subscriber) => ({
-        from,
-        to: [subscriber.email],
-        replyTo: "hello@ladyprowess.com",
-        subject: title,
-        html: emailDocument({
-          title,
-          excerpt,
-          contentHtml,
-          topic,
-          postUrl,
-          unsubscribeUrl: `${siteUrl}/unsubscribe?token=${encodeURIComponent(subscriber.unsubscribe_token)}`,
-        }),
-      }));
-      const { error } = await resend.batch.send(batch);
-      if (error)
-        return NextResponse.json({ error: error.message }, { status: 502 });
-    }
-    return NextResponse.json({ ok: true, count: subscribers.length });
+    // "catch-up" emails a published post only to subscribers who have not had it yet.
+    const exclude =
+      payload.action === "catch-up" ? await emailsAlreadyReceived(title) : undefined;
+    const { campaignId, queued } = await queueCampaign({
+      title,
+      excerpt,
+      contentHtml,
+      topic,
+      postUrl,
+      subscribers,
+      exclude,
+    });
+    if (!queued)
+      return NextResponse.json({ ok: true, count: 0, sent: 0, waiting: 0 });
+
+    const run = await processNewsletterQueue();
+    const progress = await campaignProgress(campaignId);
+    return NextResponse.json({
+      ok: true,
+      count: queued,
+      sent: progress.sent,
+      waiting: progress.waiting,
+      problem: run.problem,
+    });
   } catch (error) {
     return NextResponse.json(
       {

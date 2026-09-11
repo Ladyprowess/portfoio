@@ -53,6 +53,21 @@ type IconName =
 
 type QuizDraft = BlogQuiz & { editing: boolean };
 
+type NewsletterSendResult = {
+  count: number;
+  sent: number;
+  waiting: number;
+  problem?: string;
+};
+
+function deliveryMessage(result: NewsletterSendResult) {
+  let message = `${result.sent} of ${result.count} subscribers received it now.`;
+  if (result.waiting)
+    message += ` The other ${result.waiting} are queued and will receive it automatically once the daily email limit resets (usually within a day).`;
+  if (result.problem) message += ` Sending paused: ${result.problem}`;
+  return message;
+}
+
 function EditorIcon({ name }: { name: IconName }) {
   const common = {
     width: 18,
@@ -786,10 +801,10 @@ export default function BlogCmsPage() {
   }
 
   async function sendNewsletter(
-    action: "test" | "send",
+    action: "test" | "send" | "catch-up",
     postSlug?: string,
     articleHtml = contentHtml,
-  ) {
+  ): Promise<NewsletterSendResult> {
     const response = await fetch("/api/newsletter/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -808,7 +823,42 @@ export default function BlogCmsPage() {
     const data = await parseResponse(response);
     if (!response.ok)
       throw new Error(data.error || "Could not send the email.");
-    return Number(data.count || 0);
+    return {
+      count: Number(data.count || 0),
+      sent: Number(data.sent || 0),
+      waiting: Number(data.waiting || 0),
+      problem: data.problem ? String(data.problem) : undefined,
+    };
+  }
+
+  async function emailMissedSubscribers() {
+    if (
+      !window.confirm(
+        "Email this post to subscribers who have not received it yet? Anyone who already got it will be skipped.",
+      )
+    )
+      return;
+    setSaving(true);
+    setStatus("Checking who has already received this post...");
+    try {
+      const compactContent = normaliseGoogleDocsPaste(
+        editorRef.current?.innerHTML || contentHtml,
+      );
+      const result = await sendNewsletter("catch-up", slug, compactContent);
+      setStatus(
+        result.count
+          ? deliveryMessage(result)
+          : "Every matching subscriber has already received this post.",
+      );
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : "Could not email the subscribers who missed it.",
+      );
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function sendTest() {
@@ -881,13 +931,13 @@ export default function BlogCmsPage() {
         editingStatus !== "published"
       ) {
         try {
-          const count = await sendNewsletter(
+          const result = await sendNewsletter(
             "send",
             data.post?.slug,
             compactContent,
           );
-          message += count
-            ? ` ${count} subscribers were notified.`
+          message += result.count
+            ? ` ${deliveryMessage(result)}`
             : " No matching subscribers were found.";
         } catch (emailError) {
           message += ` The post is live, but the subscriber email failed: ${emailError instanceof Error ? emailError.message : "Unknown email error."}`;
@@ -1363,6 +1413,15 @@ export default function BlogCmsPage() {
               >
                 View live post ↗
               </a>
+            )}
+            {editingStatus === "published" && (
+              <button
+                disabled={saving || !title || !contentHtml}
+                onClick={emailMissedSubscribers}
+                className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
+              >
+                Email subscribers who missed it
+              </button>
             )}
           </div>
           {showPreview && (

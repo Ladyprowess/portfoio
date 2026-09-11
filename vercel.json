@@ -1,0 +1,8 @@
+{
+  "crons": [
+    { "path": "/api/newsletter/cron?run=morning", "schedule": "0 6 * * *" },
+    { "path": "/api/newsletter/cron?run=midday", "schedule": "0 12 * * *" },
+    { "path": "/api/newsletter/cron?run=evening", "schedule": "0 18 * * *" },
+    { "path": "/api/newsletter/cron?run=night", "schedule": "0 0 * * *" }
+  ]
+}
