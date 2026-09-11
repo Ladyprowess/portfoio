@@ -1,3 +1,5 @@
+import { emailQuizHtml, replaceQuizBlocks } from "./blog-quiz";
+
 export const newsletterTopics = [
   "Web3",
   "AI",
@@ -137,8 +139,18 @@ export function emailDocument(input: {
   unsubscribeUrl?: string;
 }) {
   const publication = publicationName(input.topic);
-  const preview = emailArticlePreview(input.contentHtml, input.postUrl);
-  const articleHtml = emailSafeArticleHtml(preview.html);
+  // Quizzes are swapped for empty placeholders so the preview cut and the style
+  // cleanup cannot break the email quiz card, which is restored afterwards.
+  const quizzes: string[] = [];
+  const contentHtml = replaceQuizBlocks(input.contentHtml, (quiz, index) => {
+    quizzes.push(emailQuizHtml(quiz, input.postUrl));
+    return `<p data-blog-quiz="${index}"></p>`;
+  });
+  const preview = emailArticlePreview(contentHtml, input.postUrl);
+  const articleHtml = emailSafeArticleHtml(preview.html).replace(
+    /<p data-blog-quiz="(\d+)"><\/p>/g,
+    (_match, index: string) => quizzes[Number(index)] || "",
+  );
   const button = input.postUrl
     ? `<a href="${input.postUrl}" style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:8px;">Read the full article</a>`
     : "";

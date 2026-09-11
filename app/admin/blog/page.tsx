@@ -2,7 +2,16 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import AdminNav from "@/components/AdminNav";
+import ArticleContent from "@/components/ArticleContent";
 import type { CmsPost } from "@/lib/blog-cms";
+import {
+  maxQuizOptions,
+  newQuizId,
+  quizBlockHtml,
+  quizLetters,
+  readQuizAttribute,
+  type BlogQuiz,
+} from "@/lib/blog-quiz";
 
 const fieldClass =
   "w-full rounded-xl border border-ink-border bg-white px-4 py-3 text-sm outline-none focus:border-primary";
@@ -39,7 +48,10 @@ type IconName =
   | "link"
   | "table"
   | "image"
+  | "quiz"
   | "clear";
+
+type QuizDraft = BlogQuiz & { editing: boolean };
 
 function EditorIcon({ name }: { name: IconName }) {
   const common = {
@@ -132,6 +144,14 @@ function EditorIcon({ name }: { name: IconName }) {
         <rect x="3" y="4" width="18" height="16" rx="2" />
         <circle cx="8.5" cy="9" r="1.5" />
         <path d="m4 17 5-5 4 4 2-2 5 5" />
+      </svg>
+    );
+  if (name === "quiz")
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9.6 9.3a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1.1.9-1.1 1.7v.4" />
+        <circle cx="12" cy="16.8" r=".7" fill="currentColor" stroke="none" />
       </svg>
     );
   return (
@@ -323,12 +343,19 @@ function normaliseGoogleDocsPaste(html: string) {
         "target",
         "rel",
       ];
+      const quizAttribute =
+        (attribute.name === "data-quiz" ||
+          attribute.name === "contenteditable") &&
+        element.classList.contains("blog-quiz");
+      if (quizAttribute) return;
       if (attribute.name === "class") {
         const usefulClasses = attribute.value
           .split(/\s+/)
           .filter(
             (value) =>
-              value === "blog-checklist" || value === "blog-table-wrap",
+              value === "blog-checklist" ||
+              value === "blog-table-wrap" ||
+              value.startsWith("blog-quiz"),
           );
         if (usefulClasses.length)
           element.setAttribute("class", usefulClasses.join(" "));
@@ -379,6 +406,10 @@ export default function BlogCmsPage() {
   const [notifySubscribers, setNotifySubscribers] = useState(true);
   const [testEmail, setTestEmail] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [quizDraft, setQuizDraft] = useState<QuizDraft | null>(null);
+  const [quizError, setQuizError] = useState("");
+  const quizBlockRef = useRef<HTMLElement | null>(null);
+  const quizRangeRef = useRef<Range | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const categoryOptions = useMemo(
@@ -536,6 +567,118 @@ export default function BlogCmsPage() {
       `${lines.length} checklist ${lines.length === 1 ? "item" : "items"} created.`,
     );
     setContentHtml(editorRef.current?.innerHTML || "");
+  }
+
+  function openNewQuiz() {
+    const selection = window.getSelection();
+    const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+    quizRangeRef.current =
+      range && editorRef.current?.contains(range.commonAncestorContainer)
+        ? range.cloneRange()
+        : null;
+    quizBlockRef.current = null;
+    setQuizError("");
+    setQuizDraft({
+      id: newQuizId(),
+      question: "",
+      options: ["", "", "", ""],
+      answer: 0,
+      explanation: "",
+      editing: false,
+    });
+  }
+
+  function openQuizFromEditor(event: React.MouseEvent<HTMLDivElement>) {
+    const block = (event.target as HTMLElement).closest<HTMLElement>(
+      ".blog-quiz",
+    );
+    if (!block || !editorRef.current?.contains(block)) return;
+    const quiz = readQuizAttribute(block.getAttribute("data-quiz") || "");
+    if (!quiz) return;
+    quizBlockRef.current = block;
+    setQuizError("");
+    setQuizDraft({ ...quiz, id: quiz.id || newQuizId(), editing: true });
+  }
+
+  function closeQuiz() {
+    setQuizDraft(null);
+    quizBlockRef.current = null;
+    quizRangeRef.current = null;
+  }
+
+  function updateQuizOption(index: number, value: string) {
+    if (!quizDraft) return;
+    setQuizDraft({
+      ...quizDraft,
+      options: quizDraft.options.map((option, optionIndex) =>
+        optionIndex === index ? value : option,
+      ),
+    });
+  }
+
+  function removeQuizOption(index: number) {
+    if (!quizDraft) return;
+    const answer =
+      quizDraft.answer === index
+        ? 0
+        : quizDraft.answer > index
+          ? quizDraft.answer - 1
+          : quizDraft.answer;
+    setQuizDraft({
+      ...quizDraft,
+      options: quizDraft.options.filter((_, optionIndex) => optionIndex !== index),
+      answer,
+    });
+  }
+
+  function saveQuiz() {
+    const editor = editorRef.current;
+    if (!quizDraft || !editor) return;
+    const filled = quizDraft.options
+      .map((text, index) => ({ text: text.trim(), index }))
+      .filter((option) => option.text);
+    const answer = filled.findIndex((option) => option.index === quizDraft.answer);
+    if (!quizDraft.question.trim()) return setQuizError("Write the question first.");
+    if (filled.length < 2) return setQuizError("Add at least two answer options.");
+    if (answer < 0)
+      return setQuizError("Select the circle next to the correct answer.");
+
+    const html = quizBlockHtml({
+      id: quizDraft.id,
+      question: quizDraft.question.trim(),
+      options: filled.map((option) => option.text),
+      answer,
+      explanation: quizDraft.explanation.trim(),
+    });
+    const block = quizBlockRef.current;
+    if (block && editor.contains(block)) {
+      block.outerHTML = html;
+    } else if (quizRangeRef.current) {
+      editor.focus();
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(quizRangeRef.current);
+      document.execCommand("insertHTML", false, `${html}<p><br></p>`);
+    } else {
+      editor.insertAdjacentHTML("beforeend", `${html}<p><br></p>`);
+    }
+    setContentHtml(editor.innerHTML);
+    setStatus(
+      quizDraft.editing
+        ? "Quiz updated."
+        : "Quiz added. Click it in the article whenever you want to edit it.",
+    );
+    closeQuiz();
+  }
+
+  function deleteQuiz() {
+    const editor = editorRef.current;
+    if (!editor || !quizBlockRef.current) return;
+    if (!window.confirm("Delete this quiz from the article?")) return;
+    quizBlockRef.current.remove();
+    setContentHtml(editor.innerHTML);
+    setStatus("Quiz removed.");
+    closeQuiz();
   }
 
   async function pasteFromDocument(event: React.ClipboardEvent<HTMLDivElement>) {
@@ -1139,6 +1282,9 @@ export default function BlogCmsPage() {
                 >
                   <EditorIcon name="image" />
                 </ToolbarButton>
+                <ToolbarButton label="Add quiz" onClick={openNewQuiz}>
+                  <EditorIcon name="quiz" />
+                </ToolbarButton>
                 <ToolbarButton
                   label="Clear article"
                   onClick={clearArticle}
@@ -1153,6 +1299,7 @@ export default function BlogCmsPage() {
                 onPaste={pasteFromDocument}
                 onInput={syncEditor}
                 onChange={syncEditor}
+                onClick={openQuizFromEditor}
                 data-placeholder="Start writing your article..."
                 className="blog-editor min-h-[620px] p-5 text-base leading-8 outline-none"
               />
@@ -1252,11 +1399,158 @@ export default function BlogCmsPage() {
                     {title || "Untitled post"}
                   </h1>
                   <p className="mt-5 text-lg leading-8 text-muted">{excerpt}</p>
-                  <div
-                    className="blog-content mt-9 border-t border-ink-border pt-9"
-                    dangerouslySetInnerHTML={{ __html: contentHtml }}
-                  />
+                  <div className="mt-9 border-t border-ink-border pt-9">
+                    <ArticleContent html={contentHtml} />
+                  </div>
                 </article>
+              </div>
+            </div>
+          )}
+          {quizDraft && (
+            <div
+              className="fixed inset-0 z-[100] overflow-y-auto bg-black/55 p-4 md:p-10"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="quiz-dialog-title"
+              onKeyDown={(event) => event.key === "Escape" && closeQuiz()}
+            >
+              <div className="mx-auto max-w-xl rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+                <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">
+                  Interactive quiz
+                </p>
+                <h2
+                  id="quiz-dialog-title"
+                  className="mt-2 font-display text-2xl font-semibold"
+                >
+                  {quizDraft.editing ? "Edit quiz" : "Add a quiz"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted">
+                  Readers pick an answer on the website. A correct answer gets a
+                  confetti celebration, and a wrong one shows the correct answer.
+                  Email subscribers see the question with a button to answer it
+                  on the website.
+                </p>
+                <label className="mt-6 block text-sm font-semibold">
+                  Question
+                  <textarea
+                    autoFocus
+                    value={quizDraft.question}
+                    onChange={(event) =>
+                      setQuizDraft({ ...quizDraft, question: event.target.value })
+                    }
+                    className={`mt-2 min-h-20 ${fieldClass}`}
+                    placeholder="What question should readers answer?"
+                  />
+                </label>
+                <fieldset className="mt-5">
+                  <legend className="text-sm font-semibold">Answer options</legend>
+                  <p className="mt-1 text-xs text-muted">
+                    Select the circle next to the correct answer.
+                  </p>
+                  <div className="mt-3 space-y-2">
+                    {quizDraft.options.map((option, index) => (
+                      <div
+                        key={index}
+                        className={`flex items-center gap-2 rounded-xl border p-2 ${quizDraft.answer === index ? "border-emerald-500 bg-emerald-50" : "border-ink-border"}`}
+                      >
+                        <label className="flex shrink-0 cursor-pointer items-center gap-2 pl-1 text-xs font-semibold">
+                          <input
+                            type="radio"
+                            name="quiz-correct-answer"
+                            checked={quizDraft.answer === index}
+                            onChange={() =>
+                              setQuizDraft({ ...quizDraft, answer: index })
+                            }
+                            className="h-4 w-4 accent-emerald-600"
+                          />
+                          <span className="sr-only">
+                            Mark option {quizLetters[index]} as the correct answer
+                          </span>
+                          <span aria-hidden className="w-4 text-center font-head">
+                            {quizLetters[index]}
+                          </span>
+                        </label>
+                        <input
+                          value={option}
+                          onChange={(event) =>
+                            updateQuizOption(index, event.target.value)
+                          }
+                          aria-label={`Option ${quizLetters[index]}`}
+                          placeholder={`Option ${quizLetters[index]}`}
+                          className="min-w-0 flex-1 rounded-lg border border-transparent bg-white px-3 py-2 text-sm outline-none focus:border-primary"
+                        />
+                        {quizDraft.options.length > 2 && (
+                          <button
+                            type="button"
+                            onClick={() => removeQuizOption(index)}
+                            aria-label={`Remove option ${quizLetters[index]}`}
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg text-muted hover:bg-red-50 hover:text-red-600"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {quizDraft.options.length < maxQuizOptions && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setQuizDraft({
+                          ...quizDraft,
+                          options: [...quizDraft.options, ""],
+                        })
+                      }
+                      className="mt-3 rounded-full border border-ink-border px-4 py-2 text-xs font-semibold hover:border-primary"
+                    >
+                      + Add option
+                    </button>
+                  )}
+                </fieldset>
+                <label className="mt-5 block text-sm font-semibold">
+                  Explanation <span className="font-normal text-muted">(optional)</span>
+                  <textarea
+                    value={quizDraft.explanation}
+                    onChange={(event) =>
+                      setQuizDraft({ ...quizDraft, explanation: event.target.value })
+                    }
+                    className={`mt-2 min-h-20 ${fieldClass}`}
+                    placeholder="Shown after the reader answers, e.g. why this is the right answer"
+                  />
+                </label>
+                {quizError && (
+                  <p
+                    role="alert"
+                    className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+                  >
+                    {quizError}
+                  </p>
+                )}
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={saveQuiz}
+                    className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
+                  >
+                    {quizDraft.editing ? "Update quiz" : "Insert quiz"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeQuiz}
+                    className="rounded-full border border-ink-border px-6 py-3 text-sm font-semibold hover:border-primary"
+                  >
+                    Cancel
+                  </button>
+                  {quizDraft.editing && (
+                    <button
+                      type="button"
+                      onClick={deleteQuiz}
+                      className="ml-auto rounded-full px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50"
+                    >
+                      Delete quiz
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           )}

@@ -124,6 +124,17 @@ body::before {
 .blog-editor .blog-checklist label > span input[type="checkbox"], .blog-content .blog-checklist label > span input[type="checkbox"] { display: none; }
 .blog-editor .blog-checklist .blog-checklist, .blog-content .blog-checklist .blog-checklist { margin: 0; padding: 0; list-style: none; }
 .blog-editor .blog-checklist ul, .blog-editor .blog-checklist ol, .blog-content .blog-checklist ul, .blog-content .blog-checklist ol { list-style: none; padding-left: 0; }
+.blog-editor .blog-quiz, .blog-content .blog-quiz { margin: 2rem 0; border: 1px solid #C7D7FE; border-radius: 1rem; background: #F5F8FF; padding: 1.1rem 1.25rem; }
+.blog-editor .blog-quiz { position: relative; cursor: pointer; user-select: none; transition: border-color 0.15s, box-shadow 0.15s; }
+.blog-editor .blog-quiz:hover { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+.blog-editor .blog-quiz::after { content: "Click to edit"; position: absolute; top: 1.1rem; right: 1.25rem; font-size: 0.7rem; font-weight: 700; color: #2563EB; }
+.blog-quiz .blog-quiz-label { margin: 0 0 0.35rem; font-family: var(--font-jetbrains); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; line-height: 1.6; text-transform: uppercase; color: #2563EB; }
+.blog-quiz .blog-quiz-question { margin: 0 0 0.8rem; font-family: var(--font-jakarta); font-size: 1.1rem; font-weight: 700; line-height: 1.5; }
+.blog-quiz .blog-quiz-options { margin: 0; list-style: upper-alpha; padding-left: 1.5rem; }
+.blog-quiz .blog-quiz-options li { margin: 0.3rem 0; line-height: 1.6; }
+.blog-editor .blog-quiz .blog-quiz-correct { color: #047857; font-weight: 700; }
+.blog-editor .blog-quiz .blog-quiz-correct::after { content: "  ✓ correct answer"; font-size: 0.75rem; }
+.blog-quiz .blog-quiz-explanation { margin: 0.8rem 0 0; font-size: 0.92rem; line-height: 1.7; color: #6B7280; }
 
 @media (max-width: 640px) {
   .blog-content { overflow: visible; }

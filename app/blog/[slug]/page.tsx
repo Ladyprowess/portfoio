@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import Image from 'next/image'
 import { getPublishedPost, readTime } from '@/lib/blog-cms'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import ArticleContent from '@/components/ArticleContent'
 
 type BlogPostPageProps = {
   params: {
@@ -163,9 +164,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {'cover_image' in post && post.cover_image && <div className="relative mt-8 aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
 
         {'content_html' in post ? <div className="w-full min-w-0 max-w-3xl py-14">
-          <div className="blog-content" dangerouslySetInnerHTML={{ __html: cmsArticleParts?.[0] || post.content_html }} />
+          <ArticleContent html={cmsArticleParts?.[0] || post.content_html} />
           <div className="my-10"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
-          {cmsArticleParts?.[1] && <div className="blog-content" dangerouslySetInnerHTML={{ __html: cmsArticleParts[1] }} />}
+          {cmsArticleParts?.[1] && <ArticleContent html={cmsArticleParts[1]} />}
         </div> : <div className="w-full min-w-0 max-w-3xl space-y-7 py-14">
           {post.body.map((block, index) => {
             const articleBlock = (() => {
