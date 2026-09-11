@@ -32,16 +32,18 @@ export function senderName(topic: string) {
 }
 
 function emailSafeArticleHtml(contentHtml: string) {
-  const cleanDimensions = (style: string) =>
+  const cleanStyle = (style: string) =>
     style
       .split(";")
-      .filter((rule) => !/^\s*(?:width|min-width|max-width|height|min-height|max-height|white-space)\s*:/i.test(rule))
+      .filter((rule) =>
+        /^\s*(?:color|background-color|font-weight|font-style|text-decoration|text-align|border-color)\s*:/i.test(rule),
+      )
       .join(";");
   const styleTag = (html: string, tag: string, baseStyle: string) =>
     html.replace(
       new RegExp(`<${tag}\\b([^>]*)>`, "gi"),
       (_match, rawAttributes: string) => {
-        const existingStyle = cleanDimensions(rawAttributes.match(/\sstyle=["']([^"']*)["']/i)?.[1] || "");
+        const existingStyle = cleanStyle(rawAttributes.match(/\sstyle=["']([^"']*)["']/i)?.[1] || "");
         const attributes = rawAttributes.replace(/\sstyle=["'][^"']*["']/i, "");
         return `<${tag}${attributes} style="${baseStyle}${existingStyle}">`;
       },
@@ -54,11 +56,25 @@ function emailSafeArticleHtml(contentHtml: string) {
       `<${tag}${attributes.replace(/\s(?:width|height)=["'][^"']*["']/gi, "")}>`,
     );
 
-  html = styleTag(html, "table", "width:100%;border-collapse:collapse;table-layout:fixed;background:#FFFFFF;font-size:13px;line-height:1.45;")
-    .replace(/<table\b/i, '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"')
-  html = styleTag(html, "th", "border:1px solid #DDE1E8;background:#EEF4FF;color:#17191D;padding:10px 8px;text-align:left;vertical-align:top;font-weight:700;overflow-wrap:anywhere;");
-  html = styleTag(html, "td", "border:1px solid #DDE1E8;padding:10px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere;");
-  html = styleTag(html, "img", "display:block;max-width:100%;height:auto;margin:20px auto;");
+  html = html.replace(/\sstyle=["']([^"']*)["']/gi, (_match, style: string) => {
+    const safeStyle = cleanStyle(style);
+    return safeStyle ? ` style="${safeStyle}"` : "";
+  });
+  html = styleTag(html, "table", "width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;background:#FFFFFF;font-size:13px;line-height:1.45;")
+    .replace(/<table\b([^>]*)>/gi, (_match, attributes: string) => {
+      const cleanAttributes = attributes
+        .replace(/\s(?:role|width|cellpadding|cellspacing)=["'][^"']*["']/gi, "");
+      return `<table${cleanAttributes} role="presentation" width="100%" cellpadding="0" cellspacing="0">`;
+    });
+  html = styleTag(html, "th", "border:1px solid #DDE1E8;background:#EEF4FF;color:#17191D;padding:8px 6px;text-align:left;vertical-align:top;font-weight:700;overflow-wrap:anywhere;word-break:break-word;");
+  html = styleTag(html, "td", "border:1px solid #DDE1E8;padding:8px 6px;text-align:left;vertical-align:top;overflow-wrap:anywhere;word-break:break-word;");
+  html = styleTag(html, "blockquote", "width:auto;max-width:100%;margin:22px 0;padding:16px;border-left:3px solid #2563EB;background:#EEF4FF;white-space:normal;overflow-wrap:anywhere;word-break:break-word;");
+  html = styleTag(html, "pre", "width:auto;max-width:100%;margin:20px 0;padding:14px;background:#121820;color:#E7EDF6;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;");
+  html = styleTag(html, "img", "display:block;width:100%;max-width:100%;height:auto;margin:20px auto;")
+    .replace(/<img\b([^>]*)>/gi, (_match, attributes: string) => {
+      const cleanAttributes = attributes.replace(/\swidth=["'][^"']*["']/gi, "");
+      return `<img${cleanAttributes} width="100%">`;
+    });
 
   html = html.replace(
     /<ul\b[^>]*class=["'][^"']*blog-checklist[^"']*["'][^>]*>([\s\S]*?)<\/ul>/gi,
@@ -72,10 +88,10 @@ function emailSafeArticleHtml(contentHtml: string) {
             .replace(/<\/?label\b[^>]*>/gi, "")
             .replace(/^\s*<span\b[^>]*>|<\/span>\s*$/gi, "")
             .trim();
-          return `<tr><td width="28" valign="top" style="width:28px;padding:9px 8px 9px 0;border-bottom:1px solid #E5E7EB;color:#2563EB;font-size:18px;line-height:1.4;">${checked ? "☑" : "☐"}</td><td valign="top" style="padding:9px 0;border-bottom:1px solid #E5E7EB;color:#25282D;font-size:15px;line-height:1.65;text-align:left;">${copy}</td></tr>`;
+          return `<tr><td width="28" valign="top" style="width:28px;padding:9px 8px 9px 0;border:0;border-bottom:1px solid #E5E7EB;color:#2563EB;font-size:18px;line-height:1.4;">${checked ? "☑" : "☐"}</td><td valign="top" style="padding:9px 0;border:0;border-bottom:1px solid #E5E7EB;color:#25282D;font-size:15px;line-height:1.65;text-align:left;overflow-wrap:anywhere;word-break:break-word;">${copy}</td></tr>`;
         })
         .join("");
-      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:18px 0 26px;border-collapse:collapse;">${rows}</table>`;
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:100%;margin:18px 0 26px;border-collapse:collapse;table-layout:fixed;"><col width="28"><col>${rows}</table>`;
     },
   );
 
