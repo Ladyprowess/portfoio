@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-bg">
+    <main className="min-h-screen bg-bg">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }} />
       <Nav />
       <article className="mx-auto w-full min-w-0 max-w-4xl px-5 pb-24 pt-28 md:px-8 md:pt-36">

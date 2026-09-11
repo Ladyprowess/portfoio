@@ -96,13 +96,15 @@ body::before {
 .blog-editor:empty::before { content: attr(data-placeholder); color: #9CA3AF; pointer-events: none; }
 .blog-editor, .blog-content { width: 100%; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .blog-editor *, .blog-content * { box-sizing: border-box; }
+.blog-editor > :not(table), .blog-content > :not(table) { min-width: 0; max-width: 100% !important; }
 .blog-editor h2, .blog-content h2 { margin: 2rem 0 0.75rem; font-family: var(--font-jakarta); font-size: 1.75rem; font-weight: 700; line-height: 1.25; }
 .blog-editor h3, .blog-content h3 { margin: 1.6rem 0 0.6rem; font-family: var(--font-jakarta); font-size: 1.3rem; font-weight: 700; line-height: 1.35; }
 .blog-editor p, .blog-content p { margin: 0 0 1.25rem; font-size: 1.05rem; line-height: 1.9; }
 .blog-editor ul, .blog-content ul { margin: 1rem 0 1.5rem; list-style: disc; padding-left: 1.5rem; }
 .blog-editor ol, .blog-content ol { margin: 1rem 0 1.5rem; list-style: decimal; padding-left: 1.5rem; }
 .blog-editor li, .blog-content li { margin: 0.4rem 0; line-height: 1.8; }
-.blog-editor blockquote, .blog-content blockquote { margin: 2rem 0; border-left: 3px solid #2563EB; padding-left: 1.25rem; font-family: var(--font-jakarta); font-size: 1.25rem; font-weight: 600; line-height: 1.6; }
+.blog-editor blockquote, .blog-content blockquote { width: auto !important; min-width: 0 !important; margin: 2rem 0; border-left: 3px solid #2563EB; padding-left: 1.25rem; font-family: var(--font-jakarta); font-size: 1.25rem; font-weight: 600; line-height: 1.6; white-space: normal !important; overflow-wrap: anywhere; }
+.blog-editor blockquote *, .blog-content blockquote * { min-width: 0 !important; max-width: 100% !important; white-space: normal !important; overflow-wrap: anywhere !important; }
 .blog-editor pre, .blog-content pre { margin: 1.75rem 0; max-width: 100%; overflow-x: auto; border: 1px solid #273244; border-radius: 0.9rem; background: #121820; padding: 1.15rem 1.25rem; color: #E7EDF6; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9rem; line-height: 1.7; tab-size: 2; white-space: pre; }
 .blog-editor code:not(pre code), .blog-content code:not(pre code) { border-radius: 0.35rem; background: #EEF2F7; padding: 0.12rem 0.35rem; color: #1E3A5F; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9em; }
 .blog-editor a, .blog-content a { color: #2563EB; text-decoration: underline; }
@@ -124,9 +126,11 @@ body::before {
 .blog-editor .blog-checklist ul, .blog-editor .blog-checklist ol, .blog-content .blog-checklist ul, .blog-content .blog-checklist ol { list-style: none; padding-left: 0; }
 
 @media (max-width: 640px) {
+  .blog-content p, .blog-content li, .blog-content blockquote, .blog-content h1, .blog-content h2, .blog-content h3, .blog-content h4, .blog-content h5, .blog-content h6 { min-width: 0 !important; max-width: 100% !important; white-space: normal !important; overflow-wrap: anywhere !important; word-break: normal; }
+  .blog-content p *, .blog-content li *, .blog-content blockquote * { max-width: 100% !important; white-space: normal !important; overflow-wrap: anywhere !important; }
   .blog-content p, .blog-content li { font-size: 1rem; line-height: 1.8; }
   .blog-content [style*="text-align:justify"], .blog-content [style*="text-align: justify"] { text-align: left !important; }
-  .blog-content blockquote { width: 100% !important; margin-left: 0; margin-right: 0; padding-left: 1rem; font-size: 1.08rem; }
+  .blog-content blockquote { width: auto !important; margin-left: 0 !important; margin-right: 0 !important; padding: 1rem !important; font-size: 1.08rem; }
   .blog-content .blog-table-wrap { border-radius: 0.65rem; }
   .blog-content table { min-width: 480px; font-size: 0.86rem; }
   .blog-content th, .blog-content td { min-width: 110px; padding: 0.7rem; }
