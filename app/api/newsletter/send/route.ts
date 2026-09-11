@@ -6,6 +6,7 @@ import {
   senderName,
   type NewsletterSubscriber,
 } from "@/lib/newsletter";
+import { makeBlogSlug } from "@/lib/blog-cms";
 
 function authorised(password?: string) {
   return Boolean(
@@ -48,9 +49,8 @@ export async function POST(request: Request) {
     const from = `${senderName(topic)} <hello@ladyprowess.com>`;
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://ladyprowess.com";
-    const postUrl = payload.slug
-      ? `${siteUrl}/blog/${encodeURIComponent(payload.slug)}`
-      : undefined;
+    const postSlug = makeBlogSlug(String(payload.slug || title));
+    const postUrl = `${siteUrl}/blog/${encodeURIComponent(postSlug)}`;
 
     if (payload.action === "test") {
       const recipient = String(payload.email || "").trim();

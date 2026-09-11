@@ -103,7 +103,8 @@ function visibleCharacterCount(html: string) {
 }
 
 function emailArticlePreview(contentHtml: string, postUrl?: string) {
-  if (!postUrl || visibleCharacterCount(contentHtml) <= 6500) {
+  const totalCharacters = visibleCharacterCount(contentHtml);
+  if (!postUrl || totalCharacters <= 4000) {
     return { html: contentHtml, shortened: false };
   }
 
@@ -112,16 +113,17 @@ function emailArticlePreview(contentHtml: string, postUrl?: string) {
   ).map((match) => match[0]);
   const selected: string[] = [];
   let characterCount = 0;
+  const previewTarget = Math.min(Math.ceil(totalCharacters / 2), 3500);
 
   for (const block of blocks) {
     const blockLength = visibleCharacterCount(block);
-    if (selected.length >= 3 && characterCount + blockLength > 2800) break;
+    if (selected.length >= 2 && characterCount + blockLength > previewTarget) break;
     selected.push(block);
     characterCount += blockLength;
   }
 
   return {
-    html: selected.length ? selected.join("") : `<p>${contentHtml.replace(/<[^>]+>/g, " ").slice(0, 2800)}</p>`,
+    html: selected.length ? selected.join("") : `<p>${contentHtml.replace(/<[^>]+>/g, " ").slice(0, previewTarget)}</p>`,
     shortened: true,
   };
 }
