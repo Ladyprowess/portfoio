@@ -460,6 +460,8 @@ export default function BlogCmsPage() {
         )
         .catch(() => setStatus("Could not load blog posts."));
     }
+    // The initial load intentionally runs once with the password stored by the admin login.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function parseResponse(response: Response) {
