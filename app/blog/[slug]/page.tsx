@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { blogPosts, getBlogPost } from '@/lib/blog-posts'
 import Nav from '@/components/Nav'
@@ -101,6 +101,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   if (!post) {
     notFound()
+  }
+  if (post.slug !== params.slug) {
+    permanentRedirect(`/blog/${post.slug}`)
   }
   const accent = 'accent' in post ? post.accent : '#2563EB'
   const newsletterTopic = 'newsletter_topic' in post ? post.newsletter_topic : post.newsletterTopic

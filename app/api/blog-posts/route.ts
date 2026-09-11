@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/email-store'
+import { makeBlogSlug } from '@/lib/blog-cms'
 
 export const runtime = 'nodejs'
 
@@ -16,10 +17,6 @@ function cleanHtml(input: string) {
     .replace(/(href|src)\s*=\s*"\s*javascript:[^"]*"/gi, '$1="#"')
     .replace(/<img[^>]+src=["']data:[^"']+["'][^>]*>/gi, '')
     .trim()
-}
-
-function makeSlug(value: string) {
-  return value.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-')
 }
 
 export async function POST(request: Request) {
@@ -48,9 +45,14 @@ export async function POST(request: Request) {
     if (!title || !excerpt || !plainText) return NextResponse.json({ error: 'Add a title, summary, and article content.' }, { status: 400 })
 
     const status = payload.status === 'published' ? 'published' : 'draft'
+    const titleSlug = makeBlogSlug(title)
+    const requestedSlug = makeBlogSlug(String(payload.slug || ''))
+    const slug = !requestedSlug || requestedSlug === titleSlug.replace(/-/g, '')
+      ? titleSlug
+      : requestedSlug
     const record = {
       title,
-      slug: makeSlug(String(payload.slug || title)),
+      slug,
       excerpt,
       category: String(payload.category || 'Insights').trim(),
       newsletter_topic: String(payload.newsletterTopic || 'Web3').trim(),

@@ -19,11 +19,24 @@ function text(value: unknown, fallback = '') {
   return typeof value === 'string' ? value : fallback
 }
 
+export function makeBlogSlug(value: string) {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[’']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 function normalisePost(value: unknown): CmsPost | null {
   if (!value || typeof value !== 'object') return null
   const row = value as Record<string, unknown>
-  const slug = text(row.slug).trim()
   const title = text(row.title).trim()
+  const storedSlug = makeBlogSlug(text(row.slug))
+  const titleSlug = makeBlogSlug(title)
+  const slug = storedSlug === titleSlug.replace(/-/g, '') ? titleSlug : storedSlug || titleSlug
   if (!slug || !title) return null
 
   return {
@@ -54,7 +67,12 @@ export async function getPublishedPosts(): Promise<CmsPost[]> {
 export async function getPublishedPost(slug: string): Promise<CmsPost | null> {
   try {
     const posts = await db(`blog_posts?select=*&status=eq.published&published_at=lte.${encodeURIComponent(new Date().toISOString())}&slug=eq.${encodeURIComponent(slug)}&limit=1`)
-    return normalisePost(posts[0])
+    const directPost = normalisePost(posts[0])
+    if (directPost) return directPost
+
+    const requestedSlug = makeBlogSlug(slug)
+    const rows = await db(`blog_posts?select=*&status=eq.published&published_at=lte.${encodeURIComponent(new Date().toISOString())}`)
+    return rows.map(normalisePost).find((post): post is CmsPost => Boolean(post && post.slug === requestedSlug)) || null
   } catch {
     return null
   }
