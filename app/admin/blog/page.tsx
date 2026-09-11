@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import AdminNav from "@/components/AdminNav";
 import ArticleContent from "@/components/ArticleContent";
+import PostEmailReport, { EmailSummaryLine } from "@/components/PostEmailReport";
+import type { PostEmailSummary } from "@/lib/newsletter-queue";
 import type { CmsPost } from "@/lib/blog-cms";
 import {
   maxQuizOptions,
@@ -57,6 +59,7 @@ type NewsletterSendResult = {
   count: number;
   sent: number;
   waiting: number;
+  scheduled?: boolean;
   problem?: string;
 };
 
@@ -421,6 +424,10 @@ export default function BlogCmsPage() {
   const [notifySubscribers, setNotifySubscribers] = useState(true);
   const [testEmail, setTestEmail] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [emailSummaries, setEmailSummaries] = useState<
+    Record<string, PostEmailSummary>
+  >({});
+  const [reportPostId, setReportPostId] = useState("");
   const [quizDraft, setQuizDraft] = useState<QuizDraft | null>(null);
   const [quizError, setQuizError] = useState("");
   const quizBlockRef = useRef<HTMLElement | null>(null);
@@ -436,6 +443,7 @@ export default function BlogCmsPage() {
     const saved = sessionStorage.getItem("ladyprowess_admin_password") || "";
     setPassword(saved);
     if (saved) {
+      loadEmailSummaries(saved);
       fetch("/api/blog-posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -481,6 +489,20 @@ export default function BlogCmsPage() {
     return data;
   }
 
+  async function loadEmailSummaries(value = password) {
+    try {
+      const response = await fetch("/api/newsletter/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "email-summaries", password: value }),
+      });
+      const data = await parseResponse(response);
+      if (response.ok) setEmailSummaries(data.summaries || {});
+    } catch {
+      // Email stats are optional; the post list works without them.
+    }
+  }
+
   async function loadPosts(value = password) {
     const response = await fetch("/api/blog-posts", {
       method: "POST",
@@ -488,8 +510,10 @@ export default function BlogCmsPage() {
       body: JSON.stringify({ action: "list", password: value }),
     });
     const data = await parseResponse(response);
-    if (response.ok) setPosts(data.posts || []);
-    else
+    if (response.ok) {
+      setPosts(data.posts || []);
+      loadEmailSummaries(value);
+    } else
       setStatus(data.error || "Enter your password from the admin dashboard.");
   }
 
@@ -804,6 +828,7 @@ export default function BlogCmsPage() {
     action: "test" | "send" | "catch-up",
     postSlug?: string,
     articleHtml = contentHtml,
+    extra: { postId?: string; publishedAt?: string | null } = {},
   ): Promise<NewsletterSendResult> {
     const response = await fetch("/api/newsletter/send", {
       method: "POST",
@@ -818,6 +843,7 @@ export default function BlogCmsPage() {
         topic: newsletterTopic,
         tier: subscriberTier,
         slug: postSlug || slug,
+        ...extra,
       }),
     });
     const data = await parseResponse(response);
@@ -827,6 +853,7 @@ export default function BlogCmsPage() {
       count: Number(data.count || 0),
       sent: Number(data.sent || 0),
       waiting: Number(data.waiting || 0),
+      scheduled: Boolean(data.scheduled),
       problem: data.problem ? String(data.problem) : undefined,
     };
   }
@@ -844,7 +871,10 @@ export default function BlogCmsPage() {
       const compactContent = normaliseGoogleDocsPaste(
         editorRef.current?.innerHTML || contentHtml,
       );
-      const result = await sendNewsletter("catch-up", slug, compactContent);
+      const result = await sendNewsletter("catch-up", slug, compactContent, {
+        postId: id,
+      });
+      loadEmailSummaries();
       setStatus(
         result.count
           ? deliveryMessage(result)
@@ -925,8 +955,9 @@ export default function BlogCmsPage() {
             ? "Live post updated."
             : "Post published."
           : "Draft saved.";
+      // Scheduled posts are queued now and emailed automatically once they go live.
       if (
-        postStatus === "published" &&
+        (postStatus === "published" || postStatus === "scheduled") &&
         notifySubscribers &&
         editingStatus !== "published"
       ) {
@@ -935,12 +966,15 @@ export default function BlogCmsPage() {
             "send",
             data.post?.slug,
             compactContent,
+            { postId: data.post?.id, publishedAt: effectivePublishedAt },
           );
-          message += result.count
-            ? ` ${deliveryMessage(result)}`
-            : " No matching subscribers were found.";
+          message += !result.count
+            ? " No matching subscribers were found."
+            : result.scheduled
+              ? ` ${result.count} subscribers will be emailed automatically within a few hours of it going live.`
+              : ` ${deliveryMessage(result)}`;
         } catch (emailError) {
-          message += ` The post is live, but the subscriber email failed: ${emailError instanceof Error ? emailError.message : "Unknown email error."}`;
+          message += ` The post is saved, but the subscriber email failed: ${emailError instanceof Error ? emailError.message : "Unknown email error."}`;
         }
       }
       setStatus(message);
@@ -1465,6 +1499,13 @@ export default function BlogCmsPage() {
               </div>
             </div>
           )}
+          {reportPostId && (
+            <PostEmailReport
+              postId={reportPostId}
+              password={password}
+              onClose={() => setReportPostId("")}
+            />
+          )}
           {quizDraft && (
             <div
               className="fixed inset-0 z-[100] overflow-y-auto bg-black/55 p-4 md:p-10"
@@ -1659,15 +1700,32 @@ export default function BlogCmsPage() {
                       {postState(post)}
                     </span>
                     <h3 className="mt-1 text-sm font-semibold leading-5">
-                      {post.title}
+                      <button
+                        type="button"
+                        onClick={() => setReportPostId(post.id)}
+                        title="See the email report"
+                        className="text-left hover:text-primary"
+                      >
+                        {post.title}
+                      </button>
                     </h3>
                     <p className="mt-1 text-xs text-muted">{post.category}</p>
+                    <EmailSummaryLine
+                      summary={emailSummaries[post.id]}
+                      scheduled={postState(post) === "scheduled"}
+                    />
                     <div className="mt-4 flex flex-wrap gap-2">
                       <button
                         onClick={() => edit(post)}
                         className="rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold"
                       >
                         Edit
+                      </button>
+                      <button
+                        onClick={() => setReportPostId(post.id)}
+                        className="rounded-full bg-surface-2 px-3 py-1.5 text-xs font-semibold"
+                      >
+                        Email report
                       </button>
                       {postState(post) === "published" && (
                         <a

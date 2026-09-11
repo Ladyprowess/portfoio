@@ -6,7 +6,14 @@ type QueueStatus = {
   waiting: number;
   usedToday: number;
   dailyAllowance: number;
-  campaigns: { id: string; title: string; createdAt: string; waiting: number }[];
+  campaigns: {
+    id: string;
+    title: string;
+    createdAt: string;
+    waiting: number;
+    onHold: boolean;
+    scheduledFor: string | null;
+  }[];
 };
 
 export default function NewsletterQueuePanel({ password }: { password: string }) {
@@ -104,7 +111,13 @@ export default function NewsletterQueuePanel({ password }: { password: string })
           {status.campaigns.map((campaign) => (
             <li key={campaign.id} className="flex items-center justify-between gap-4 py-3">
               <span className="min-w-0 truncate font-medium">{campaign.title}</span>
-              <span className="shrink-0 text-muted">{campaign.waiting} waiting</span>
+              <span className="shrink-0 text-muted">
+                {campaign.waiting} waiting
+                {campaign.onHold &&
+                  (campaign.scheduledFor
+                    ? ` · sends after ${new Date(campaign.scheduledFor).toLocaleString("en", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`
+                    : " · sends when the post is published")}
+              </span>
             </li>
           ))}
         </ul>

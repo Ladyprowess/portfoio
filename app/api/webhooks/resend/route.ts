@@ -49,24 +49,47 @@ export async function POST(request: Request) {
   if (!event.data.email_id) return NextResponse.json({ ok: true })
 
   try {
-    const eventId = request.headers.get('svix-id') || ''
-    const emails = await db(`sent_emails?select=id&resend_id=eq.${encodeURIComponent(event.data.email_id)}&limit=1`)
-    const emailId = emails[0]?.id
-    if (!emailId) return NextResponse.json({ ok: true })
+    const resendId = encodeURIComponent(event.data.email_id)
+    const eventType = event.type === 'email.opened' ? 'open' : 'click'
+    const occurredAt = event.data.click?.timestamp || event.created_at
+    const url = event.data.click?.link || null
+    const providerEventId = request.headers.get('svix-id') || ''
+    const ignoreDuplicates = { Prefer: 'resolution=ignore-duplicates,return=representation' }
 
-    await db('email_events?on_conflict=provider_event_id', {
-      method: 'POST',
-      headers: { Prefer: 'resolution=ignore-duplicates,return=representation' },
-      body: JSON.stringify({
-        email_id: emailId,
-        event_type: event.type === 'email.opened' ? 'open' : 'click',
-        url: event.data.click?.link || null,
-        user_agent: event.data.click?.userAgent || null,
-        occurred_at: event.data.click?.timestamp || event.created_at,
-        source: 'resend',
-        provider_event_id: eventId,
-      }),
-    })
+    const emails = await db(`sent_emails?select=id&resend_id=eq.${resendId}&limit=1`)
+    if (emails[0]?.id) {
+      await db('email_events?on_conflict=provider_event_id', {
+        method: 'POST',
+        headers: ignoreDuplicates,
+        body: JSON.stringify({
+          email_id: emails[0].id,
+          event_type: eventType,
+          url,
+          user_agent: event.data.click?.userAgent || null,
+          occurred_at: occurredAt,
+          source: 'resend',
+          provider_event_id: providerEventId,
+        }),
+      })
+      return NextResponse.json({ ok: true })
+    }
+
+    // Newsletter emails are matched through the queue's delivery rows.
+    const deliveries = await db(`newsletter_deliveries?select=id,campaign_id&resend_id=eq.${resendId}&limit=1`)
+    const delivery = deliveries[0]
+    if (delivery)
+      await db('newsletter_events?on_conflict=provider_event_id', {
+        method: 'POST',
+        headers: ignoreDuplicates,
+        body: JSON.stringify({
+          delivery_id: delivery.id,
+          campaign_id: delivery.campaign_id,
+          event_type: eventType,
+          url,
+          occurred_at: occurredAt,
+          provider_event_id: providerEventId,
+        }),
+      })
     return NextResponse.json({ ok: true })
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Webhook processing failed.' }, { status: 500 })

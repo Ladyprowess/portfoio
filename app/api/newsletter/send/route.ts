@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { db } from "@/lib/email-store";
+import { db, dbAll } from "@/lib/email-store";
 import {
   emailDocument,
   senderName,
@@ -10,6 +10,8 @@ import { makeBlogSlug } from "@/lib/blog-cms";
 import {
   campaignProgress,
   emailsAlreadyReceived,
+  postEmailReport,
+  postEmailSummaries,
   processNewsletterQueue,
   queueCampaign,
   queueStatus,
@@ -44,6 +46,14 @@ export async function POST(request: Request) {
       return NextResponse.json(await queueStatus());
     if (payload.action === "process-queue")
       return NextResponse.json({ ok: true, ...(await processNewsletterQueue()) });
+    if (payload.action === "email-summaries")
+      return NextResponse.json({ summaries: await postEmailSummaries() });
+    if (payload.action === "email-report") {
+      const report = await postEmailReport(String(payload.postId || ""));
+      return report
+        ? NextResponse.json(report)
+        : NextResponse.json({ error: "This post could not be found." }, { status: 404 });
+    }
     if (!process.env.RESEND_API_KEY)
       return NextResponse.json(
         { error: "Resend is not configured." },
@@ -95,40 +105,58 @@ export async function POST(request: Request) {
     if (payload.action !== "send" && payload.action !== "catch-up")
       return NextResponse.json({ error: "Invalid action." }, { status: 400 });
 
-    const tier =
-      payload.tier === "paid" || payload.tier === "free" ? payload.tier : "all";
-    const rows = (await db(
-      "newsletter_subscribers?select=*&status=eq.active&order=created_at.asc",
-    )) as NewsletterSubscriber[];
-    const subscribers = rows.filter(
-      (subscriber) =>
-        (topic === "All" ||
-          subscriber.topics.includes("All") ||
-          subscriber.topics.includes(topic)) &&
-        (tier === "all" || subscriber.tier === tier),
-    );
-    // "catch-up" emails a published post only to subscribers who have not had it yet.
-    const exclude =
-      payload.action === "catch-up" ? await emailsAlreadyReceived(title) : undefined;
-    const { campaignId, queued } = await queueCampaign({
-      title,
-      excerpt,
-      contentHtml,
-      topic,
-      postUrl,
-      subscribers,
-      exclude,
-    });
-    if (!queued)
-      return NextResponse.json({ ok: true, count: 0, sent: 0, waiting: 0 });
+    const postId = String(payload.postId || "").trim();
+    const scheduled =
+      typeof payload.publishedAt === "string" &&
+      Date.parse(payload.publishedAt) > Date.now();
+
+    // Publishing, rescheduling, or re-saving a post that already has a newsletter
+    // must never email anyone twice, so its existing queue is reused.
+    let campaignIds: string[] = [];
+    if (payload.action === "send" && postId)
+      campaignIds = (
+        await db(`newsletter_campaigns?select=id&post_id=eq.${encodeURIComponent(postId)}`)
+      ).map((row) => String(row.id));
+
+    if (!campaignIds.length) {
+      const tier =
+        payload.tier === "paid" || payload.tier === "free" ? payload.tier : "all";
+      const rows = (await dbAll(
+        "newsletter_subscribers?select=*&status=eq.active&order=created_at.asc,id.asc",
+      )) as NewsletterSubscriber[];
+      const subscribers = rows.filter(
+        (subscriber) =>
+          (topic === "All" ||
+            subscriber.topics.includes("All") ||
+            subscriber.topics.includes(topic)) &&
+          (tier === "all" || subscriber.tier === tier),
+      );
+      // "catch-up" emails a published post only to subscribers who have not had it yet.
+      const exclude =
+        payload.action === "catch-up" ? await emailsAlreadyReceived(title) : undefined;
+      const { campaignId, queued } = await queueCampaign({
+        title,
+        excerpt,
+        contentHtml,
+        topic,
+        postUrl,
+        postId: postId || undefined,
+        subscribers,
+        exclude,
+      });
+      if (!queued)
+        return NextResponse.json({ ok: true, count: 0, sent: 0, waiting: 0 });
+      campaignIds = [campaignId];
+    }
 
     const run = await processNewsletterQueue();
-    const progress = await campaignProgress(campaignId);
+    const progress = await campaignProgress(campaignIds);
     return NextResponse.json({
       ok: true,
-      count: queued,
+      count: progress.total,
       sent: progress.sent,
       waiting: progress.waiting,
+      scheduled,
       problem: run.problem,
     });
   } catch (error) {
