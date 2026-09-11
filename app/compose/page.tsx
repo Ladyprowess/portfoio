@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import posthog from 'posthog-js'
 import AdminNav from '@/components/AdminNav'
 
 // Private compose page. Public URL, but the form is gated by a password that is
@@ -169,6 +170,10 @@ export default function ComposePage() {
         setStatus({ type: 'error', text: data.error || 'Something went wrong.' })
         return
       }
+      posthog.capture('email_sent', {
+        recipient_count: [to, cc, bcc].flatMap((recipients) => recipients.split(',').filter(Boolean)).length,
+        attachment_count: files.length,
+      })
       setStatus({ type: 'ok', text: 'Sent. Your email is on its way.' })
       setTo('')
       setCc('')

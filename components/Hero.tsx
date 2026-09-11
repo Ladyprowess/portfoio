@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
+import posthog from 'posthog-js'
 
 const proofPoints = [
   { label: 'Ventures founded', value: '3' },
@@ -88,6 +89,7 @@ export default function Hero() {
                 href="https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => posthog.capture('resume_downloaded', { placement: 'hero' })}
                 className="inline-flex min-h-12 items-center justify-center border border-ink-border bg-surface px-7 py-4 font-display text-[0.9rem] font-bold text-parchment motion-safe:transition-colors motion-safe:duration-150 hover:border-primary/60 hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 Download Resume

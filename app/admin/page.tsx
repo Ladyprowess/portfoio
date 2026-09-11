@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import posthog from 'posthog-js'
 import AdminNav from '@/components/AdminNav'
 
 export default function AdminPage() {
@@ -23,6 +24,7 @@ export default function AdminPage() {
     setLoading(false)
     if (!response.ok) { setError(data.error || 'Could not unlock the admin area.'); return }
     sessionStorage.setItem('ladyprowess_admin_password', value)
+    posthog.capture('admin_access_granted')
     setUnlocked(true)
   }
 

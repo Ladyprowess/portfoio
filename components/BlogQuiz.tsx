@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import posthog from "posthog-js";
 import { quizLetters, type BlogQuiz as BlogQuizData } from "@/lib/blog-quiz";
 import { launchConfetti } from "@/lib/confetti";
 
@@ -21,6 +22,10 @@ export default function BlogQuiz({ quiz }: { quiz: BlogQuizData }) {
   function pick(index: number) {
     if (answered) return;
     setChoice(index);
+    posthog.capture("blog_quiz_answered", {
+      quiz_id: quiz.id,
+      is_correct: index === quiz.answer,
+    });
     if (index === quiz.answer) {
       setMessage(praise[Math.floor(Math.random() * praise.length)]);
       if (cardRef.current) launchConfetti(cardRef.current);

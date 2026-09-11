@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import posthog from "posthog-js";
 import { newsletterTopics, publicationName } from "@/lib/newsletter";
 
 export default function NewsletterSignup({
@@ -46,6 +47,7 @@ export default function NewsletterSignup({
       const text = await response.text();
       const data = text ? JSON.parse(text) : {};
       if (!response.ok) throw new Error(data.error || "Could not subscribe.");
+      posthog.capture("newsletter_subscribed", { topic_count: topics.length });
       setMessage("You are subscribed. New posts will arrive in your email.");
       setEmail("");
     } catch (error) {

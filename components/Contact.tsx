@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import posthog from 'posthog-js'
 
 const docs = [
   { label: 'View Resume',        href: 'https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing' },
@@ -78,6 +79,7 @@ export default function Contact() {
             {/* Email */}
             <a
               href="mailto:hello@ladyprowess.com"
+              onClick={() => posthog.capture('contact_initiated', { placement: 'email_address' })}
               className="group block"
             >
               <span className="font-head text-[0.6rem] font-bold tracking-[0.16em] uppercase text-muted block mb-2">
@@ -95,6 +97,7 @@ export default function Contact() {
             {/* Primary CTA */}
             <a
               href="mailto:hello@ladyprowess.com"
+              onClick={() => posthog.capture('contact_initiated', { placement: 'primary_cta' })}
               className="group self-start inline-flex items-center gap-3 font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase bg-primary text-bg px-8 py-4 hover:bg-primary/85 transition-colors duration-200"
             >
               Get In Touch
@@ -109,6 +112,7 @@ export default function Contact() {
                   href={d.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => posthog.capture('document_opened', { document_type: d.label === 'View Resume' ? 'resume' : 'recommendation' })}
                   className="group inline-flex items-center gap-2 font-head text-[0.65rem] font-bold tracking-[0.12em] uppercase text-muted border border-ink-border px-4 py-2 hover:border-primary/40 hover:text-parchment transition-all duration-200"
                 >
                   {d.label}

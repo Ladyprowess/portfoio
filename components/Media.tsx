@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import posthog from 'posthog-js'
 
 const photos = [
   { src: '/personal%20photo/headshot1.png', file: '/personal photo/headshot1.png', alt: 'Ngozi Peace Okafor wearing a tan blazer in a professional portrait', label: 'Tan blazer portrait' },
@@ -45,7 +48,7 @@ export default function Media() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {photos.map(photo => <article key={photo.src} className="overflow-hidden rounded-3xl border border-ink-border bg-white">
             <div className="relative aspect-[2/3] overflow-hidden bg-[#EEF3FA]"><Image src={photo.src} alt={photo.alt} fill className="object-cover object-top transition duration-500 hover:scale-[1.015]" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" /></div>
-            <div className="flex items-center justify-between gap-4 p-5"><div><h3 className="font-head text-sm font-bold">{photo.label}</h3><p className="mt-1 text-xs text-muted">Original resolution</p></div><a href={photo.file} download className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink-border text-primary transition hover:border-primary hover:bg-primary hover:text-white" aria-label={`Download ${photo.label}`}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" /></svg></a></div>
+            <div className="flex items-center justify-between gap-4 p-5"><div><h3 className="font-head text-sm font-bold">{photo.label}</h3><p className="mt-1 text-xs text-muted">Original resolution</p></div><a href={photo.file} download onClick={() => posthog.capture('media_asset_downloaded', { asset_label: photo.label })} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink-border text-primary transition hover:border-primary hover:bg-primary hover:text-white" aria-label={`Download ${photo.label}`}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" /></svg></a></div>
           </article>)}
         </div>
       </div>
