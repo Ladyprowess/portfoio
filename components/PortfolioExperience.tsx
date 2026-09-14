@@ -21,6 +21,48 @@ const projects = [
   { name: 'KivoraPay', type: 'Fintech product', image: '/brands/kivorapay.png', colour: 'bg-[#EAFBF5]', summary: 'A spending layer that lets people use crypto for everyday bills and merchant payments.', work: ['Product strategy', 'Messaging', 'User flows', 'Market strategy'], href: 'https://kivorapay.com/' },
 ]
 
+const clientWork = [
+  {
+    name: 'BEGIN',
+    type: 'Business growth platform',
+    image: '/projects/lw-commerce-begin.jpg',
+    summary: 'A digital home for the Business Expansion & Growth Initiative, connecting entrepreneurs to training, mentorship, investment access and strategic partnerships.',
+    work: ['Website design', 'Content structure', 'Events experience'],
+    href: 'https://begin.lwcommerce.org/',
+  },
+  {
+    name: 'BEGIN Admin',
+    type: 'Portal experience',
+    image: '/projects/lw-commerce-dashboard.jpg',
+    summary: 'A secure entry point for the BEGIN administration console, designed to keep programme management focused and straightforward.',
+    work: ['Portal design', 'Admin experience', 'Information hierarchy'],
+    href: 'https://begin.lwcommerce.org/admin-dashboard',
+  },
+  {
+    name: 'LoveWorld Trade & Investment Forum',
+    type: 'Event platform',
+    image: '/projects/ltif.jpg',
+    summary: 'An event platform for bringing entrepreneurs, investors, policymakers and innovators together around trade and investment.',
+    work: ['Website design', 'Event content', 'Registration journey'],
+    href: 'https://ltif.lwcommerce.org/',
+  },
+]
+
+const lwCommercePages = [
+  { title: 'Departments', links: [
+    ['All departments', 'https://lwcommerce.org/departments/'], ['Human Capital Development', 'https://lwcommerce.org/departments/?lwc=human-capital-development'], ['Finance & Treasury', 'https://lwcommerce.org/departments/?lwc=finance-treasury'], ['Media, Communications & Public Relations', 'https://lwcommerce.org/departments/?lwc=media-communications-public-relations'], ['Enterprise Growth & Development', 'https://lwcommerce.org/departments/?lwc=enterprise-growth-development'], ['E-Commerce & Digital Trade', 'https://lwcommerce.org/departments/?lwc=e-commerce-digital-trade'], ['Digital Infrastructure & Innovation', 'https://lwcommerce.org/departments/?lwc=digital-infrastructure-innovation'], ['Legal & Policy Regulations', 'https://lwcommerce.org/departments/?lwc=legal-policy-regulations'], ['Economic Research & Statistics', 'https://lwcommerce.org/departments/?lwc=economic-research-statistics'], ['Commerce Programs & Events', 'https://lwcommerce.org/departments/?lwc=commerce-programs-events'], ['Investments & Partnerships', 'https://lwcommerce.org/departments/?lwc=investments-partnerships'],
+  ] },
+  { title: 'Regulatory agencies', links: [
+    ['All regulatory agencies', 'https://lwcommerce.org/regulatory-agencies/'], ['Consumer Protection Agency', 'https://lwcommerce.org/regulatory-agencies/?lwc=consumer-protection-agency'], ['Finance Reporting Agency', 'https://lwcommerce.org/regulatory-agencies/?lwc=finance-reporting-agency'], ['Loveworld Enterprise Development Agency', 'https://lwcommerce.org/regulatory-agencies/?lwc=loveworld-enterprise-development-agency'], ['Loveworld Trade & Export Promotion Agency', 'https://lwcommerce.org/regulatory-agencies/?lwc=loveworld-trade-export-promotion-agency'], ['Investment Promotion Agency', 'https://lwcommerce.org/regulatory-agencies/?lwc=investment-promotion-agency'],
+  ] },
+  { title: 'Commercial corporations', links: [
+    ['All commercial corporations', 'https://lwcommerce.org/commercial-coporations/'], ['Loveworld Inspectorate Administration', 'https://lwcommerce.org/commercial-coporations/?lwc=loveworld-inspectorate-administration'], ['Loveworld Business House', 'https://lwcommerce.org/commercial-coporations/?lwc=loveworld-business-house'], ['Loveworld Standards Organisation', 'https://lwcommerce.org/commercial-coporations/?lwc=loveworld-standards-organisation'], ['Loveworld Bank of Industry', 'https://lwcommerce.org/commercial-coporations/?lwc=loveworld-bank-of-industry'], ['Loveworld Free Trade Zone', 'https://lwcommerce.org/commercial-coporations/?lwc=loveworld-free-trade-zone'],
+  ] },
+  { title: 'Event pages', links: [
+    ['LoveWorld Trade & Investment Forum events', 'https://ltif.lwcommerce.org/events/'], ['LW Commerce events', 'https://lwcommerce.org/events/'], ['BEGIN events', 'https://begin.lwcommerce.org/events/'],
+  ] },
+]
+
 const brands = [
   { name: 'txFusion', image: '/brands/txfusion.png', href: 'https://www.txfusion.io/', relationship: 'API and developer documentation' },
   { name: 'Cwallet', image: '/brands/cwallet.png', href: 'https://cwallet.com', relationship: 'Content writing' },
@@ -85,6 +127,14 @@ export default function PortfolioExperience() {
     <section id="work" className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28">
       <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Selected work</p><h2 className="mt-3 font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">Built, not only discussed.</h2></div><p className="max-w-md text-sm leading-6 text-muted">Ventures I built and founded from scratch.</p></div>
       <div className="grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">{projects.map(item => <button key={item.name} onClick={() => { setProject(item); posthog.capture('project_details_viewed', { project_name: item.name, project_type: item.type }) }} className={`group flex h-full w-full appearance-none flex-col overflow-hidden rounded-3xl border border-ink-border p-0 text-left align-top transition hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)] ${item.colour}`}><div className="flex h-48 w-full shrink-0 items-center justify-center px-8">{item.name === 'KivoraPay' ? <div className="font-display text-2xl font-extrabold tracking-[-0.06em]"><span className="text-[#111111]">Kivora</span><span className="text-[#2DD4A0]">Pay</span></div> : <Image src={item.image} alt={`${item.name} logo`} width={210} height={86} className={`w-auto object-contain transition duration-300 group-hover:scale-105 ${item.name === 'Dritchwear' ? 'max-h-12 max-w-[220px]' : 'max-h-20 max-w-[230px]'}`} />}</div><div className="flex flex-1 flex-col border-t border-ink-border bg-white p-6"><div className="flex items-center justify-between"><span className="font-head text-[10px] uppercase tracking-wider text-muted">{item.type}</span><span className="text-primary">↗</span></div><h3 className="mt-3 font-display text-xl font-semibold">{item.name}</h3><p className="mt-2 text-sm leading-6 text-muted">{item.summary}</p></div></button>)}</div>
+    </section>
+
+    <section className="border-y border-ink-border bg-white py-20 md:py-28">
+      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+        <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Client work</p><h2 className="mt-3 font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">Digital experiences for commerce and growth.</h2></div><p className="max-w-md text-sm leading-6 text-muted">Selected LW Commerce and LoveWorld Trade &amp; Investment Forum platforms, from public-facing sites to programme administration.</p></div>
+        <div className="grid gap-6 lg:grid-cols-3">{clientWork.map(item => <a key={item.name} href={item.href} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('client_project_visited', { project_name: item.name, project_type: item.type })} className="group flex overflow-hidden rounded-3xl border border-ink-border bg-bg transition hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:flex-col"><div className="relative aspect-[4/3] w-[42%] shrink-0 overflow-hidden bg-surface-2 lg:w-full"><Image src={item.image} alt={`${item.name} website screenshot`} fill sizes="(min-width: 1024px) 33vw, 42vw" className="object-cover object-top transition duration-300 motion-reduce:transition-none group-hover:scale-[1.03]" /></div><div className="flex flex-1 flex-col p-5 md:p-6"><div className="flex items-start justify-between gap-4"><span className="font-head text-[10px] uppercase tracking-wider text-muted">{item.type}</span><span aria-hidden="true" className="text-primary">↗</span></div><h3 className="mt-3 font-display text-xl font-semibold leading-tight">{item.name}</h3><p className="mt-3 text-sm leading-6 text-muted">{item.summary}</p><div className="mt-5 flex flex-wrap gap-2">{item.work.map(work => <span key={work} className="rounded-full border border-ink-border bg-white px-3 py-1.5 text-[11px] font-medium text-slate">{work}</span>)}</div><span className="mt-6 text-sm font-semibold text-primary">Visit live site <span aria-hidden="true">↗</span></span></div></a>)}</div>
+        <div className="mt-10 border-t border-ink-border pt-10"><div className="flex flex-col justify-between gap-3 md:flex-row md:items-end"><div><p className="font-head text-[10px] uppercase tracking-[.14em] text-primary">LW Commerce page directory</p><h3 className="mt-2 font-display text-2xl font-semibold tracking-[-.03em]">Every page I worked on.</h3></div><a href="https://lwcommerce.org/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Visit LW Commerce ↗</a></div><div className="mt-6 grid gap-4 md:grid-cols-2">{lwCommercePages.map(group => <details key={group.title} className="group rounded-2xl border border-ink-border bg-bg p-5 open:bg-white"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-semibold focus-visible:outline-none"><span>{group.title}</span><span aria-hidden="true" className="text-primary transition-transform group-open:rotate-45">+</span></summary><ul className="mt-4 space-y-2 border-t border-ink-border pt-4">{group.links.map(([label, href]) => <li key={href}><a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex text-sm leading-6 text-muted underline-offset-4 hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">{label}<span aria-hidden="true" className="ml-1">↗</span></a></li>)}</ul></details>)}</div></div>
+      </div>
     </section>
 
     <section className="overflow-hidden border-y border-ink-border bg-white py-14">
