@@ -17,7 +17,12 @@ export const newsletterDailyAllowance = Math.max(0, dailyLimit - dailyReserve);
 const chunkSize = 20;
 const dayMs = 24 * 60 * 60 * 1000;
 const sender = "hello@ladyprowess.com";
-const siteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || "https://ladyprowess.com";
+// The bare domain redirects to www, and one-click unsubscribe requests from email
+// apps are not allowed to follow redirects, so email links always use www.
+const siteUrl = () =>
+  (process.env.NEXT_PUBLIC_SITE_URL || "https://www.ladyprowess.com")
+    .replace(/\/$/, "")
+    .replace("://ladyprowess.com", "://www.ladyprowess.com");
 
 type Row = Record<string, unknown>;
 
@@ -44,6 +49,7 @@ type Post = {
   title: string;
   excerpt: string;
   content_html: string;
+  newsletter_topic?: string;
   status: string;
   published_at: string | null;
 };
@@ -126,7 +132,7 @@ function withUtm(url: string, slug: string) {
 
 async function postsById(
   ids: string[],
-  fields = "id,slug,title,excerpt,content_html,status,published_at",
+  fields = "id,slug,title,excerpt,content_html,newsletter_topic,status,published_at",
 ) {
   const unique = Array.from(new Set(ids.filter(Boolean)));
   if (!unique.length) return new Map<string, Post>();
@@ -290,21 +296,29 @@ export async function processNewsletterQueue(): Promise<QueueRunResult> {
     // Blog newsletters use the post as it is now, so edits after scheduling are included.
     const post = campaign.post_id ? posts.get(campaign.post_id) : undefined;
     const title = post?.title || campaign.title;
+    // The sender name ("Lady Prowess from Decode Web3") follows the post's current topic.
+    const topic = post?.newsletter_topic || campaign.topic;
     const postUrl = post ? postUrlFor(post.slug) : campaign.post_url;
+    const token = encodeURIComponent(subscriber.unsubscribe_token);
     return {
-      from: `${senderName(campaign.topic)} <${sender}>`,
+      from: `${senderName(topic)} <${sender}>`,
       to: [subscriber.email],
       replyTo: sender,
       subject: title,
+      // Lets Gmail, Yahoo and Apple Mail show their own one-click unsubscribe button.
+      headers: {
+        "List-Unsubscribe": `<${siteUrl()}/api/newsletter/unsubscribe?token=${token}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
       html: emailDocument({
         title,
         excerpt: post?.excerpt || campaign.excerpt,
         contentHtml: post?.content_html || campaign.content_html,
-        topic: campaign.topic,
+        topic,
         postUrl: postUrl
           ? withUtm(postUrl, post?.slug || slugFromUrl(campaign.post_url))
           : undefined,
-        unsubscribeUrl: `${siteUrl()}/unsubscribe?token=${encodeURIComponent(subscriber.unsubscribe_token)}`,
+        unsubscribeUrl: `${siteUrl()}/unsubscribe?token=${token}`,
       }),
     };
   };

@@ -1,17 +1,40 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/email-store";
 
+// Used by the unsubscribe page (token in a JSON body) and by the one-click
+// unsubscribe button in Gmail, Yahoo and Apple Mail, which posts
+// "List-Unsubscribe=One-Click" to the List-Unsubscribe URL (token in the URL).
 export async function POST(request: Request) {
   try {
-    const payload = await request.json();
-    const token = String(payload.token || "").trim();
+    const body = await request.text();
+    let token = new URL(request.url).searchParams.get("token") || "";
+    if (!token) {
+      try {
+        token = String(JSON.parse(body).token || "");
+      } catch {
+        // A one-click request is form-encoded, not JSON.
+      }
+    }
+    token = token.trim();
     if (!token)
       return NextResponse.json(
-        { error: "The unsubscribe link is incomplete." },
+        { error: "This unsubscribe link is incomplete." },
         { status: 400 },
       );
+
+    const [subscriber] = await db(
+      `newsletter_subscribers?select=id,status&unsubscribe_token=eq.${encodeURIComponent(token)}&limit=1`,
+    );
+    if (!subscriber)
+      return NextResponse.json(
+        { error: "This unsubscribe link is not valid. Please use the link from your most recent email." },
+        { status: 404 },
+      );
+    if (subscriber.status === "unsubscribed")
+      return NextResponse.json({ ok: true, alreadyUnsubscribed: true });
+
     await db(
-      `newsletter_subscribers?unsubscribe_token=eq.${encodeURIComponent(token)}`,
+      `newsletter_subscribers?id=eq.${encodeURIComponent(String(subscriber.id))}`,
       {
         method: "PATCH",
         body: JSON.stringify({
