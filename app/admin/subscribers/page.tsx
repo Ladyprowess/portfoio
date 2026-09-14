@@ -7,14 +7,64 @@ import { newsletterTopics, type NewsletterSubscriber } from "@/lib/newsletter";
 
 const PAGE_SIZE = 10;
 
+type ImportRow = { email: string; name: string; tier: "free" | "paid" };
+type StatusFilter = "all" | "active" | "unsubscribed";
+
+function parseCsv(text: string): ImportRow[] | null {
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter(Boolean);
+  const headers =
+    lines
+      .shift()
+      ?.split(",")
+      .map((value) => value.trim().replace(/^"|"$/g, "").toLowerCase()) || [];
+  const emailIndex = headers.findIndex((value) => value.includes("email"));
+  const nameIndex = headers.findIndex((value) => value.includes("name"));
+  const typeIndex = headers.findIndex(
+    (value) => value.includes("type") || value.includes("tier"),
+  );
+  if (emailIndex < 0) return null;
+  return lines
+    .map((line) => {
+      const columns =
+        line
+          .match(/("[^"]*(?:""[^"]*)*"|[^,]*)(?:,|$)/g)
+          ?.map((value) =>
+            value
+              .replace(/,$/, "")
+              .replace(/^"|"$/g, "")
+              .replace(/""/g, '"')
+              .trim(),
+          ) || [];
+      return {
+        email: columns[emailIndex] || "",
+        name: nameIndex >= 0 ? columns[nameIndex] || "" : "",
+        tier:
+          typeIndex >= 0 && /paid/i.test(columns[typeIndex] || "")
+            ? ("paid" as const)
+            : ("free" as const),
+      };
+    })
+    .filter((row) => row.email);
+}
+
+const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
+
 export default function SubscribersPage() {
   const [password, setPassword] = useState("");
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [query, setQuery] = useState("");
   const [topic, setTopic] = useState("All records");
   const [tier, setTier] = useState("all");
+  const [status, setStatus] = useState<StatusFilter>("all");
   const [page, setPage] = useState(1);
   const [message, setMessage] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importRows, setImportRows] = useState<ImportRow[]>([]);
+  const [importFileName, setImportFileName] = useState("");
+  const [importTopics, setImportTopics] = useState<string[]>(["All"]);
+  const [importError, setImportError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function request(
@@ -53,64 +103,78 @@ export default function SubscribersPage() {
     }
   }
 
-  // The initial load intentionally runs once with the password stored by the admin login.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const saved = sessionStorage.getItem("ladyprowess_admin_password") || "";
     setPassword(saved);
     if (saved) load(saved);
+    // The initial load intentionally runs once with the password stored by the admin login.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function importCsv(file?: File) {
+  function changeFilter(apply: () => void) {
+    apply();
+    setPage(1);
+    setSelected(new Set());
+  }
+
+  async function chooseFile(file?: File) {
     if (!file) return;
-    const text = await file.text();
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    const headers =
-      lines
-        .shift()
-        ?.split(",")
-        .map((value) => value.trim().replace(/^"|"$/g, "").toLowerCase()) || [];
-    const emailIndex = headers.findIndex((value) => value.includes("email"));
-    const nameIndex = headers.findIndex((value) => value.includes("name"));
-    const typeIndex = headers.findIndex(
-      (value) => value.includes("type") || value.includes("tier"),
+    const rows = parseCsv(await file.text());
+    if (fileRef.current) fileRef.current.value = "";
+    setImportFileName(file.name);
+    setImportRows(rows || []);
+    setImportError(
+      !rows
+        ? "The CSV must contain an email column."
+        : rows.length
+          ? ""
+          : "No subscriber emails were found in this file.",
     );
-    if (emailIndex < 0)
-      return setMessage("The CSV must contain an email column.");
-    const rows = lines.map((line) => {
-      const columns =
-        line
-          .match(/("[^"]*(?:""[^"]*)*"|[^,]*)(?:,|$)/g)
-          ?.map((value) =>
-            value
-              .replace(/,$/, "")
-              .replace(/^"|"$/g, "")
-              .replace(/""/g, '"')
-              .trim(),
-          ) || [];
-      return {
-        email: columns[emailIndex],
-        name: nameIndex >= 0 ? columns[nameIndex] : "",
-        tier:
-          typeIndex >= 0 && /paid/i.test(columns[typeIndex] || "")
-            ? "paid"
-            : "free",
-        topics: ["Web3"],
-        source: "Substack import",
-      };
+  }
+
+  function toggleImportTopic(value: string) {
+    if (value === "All") return setImportTopics(["All"]);
+    setImportTopics((current) => {
+      const withoutAll = current.filter((item) => item !== "All");
+      return withoutAll.includes(value)
+        ? withoutAll.filter((item) => item !== value)
+        : [...withoutAll, value];
     });
+  }
+
+  function closeImport() {
+    setImportOpen(false);
+    setImportRows([]);
+    setImportFileName("");
+    setImportError("");
+    setImportTopics(["All"]);
+  }
+
+  async function runImport() {
+    if (!importRows.length || !importTopics.length) return;
+    setBusy(true);
     try {
-      const data = await request({ action: "import", subscribers: rows });
-      setMessage(`${data.count} subscribers imported.`);
+      const data = await request({
+        action: "import",
+        subscribers: importRows,
+        topics: importTopics,
+      });
+      const parts = [`${plural(data.added, "new subscriber")} added`];
+      if (data.updated)
+        parts.push(`${plural(data.updated, "existing subscriber")} got the new topic`);
+      if (data.unchanged) parts.push(`${data.unchanged} already had it`);
+      if (data.invalid)
+        parts.push(`${plural(data.invalid, "row")} skipped because the email was not valid`);
+      setMessage(`${parts.join(", ")}.`);
+      closeImport();
       await load();
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Could not import subscribers.",
+      setImportError(
+        error instanceof Error ? error.message : "Could not import subscribers.",
       );
+    } finally {
+      setBusy(false);
     }
-    if (fileRef.current) fileRef.current.value = "";
   }
 
   async function update(
@@ -133,6 +197,62 @@ export default function SubscribersPage() {
     }
   }
 
+  async function bulkUpdate(
+    changes: { topics?: string[]; tier?: "free" | "paid"; status?: "unsubscribed" },
+    done: string,
+  ) {
+    const ids = Array.from(selected);
+    if (!ids.length) return;
+    setBusy(true);
+    try {
+      await request({ action: "update", ids, ...changes });
+      setMessage(`${plural(ids.length, "subscriber")} ${done}.`);
+      setSelected(new Set());
+      await load();
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Could not update subscribers.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove(ids: string[]) {
+    if (!ids.length) return;
+    const who =
+      ids.length === 1
+        ? subscribers.find((item) => item.id === ids[0])?.email || "this subscriber"
+        : plural(ids.length, "subscriber");
+    if (
+      !window.confirm(
+        `Delete ${who}? This cannot be undone, and their email history is removed from your reports. To keep their history, mark them as unsubscribed instead.`,
+      )
+    )
+      return;
+    setBusy(true);
+    try {
+      await request({ action: "delete", ids });
+      setMessage(`${who} deleted.`);
+      setSelected((current) => new Set(Array.from(current).filter((id) => !ids.includes(id))));
+      await load();
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Could not delete subscribers.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const counts = useMemo(
+    () => ({
+      active: subscribers.filter((item) => item.status === "active").length,
+      unsubscribed: subscribers.filter((item) => item.status === "unsubscribed").length,
+    }),
+    [subscribers],
+  );
+
   const filtered = useMemo(
     () =>
       subscribers.filter(
@@ -143,9 +263,10 @@ export default function SubscribersPage() {
           (topic === "All records" ||
             item.topics.includes("All") ||
             item.topics.includes(topic)) &&
-          (tier === "all" || item.tier === tier),
+          (tier === "all" || item.tier === tier) &&
+          (status === "all" || item.status === status),
       ),
-    [subscribers, query, topic, tier],
+    [subscribers, query, topic, tier, status],
   );
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -153,6 +274,26 @@ export default function SubscribersPage() {
     (safePage - 1) * PAGE_SIZE,
     safePage * PAGE_SIZE,
   );
+  const visibleIds = visible.map((item) => item.id);
+  const allVisibleSelected =
+    visibleIds.length > 0 && visibleIds.every((id) => selected.has(id));
+
+  function toggleVisible() {
+    setSelected((current) => {
+      const next = new Set(current);
+      visibleIds.forEach((id) => (allVisibleSelected ? next.delete(id) : next.add(id)));
+      return next;
+    });
+  }
+
+  function toggleOne(id: string) {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   if (!password)
     return (
@@ -181,43 +322,32 @@ export default function SubscribersPage() {
             </p>
           </div>
           <div>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".csv,text/csv"
-              className="hidden"
-              onChange={(event) => importCsv(event.target.files?.[0])}
-            />
             <button
-              onClick={() => fileRef.current?.click()}
+              onClick={() => setImportOpen(true)}
               className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white"
             >
-              Import Substack CSV
+              Import CSV
             </button>
           </div>
         </div>
         {message && (
-          <p className="mt-6 rounded-xl bg-white px-4 py-3 text-sm text-muted">
+          <p className="mt-6 rounded-xl bg-white px-4 py-3 text-sm text-muted" role="status">
             {message}
           </p>
         )}
         <NewsletterQueuePanel password={password} />
-        <div className="mt-7 grid gap-3 rounded-2xl border border-ink-border bg-white p-3 md:grid-cols-[1fr_220px_160px]">
+        <div className="mt-7 grid gap-3 rounded-2xl border border-ink-border bg-white p-3 md:grid-cols-[1fr_200px_150px_190px]">
           <input
             value={query}
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setPage(1);
-            }}
+            onChange={(event) => changeFilter(() => setQuery(event.target.value))}
             placeholder="Search email or name"
+            aria-label="Search subscribers"
             className="rounded-xl bg-bg px-4 py-3 text-sm outline-none"
           />
           <select
             value={topic}
-            onChange={(event) => {
-              setTopic(event.target.value);
-              setPage(1);
-            }}
+            onChange={(event) => changeFilter(() => setTopic(event.target.value))}
+            aria-label="Filter by topic"
             className="rounded-xl bg-bg px-4 py-3 text-sm"
           >
             <option>All records</option>
@@ -228,31 +358,148 @@ export default function SubscribersPage() {
           </select>
           <select
             value={tier}
-            onChange={(event) => {
-              setTier(event.target.value);
-              setPage(1);
-            }}
+            onChange={(event) => changeFilter(() => setTier(event.target.value))}
+            aria-label="Filter by tier"
             className="rounded-xl bg-bg px-4 py-3 text-sm"
           >
             <option value="all">All tiers</option>
             <option value="free">Free</option>
             <option value="paid">Paid</option>
           </select>
+          <select
+            value={status}
+            onChange={(event) =>
+              changeFilter(() => setStatus(event.target.value as StatusFilter))
+            }
+            aria-label="Filter by status"
+            className="rounded-xl bg-bg px-4 py-3 text-sm"
+          >
+            <option value="all">All statuses ({subscribers.length})</option>
+            <option value="active">Subscribed ({counts.active})</option>
+            <option value="unsubscribed">Unsubscribed ({counts.unsubscribed})</option>
+          </select>
         </div>
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-ink-border bg-white">
-          <table className="w-full min-w-[850px] text-left text-sm">
+        <p className="mt-4 px-1 text-xs text-muted">
+          Showing {filtered.length} of {plural(subscribers.length, "subscriber")} ·{" "}
+          {counts.active} subscribed · {counts.unsubscribed} unsubscribed
+        </p>
+
+        {selected.size > 0 && (
+          <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-primary/30 bg-blue-50/60 p-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap items-center gap-3 px-1 text-sm">
+              <span className="font-semibold">{selected.size} selected</span>
+              {selected.size < filtered.length && (
+                <button
+                  type="button"
+                  onClick={() => setSelected(new Set(filtered.map((item) => item.id)))}
+                  className="font-semibold text-primary underline underline-offset-4"
+                >
+                  Select all {filtered.length} matching
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setSelected(new Set())}
+                className="text-muted underline underline-offset-4"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <select
+                disabled={busy}
+                value=""
+                onChange={(event) =>
+                  event.target.value &&
+                  bulkUpdate({ topics: [event.target.value] }, `moved to ${event.target.value}`)
+                }
+                aria-label="Change topic for selected subscribers"
+                className="rounded-full border border-ink-border bg-white px-3 py-2 text-xs font-semibold disabled:opacity-50"
+              >
+                <option value="">Change topic…</option>
+                <option value="All">All</option>
+                {newsletterTopics.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+              <select
+                disabled={busy}
+                value=""
+                onChange={(event) =>
+                  event.target.value &&
+                  bulkUpdate(
+                    { tier: event.target.value as "free" | "paid" },
+                    `changed to ${event.target.value}`,
+                  )
+                }
+                aria-label="Change tier for selected subscribers"
+                className="rounded-full border border-ink-border bg-white px-3 py-2 text-xs font-semibold disabled:opacity-50"
+              >
+                <option value="">Change tier…</option>
+                <option value="free">Free</option>
+                <option value="paid">Paid</option>
+              </select>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => bulkUpdate({ status: "unsubscribed" }, "marked as unsubscribed")}
+                className="rounded-full border border-ink-border bg-white px-3 py-2 text-xs font-semibold disabled:opacity-50"
+              >
+                Mark unsubscribed
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => remove(Array.from(selected))}
+                className="rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+              >
+                Delete selected
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-3 overflow-x-auto rounded-2xl border border-ink-border bg-white">
+          <table className="w-full min-w-[950px] text-left text-sm">
             <thead className="bg-surface-2 text-xs uppercase tracking-wider text-muted">
               <tr>
+                <th className="w-12 p-4">
+                  <input
+                    type="checkbox"
+                    checked={allVisibleSelected}
+                    onChange={toggleVisible}
+                    disabled={!visible.length}
+                    aria-label="Select everyone on this page"
+                    className="h-4 w-4 accent-primary"
+                  />
+                </th>
                 <th className="p-4">Subscriber</th>
                 <th className="p-4">Topics</th>
                 <th className="p-4">Tier</th>
                 <th className="p-4">Status</th>
                 <th className="p-4">Source</th>
+                <th className="p-4">
+                  <span className="sr-only">Actions</span>
+                </th>
               </tr>
             </thead>
             <tbody>
               {visible.map((item) => (
-                <tr key={item.id} className="border-t border-ink-border">
+                <tr
+                  key={item.id}
+                  className={`border-t border-ink-border ${selected.has(item.id) ? "bg-blue-50/40" : ""}`}
+                >
+                  <td className="p-4">
+                    <input
+                      type="checkbox"
+                      checked={selected.has(item.id)}
+                      onChange={() => toggleOne(item.id)}
+                      aria-label={`Select ${item.email}`}
+                      className="h-4 w-4 accent-primary"
+                    />
+                  </td>
                   <td className="p-4">
                     <p className="font-semibold">{item.email}</p>
                     <p className="text-xs text-muted">
@@ -272,6 +519,11 @@ export default function SubscribersPage() {
                         <option key={value}>{value}</option>
                       ))}
                     </select>
+                    {item.topics.length > 1 && (
+                      <p className="mt-1 text-xs text-muted">
+                        Also: {item.topics.slice(1).join(", ")}
+                      </p>
+                    )}
                   </td>
                   <td className="p-4">
                     <select
@@ -304,6 +556,17 @@ export default function SubscribersPage() {
                     </select>
                   </td>
                   <td className="p-4 text-muted">{item.source}</td>
+                  <td className="p-4 text-right">
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => remove([item.id])}
+                      aria-label={`Delete ${item.email}`}
+                      className="rounded-full px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -334,6 +597,113 @@ export default function SubscribersPage() {
           </div>
         )}
       </section>
+
+      {importOpen && (
+        <div
+          className="fixed inset-0 z-[100] overflow-y-auto bg-black/55 p-4 md:p-10"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="import-title"
+          onKeyDown={(event) => event.key === "Escape" && !busy && closeImport()}
+          onClick={(event) => event.target === event.currentTarget && !busy && closeImport()}
+        >
+          <div className="mx-auto max-w-lg rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+            <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">
+              Import subscribers
+            </p>
+            <h2 id="import-title" className="mt-2 font-display text-2xl font-semibold">
+              Import a CSV file
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Use a Substack export or any CSV with an email column. Names and a
+              paid or free column are picked up if the file has them.
+            </p>
+
+            <div className="mt-6">
+              <p className="text-sm font-semibold">1. Choose the file</p>
+              <input
+                ref={fileRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={(event) => chooseFile(event.target.files?.[0])}
+              />
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="mt-2 w-full rounded-2xl border border-dashed border-ink-border px-4 py-5 text-sm hover:border-primary"
+              >
+                {importFileName ? (
+                  <>
+                    <span className="block font-semibold">{importFileName}</span>
+                    <span className="mt-1 block text-xs text-muted">
+                      {plural(importRows.length, "subscriber")} found · choose a different file
+                    </span>
+                  </>
+                ) : (
+                  "Choose a CSV file"
+                )}
+              </button>
+            </div>
+
+            <fieldset className="mt-6">
+              <legend className="text-sm font-semibold">
+                2. Which newsletters should they receive?
+              </legend>
+              <p className="mt-1 text-xs leading-5 text-muted">
+                &quot;All&quot; means every newsletter. Pick one or more topics to send them
+                only those.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {["All", ...newsletterTopics].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={importTopics.includes(value)}
+                    onClick={() => toggleImportTopic(value)}
+                    className={`rounded-full border px-4 py-2 text-xs font-semibold ${importTopics.includes(value) ? "border-primary bg-primary text-white" : "border-ink-border bg-white text-muted hover:border-primary"}`}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <p className="mt-5 rounded-xl bg-surface-2 px-4 py-3 text-xs leading-5 text-muted">
+              People already on your list are not added twice. They keep their
+              current status, so anyone who unsubscribed stays unsubscribed, and the
+              topics you pick are added to the ones they already have.
+            </p>
+            {importError && (
+              <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                {importError}
+              </p>
+            )}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                disabled={busy || !importRows.length || !importTopics.length}
+                onClick={runImport}
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                {busy
+                  ? "Importing..."
+                  : importRows.length
+                    ? `Import ${plural(importRows.length, "subscriber")}`
+                    : "Import subscribers"}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={closeImport}
+                className="rounded-full border border-ink-border px-6 py-3 text-sm font-semibold"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
