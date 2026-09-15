@@ -1,11 +1,14 @@
 'use client'
 
 import Image from 'next/image'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import posthog from 'posthog-js'
 import Nav from './Nav'
 import Footer from './Footer'
+
+// Add future photos from public/hero to this list.
+const heroPhotos = ['/hero/mine.jpeg', '/hero/headshot1.png']
 
 const roles = [
   { key: 'product', label: 'Product marketing', title: 'I help products make sense to the people they are built for.', body: 'Positioning, product messaging, launch campaigns, onboarding, customer education, and go to market support, especially for fintech, payments, and Web3.', tools: ['Positioning', 'Launch strategy', 'User education', 'Campaigns'] },
@@ -46,6 +49,17 @@ export default function PortfolioExperience() {
   const [role, setRole] = useState(roles[0])
   const [project, setProject] = useState<(typeof projects)[0] | null>(null)
   const [testimonial, setTestimonial] = useState(0)
+  const [heroPhoto, setHeroPhoto] = useState(0)
+  const [heroPaused, setHeroPaused] = useState(false)
+  const reduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (heroPaused || reduceMotion || heroPhotos.length < 2) return
+    const timer = window.setInterval(() => {
+      if (!document.hidden) setHeroPhoto(current => (current + 1) % heroPhotos.length)
+    }, 5000)
+    return () => window.clearInterval(timer)
+  }, [heroPaused, reduceMotion])
 
   useEffect(() => {
     const timer = window.setInterval(() => setTestimonial(current => (current + 1) % testimonials.length), 5500)
@@ -59,7 +73,13 @@ export default function PortfolioExperience() {
       <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_.88fr]">
         <div className="relative mx-auto w-full max-w-[460px] lg:col-start-2 lg:row-start-1">
           <div className="absolute -left-5 -top-5 h-full w-full rounded-[2rem] border border-primary/20 bg-primary/5" />
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2"><Image src="/hero/mine.jpeg" alt="Ngozi Peace Okafor" fill priority sizes="(max-width: 500px) calc(100vw - 40px), 460px" className="object-cover object-top" /></div>
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2">
+            {heroPhotos.map((src, index) => <Image key={src} src={src} alt="Ngozi Peace Okafor" aria-hidden={index !== heroPhoto} fill priority={index === 0} loading={index === 0 ? undefined : 'eager'} sizes="(max-width: 500px) calc(100vw - 40px), 460px" className={`object-cover object-top motion-safe:transition-opacity motion-safe:duration-500 ${index === heroPhoto ? 'opacity-100' : 'opacity-0'}`} />)}
+            <div className="absolute right-3 top-3 flex rounded-full border border-ink-border bg-white p-1 text-parchment">
+              {!reduceMotion && <button type="button" onClick={() => setHeroPaused(current => !current)} aria-label={heroPaused ? 'Resume photo slideshow' : 'Pause photo slideshow'} className="min-h-10 rounded-full px-3 text-xs font-semibold focus-visible:ring-2 focus-visible:ring-primary">{heroPaused ? 'Play' : 'Pause'}</button>}
+              {heroPhotos.map((src, index) => <button key={src} type="button" aria-label={`Show photo ${index + 1}`} aria-pressed={index === heroPhoto} onClick={() => { setHeroPhoto(index); setHeroPaused(true) }} className="flex h-10 w-10 items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-primary"><span className={`h-2 w-2 rounded-full ${index === heroPhoto ? 'bg-primary' : 'bg-muted'}`} /></button>)}
+            </div>
+          </div>
           <div className="absolute -bottom-5 -left-4 rounded-2xl border border-ink-border bg-white p-4 shadow-[0_16px_45px_rgba(17,24,39,.12)]"><p className="font-head text-[10px] uppercase tracking-wider text-muted">Currently building</p><p className="mt-1 text-sm font-semibold">KivoraPay · Prowess Digital Solutions · Dritchwear</p></div>
         </div>
         <div className="lg:col-start-1 lg:row-start-1">
