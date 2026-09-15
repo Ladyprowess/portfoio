@@ -5,9 +5,9 @@ import Image from 'next/image'
 import posthog from 'posthog-js'
 import { useEffect, useState } from 'react'
 
-// Add each new hero photo here after placing its file in public/personal photo.
+// Add future hero photos here after placing their files in public/hero.
 const heroPhotos = [
-  { src: '/personal%20photo/headshot1.png', alt: 'Ngozi Peace Okafor' },
+  { src: '/hero/mine.jpeg', alt: 'Ngozi Peace Okafor' },
 ]
 
 const proofPoints = [
