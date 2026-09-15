@@ -71,7 +71,7 @@ export default function PortfolioExperience() {
 
     <section id="top" className="mx-auto max-w-[1240px] px-5 pb-20 pt-28 md:px-8 md:pb-28 md:pt-36">
       <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_.88fr]">
-        <div className="relative mx-auto w-full max-w-[460px] lg:col-start-2 lg:row-start-1">
+        <div className="relative order-2 mx-auto w-full max-w-[460px] lg:col-start-2 lg:row-start-1">
           <div className="absolute -left-5 -top-5 h-full w-full rounded-[2rem] border border-primary/20 bg-primary/5" />
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2">
             {heroPhotos.map((src, index) => <Image key={src} src={src} alt="Ngozi Peace Okafor" aria-hidden={index !== heroPhoto} fill priority={index === 0} loading={index === 0 ? undefined : 'eager'} sizes="(max-width: 500px) calc(100vw - 40px), 460px" className={`object-cover object-top motion-safe:transition-opacity motion-safe:duration-500 ${index === heroPhoto ? 'opacity-100' : 'opacity-0'}`} />)}
@@ -82,7 +82,7 @@ export default function PortfolioExperience() {
           </div>
           <div className="absolute -bottom-5 -left-4 rounded-2xl border border-ink-border bg-white p-4 shadow-[0_16px_45px_rgba(17,24,39,.12)]"><p className="font-head text-[10px] uppercase tracking-wider text-muted">Currently building</p><p className="mt-1 text-sm font-semibold">KivoraPay · Prowess Digital Solutions · Dritchwear</p></div>
         </div>
-        <div className="lg:col-start-1 lg:row-start-1">
+        <div className="order-1 lg:col-start-1 lg:row-start-1">
           <div className="mb-6 flex items-center gap-2 text-sm text-muted"><span className="h-2 w-2 rounded-full bg-[#84CC16]" />Available for selected projects</div>
           <h1 className="max-w-3xl font-display text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.045em]">I help digital products become easier to understand, use and grow.</h1>
           <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor, a Digital Product and Content Specialist. I combine product communication, content strategy and practical digital execution to turn complex ideas into useful experiences.</p>
