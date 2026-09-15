@@ -3,6 +3,12 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
 import posthog from 'posthog-js'
+import { useEffect, useState } from 'react'
+
+// Add each new hero photo here after placing its file in public/personal photo.
+const heroPhotos = [
+  { src: '/personal%20photo/headshot1.png', alt: 'Ngozi Peace Okafor' },
+]
 
 const proofPoints = [
   { label: 'Ventures founded', value: '3' },
@@ -14,6 +20,20 @@ const focusAreas = ['Fintech', 'Web3 education', 'Technical content', 'Founder a
 
 export default function Hero() {
   const reduceMotion = useReducedMotion()
+  const [activePhoto, setActivePhoto] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    if (reduceMotion || paused || heroPhotos.length < 2) return
+
+    const timer = window.setInterval(() => {
+      if (!document.hidden) {
+        setActivePhoto((current) => (current + 1) % heroPhotos.length)
+      }
+    }, 5000)
+
+    return () => window.clearInterval(timer)
+  }, [paused, reduceMotion])
   const enter = reduceMotion
     ? { duration: 0 }
     : { duration: 0.55, ease: [0.23, 1, 0.32, 1] }
@@ -43,7 +63,7 @@ export default function Hero() {
 
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1480px] flex-col px-6 pb-10 pt-28 sm:px-8 md:px-20 md:pb-12 md:pt-32">
         <div className="grid flex-1 grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_0.92fr] lg:gap-16">
-          <div className="max-w-4xl">
+          <div className="order-2 max-w-4xl lg:order-1">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -117,7 +137,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={reduceMotion ? { duration: 0 } : { ...enter, delay: 0.16 }}
-            className="relative mx-auto w-full max-w-[560px] lg:ml-auto"
+            className="relative order-1 mx-auto w-full max-w-[560px] lg:order-2 lg:ml-auto"
           >
             <div className="relative aspect-[4/5] overflow-hidden border border-ink-border bg-surface">
               <div
@@ -125,14 +145,48 @@ export default function Hero() {
                 className="absolute inset-0 z-10 pointer-events-none"
                 style={{ background: 'linear-gradient(180deg, transparent 44%, rgba(20,32,31,0.82) 100%)' }}
               />
-              <Image
-                src="/personal%20photo/headshot1.png"
-                alt="Ngozi Peace Okafor"
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 1024px) 100vw, 560px"
-                priority
-              />
+              {heroPhotos.map((photo, index) => (
+                <Image
+                  key={photo.src}
+                  src={photo.src}
+                  alt={photo.alt}
+                  aria-hidden={index !== activePhoto}
+                  fill
+                  className={`object-cover object-top motion-safe:transition-opacity motion-safe:duration-500 motion-safe:ease-in-out ${index === activePhoto ? 'opacity-100' : 'opacity-0'}`}
+                  sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) 560px, 45vw"
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : 'eager'}
+                />
+              ))}
+              {heroPhotos.length > 1 && (
+                <div className="absolute right-3 top-3 z-20 flex items-center bg-surface text-parchment">
+                  {!reduceMotion && (
+                    <button
+                      type="button"
+                      onClick={() => setPaused((current) => !current)}
+                      className="min-h-10 px-3 text-xs focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+                      aria-label={paused ? 'Resume photo slideshow' : 'Pause photo slideshow'}
+                    >
+                      {paused ? 'Play' : 'Pause'}
+                    </button>
+                  )}
+                  {heroPhotos.map((photo, index) => (
+                    <button
+                      key={photo.src}
+                      type="button"
+                      aria-label={`Show photo ${index + 1}`}
+                      aria-pressed={index === activePhoto}
+                      onClick={() => {
+                        setActivePhoto(index)
+                        setPaused(true)
+                      }}
+                      className="flex h-10 w-10 items-center justify-center focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+                    >
+                      <span className={`h-2 w-2 rounded-full ${index === activePhoto ? 'bg-primary' : 'bg-muted'}`} />
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="absolute bottom-0 left-0 right-0 z-20 p-6 md:p-8">
                 <p className="font-head text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-primary">
                   Current focus
