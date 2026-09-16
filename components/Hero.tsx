@@ -48,7 +48,7 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 880px 620px at 78% 14%, rgba(80,123,128,0.16), transparent 62%)',
+            'radial-gradient(ellipse 880px 620px at 78% 14%, rgba(37,99,235,0.16), transparent 62%)',
         }}
       />
       <div
@@ -56,7 +56,7 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none opacity-70"
         style={{
           backgroundImage:
-            'linear-gradient(to right, rgba(20,32,31,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(20,32,31,0.045) 1px, transparent 1px)',
+            'linear-gradient(to right, rgba(18,18,18,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(18,18,18,0.045) 1px, transparent 1px)',
           backgroundSize: '96px 96px',
         }}
       />
@@ -143,7 +143,7 @@ export default function Hero() {
               <div
                 aria-hidden
                 className="absolute inset-0 z-10 pointer-events-none"
-                style={{ background: 'linear-gradient(180deg, transparent 44%, rgba(20,32,31,0.82) 100%)' }}
+                style={{ background: 'linear-gradient(180deg, transparent 44%, rgba(18,18,18,0.82) 100%)' }}
               />
               {heroPhotos.map((photo, index) => (
                 <Image

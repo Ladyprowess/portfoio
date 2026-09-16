@@ -4,13 +4,14 @@
 
 /* ── Design tokens ─────────────────────────────── */
 :root {
-  --bg:          #F9FAF9;
+  --bg:          #F9F9FB;
   --surface:     #ffffff;
-  --primary:     #507B80;
-  --amber:       #35555A;
-  --parchment:   #14201F;
-  --muted:       #55625F;
-  --border:      #DCE2DE;
+  --primary:     #2563EB;
+  --primary-dim: #1D4ED8;
+  --amber:       #1D4ED8;
+  --parchment:   #121212;
+  --muted:       #6B7280;
+  --border:      #E3E6EA;
 }
 
 /* ── Base ──────────────────────────────────────── */
@@ -35,14 +36,14 @@ body::before {
 
 /* ── Typography utilities ──────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #507B80 0%, #14201F 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--parchment) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-gold {
-  background: linear-gradient(135deg, #35555A 0%, #14201F 100%);
+  background: linear-gradient(135deg, var(--primary-dim) 0%, var(--parchment) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -51,11 +52,11 @@ body::before {
 /* ── Custom scrollbar ──────────────────────────── */
 ::-webkit-scrollbar       { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--primary-dim, #35555A); }
+::-webkit-scrollbar-thumb { background: var(--primary-dim); }
 
 /* ── Selection ─────────────────────────────────── */
 ::selection {
-  background: rgba(80, 123, 128, 0.28);
+  background: rgba(37, 99, 235, 0.28);
   color: var(--parchment);
 }
 

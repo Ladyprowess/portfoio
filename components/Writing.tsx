@@ -28,9 +28,9 @@ const personal = [
 ]
 
 const columns = [
-  { title: 'Fulltime',        accent: '#507B80', items: fulltime  },
-  { title: 'Freelance',       accent: '#35555A', items: freelance },
-  { title: 'Personal Blogs',  accent: '#507B80', items: personal  },
+  { title: 'Fulltime',        accent: '#2563EB', items: fulltime  },
+  { title: 'Freelance',       accent: '#1D4ED8', items: freelance },
+  { title: 'Personal Blogs',  accent: '#2563EB', items: personal  },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {

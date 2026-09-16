@@ -1,4 +1,4 @@
-const colours = ['#2563EB', '#10B981', '#F59E0B', '#EC4899', '#8B5CF6', '#FACC15', '#507B80']
+const colours = ['#2563EB', '#10B981', '#F59E0B', '#EC4899', '#8B5CF6', '#FACC15', '#2563EB']
 
 type Piece = {
   x: number

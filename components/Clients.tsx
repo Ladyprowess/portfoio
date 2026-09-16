@@ -74,7 +74,7 @@ export default function Clients() {
               <div
                 aria-hidden
                 className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: 'linear-gradient(90deg, #507B80, #35555A)' }}
+                style={{ background: 'linear-gradient(90deg, #2563EB, #1D4ED8)' }}
               />
 
               {/* Ambient glow on hover */}
@@ -83,7 +83,7 @@ export default function Clients() {
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                 style={{
                   background:
-                    'radial-gradient(circle at 50% 50%, rgba(80,123,128,0.08), transparent 70%)',
+                    'radial-gradient(circle at 50% 50%, rgba(37,99,235,0.08), transparent 70%)',
                 }}
               />
 
