@@ -40,6 +40,8 @@
   --table-border:   221 225 232;
   --quiz-bg:       245 248 255;
   --quiz-border:   199 215 254;
+  /* Secondary post accent, dark enough to read on the light page. */
+  --accent-teal:    11 122 110;
   --success:         4 120  87;
 
   --grain-opacity: 0.025;
@@ -77,6 +79,7 @@
   --table-border:    34  41  42;
   --quiz-bg:         19  27  36;
   --quiz-border:     34  55  84;
+  --accent-teal:    45 212 191;
   --success:        52 211 153;
 
   --grain-opacity: 0.04;

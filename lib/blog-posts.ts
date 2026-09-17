@@ -33,7 +33,7 @@ export const blogPosts: BlogPost[] = [
     newsletterTopic: 'All',
     date: 'May 2026',
     readTime: '8 min read',
-    accent: '#41d7c7',
+    accent: 'rgb(var(--accent-teal))',
     body: [
       {
         type: 'quote',
