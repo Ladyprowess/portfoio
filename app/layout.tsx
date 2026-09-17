@@ -24,6 +24,10 @@ const newsreader = Newsreader({
   style: ['normal', 'italic'],
   variable: '--font-newsreader',
   display: 'swap',
+  // Next has no metric overrides for Newsreader; name the fallback explicitly
+  // rather than let it fall through to the default sans.
+  adjustFontFallback: false,
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 
 const inter = Inter({
