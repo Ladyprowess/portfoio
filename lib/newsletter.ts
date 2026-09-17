@@ -24,6 +24,54 @@ export type NewsletterSubscriber = {
   updated_at: string;
 };
 
+/**
+ * Topic helpers. A subscriber's `topics` is a set, and "All" is a wildcard that
+ * absorbs every other entry — see the send route, which matches on
+ * `topics.includes("All") || topics.includes(topic)`.
+ */
+
+export function cleanTopics(value: unknown): string[] {
+  const topics = Array.isArray(value)
+    ? Array.from(
+        new Set(
+          value
+            .map((topic) => String(topic).trim())
+            .filter((topic) => topic === "All" || /^[A-Za-z0-9 &]{2,40}$/.test(topic)),
+        ),
+      )
+    : [];
+  return topics.includes("All") ? ["All"] : topics;
+}
+
+/**
+ * Adds topics to the ones a subscriber already has. Sign-up forms cannot know
+ * what someone is already subscribed to — they have no idea who the visitor is
+ * until the email is typed — so subscribing always adds and never replaces.
+ * Removing a topic is done from the preferences page, which is token-authenticated.
+ */
+export function addTopics(current: string[], selected: string[]): string[] {
+  if (current.includes("All") || selected.includes("All")) return ["All"];
+  return Array.from(new Set([...current, ...selected]));
+}
+
+/**
+ * Drops topics. Someone on "All" is first expanded to the concrete list, so
+ * unticking one category leaves them subscribed to the rest rather than to
+ * nothing.
+ */
+export function removeTopics(
+  current: string[],
+  remove: string[],
+  known: readonly string[] = newsletterTopics,
+): string[] {
+  const expanded = current.includes("All") ? [...known] : current;
+  return expanded.filter((topic) => !remove.includes(topic));
+}
+
+export function sameTopics(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((topic) => b.includes(topic));
+}
+
 export function publicationName(topic: string) {
   return topic === "Web3" ? "Decode Web3" : "Lady Prowess";
 }
@@ -155,7 +203,7 @@ export function emailDocument(input: {
     ? `<a href="${input.postUrl}" style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:8px;">Read the full article</a>`
     : "";
   const unsubscribe = input.unsubscribeUrl
-    ? `<p style="margin:24px 0 0;text-align:center;font-size:12px;line-height:1.6;color:#8A909B;">You received this email because you subscribed to ${publication}.<br><a href="${input.unsubscribeUrl}" style="color:#4B5563;text-decoration:underline;">Unsubscribe from these emails</a></p>`
+    ? `<p style="margin:24px 0 0;text-align:center;font-size:12px;line-height:1.6;color:#8A909B;">You received this email because you subscribed to ${publication}.<br><a href="${input.unsubscribeUrl}" style="color:#4B5563;text-decoration:underline;">Choose which topics you receive, or unsubscribe</a></p>`
     : "";
   return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media only screen and (max-width:520px){.email-outer{padding:12px 6px!important}.email-content{padding:24px 16px!important}.email-title{font-size:26px!important;line-height:1.2!important}}</style></head><body style="margin:0;padding:0;width:100%;background:#F5F6F8;color:#17191D;"><div style="display:none;max-height:0;overflow:hidden;opacity:0;">${input.excerpt}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;table-layout:fixed;"><tr><td class="email-outer" style="padding:28px 10px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:680px;margin:0 auto;border-collapse:collapse;table-layout:fixed;background:#FFFFFF;border:1px solid #E5E7EB;"><tr><td class="email-content" style="min-width:0;padding:34px 24px;font-family:Arial,Helvetica,sans-serif;overflow-wrap:anywhere;word-break:break-word;"><p style="margin:0 0 32px;color:#2563EB;font-size:13px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;">${publication}</p><h1 class="email-title" style="margin:0;font-size:32px;line-height:1.18;letter-spacing:-0.5px;overflow-wrap:anywhere;">${input.title}</h1><p style="margin:16px 0 0;color:#6B7280;font-size:17px;line-height:1.65;text-align:left;">${input.excerpt}</p><p style="margin:22px 0 0;color:#6B7280;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Ngozi Peace Okafor</p><div style="height:1px;background:#E5E7EB;margin:28px 0;"></div><div style="width:100%;max-width:100%;font-size:16px;line-height:1.8;color:#25282D;text-align:left;overflow-wrap:anywhere;word-break:break-word;">${articleHtml}</div>${preview.shortened ? `<p style="margin:28px 0 0;color:#6B7280;font-size:14px;line-height:1.6;">Continue reading the complete article on the website.</p>` : ""}${button ? `<div style="margin-top:20px;">${button}</div>` : ""}<div style="height:1px;background:#E5E7EB;margin:34px 0 22px;"></div><p style="margin:0;font-size:13px;color:#6B7280;">© ${new Date().getFullYear()} ${publication}</p>${unsubscribe}</td></tr></table></td></tr></table></body></html>`;
 }

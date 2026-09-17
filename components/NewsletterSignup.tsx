@@ -68,6 +68,26 @@ export default function NewsletterSignup({
           <h2 className="font-display text-xl font-extrabold text-parchment">
             Get new {publicationName(inlineTopic)} posts in your inbox.
           </h2>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            {topics.includes("All")
+              ? "You will receive every topic."
+              : "Add any other topics you want to receive."}
+          </p>
+          {/* The reader arrived through one post, but nothing should stop them
+              leaving with more than one topic. */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {["All", ...topicChoices].map((topic) => (
+              <button
+                key={topic}
+                type="button"
+                onClick={() => toggle(topic)}
+                aria-pressed={topics.includes(topic)}
+                className={`min-h-9 rounded-full border px-3.5 text-xs font-semibold transition-colors ${topics.includes(topic) ? "border-primary bg-primary text-on-primary" : "border-ink-border bg-surface text-muted hover:border-primary/50 hover:text-parchment"}`}
+              >
+                {topic}
+              </button>
+            ))}
+          </div>
           <form onSubmit={subscribe} className="mt-4 flex flex-col gap-3 sm:flex-row">
             <label className="flex-1">
               <span className="sr-only">Email address</span>
@@ -81,7 +101,7 @@ export default function NewsletterSignup({
               />
             </label>
             <button
-              disabled={saving}
+              disabled={saving || !topics.length}
               className="min-h-12 rounded-full bg-primary px-7 text-sm font-bold text-on-primary disabled:opacity-50"
             >
               {saving ? "Subscribing..." : "Subscribe"}
@@ -100,7 +120,8 @@ export default function NewsletterSignup({
         Get the latest posts delivered to your inbox.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Select the topics you want to receive.
+        Pick as many topics as you like. If you are already subscribed, these are
+        added to what you receive — every email has a link to change them.
       </p>
       <form onSubmit={subscribe} className="mt-6">
         <div className="flex flex-wrap gap-2">

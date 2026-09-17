@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/email-store";
-import { newsletterTopics } from "@/lib/newsletter";
+import { addTopics, cleanTopics } from "@/lib/newsletter";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,12 +12,7 @@ export async function POST(request: Request) {
       .trim()
       .toLowerCase();
     const name = String(payload.name || "").trim() || null;
-    const selected: string[] = Array.isArray(payload.topics)
-      ? payload.topics.map(String)
-      : [];
-    const topics = Array.from(new Set(selected
-      .map((topic) => topic.trim())
-      .filter((topic) => topic === "All" || (/^[A-Za-z0-9 &]{2,40}$/.test(topic) && (newsletterTopics.includes(topic as never) || topic.length > 1)))));
+    const topics = cleanTopics(payload.topics);
     if (!emailPattern.test(email))
       return NextResponse.json(
         { error: "Enter a valid email address." },
@@ -30,16 +25,21 @@ export async function POST(request: Request) {
       );
 
     const existing = await db(
-      `newsletter_subscribers?select=id,tier&email=eq.${encodeURIComponent(email)}&limit=1`,
+      `newsletter_subscribers?select=id,tier,topics,name&email=eq.${encodeURIComponent(email)}&limit=1`,
     );
     if (existing[0]?.id) {
+      // Add to what they already receive rather than replacing it. Someone who
+      // signed up for Web3 and later subscribes from an AI post should get both.
+      const current = Array.isArray(existing[0].topics)
+        ? existing[0].topics.map(String)
+        : [];
       await db(
         `newsletter_subscribers?id=eq.${encodeURIComponent(String(existing[0].id))}`,
         {
           method: "PATCH",
           body: JSON.stringify({
-            name,
-            topics,
+            name: name || existing[0].name || null,
+            topics: addTopics(current, topics),
             status: "active",
             updated_at: new Date().toISOString(),
           }),

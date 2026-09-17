@@ -3,9 +3,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import AdminNav from "@/components/AdminNav";
 import NewsletterQueuePanel from "@/components/NewsletterQueuePanel";
-import { newsletterTopics, type NewsletterSubscriber } from "@/lib/newsletter";
+import {
+  addTopics,
+  newsletterTopics,
+  removeTopics,
+  type NewsletterSubscriber,
+} from "@/lib/newsletter";
 
 const PAGE_SIZE = 10;
+
+// Topic pills are a set editor. "All" is a wildcard: unticking it expands to the
+// concrete list, and unticking one topic while on "All" does the same minus that
+// topic. A subscriber is never left with nothing, which the API would reject.
+function toggleTopic(current: string[], topic: string): string[] {
+  const has = current.includes("All") || current.includes(topic);
+  const next = has ? removeTopics(current, [topic]) : addTopics(current, [topic]);
+  return next.length ? next : current;
+}
 
 type ImportRow = { email: string; name: string; tier: "free" | "paid" };
 type StatusFilter = "all" | "active" | "unsubscribed";
@@ -54,6 +68,7 @@ export default function SubscribersPage() {
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [query, setQuery] = useState("");
   const [topic, setTopic] = useState("All records");
+  const [topicMode, setTopicMode] = useState<"add" | "remove" | "replace">("add");
   const [tier, setTier] = useState("all");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [page, setPage] = useState(1);
@@ -185,7 +200,7 @@ export default function SubscribersPage() {
       await request({
         action: "update",
         id: subscriber.id,
-        topics: changes.topics || subscriber.topics,
+        topics: changes.topics ?? subscriber.topics,
         tier: changes.tier || subscriber.tier,
         status: changes.status || subscriber.status,
       });
@@ -198,15 +213,26 @@ export default function SubscribersPage() {
   }
 
   async function bulkUpdate(
-    changes: { topics?: string[]; tier?: "free" | "paid"; status?: "unsubscribed" },
+    changes: {
+      topics?: string[];
+      topicMode?: "add" | "remove" | "replace";
+      tier?: "free" | "paid";
+      status?: "unsubscribed";
+    },
     done: string,
   ) {
     const ids = Array.from(selected);
     if (!ids.length) return;
     setBusy(true);
     try {
-      await request({ action: "update", ids, ...changes });
-      setMessage(`${plural(ids.length, "subscriber")} ${done}.`);
+      const result = await request({ action: "update", ids, ...changes });
+      const skipped = Number(result?.skipped) || 0;
+      setMessage(
+        `${plural(ids.length - skipped, "subscriber")} ${done}.` +
+          (skipped
+            ? ` ${plural(skipped, "subscriber")} skipped — that was their only topic.`
+            : ""),
+      );
       setSelected(new Set());
       await load();
     } catch (error) {
@@ -406,17 +432,39 @@ export default function SubscribersPage() {
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
+              {/* Topics are a set, so bulk edits say what to do with one topic
+                  rather than overwriting everyone's whole list. */}
+              <select
+                disabled={busy}
+                value={topicMode}
+                onChange={(event) =>
+                  setTopicMode(event.target.value as "add" | "remove" | "replace")
+                }
+                aria-label="What to do with the chosen topic"
+                className="rounded-full border border-ink-border bg-surface px-3 py-2 text-xs font-semibold disabled:opacity-50"
+              >
+                <option value="add">Add topic…</option>
+                <option value="remove">Remove topic…</option>
+                <option value="replace">Replace topics with…</option>
+              </select>
               <select
                 disabled={busy}
                 value=""
-                onChange={(event) =>
-                  event.target.value &&
-                  bulkUpdate({ topics: [event.target.value] }, `moved to ${event.target.value}`)
-                }
-                aria-label="Change topic for selected subscribers"
+                onChange={(event) => {
+                  const topic = event.target.value;
+                  if (!topic) return;
+                  const done =
+                    topicMode === "add"
+                      ? `subscribed to ${topic}`
+                      : topicMode === "remove"
+                        ? `removed from ${topic}`
+                        : `moved to ${topic}`;
+                  bulkUpdate({ topics: [topic], topicMode }, done);
+                }}
+                aria-label="Topic to apply to selected subscribers"
                 className="rounded-full border border-ink-border bg-surface px-3 py-2 text-xs font-semibold disabled:opacity-50"
               >
-                <option value="">Change topic…</option>
+                <option value="">Choose topic…</option>
                 <option value="All">All</option>
                 {newsletterTopics.map((item) => (
                   <option key={item} value={item}>
@@ -507,23 +555,26 @@ export default function SubscribersPage() {
                     </p>
                   </td>
                   <td className="p-4">
-                    <select
-                      value={item.topics[0] || "All"}
-                      onChange={(event) =>
-                        update(item, { topics: [event.target.value] })
-                      }
-                      className="rounded-lg border border-ink-border px-3 py-2"
-                    >
-                      <option>All</option>
-                      {newsletterTopics.map((value) => (
-                        <option key={value}>{value}</option>
-                      ))}
-                    </select>
-                    {item.topics.length > 1 && (
-                      <p className="mt-1 text-xs text-muted">
-                        Also: {item.topics.slice(1).join(", ")}
-                      </p>
-                    )}
+                    {/* Topics are a set, so they are edited as toggles. A single
+                        dropdown here used to overwrite every other topic the
+                        subscriber had. */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {["All", ...newsletterTopics].map((value) => {
+                        const on = item.topics.includes("All") || item.topics.includes(value);
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => update(item, { topics: toggleTopic(item.topics, value) })}
+                            aria-pressed={on}
+                            title={on ? `Remove ${value}` : `Add ${value}`}
+                            className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${on ? "border-primary bg-primary text-on-primary" : "border-ink-border text-muted hover:border-primary/50 hover:text-parchment"}`}
+                          >
+                            {value}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </td>
                   <td className="p-4">
                     <select

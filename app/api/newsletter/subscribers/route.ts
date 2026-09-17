@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { db, dbAll } from "@/lib/email-store";
+import { addTopics, cleanTopics, removeTopics, sameTopics } from "@/lib/newsletter";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -8,31 +9,6 @@ function authorised(password?: string) {
   return Boolean(
     process.env.COMPOSE_PASSWORD && password === process.env.COMPOSE_PASSWORD,
   );
-}
-
-function cleanTopics(value: unknown) {
-  const topics = Array.isArray(value)
-    ? Array.from(
-        new Set(
-          value
-            .map((topic) => String(topic).trim())
-            .filter((topic) => topic === "All" || /^[A-Za-z0-9 &]{2,40}$/.test(topic)),
-        ),
-      )
-    : [];
-  return topics.includes("All") ? ["All"] : topics;
-}
-
-// Returns the new topic list for an existing subscriber, or null if nothing changes.
-// Subscribers on "All" already receive every newsletter.
-function mergeTopics(current: string[], selected: string[]) {
-  if (current.includes("All")) return null;
-  const next = selected.includes("All")
-    ? ["All"]
-    : Array.from(new Set([...current, ...selected]));
-  const unchanged =
-    next.length === current.length && next.every((topic) => current.includes(topic));
-  return unchanged ? null : next;
 }
 
 function idList(payload: Record<string, unknown>) {
@@ -114,11 +90,11 @@ export async function POST(request: Request) {
           });
           continue;
         }
-        const merged = mergeTopics(
-          Array.isArray(current.topics) ? current.topics.map(String) : [],
-          topics,
-        );
-        if (!merged) {
+        const existingTopics = Array.isArray(current.topics)
+          ? current.topics.map(String)
+          : [];
+        const merged = addTopics(existingTopics, topics);
+        if (sameTopics(merged, existingTopics)) {
           unchanged += 1;
           continue;
         }
@@ -154,23 +130,75 @@ export async function POST(request: Request) {
       const ids = idList(payload);
       if (!ids.length)
         return NextResponse.json({ error: "Choose at least one subscriber." }, { status: 400 });
-      const changes: Record<string, unknown> = { updated_at: new Date().toISOString() };
-      if (payload.topics !== undefined) {
-        const topics = cleanTopics(payload.topics);
-        if (!topics.length)
-          return NextResponse.json({ error: "Choose a valid topic." }, { status: 400 });
-        changes.topics = topics;
-      }
+
+      const now = new Date().toISOString();
+      const changes: Record<string, unknown> = { updated_at: now };
       if (payload.tier === "free" || payload.tier === "paid") changes.tier = payload.tier;
       if (payload.status === "active" || payload.status === "unsubscribed")
         changes.status = payload.status;
-      await forEachChunk(ids, (filter) =>
-        db(`newsletter_subscribers?${filter}`, {
-          method: "PATCH",
-          body: JSON.stringify(changes),
-        }),
-      );
-      return NextResponse.json({ ok: true, count: ids.length });
+
+      // "replace" sets the list outright. "add" and "remove" depend on what each
+      // subscriber already has, so those are resolved per row further down.
+      let topics: string[] = [];
+      let topicMode: "replace" | "add" | "remove" = "replace";
+      if (payload.topics !== undefined) {
+        topics = cleanTopics(payload.topics);
+        if (!topics.length)
+          return NextResponse.json({ error: "Choose a valid topic." }, { status: 400 });
+        if (payload.topicMode === "add" || payload.topicMode === "remove")
+          topicMode = payload.topicMode;
+        if (topicMode === "replace") changes.topics = topics;
+      }
+
+      const hasFlatChanges = Object.keys(changes).length > 1;
+      if (hasFlatChanges)
+        await forEachChunk(ids, (filter) =>
+          db(`newsletter_subscribers?${filter}`, {
+            method: "PATCH",
+            body: JSON.stringify(changes),
+          }),
+        );
+
+      let skipped = 0;
+      if (topics.length && topicMode !== "replace") {
+        const current = new Map<string, string[]>();
+        await forEachChunk(ids, async (filter) => {
+          const rows = await db(`newsletter_subscribers?select=id,topics&${filter}`);
+          for (const row of rows)
+            current.set(
+              String(row.id),
+              Array.isArray(row.topics) ? row.topics.map(String) : [],
+            );
+        });
+
+        // Rows that land on the same list are patched together.
+        const grouped = new Map<string, string[]>();
+        for (const [id, existing] of Array.from(current)) {
+          const next =
+            topicMode === "add"
+              ? addTopics(existing, topics)
+              : removeTopics(existing, topics);
+          // Removing a subscriber's last topic would leave them subscribed to
+          // nothing while still marked active, so leave those untouched.
+          if (!next.length) {
+            skipped += 1;
+            continue;
+          }
+          if (sameTopics(next, existing)) continue;
+          const key = JSON.stringify(next);
+          grouped.set(key, [...(grouped.get(key) || []), id]);
+        }
+
+        for (const [key, groupIds] of Array.from(grouped))
+          await forEachChunk(groupIds, (filter) =>
+            db(`newsletter_subscribers?${filter}`, {
+              method: "PATCH",
+              body: JSON.stringify({ topics: JSON.parse(key), updated_at: now }),
+            }),
+          );
+      }
+
+      return NextResponse.json({ ok: true, count: ids.length, skipped });
     }
 
     if (payload.action === "delete") {
