@@ -1,21 +1,33 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { TITLE_SCREEN_THRESHOLD } from '@/lib/reading'
 
 /**
- * The downward nudge on the article title screen. It retires as soon as the
- * reader takes the hint, and never returns for the rest of the page.
+ * The downward nudge on the article title screen. It steps aside as soon as the
+ * reader takes the hint, and comes back if they return to the top — where the
+ * gesture it stands for is armed again.
  */
 export default function ScrollCue({ label = 'Read' }: { label?: string }) {
-  const [dismissed, setDismissed] = useState(false)
+  const [atTop, setAtTop] = useState(true)
 
   useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY > 40) setDismissed(true)
+    let frame = 0
+    const measure = () => {
+      frame = 0
+      setAtTop(window.scrollY <= TITLE_SCREEN_THRESHOLD)
     }
-    onScroll()
+    const onScroll = () => {
+      if (frame) return
+      frame = window.requestAnimationFrame(measure)
+    }
+
+    measure()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (frame) window.cancelAnimationFrame(frame)
+    }
   }, [])
 
   const scrollToBody = () => {
@@ -26,10 +38,10 @@ export default function ScrollCue({ label = 'Read' }: { label?: string }) {
     <button
       type="button"
       onClick={scrollToBody}
-      tabIndex={dismissed ? -1 : 0}
-      aria-hidden={dismissed}
+      tabIndex={atTop ? 0 : -1}
+      aria-hidden={!atTop}
       className={`group inline-flex flex-col items-center gap-2 text-muted transition-opacity duration-500 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-bg ${
-        dismissed ? 'pointer-events-none opacity-0' : 'opacity-100'
+        atTop ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
     >
       <span className="font-head text-[0.58rem] font-bold uppercase tracking-[0.22em]">{label}</span>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { TITLE_SCREEN_THRESHOLD } from '@/lib/reading'
 
 /**
  * The title screen is deliberately one quiet viewport, but nobody wants to
@@ -14,7 +15,7 @@ export default function ArticleSnap({ targetId = 'article-body' }: { targetId?: 
     if (!target) return
 
     // Only intercept while the reader has not left the title screen.
-    const atTop = () => window.scrollY <= 24
+    const atTop = () => window.scrollY <= TITLE_SCREEN_THRESHOLD
     let locked = false
 
     const jump = () => {
