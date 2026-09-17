@@ -67,13 +67,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Sets data-theme before first paint so there is no light flash. */}
-        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
-      </head>
       <body
         className={`${jakarta.variable} ${jetbrains.variable} ${inter.variable} ${newsreader.variable} font-body bg-bg text-parchment antialiased`}
       >
+        {/* Sets data-theme before the page paints, so there is no light flash.
+            This lives at the top of <body> rather than in a <head> of its own:
+            a raw script inside <head> gets reordered relative to the JSON-LD
+            below it during hydration, which broke hydration on every page. */}
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: 'Ngozi Peace Okafor', alternateName: 'Lady Prowess', url: SITE_URL, jobTitle: ['Product Marketer', 'Technical Writer', 'WordPress Designer', 'Web3 Educator'], worksFor: { '@type': 'Organization', name: 'Prowess Digital Solutions' } }).replace(/</g, '\\u003c') }}

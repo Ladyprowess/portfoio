@@ -13,71 +13,12 @@ import ReadingProgress from '@/components/ReadingProgress'
 import ArticleSnap from '@/components/ArticleSnap'
 import { DEFAULT_ACCENT } from '@/lib/accent'
 import { SITE_URL } from '@/lib/site'
+import { splitArticleHtml, staticSplitIndex } from '@/lib/article-split'
 
 type BlogPostPageProps = {
   params: {
     slug: string
   }
-}
-
-const voidElements = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
-
-function splitArticleHtml(html: string): [string, string] {
-  const tokens = html.match(/<!--[\s\S]*?-->|<![^>]*>|<\/?[a-z][^>]*>|[^<]+/gi) || [html]
-  const blocks: string[] = []
-  let block = ''
-  let depth = 0
-
-  for (const token of tokens) {
-    const closingTag = token.match(/^<\/([a-z0-9-]+)/i)
-    const openingTag = token.match(/^<([a-z0-9-]+)/i)
-
-    if (closingTag) {
-      block += token
-      depth = Math.max(0, depth - 1)
-      if (depth === 0 && block.trim()) {
-        blocks.push(block)
-        block = ''
-      }
-      continue
-    }
-
-    if (openingTag) {
-      block += token
-      const tag = openingTag[1].toLowerCase()
-      const selfClosing = /\/>$/.test(token) || voidElements.has(tag)
-      if (!selfClosing) depth += 1
-      else if (depth === 0 && block.trim()) {
-        blocks.push(block)
-        block = ''
-      }
-      continue
-    }
-
-    if (depth > 0) block += token
-    else if (token.trim()) blocks.push(token)
-    else if (blocks.length) blocks[blocks.length - 1] += token
-  }
-
-  if (block.trim()) blocks.push(block)
-  if (blocks.length < 2) return [html, '']
-
-  const lengths = blocks.map((item) => item.replace(/<[^>]+>/g, ' ').replace(/&[a-z0-9#]+;/gi, ' ').replace(/\s+/g, ' ').trim().length)
-  const target = lengths.reduce((total, length) => total + length, 0) / 2
-  let runningTotal = 0
-  let splitIndex = 1
-  let smallestDifference = Number.POSITIVE_INFINITY
-
-  for (let index = 0; index < blocks.length - 1; index += 1) {
-    runningTotal += lengths[index]
-    const difference = Math.abs(target - runningTotal)
-    if (difference < smallestDifference) {
-      smallestDifference = difference
-      splitIndex = index + 1
-    }
-  }
-
-  return [blocks.slice(0, splitIndex).join(''), blocks.slice(splitIndex).join('')]
 }
 
 export const dynamic = 'force-dynamic'
@@ -115,7 +56,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const newsletterTopic = 'newsletter_topic' in post ? post.newsletter_topic : post.newsletterTopic
   const publishedDate = 'date' in post ? undefined : post.published_at || undefined
   const cmsArticleParts = 'content_html' in post ? splitArticleHtml(post.content_html) : null
-  const staticArticleMiddle = 'body' in post ? Math.ceil(post.body.length / 2) : 0
+  const staticArticleMiddle = 'body' in post ? staticSplitIndex(post.body) : 0
   const displayDate =
     'date' in post
       ? post.date
