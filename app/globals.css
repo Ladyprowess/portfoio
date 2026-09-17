@@ -2,25 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design tokens ─────────────────────────────── */
+/* ── Design tokens ─────────────────────────────────
+   Values are space-separated RGB channels so Tailwind
+   can apply opacity modifiers (bg-bg/80, text-muted/60).
+   Light is the default; [data-theme="dark"] overrides.  */
 :root {
-  --bg:          #F9F9FB;
-  --surface:     #ffffff;
-  --primary:     #2563EB;
-  --primary-dim: #1D4ED8;
-  --amber:       #1D4ED8;
-  --parchment:   #121212;
-  --muted:       #6B7280;
-  --border:      #E3E6EA;
+  --bg:            249 249 251;
+  --surface:       255 255 255;
+  --surface-2:     241 243 246;
+  --primary:        37  99 235;
+  --primary-dim:    29  78 216;
+  --amber:          29  78 216;
+  --amber-dim:      30  64 175;
+  --parchment:      18  18  18;
+  --muted:         107 114 128;
+  --border:        227 230 234;
+
+  /* Ink for anything sitting on the accent fill. */
+  --on-primary:    255 255 255;
+
+  /* Feature panels — the near-black slabs that punctuate a light page.
+     In dark mode they stay dark and lift slightly instead of flipping to
+     white, which would strobe against the surrounding page. */
+  --panel:          18  18  18;
+  --on-panel:      249 249 251;
+  --accent-invert: 147 197 253;
+  --muted-invert:  209 213 219;
+  --border-invert:  55  65  81;
+
+  /* Long-form / editor surfaces */
+  --code-bg:        18  24  32;
+  --code-ink:      231 237 246;
+  --code-border:    39  50  68;
+  --inline-code-bg:    238 242 247;
+  --inline-code-ink:    30  58  95;
+  --table-head-bg:  243 246 251;
+  --table-border:   221 225 232;
+  --quiz-bg:       245 248 255;
+  --quiz-border:   199 215 254;
+  --success:         4 120  87;
+
+  --grain-opacity: 0.025;
+  /* Height of the fixed nav — the reading-progress rail hangs off it. */
+  --nav-h: 4.75rem;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg:             10  12  13;
+  --surface:        19  23  24;
+  --surface-2:      27  33  34;
+  --primary:        96 165 250;
+  --primary-dim:   147 197 253;
+  --amber:          96 165 250;
+  --amber-dim:     147 197 253;
+  --parchment:     242 241 237;
+  --muted:         156 163 163;
+  --border:         34  41  42;
+
+  --on-primary:     10  12  13;
+
+  --panel:          24  29  30;
+  --on-panel:      242 241 237;
+  --accent-invert:  96 165 250;
+  --muted-invert:  156 163 163;
+  --border-invert:  45  54  55;
+
+  --code-bg:         8  11  12;
+  --code-ink:      231 237 246;
+  --code-border:    34  41  42;
+  --inline-code-bg:  27  33  34;
+  --inline-code-ink: 147 197 253;
+  --table-head-bg:   27  33  34;
+  --table-border:    34  41  42;
+  --quiz-bg:         19  27  36;
+  --quiz-border:     34  55  84;
+  --success:        52 211 153;
+
+  --grain-opacity: 0.04;
+  color-scheme: dark;
 }
 
 /* ── Base ──────────────────────────────────────── */
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
-  color: var(--parchment);
+  background: rgb(var(--bg));
+  color: rgb(var(--parchment));
   overflow-x: hidden;
+}
+
+/* Theme swap should feel like a dimmer, not a flash.
+   The `.theme-transition` class is added by ThemeToggle only
+   for the duration of the swap, so it never slows normal paints. */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 320ms ease, border-color 320ms ease,
+              color 320ms ease, fill 320ms ease, stroke 320ms ease !important;
 }
 
 /* Film grain - adds premium depth */
@@ -29,35 +109,49 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity: 0.025;
+  opacity: var(--grain-opacity);
   pointer-events: none;
   z-index: 9999;
 }
 
 /* ── Typography utilities ──────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--parchment) 100%);
+  background: linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--parchment)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-gold {
-  background: linear-gradient(135deg, var(--primary-dim) 0%, var(--parchment) 100%);
+  background: linear-gradient(135deg, rgb(var(--primary-dim)) 0%, rgb(var(--parchment)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* The wordmark is a single flat blue on transparency. Against a near-black
+   page the thin tagline strokes go muddy, so lift it in dark mode. */
+/* Partner logos are supplied as dark ink on transparency, so on a dark page
+   they need a light plate under them to stay readable. */
+.brand-plate { background: transparent; }
+
+:root[data-theme="dark"] .brand-plate {
+  background: rgb(240 240 238 / 0.94);
+}
+
+:root[data-theme="dark"] .site-logo {
+  filter: brightness(1.45) saturate(0.95);
+}
+
 /* ── Custom scrollbar ──────────────────────────── */
 ::-webkit-scrollbar       { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--primary-dim); }
+::-webkit-scrollbar-track { background: rgb(var(--bg)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--primary-dim)); }
 
 /* ── Selection ─────────────────────────────────── */
 ::selection {
-  background: rgba(37, 99, 235, 0.28);
-  color: var(--parchment);
+  background: rgb(var(--primary) / 0.28);
+  color: rgb(var(--parchment));
 }
 
 /* ── Infinite marquee ──────────────────────────── */
@@ -84,7 +178,7 @@ body::before {
 /* ── Compose rich-text editor ──────────────────── */
 .compose-editor:empty::before {
   content: attr(data-placeholder);
-  color: rgba(162, 167, 179, 0.5);
+  color: rgb(var(--muted) / 0.6);
   white-space: pre-wrap;
   pointer-events: none;
 }
@@ -94,7 +188,7 @@ body::before {
 .compose-editor a  { color: var(--primary); text-decoration: underline; }
 .compose-editor b, .compose-editor strong { font-weight: 700; }
 
-.blog-editor:empty::before { content: attr(data-placeholder); color: #9CA3AF; pointer-events: none; }
+.blog-editor:empty::before { content: attr(data-placeholder); color: rgb(var(--muted)); pointer-events: none; }
 .blog-editor, .blog-content { width: 100%; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .blog-editor *, .blog-content * { box-sizing: border-box; }
 .blog-editor > :not(table), .blog-content > :not(table) { min-width: 0; max-width: 100% !important; }
@@ -104,38 +198,38 @@ body::before {
 .blog-editor ul, .blog-content ul { margin: 1rem 0 1.5rem; list-style: disc; padding-left: 1.5rem; }
 .blog-editor ol, .blog-content ol { margin: 1rem 0 1.5rem; list-style: decimal; padding-left: 1.5rem; }
 .blog-editor li, .blog-content li { margin: 0.4rem 0; line-height: 1.8; }
-.blog-editor blockquote, .blog-content blockquote { width: auto !important; min-width: 0 !important; margin: 2rem 0; border-left: 3px solid #2563EB; padding-left: 1.25rem; font-family: var(--font-jakarta); font-size: 1.25rem; font-weight: 600; line-height: 1.6; white-space: normal !important; overflow-wrap: anywhere; }
+.blog-editor blockquote, .blog-content blockquote { width: auto !important; min-width: 0 !important; margin: 2rem 0; border-left: 3px solid rgb(var(--primary)); padding-left: 1.25rem; font-family: var(--font-jakarta); font-size: 1.25rem; font-weight: 600; line-height: 1.6; white-space: normal !important; overflow-wrap: anywhere; }
 .blog-editor blockquote *, .blog-content blockquote * { min-width: 0 !important; max-width: 100% !important; white-space: normal !important; overflow-wrap: anywhere !important; }
-.blog-editor pre, .blog-content pre { margin: 1.75rem 0; max-width: 100%; overflow-x: auto; border: 1px solid #273244; border-radius: 0.9rem; background: #121820; padding: 1.15rem 1.25rem; color: #E7EDF6; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9rem; line-height: 1.7; tab-size: 2; white-space: pre; }
-.blog-editor code:not(pre code), .blog-content code:not(pre code) { border-radius: 0.35rem; background: #EEF2F7; padding: 0.12rem 0.35rem; color: #1E3A5F; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9em; }
-.blog-editor a, .blog-content a { color: #2563EB; text-decoration: underline; }
+.blog-editor pre, .blog-content pre { margin: 1.75rem 0; max-width: 100%; overflow-x: auto; border: 1px solid rgb(var(--code-border)); border-radius: 0.9rem; background: rgb(var(--code-bg)); padding: 1.15rem 1.25rem; color: rgb(var(--code-ink)); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9rem; line-height: 1.7; tab-size: 2; white-space: pre; }
+.blog-editor code:not(pre code), .blog-content code:not(pre code) { border-radius: 0.35rem; background: rgb(var(--inline-code-bg)); padding: 0.12rem 0.35rem; color: rgb(var(--inline-code-ink)); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.9em; }
+.blog-editor a, .blog-content a { color: rgb(var(--primary)); text-decoration: underline; }
 .blog-editor img, .blog-content img { display: block; width: auto; height: auto; margin: 2rem 0; max-width: 100% !important; border-radius: 1rem; }
-.blog-editor .blog-table-wrap, .blog-content .blog-table-wrap { width: 100% !important; margin: 1.75rem 0; max-width: 100% !important; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; border: 1px solid #DDE1E8; border-radius: 0.9rem; }
-.blog-editor table, .blog-content table { width: 100% !important; max-width: 100%; min-width: 0; table-layout: fixed; border-collapse: collapse; background: #FFFFFF; font-size: 0.95rem; line-height: 1.55; }
+.blog-editor .blog-table-wrap, .blog-content .blog-table-wrap { width: 100% !important; margin: 1.75rem 0; max-width: 100% !important; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; border: 1px solid rgb(var(--table-border)); border-radius: 0.9rem; }
+.blog-editor table, .blog-content table { width: 100% !important; max-width: 100%; min-width: 0; table-layout: fixed; border-collapse: collapse; background: rgb(var(--surface)); font-size: 0.95rem; line-height: 1.55; }
 .blog-editor > table, .blog-content > table { display: table; }
-.blog-editor th, .blog-content th { background: #F3F6FB; color: #121212; font-weight: 700; text-align: left; }
-.blog-editor th, .blog-editor td, .blog-content th, .blog-content td { min-width: 0; border-right: 1px solid #DDE1E8; border-bottom: 1px solid #DDE1E8; padding: 0.8rem 0.95rem; vertical-align: top; overflow-wrap: anywhere; word-break: normal; }
+.blog-editor th, .blog-content th { background: rgb(var(--table-head-bg)); color: rgb(var(--parchment)); font-weight: 700; text-align: left; }
+.blog-editor th, .blog-editor td, .blog-content th, .blog-content td { min-width: 0; border-right: 1px solid rgb(var(--table-border)); border-bottom: 1px solid rgb(var(--table-border)); padding: 0.8rem 0.95rem; vertical-align: top; overflow-wrap: anywhere; word-break: normal; }
 .blog-editor th:last-child, .blog-editor td:last-child, .blog-content th:last-child, .blog-content td:last-child { border-right: 0; }
 .blog-editor tbody tr:last-child td, .blog-content tbody tr:last-child td { border-bottom: 0; }
 .blog-editor .blog-checklist, .blog-content .blog-checklist { margin: 1.25rem 0 1.75rem; list-style: none; padding-left: 0; }
-.blog-editor .blog-checklist li, .blog-content .blog-checklist li { margin: 0; border-bottom: 1px solid #E3E6EA; padding: 0.8rem 0; }
+.blog-editor .blog-checklist li, .blog-content .blog-checklist li { margin: 0; border-bottom: 1px solid rgb(var(--border)); padding: 0.8rem 0; }
 .blog-editor .blog-checklist label, .blog-content .blog-checklist label { display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; }
-.blog-editor .blog-checklist label > input, .blog-content .blog-checklist label > input { width: 1.1rem; height: 1.1rem; margin-top: 0.3rem; flex: none; accent-color: #2563EB; }
-.blog-editor .blog-checklist label > input:checked + span, .blog-content .blog-checklist label > input:checked + span { color: #6B7280; text-decoration: line-through; }
+.blog-editor .blog-checklist label > input, .blog-content .blog-checklist label > input { width: 1.1rem; height: 1.1rem; margin-top: 0.3rem; flex: none; accent-color: rgb(var(--primary)); }
+.blog-editor .blog-checklist label > input:checked + span, .blog-content .blog-checklist label > input:checked + span { color: rgb(var(--muted)); text-decoration: line-through; }
 .blog-editor .blog-checklist label > span input[type="checkbox"], .blog-content .blog-checklist label > span input[type="checkbox"] { display: none; }
 .blog-editor .blog-checklist .blog-checklist, .blog-content .blog-checklist .blog-checklist { margin: 0; padding: 0; list-style: none; }
 .blog-editor .blog-checklist ul, .blog-editor .blog-checklist ol, .blog-content .blog-checklist ul, .blog-content .blog-checklist ol { list-style: none; padding-left: 0; }
-.blog-editor .blog-quiz, .blog-content .blog-quiz { margin: 2rem 0; border: 1px solid #C7D7FE; border-radius: 1rem; background: #F5F8FF; padding: 1.1rem 1.25rem; }
+.blog-editor .blog-quiz, .blog-content .blog-quiz { margin: 2rem 0; border: 1px solid rgb(var(--quiz-border)); border-radius: 1rem; background: rgb(var(--quiz-bg)); padding: 1.1rem 1.25rem; }
 .blog-editor .blog-quiz { position: relative; cursor: pointer; user-select: none; transition: border-color 0.15s, box-shadow 0.15s; }
-.blog-editor .blog-quiz:hover { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-.blog-editor .blog-quiz::after { content: "Click to edit"; position: absolute; top: 1.1rem; right: 1.25rem; font-size: 0.7rem; font-weight: 700; color: #2563EB; }
-.blog-quiz .blog-quiz-label { margin: 0 0 0.35rem; font-family: var(--font-jetbrains); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; line-height: 1.6; text-transform: uppercase; color: #2563EB; }
+.blog-editor .blog-quiz:hover { border-color: rgb(var(--primary)); box-shadow: 0 0 0 3px rgb(var(--primary) / 0.12); }
+.blog-editor .blog-quiz::after { content: "Click to edit"; position: absolute; top: 1.1rem; right: 1.25rem; font-size: 0.7rem; font-weight: 700; color: rgb(var(--primary)); }
+.blog-quiz .blog-quiz-label { margin: 0 0 0.35rem; font-family: var(--font-jetbrains); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; line-height: 1.6; text-transform: uppercase; color: rgb(var(--primary)); }
 .blog-quiz .blog-quiz-question { margin: 0 0 0.8rem; font-family: var(--font-jakarta); font-size: 1.1rem; font-weight: 700; line-height: 1.5; }
 .blog-quiz .blog-quiz-options { margin: 0; list-style: upper-alpha; padding-left: 1.5rem; }
 .blog-quiz .blog-quiz-options li { margin: 0.3rem 0; line-height: 1.6; }
-.blog-editor .blog-quiz .blog-quiz-correct { color: #047857; font-weight: 700; }
+.blog-editor .blog-quiz .blog-quiz-correct { color: rgb(var(--success)); font-weight: 700; }
 .blog-editor .blog-quiz .blog-quiz-correct::after { content: "  ✓ correct answer"; font-size: 0.75rem; }
-.blog-quiz .blog-quiz-explanation { margin: 0.8rem 0 0; font-size: 0.92rem; line-height: 1.7; color: #6B7280; }
+.blog-quiz .blog-quiz-explanation { margin: 0.8rem 0 0; font-size: 0.92rem; line-height: 1.7; color: rgb(var(--muted)); }
 
 @media (max-width: 640px) {
   .blog-content { overflow: visible; }
@@ -158,3 +252,143 @@ body::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Editorial reading column ──────────────────────
+   Applied to long-form article bodies. Serif face, wide
+   measure-aware leading, and quiet punctuation so the
+   page reads like print rather than like a dashboard.   */
+.reading {
+  font-family: var(--font-newsreader), Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.115rem, 0.98rem + 0.6vw, 1.29rem);
+  line-height: 1.78;
+  letter-spacing: 0.002em;
+  color: rgb(var(--parchment) / 0.88);
+}
+
+.reading p,
+.reading .blog-content p {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0 0 1.55em;
+  text-wrap: pretty;
+}
+
+.reading h2,
+.reading .blog-content h2 {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 1.62em;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.012em;
+  margin: 2.5em 0 0.7em;
+  color: rgb(var(--parchment));
+}
+
+.reading h3,
+.reading .blog-content h3 {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.34;
+  margin: 2em 0 0.55em;
+  color: rgb(var(--parchment));
+}
+
+.reading li,
+.reading .blog-content li {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.72;
+  margin: 0.45em 0;
+}
+
+.reading blockquote,
+.reading .blog-content blockquote {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 1.22em;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgb(var(--parchment));
+  border-left: 2px solid rgb(var(--primary));
+  margin: 2.2em 0;
+  padding-left: 1.4em;
+}
+
+.reading a,
+.reading .blog-content a {
+  color: rgb(var(--parchment));
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--primary) / 0.45);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 160ms ease, color 160ms ease;
+}
+
+.reading a:hover,
+.reading .blog-content a:hover {
+  color: rgb(var(--primary));
+  text-decoration-color: rgb(var(--primary));
+}
+
+/* Code stays in the UI face — serif monospace is a lie */
+.reading code,
+.reading pre,
+.reading .blog-content code,
+.reading .blog-content pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* First paragraph gets a raised opening line */
+.reading > .blog-content:first-of-type > p:first-child::first-line,
+.reading > p:first-child::first-line {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.04em;
+}
+
+/* Section break: a centred triad instead of a rule */
+.reading hr,
+.reading .blog-content hr {
+  border: 0;
+  margin: 3em auto;
+  height: auto;
+  text-align: center;
+}
+
+.reading hr::before,
+.reading .blog-content hr::before {
+  content: '· · ·';
+  letter-spacing: 0.6em;
+  color: rgb(var(--muted));
+  font-size: 0.9em;
+}
+
+/* UI dropped inside the prose column (sign-up forms, quizzes) opts out of
+   the serif treatment and goes back to the interface face. */
+.reading .reading-reset,
+.reading .reading-reset * {
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.reading .reading-reset p {
+  font-size: revert;
+  line-height: revert;
+  margin: revert;
+}
+
+.reading .reading-reset a {
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .reading { font-size: 1.075rem; line-height: 1.75; }
+}
+
+/* ── Scroll cue ────────────────────────────────── */
+@keyframes cue-drift {
+  0%, 100% { transform: translateY(0);     opacity: 0.55; }
+  50%      { transform: translateY(0.4rem); opacity: 1; }
+}
+
+.animate-cue { animation: cue-drift 2.4s ease-in-out infinite; }

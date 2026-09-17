@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google'
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
 import PostHogProvider from '@/components/PostHogProvider'
+import { themeBootstrapScript } from '@/lib/theme'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({
@@ -14,6 +15,14 @@ const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['500', '600'],
   variable: '--font-jetbrains',
+  display: 'swap',
+})
+
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-newsreader',
   display: 'swap',
 })
 
@@ -52,9 +61,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Sets data-theme before first paint so there is no light flash. */}
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body
-        className={`${jakarta.variable} ${jetbrains.variable} ${inter.variable} font-body bg-bg text-parchment antialiased`}
+        className={`${jakarta.variable} ${jetbrains.variable} ${inter.variable} ${newsreader.variable} font-body bg-bg text-parchment antialiased`}
       >
         <script
           type="application/ld+json"

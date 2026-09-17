@@ -61,7 +61,7 @@ export default function NewsletterSignup({
 
   return (
     <section
-      className={`border border-ink-border ${inline ? "rounded-2xl bg-surface-2 p-5 md:p-6" : `bg-white ${compact ? "rounded-2xl p-6" : "rounded-[2rem] p-7 md:p-10"}`}`}
+      className={`border border-ink-border ${inline ? "rounded-2xl bg-surface-2 p-5 md:p-6" : `bg-surface ${compact ? "rounded-2xl p-6" : "rounded-[2rem] p-7 md:p-10"}`}`}
     >
       {inline ? (
         <>
@@ -77,12 +77,12 @@ export default function NewsletterSignup({
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Your email address"
-                className="min-h-12 w-full rounded-full border border-ink-border bg-white px-5 text-sm outline-none focus:border-primary"
+                className="min-h-12 w-full rounded-full border border-ink-border bg-surface px-5 text-sm outline-none focus:border-primary"
               />
             </label>
             <button
               disabled={saving}
-              className="min-h-12 rounded-full bg-primary px-7 text-sm font-bold text-white disabled:opacity-50"
+              className="min-h-12 rounded-full bg-primary px-7 text-sm font-bold text-on-primary disabled:opacity-50"
             >
               {saving ? "Subscribing..." : "Subscribe"}
             </button>
@@ -110,7 +110,7 @@ export default function NewsletterSignup({
               type="button"
               onClick={() => toggle(topic)}
               aria-pressed={topics.includes(topic)}
-              className={`rounded-full border px-4 py-2 text-xs font-semibold ${topics.includes(topic) ? "border-primary bg-primary text-white" : "border-ink-border bg-white text-muted"}`}
+              className={`rounded-full border px-4 py-2 text-xs font-semibold ${topics.includes(topic) ? "border-primary bg-primary text-on-primary" : "border-ink-border bg-surface text-muted"}`}
             >
               {topic}
             </button>
@@ -130,7 +130,7 @@ export default function NewsletterSignup({
           </label>
           <button
             disabled={saving || !topics.length}
-            className="min-h-12 rounded-full bg-primary px-7 text-sm font-bold text-white disabled:opacity-50"
+            className="min-h-12 rounded-full bg-primary px-7 text-sm font-bold text-on-primary disabled:opacity-50"
           >
             {saving ? "Subscribing..." : "Subscribe free"}
           </button>

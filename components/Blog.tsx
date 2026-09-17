@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { blogPosts } from '@/lib/blog-posts'
+import { accentChip } from '@/lib/accent'
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef(null)
@@ -86,7 +87,7 @@ export default function Blog() {
                   <div className="flex items-start justify-between gap-4 mb-8">
                     <span
                       className="font-head text-[0.56rem] font-bold tracking-[0.12em] uppercase px-3 py-1.5 rounded-full"
-                      style={{ color: post.accent, background: `${post.accent}14` }}
+                      style={accentChip(post.accent)}
                     >
                       {post.category}
                     </span>

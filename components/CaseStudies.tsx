@@ -10,42 +10,42 @@ const studies = [
     desc: 'A written brand case study for a B2B prospecting platform, focused on positioning, messaging clarity, and product value.',
     href: 'https://docs.google.com/document/d/1sV_J_iikUSUtBztg6H3dezYifhoyEXZaX8YDkxAPTPg/edit?usp=sharing',
     image: '/service-proof/brand-case-prospult.jpg',
-    accent: '#2563EB',
+    accent: 'primary',
   },
   {
     name: 'Three Movers',
     desc: 'A written case study for a relocation and moving services brand, shaped for clarity, search relevance, and reader confidence.',
     href: 'https://docs.google.com/document/d/1oZSJHBPZ8JBrAYQ5kfU5XOZucHAbV1ORX1S27ZZVdkc/edit?usp=sharing',
     image: '/service-proof/brand-case-three-movers.jpg',
-    accent: '#1D4ED8',
+    accent: 'primary-dim',
   },
   {
     name: 'Giftvant',
     desc: 'A written case study for a digital gifting and loyalty rewards platform, translating product use cases into a clear brand story.',
     href: 'https://docs.google.com/document/d/1L-47UUPHsd0reieSVOV2cex3_PV1Qh-XxuilbkIiwpA/edit?usp=sharing',
     image: '/service-proof/brand-case-giftvant.jpg',
-    accent: '#2563EB',
+    accent: 'primary',
   },
   {
     name: 'UEEX',
     desc: 'A written case study for a centralised crypto trading platform, covering exchange education and technical product communication.',
     href: 'https://docs.google.com/document/d/1LwssJU3c6CfrqO2fW8Tvr1nm6OAYNLttNYa1Dgxnowc/edit?usp=sharing',
     image: '/service-proof/brand-case-ueex.jpg',
-    accent: '#2563EB',
+    accent: 'primary',
   },
   {
     name: 'Solevant',
     desc: 'A written case study for a lifestyle brand, focused on brand identity, product language, and storytelling for its audience.',
     href: 'https://docs.google.com/document/d/19BrIcrzEP3RWCV89YtYub1ogclLR_Or5UZCKGOLHgeM/edit?tab=t.0',
     image: '/service-proof/brand-case-solevant.jpg',
-    accent: '#1D4ED8',
+    accent: 'primary-dim',
   },
   {
     name: 'UPay',
     desc: 'A written case study for a payment solution supporting multiple currencies, explaining product value, onboarding, and user education.',
     href: 'https://docs.google.com/document/d/1HNnhHOL3BQYMgUe4RW-73Bm8Nfq7IOME2Ca7eWJ3WVU/edit?usp=sharing',
     image: '/service-proof/brand-case-upay.jpg',
-    accent: '#2563EB',
+    accent: 'primary',
   },
 ]
 
@@ -105,7 +105,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
       initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border border-ink-border bg-white transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-ink-border bg-surface transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-surface-2">
         <Image src={study.image} alt={`Preview of the ${study.name} case study`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover object-top transition duration-500 group-hover:scale-[1.025]" />
@@ -116,7 +116,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
         aria-hidden
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at 20% 20%, ${study.accent}10, transparent 60%)`,
+          background: `radial-gradient(circle at 20% 20%, rgb(var(--${study.accent}) / 0.07), transparent 60%)`,
         }}
       />
 
@@ -124,7 +124,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
         {/* Number */}
         <span
           className="font-head text-[10px] font-semibold uppercase tracking-[.14em]"
-          style={{ color: study.accent, opacity: 0.6 }}
+          style={{ color: `rgb(var(--${study.accent}))`, opacity: 0.6 }}
         >
           {String(index + 1).padStart(2, '0')}
         </span>
@@ -140,7 +140,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
         {/* CTA */}
         <div
           className="flex items-center gap-2 pt-2 mt-auto"
-          style={{ color: study.accent }}
+          style={{ color: `rgb(var(--${study.accent}))` }}
         >
           <span className="font-head text-[0.65rem] font-bold tracking-[0.1em] uppercase opacity-60 group-hover:opacity-100 transition-opacity duration-200">
             Read Writing Sample
@@ -154,7 +154,7 @@ function CaseCard({ study, index }: { study: (typeof studies)[0]; index: number 
       {/* Bottom line sweep */}
       <div
         className="absolute bottom-0 left-0 h-px w-0 group-hover:w-full transition-all duration-500 ease-out"
-        style={{ background: study.accent }}
+        style={{ background: `rgb(var(--${study.accent}))` }}
       />
     </motion.a>
   )

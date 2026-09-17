@@ -17,7 +17,7 @@ function JourneyCard({ item, index }: { item: (typeof journey)[number]; index: n
   return (
     <motion.article ref={ref} initial={{ opacity: 0, y: 20 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.55, delay: index * 0.06 }} className="grid gap-5 border-t border-ink-border py-8 md:grid-cols-[190px_1fr] md:gap-10">
       <div><span className="font-head text-[0.62rem] font-bold uppercase tracking-[0.15em] text-primary">{String(index + 1).padStart(2, '0')}</span><p className="mt-2 text-sm font-semibold text-muted">{item.period}</p></div>
-      <div><h3 className="font-display text-xl font-extrabold text-parchment md:text-2xl">{item.title}</h3><p className="mt-4 max-w-3xl text-[0.94rem] leading-[1.85] text-muted">{item.copy}</p><div className="mt-5 flex flex-wrap gap-2">{item.tags.map(tag => <span key={tag} className="rounded-full border border-ink-border bg-white px-3 py-1.5 text-[0.68rem] font-semibold text-muted">{tag}</span>)}</div></div>
+      <div><h3 className="font-display text-xl font-extrabold text-parchment md:text-2xl">{item.title}</h3><p className="mt-4 max-w-3xl text-[0.94rem] leading-[1.85] text-muted">{item.copy}</p><div className="mt-5 flex flex-wrap gap-2">{item.tags.map(tag => <span key={tag} className="rounded-full border border-ink-border bg-surface px-3 py-1.5 text-[0.68rem] font-semibold text-muted">{tag}</span>)}</div></div>
     </motion.article>
   )
 }
@@ -25,7 +25,7 @@ function JourneyCard({ item, index }: { item: (typeof journey)[number]; index: n
 export default function AboutStory() {
   return (
     <>
-    <section className="border-b border-ink-border bg-white px-6 py-20 sm:px-8 md:px-20 md:py-28">
+    <section className="border-b border-ink-border bg-surface px-6 py-20 sm:px-8 md:px-20 md:py-28">
       <div className="mx-auto grid max-w-[1180px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:gap-16">
         <div><span className="font-head text-[0.64rem] font-bold uppercase tracking-[0.18em] text-primary">My biography</span><h2 className="mt-4 max-w-sm font-display text-3xl font-extrabold leading-tight text-parchment md:text-4xl">Technology, content, and digital products.</h2></div>
         <div className="max-w-3xl space-y-5 text-base leading-8 text-muted">

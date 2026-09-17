@@ -42,11 +42,11 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-ink-border bg-white px-6 pb-8 pt-14 sm:px-8 md:px-20">
+    <footer className="border-t border-ink-border bg-surface px-6 pb-8 pt-14 sm:px-8 md:px-20">
       <div className="max-w-[1480px] mx-auto">
         <div className="grid grid-cols-1 gap-10 border-b border-ink-border pb-12 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1fr] lg:gap-8">
           <div>
-            <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" />
+            <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="site-logo h-8 w-auto" />
             <p className="mt-5 max-w-xs text-[0.88rem] leading-[1.8] text-muted">
               Founder, builder, and technical writer working at the intersection of technology,
               business, and people.

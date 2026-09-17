@@ -31,7 +31,7 @@ export default function Awards() {
 
   return (
     <>
-      <section className="border-b border-ink-border bg-white px-6 pb-20 pt-28 sm:px-8 md:px-20 md:pb-24 md:pt-36">
+      <section className="border-b border-ink-border bg-surface px-6 pb-20 pt-28 sm:px-8 md:px-20 md:pb-24 md:pt-36">
         <div className="mx-auto max-w-[1240px]">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.72fr] lg:items-end">
             <div>
@@ -51,15 +51,15 @@ export default function Awards() {
           {awardGroups.map((group, groupIndex) => (
             <motion.section key={group.brand} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.55, delay: groupIndex * 0.08 }}>
               <div className="mb-7 grid gap-5 border-b border-ink-border pb-7 md:grid-cols-[auto_1fr_auto] md:items-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary font-head text-xs font-extrabold tracking-[0.1em] text-white">{group.initials}</div>
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary font-head text-xs font-extrabold tracking-[0.1em] text-on-primary">{group.initials}</div>
                 <div><h2 className="font-display text-2xl font-extrabold md:text-3xl">{group.brand}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-muted">{group.description}</p></div>
-                <span className="w-fit rounded-full border border-ink-border bg-white px-4 py-2 text-xs font-semibold text-muted">{group.awards.length} {group.awards.length === 1 ? 'award' : 'awards'}</span>
+                <span className="w-fit rounded-full border border-ink-border bg-surface px-4 py-2 text-xs font-semibold text-muted">{group.awards.length} {group.awards.length === 1 ? 'award' : 'awards'}</span>
               </div>
 
               <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {group.awards.map((award, index) => (
-                  <motion.button key={award.title} type="button" onClick={() => setSelectedAward({ ...award, brand: group.brand })} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.45, delay: index * 0.06 }} className="group overflow-hidden rounded-3xl border border-ink-border bg-white text-left transition hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]">
-                    <div className="relative aspect-[2000/1414] bg-[#F3F5F8] p-3"><Image src={award.src} alt={award.alt} fill className="object-contain p-3" sizes="(max-width: 768px) 100vw, 33vw" /></div>
+                  <motion.button key={award.title} type="button" onClick={() => setSelectedAward({ ...award, brand: group.brand })} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.45, delay: index * 0.06 }} className="group overflow-hidden rounded-3xl border border-ink-border bg-surface text-left transition hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]">
+                    <div className="relative aspect-[2000/1414] bg-surface-2 p-3"><Image src={award.src} alt={award.alt} fill className="object-contain p-3" sizes="(max-width: 768px) 100vw, 33vw" /></div>
                     <div className="border-t border-ink-border p-5"><div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold text-primary">{group.brand}</p><h3 className="mt-2 font-display text-lg font-bold leading-6 text-parchment">{award.title}</h3></div><span className="shrink-0 text-xs font-semibold text-muted">{award.year}</span></div><p className="mt-5 text-xs font-semibold text-muted transition group-hover:text-primary">View certificate</p></div>
                   </motion.button>
                 ))}
@@ -72,9 +72,9 @@ export default function Awards() {
       <AnimatePresence>
         {selectedAward && (
           <motion.div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0D1117]/90 p-4 backdrop-blur-sm md:p-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} role="dialog" aria-modal="true" aria-label={selectedAward.title} onClick={() => setSelectedAward(null)}>
-            <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.2 }} className="w-full max-w-5xl overflow-hidden rounded-3xl bg-white" onClick={(event) => event.stopPropagation()}>
+            <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.2 }} className="w-full max-w-5xl overflow-hidden rounded-3xl bg-surface" onClick={(event) => event.stopPropagation()}>
               <div className="flex items-center justify-between gap-5 border-b border-ink-border px-5 py-4 md:px-7"><div><p className="text-xs font-semibold text-primary">{selectedAward.brand}</p><h2 className="mt-1 font-display text-lg font-bold">{selectedAward.title}</h2></div><button type="button" onClick={() => setSelectedAward(null)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink-border text-xl" aria-label="Close certificate">×</button></div>
-              <div className="relative max-h-[78vh] aspect-[2000/1414] bg-[#F3F5F8]"><Image src={selectedAward.src} alt={selectedAward.alt} fill priority className="object-contain p-3 md:p-6" sizes="(max-width: 1024px) 100vw, 1024px" /></div>
+              <div className="relative max-h-[78vh] aspect-[2000/1414] bg-surface-2"><Image src={selectedAward.src} alt={selectedAward.alt} fill priority className="object-contain p-3 md:p-6" sizes="(max-width: 1024px) 100vw, 1024px" /></div>
             </motion.div>
           </motion.div>
         )}

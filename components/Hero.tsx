@@ -101,7 +101,7 @@ export default function Hero() {
             >
               <a
                 href="#work"
-                className="inline-flex min-h-12 items-center justify-center bg-primary px-7 py-4 font-display text-[0.9rem] font-bold text-white motion-safe:transition-colors motion-safe:duration-150 hover:bg-primary-dim focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                className="inline-flex min-h-12 items-center justify-center bg-primary px-7 py-4 font-display text-[0.9rem] font-bold text-on-primary motion-safe:transition-colors motion-safe:duration-150 hover:bg-primary-dim focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 See the Work
               </a>

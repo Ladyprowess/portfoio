@@ -51,7 +51,7 @@ export default function UnsubscribePage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-5">
-      <div className="w-full max-w-lg rounded-3xl border border-ink-border bg-white p-8 text-center">
+      <div className="w-full max-w-lg rounded-3xl border border-ink-border bg-surface p-8 text-center">
         <p className="font-head text-xs font-bold uppercase tracking-wider text-primary">
           Email preferences
         </p>
@@ -68,7 +68,7 @@ export default function UnsubscribePage() {
                 type="button"
                 onClick={unsubscribe}
                 disabled={stage === "working"}
-                className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary disabled:opacity-60"
               >
                 {stage === "working" ? "Unsubscribing..." : "Yes, unsubscribe me"}
               </button>
@@ -90,7 +90,7 @@ export default function UnsubscribePage() {
             </h1>
             <Link
               href="/blog"
-              className="mt-7 inline-flex rounded-full bg-primary px-6 py-3 text-sm font-bold text-white"
+              className="mt-7 inline-flex rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary"
             >
               Return to the blog
             </Link>

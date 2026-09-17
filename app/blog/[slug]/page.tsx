@@ -8,6 +8,9 @@ import Image from 'next/image'
 import { getPublishedPost, readTime } from '@/lib/blog-cms'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import ArticleContent from '@/components/ArticleContent'
+import ArticleOpening from '@/components/ArticleOpening'
+import ReadingProgress from '@/components/ReadingProgress'
+import { DEFAULT_ACCENT } from '@/lib/accent'
 
 type BlogPostPageProps = {
   params: {
@@ -106,11 +109,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (post.slug !== params.slug) {
     permanentRedirect(`/blog/${post.slug}`)
   }
-  const accent = 'accent' in post ? post.accent : '#2563EB'
+  const accent = 'accent' in post ? post.accent : DEFAULT_ACCENT
   const newsletterTopic = 'newsletter_topic' in post ? post.newsletter_topic : post.newsletterTopic
   const publishedDate = 'date' in post ? undefined : post.published_at || undefined
   const cmsArticleParts = 'content_html' in post ? splitArticleHtml(post.content_html) : null
   const staticArticleMiddle = 'body' in post ? Math.ceil(post.body.length / 2) : 0
+  const displayDate =
+    'date' in post
+      ? post.date
+      : post.published_at
+        ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', day: 'numeric', year: 'numeric' })
+        : ''
+  const displayReadTime = 'readTime' in post ? post.readTime : readTime(post.content_html)
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -128,53 +138,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <main className="min-h-screen bg-bg">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }} />
       <Nav />
-      <article className="mx-auto w-full min-w-0 max-w-4xl px-5 pb-24 pt-28 md:px-8 md:pt-36">
-        <Link
-          href="/blog"
-          className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted hover:text-primary transition-colors"
-        >
-          All posts
-        </Link>
+      <ReadingProgress />
 
-        <header className="mt-16 pb-12 border-b border-ink-border">
-          <div className="flex flex-wrap items-center gap-3 mb-8">
-            <span
-              className="font-head text-[0.58rem] font-bold tracking-[0.12em] uppercase px-3 py-1.5 rounded-full"
-              style={{ color: accent, background: `${accent}14` }}
-            >
-              {post.category}
-            </span>
-            <span className="font-head text-[0.6rem] font-bold tracking-[0.12em] uppercase text-muted">
-              {'date' in post ? post.date : post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', day: 'numeric', year: 'numeric' }) : ''}
-            </span>
-            <span className="font-head text-[0.6rem] font-bold tracking-[0.12em] uppercase text-muted">
-              {'readTime' in post ? post.readTime : readTime(post.content_html)}
-            </span>
-          </div>
+      <div className="mx-auto w-full min-w-0 max-w-4xl">
+        <ArticleOpening
+          title={post.title}
+          date={displayDate}
+          category={post.category}
+          readTime={displayReadTime}
+          excerpt={post.excerpt}
+          accent={accent}
+        />
+      </div>
 
-          <h1
-            className="font-display font-extrabold leading-[1.05] text-parchment"
-            style={{ fontSize: 'clamp(1.9rem, 3vw, 2.8rem)' }}
-          >
-            {post.title}
-          </h1>
-          <p className="text-[1.08rem] text-muted leading-[1.9] mt-8 max-w-2xl">{post.excerpt}</p>
-        </header>
+      <article className="mx-auto w-full min-w-0 max-w-4xl px-5 pb-24 md:px-8">
+        <div id="article-body">
+        {'cover_image' in post && post.cover_image && <div className="relative aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
 
-        {'cover_image' in post && post.cover_image && <div className="relative mt-8 aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
-
-        {'content_html' in post ? <div className="w-full min-w-0 max-w-3xl py-14">
+        {'content_html' in post ? <div className="reading w-full min-w-0 max-w-[40rem] py-16 md:py-20">
           <ArticleContent html={cmsArticleParts?.[0] || post.content_html} />
-          <div className="my-10"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
+          <div className="reading-reset my-12"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
           {cmsArticleParts?.[1] && <ArticleContent html={cmsArticleParts[1]} />}
-        </div> : <div className="w-full min-w-0 max-w-3xl space-y-7 py-14">
+        </div> : <div className="reading w-full min-w-0 max-w-[40rem] py-16 md:py-20">
           {post.body.map((block, index) => {
             const articleBlock = (() => {
             if (block.type === 'quote') {
               return (
                 <blockquote
                   key={`${block.type}-${index}`}
-                  className="my-12 border-l border-primary pl-6 font-display text-[1.55rem] font-semibold leading-[1.4] text-parchment md:text-[2rem]"
+                  className="my-10 border-l-2 border-primary pl-6 font-serif text-[1.3rem] font-normal italic leading-[1.5] text-parchment md:text-[1.5rem]"
                 >
                   {block.text}
                 </blockquote>
@@ -182,14 +174,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             }
 
             if (block.type === 'divider') {
-              return <div key={`${block.type}-${index}`} className="my-12 h-px w-full bg-ink-border" />
+              return <hr key={`${block.type}-${index}`} />
             }
 
             return (
-              <p
-                key={`${block.type}-${index}`}
-                className="text-justify text-[1.05rem] leading-[2] text-parchment/84 md:text-[1.12rem]"
-              >
+              <p key={`${block.type}-${index}`}>
                 {block.text}
               </p>
             )
@@ -197,10 +186,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             return <div key={`${block.type}-${index}`}>
               {articleBlock}
-              {index + 1 === staticArticleMiddle && <div className="my-10"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>}
+              {index + 1 === staticArticleMiddle && <div className="reading-reset my-12"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>}
             </div>
           })}
         </div>}
+        </div>
 
         <div className="mb-12"><NewsletterSignup compact availableTopics={[newsletterTopic]} defaultTopics={[newsletterTopic]} /></div>
 
@@ -210,7 +200,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </span>
           <Link
             href="/#contact"
-            className="font-head text-[0.67rem] font-bold tracking-[0.14em] uppercase text-bg bg-primary px-5 py-3 hover:bg-primary/85 transition-colors duration-200 text-center"
+            className="font-head text-[0.67rem] font-bold tracking-[0.14em] uppercase text-on-primary bg-primary px-5 py-3 hover:bg-primary/85 transition-colors duration-200 text-center"
           >
             Work With Me
           </Link>

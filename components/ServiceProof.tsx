@@ -70,7 +70,7 @@ export default function ServiceProof() {
   const [selected, setSelected] = useState(groups[0])
 
   return (
-    <section id="service-proof" className="border-y border-ink-border bg-white py-20 md:py-24">
+    <section id="service-proof" className="border-y border-ink-border bg-surface py-20 md:py-24">
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
           <div>
@@ -87,7 +87,7 @@ export default function ServiceProof() {
               role="tab"
               aria-selected={selected.key === group.key}
               onClick={() => setSelected(group)}
-              className={`min-w-max rounded-full px-5 py-2.5 text-sm font-semibold transition ${selected.key === group.key ? 'bg-primary text-white' : 'border border-ink-border bg-bg text-muted hover:border-primary/40 hover:text-parchment'}`}
+              className={`min-w-max rounded-full px-5 py-2.5 text-sm font-semibold transition ${selected.key === group.key ? 'bg-primary text-on-primary' : 'border border-ink-border bg-bg text-muted hover:border-primary/40 hover:text-parchment'}`}
             >
               {group.label} <span className="ml-1 opacity-65">{group.items.length}</span>
             </button>
@@ -111,7 +111,7 @@ export default function ServiceProof() {
                 return item.href ? <a key={item.title} href={item.href} target="_blank" rel="noopener noreferrer" className="group overflow-hidden rounded-3xl border border-ink-border bg-bg transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)]">{content}</a> : <article key={item.title} className="group overflow-hidden rounded-3xl border border-ink-border bg-bg">{content}</article>
               })}
             </div>
-            {selected.key === 'websites' && <div className="mt-10 border-t border-ink-border pt-10"><div className="flex flex-col justify-between gap-3 md:flex-row md:items-end"><div><p className="font-head text-[10px] uppercase tracking-[.14em] text-primary">LW Commerce page directory</p><h3 className="mt-2 font-display text-2xl font-semibold tracking-[-.03em]">Every LW Commerce page I worked on.</h3></div><a href="https://lwcommerce.org/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Visit LW Commerce ↗</a></div><div className="mt-6 grid gap-4 md:grid-cols-2">{lwCommercePages.map(group => <details key={group.title} className="group rounded-2xl border border-ink-border bg-bg p-5 open:bg-white"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-semibold focus-visible:outline-none"><span>{group.title}</span><span aria-hidden="true" className="text-primary transition-transform group-open:rotate-45">+</span></summary><ul className="mt-4 space-y-2 border-t border-ink-border pt-4">{group.links.map(([label, href]) => <li key={href}><a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex text-sm leading-6 text-muted underline-offset-4 hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">{label}<span aria-hidden="true" className="ml-1">↗</span></a></li>)}</ul></details>)}</div></div>}
+            {selected.key === 'websites' && <div className="mt-10 border-t border-ink-border pt-10"><div className="flex flex-col justify-between gap-3 md:flex-row md:items-end"><div><p className="font-head text-[10px] uppercase tracking-[.14em] text-primary">LW Commerce page directory</p><h3 className="mt-2 font-display text-2xl font-semibold tracking-[-.03em]">Every LW Commerce page I worked on.</h3></div><a href="https://lwcommerce.org/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Visit LW Commerce ↗</a></div><div className="mt-6 grid gap-4 md:grid-cols-2">{lwCommercePages.map(group => <details key={group.title} className="group rounded-2xl border border-ink-border bg-bg p-5 open:bg-surface"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-semibold focus-visible:outline-none"><span>{group.title}</span><span aria-hidden="true" className="text-primary transition-transform group-open:rotate-45">+</span></summary><ul className="mt-4 space-y-2 border-t border-ink-border pt-4">{group.links.map(([label, href]) => <li key={href}><a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex text-sm leading-6 text-muted underline-offset-4 hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">{label}<span aria-hidden="true" className="ml-1">↗</span></a></li>)}</ul></details>)}</div></div>}
           </motion.div>
         </AnimatePresence>
       </div>

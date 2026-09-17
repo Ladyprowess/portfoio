@@ -28,9 +28,9 @@ const personal = [
 ]
 
 const columns = [
-  { title: 'Fulltime',        accent: '#2563EB', items: fulltime  },
-  { title: 'Freelance',       accent: '#1D4ED8', items: freelance },
-  { title: 'Personal Blogs',  accent: '#2563EB', items: personal  },
+  { title: 'Fulltime',        accent: 'primary', items: fulltime  },
+  { title: 'Freelance',       accent: 'primary-dim', items: freelance },
+  { title: 'Personal Blogs',  accent: 'primary', items: personal  },
 ]
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -82,7 +82,7 @@ export default function Writing() {
               <div className="flex items-center gap-3 mb-8 pb-6 border-b border-ink-border">
                 <span
                   className="w-1 h-6 rounded-full block"
-                  style={{ background: col.accent }}
+                  style={{ background: `rgb(var(--${col.accent}))` }}
                 />
                 <span className="font-head text-[0.72rem] font-bold tracking-[0.14em] uppercase text-parchment">
                   {col.title}
@@ -114,13 +114,13 @@ export default function Writing() {
                       <div className="flex items-center gap-2 shrink-0 ml-3">
                         <span
                           className="font-head text-[0.55rem] font-bold tracking-[0.1em] uppercase px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                          style={{ color: col.accent, background: `${col.accent}15` }}
+                          style={{ color: `rgb(var(--${col.accent}))`, background: `rgb(var(--${col.accent}) / 0.12)` }}
                         >
                           {item.tag}
                         </span>
                         <span
                           className="text-[0.7rem] opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-0.5"
-                          style={{ color: col.accent }}
+                          style={{ color: `rgb(var(--${col.accent}))` }}
                         >
                           ↗
                         </span>

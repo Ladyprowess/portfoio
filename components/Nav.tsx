@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import ThemeToggle from '@/components/ThemeToggle'
 
 const links = [
   { href: '/',             label: 'Home' },
@@ -32,7 +33,7 @@ export default function Nav() {
           href="/"
           className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         >
-          <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="h-8 w-auto" priority />
+          <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="site-logo h-8 w-auto" priority />
         </a>
 
         {/* Desktop */}
@@ -51,24 +52,28 @@ export default function Nav() {
           ))}
         </ul>
 
-        <div className="hidden xl:block">
+        <div className="hidden xl:flex xl:items-center xl:gap-3">
+          <ThemeToggle />
           <a
             href="mailto:hello@ladyprowess.com"
-            className="inline-flex items-center gap-2 font-display text-[0.85rem] font-bold text-white bg-primary px-5 py-2.5 hover:bg-primary-dim focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
+            className="inline-flex items-center gap-2 font-display text-[0.85rem] font-bold text-on-primary bg-primary px-5 py-2.5 hover:bg-primary-dim focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg transition-colors duration-200"
           >
             Let&apos;s Work Together →
           </a>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="relative z-50 -mr-2 flex min-h-11 items-center justify-center gap-2 rounded-full border border-ink-border bg-white px-3 py-2 text-sm font-semibold xl:hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          <span>{menuOpen ? 'Close' : 'Menu'}</span>
-          <span className="flex w-5 flex-col gap-1" aria-hidden="true"><span className={`block h-px bg-parchment transition-transform ${menuOpen ? 'translate-y-[5px] rotate-45' : ''}`} /><span className={`block h-px bg-parchment transition-opacity ${menuOpen ? 'opacity-0' : ''}`} /><span className={`block h-px bg-parchment transition-transform ${menuOpen ? '-translate-y-[5px] -rotate-45' : ''}`} /></span>
-        </button>
+        {/* Mobile controls */}
+        <div className="relative z-50 -mr-2 flex items-center gap-2 xl:hidden">
+          <ThemeToggle />
+          <button
+            className="flex min-h-11 items-center justify-center gap-2 rounded-full border border-ink-border bg-surface px-3 py-2 text-sm font-semibold focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <span>{menuOpen ? 'Close' : 'Menu'}</span>
+            <span className="flex w-5 flex-col gap-1" aria-hidden="true"><span className={`block h-px bg-parchment transition-transform ${menuOpen ? 'translate-y-[5px] rotate-45' : ''}`} /><span className={`block h-px bg-parchment transition-opacity ${menuOpen ? 'opacity-0' : ''}`} /><span className={`block h-px bg-parchment transition-transform ${menuOpen ? '-translate-y-[5px] -rotate-45' : ''}`} /></span>
+          </button>
+        </div>
       </motion.nav>
 
       {/* Mobile drawer */}
@@ -104,7 +109,7 @@ export default function Nav() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.44, duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
                 onClick={() => setMenuOpen(false)}
-                className="mt-6 min-h-11 inline-flex items-center justify-center font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase text-white bg-primary px-8 py-4 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                className="mt-6 min-h-11 inline-flex items-center justify-center font-head text-[0.7rem] font-bold tracking-[0.14em] uppercase text-on-primary bg-primary px-8 py-4 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 Let&apos;s Work Together
               </motion.a>

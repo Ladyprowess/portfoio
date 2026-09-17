@@ -157,7 +157,7 @@ export default function PostEmailReport({
       aria-labelledby="email-report-title"
       onClick={(event) => event.target === event.currentTarget && onClose()}
     >
-      <div className="mx-auto max-w-3xl rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+      <div className="mx-auto max-w-3xl rounded-3xl bg-surface p-6 shadow-2xl md:p-8">
         <div className="flex items-start justify-between gap-4 border-b border-ink-border pb-5">
           <div className="min-w-0">
             <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">
@@ -268,7 +268,7 @@ export default function PostEmailReport({
                     type="button"
                     aria-pressed={filter === option.value}
                     onClick={() => setFilter(option.value)}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${filter === option.value ? "border-primary bg-primary text-white" : "border-ink-border text-muted hover:border-primary"}`}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${filter === option.value ? "border-primary bg-primary text-on-primary" : "border-ink-border text-muted hover:border-primary"}`}
                   >
                     {option.label}
                   </button>

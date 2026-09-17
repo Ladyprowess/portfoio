@@ -16,9 +16,9 @@ import {
 } from "@/lib/blog-quiz";
 
 const fieldClass =
-  "w-full rounded-xl border border-ink-border bg-white px-4 py-3 text-sm outline-none focus:border-primary";
+  "w-full rounded-xl border border-ink-border bg-surface px-4 py-3 text-sm outline-none focus:border-primary";
 const toolbarButtonClass =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-primary";
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-surface hover:text-primary focus-visible:ring-2 focus-visible:ring-primary";
 const POSTS_PER_PAGE = 5;
 type PostState = "draft" | "published" | "scheduled";
 type PublicationMode = "now" | "schedule";
@@ -1072,7 +1072,7 @@ export default function BlogCmsPage() {
           </h1>
           <a
             href="/admin"
-            className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
+            className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary"
           >
             Go to admin login
           </a>
@@ -1084,7 +1084,7 @@ export default function BlogCmsPage() {
     <main className="min-h-screen bg-bg">
       <AdminNav />
       <div className="mx-auto grid max-w-[1400px] gap-7 px-5 py-8 lg:grid-cols-[1fr_340px] lg:px-8">
-        <section className="rounded-3xl border border-ink-border bg-white p-5 md:p-7">
+        <section className="rounded-3xl border border-ink-border bg-surface p-5 md:p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">
@@ -1168,7 +1168,7 @@ export default function BlogCmsPage() {
                       if (option.value === "schedule" && !publishedAt)
                         setPublishedAt(new Date(Date.now() + 60 * 60 * 1000).toISOString());
                     }}
-                    className={`rounded-2xl border p-4 text-left transition ${publicationMode === option.value ? "border-primary bg-blue-50/60 ring-1 ring-primary" : "border-ink-border bg-white hover:border-primary/40"}`}
+                    className={`rounded-2xl border p-4 text-left transition ${publicationMode === option.value ? "border-primary bg-primary/[0.05] ring-1 ring-primary" : "border-ink-border bg-surface hover:border-primary/40"}`}
                   >
                     <span className="flex items-center gap-2 text-sm font-semibold"><span className={`flex h-4 w-4 items-center justify-center rounded-full border ${publicationMode === option.value ? "border-primary" : "border-muted"}`}>{publicationMode === option.value && <span className="h-2 w-2 rounded-full bg-primary" />}</span>{option.title}</span>
                     <span className="mt-2 block text-xs leading-5 text-muted">{option.copy}</span>
@@ -1198,7 +1198,7 @@ export default function BlogCmsPage() {
                 href={coverImage}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-blue-50 px-4 py-2 text-xs font-semibold text-primary"
+                className="rounded-full bg-primary/[0.07] px-4 py-2 text-xs font-semibold text-primary"
               >
                 View cover
               </a>
@@ -1267,7 +1267,7 @@ export default function BlogCmsPage() {
                   onChange={(event) =>
                     format("formatBlock", event.target.value)
                   }
-                  className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"
+                  className="h-9 rounded-lg border border-ink-border bg-surface px-2 text-xs"
                 >
                   <option value="p">Paragraph</option>
                   <option value="h2">Heading 2</option>
@@ -1278,7 +1278,7 @@ export default function BlogCmsPage() {
                 <select
                   aria-label="Font"
                   onChange={(event) => format("fontName", event.target.value)}
-                  className="h-9 rounded-lg border border-ink-border bg-white px-2 text-xs"
+                  className="h-9 rounded-lg border border-ink-border bg-surface px-2 text-xs"
                 >
                   <option value="Inter">Sans</option>
                   <option value="Georgia">Serif</option>
@@ -1407,28 +1407,28 @@ export default function BlogCmsPage() {
             <button
               disabled={saving || !title || !contentHtml}
               onClick={() => setShowPreview(true)}
-              className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
+              className="rounded-full border border-ink-border bg-surface px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
             >
               Preview post
             </button>
             <button
               disabled={saving || !testEmail || !title || !contentHtml}
               onClick={sendTest}
-              className="rounded-full border border-primary/30 bg-blue-50 px-6 py-3 text-sm font-semibold text-primary disabled:opacity-50"
+              className="rounded-full border border-primary/30 bg-primary/[0.07] px-6 py-3 text-sm font-semibold text-primary disabled:opacity-50"
             >
               Send test email
             </button>
             <button
               disabled={saving}
               onClick={() => save("draft")}
-              className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
+              className="rounded-full border border-ink-border bg-surface px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
             >
               {id ? "Save as draft" : "Save draft"}
             </button>
             <button
               disabled={saving}
               onClick={() => save(publicationMode === "schedule" && publishedAt && new Date(publishedAt).getTime() > Date.now() ? "scheduled" : "published")}
-              className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary disabled:opacity-50"
             >
               {saving
                 ? "Saving..."
@@ -1445,7 +1445,7 @@ export default function BlogCmsPage() {
                 href={`/blog/${slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-primary/25 bg-blue-50 px-6 py-3 text-sm font-semibold text-primary"
+                className="rounded-full border border-primary/25 bg-primary/[0.07] px-6 py-3 text-sm font-semibold text-primary"
               >
                 View live post ↗
               </a>
@@ -1454,7 +1454,7 @@ export default function BlogCmsPage() {
               <button
                 disabled={saving || !title || !contentHtml}
                 onClick={emailMissedSubscribers}
-                className="rounded-full border border-ink-border bg-white px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
+                className="rounded-full border border-ink-border bg-surface px-6 py-3 text-sm font-semibold hover:border-primary disabled:opacity-50"
               >
                 Email subscribers who missed it
               </button>
@@ -1467,7 +1467,7 @@ export default function BlogCmsPage() {
               aria-modal="true"
               aria-label="Blog post preview"
             >
-              <div className="mx-auto max-w-4xl rounded-3xl bg-white p-6 shadow-2xl md:p-10">
+              <div className="mx-auto max-w-4xl rounded-3xl bg-surface p-6 shadow-2xl md:p-10">
                 <div className="flex items-center justify-between gap-4 border-b border-ink-border pb-5">
                   <p className="font-head text-xs font-bold uppercase tracking-wider text-primary">
                     Unpublished preview
@@ -1516,7 +1516,7 @@ export default function BlogCmsPage() {
               aria-labelledby="quiz-dialog-title"
               onKeyDown={(event) => event.key === "Escape" && closeQuiz()}
             >
-              <div className="mx-auto max-w-xl rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+              <div className="mx-auto max-w-xl rounded-3xl bg-surface p-6 shadow-2xl md:p-8">
                 <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">
                   Interactive quiz
                 </p>
@@ -1579,7 +1579,7 @@ export default function BlogCmsPage() {
                           }
                           aria-label={`Option ${quizLetters[index]}`}
                           placeholder={`Option ${quizLetters[index]}`}
-                          className="min-w-0 flex-1 rounded-lg border border-transparent bg-white px-3 py-2 text-sm outline-none focus:border-primary"
+                          className="min-w-0 flex-1 rounded-lg border border-transparent bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
                         />
                         {quizDraft.options.length > 2 && (
                           <button
@@ -1632,7 +1632,7 @@ export default function BlogCmsPage() {
                   <button
                     type="button"
                     onClick={saveQuiz}
-                    className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
+                    className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary"
                   >
                     {quizDraft.editing ? "Update quiz" : "Insert quiz"}
                   </button>
@@ -1658,7 +1658,7 @@ export default function BlogCmsPage() {
           )}
         </section>
         <aside className="lg:sticky lg:top-5 lg:self-start">
-          <div className="rounded-3xl border border-ink-border bg-white p-5">
+          <div className="rounded-3xl border border-ink-border bg-surface p-5">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold">All posts</h2>
               <span className="rounded-full bg-surface-2 px-3 py-1 text-xs text-muted">
@@ -1696,7 +1696,7 @@ export default function BlogCmsPage() {
                 visiblePosts.map((post) => (
                   <article
                     key={post.id}
-                    className={`rounded-2xl border p-4 ${id === post.id ? "border-primary bg-blue-50/40" : "border-ink-border"}`}
+                    className={`rounded-2xl border p-4 ${id === post.id ? "border-primary bg-primary/[0.04]" : "border-ink-border"}`}
                   >
                     <span className={`text-[11px] font-semibold uppercase tracking-wider ${postState(post) === "published" ? "text-green-700" : "text-amber"}`}>
                       {postState(post)}
@@ -1734,7 +1734,7 @@ export default function BlogCmsPage() {
                           href={`/blog/${post.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-primary"
+                          className="rounded-full bg-primary/[0.07] px-3 py-1.5 text-xs font-semibold text-primary"
                         >
                           View live
                         </a>

@@ -9,7 +9,7 @@ export default function AboutHero() {
   const inView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
-    <section className="relative overflow-hidden border-b border-ink-border bg-white px-6 pb-20 pt-32 sm:px-8 md:px-20 md:pb-24 md:pt-40">
+    <section className="relative overflow-hidden border-b border-ink-border bg-surface px-6 pb-20 pt-32 sm:px-8 md:px-20 md:pb-24 md:pt-40">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-60"
@@ -55,7 +55,7 @@ export default function AboutHero() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="/services"
-                className="inline-flex min-h-11 items-center justify-center bg-primary px-7 py-3.5 font-display text-sm font-bold text-white transition-colors hover:bg-primary-dim focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="inline-flex min-h-11 items-center justify-center bg-primary px-7 py-3.5 font-display text-sm font-bold text-on-primary transition-colors hover:bg-primary-dim focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 View my work
               </a>
@@ -63,7 +63,7 @@ export default function AboutHero() {
                 href="https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center border border-ink-border bg-white px-7 py-3.5 font-display text-sm font-bold text-parchment transition-colors hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="inline-flex min-h-11 items-center justify-center border border-ink-border bg-surface px-7 py-3.5 font-display text-sm font-bold text-parchment transition-colors hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 View resume
               </a>
@@ -77,7 +77,7 @@ export default function AboutHero() {
             className="relative order-1 lg:order-2"
           >
             <div className="relative mx-auto max-w-[540px]">
-              <div className="absolute -bottom-5 -left-5 h-32 w-32 bg-blue-100" aria-hidden />
+              <div className="absolute -bottom-5 -left-5 h-32 w-32 bg-primary/[0.14]" aria-hidden />
               <div className="relative overflow-hidden border border-ink-border bg-surface p-3 shadow-[0_24px_70px_rgba(18,18,18,0.09)] sm:p-4">
               <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-2 sm:aspect-[5/4]">
                 <Image
@@ -91,7 +91,7 @@ export default function AboutHero() {
               </div>
               <div className="flex items-center justify-between gap-4 pt-4">
                 <div><p className="font-display text-sm font-bold text-parchment">Ngozi Peace Okafor</p><p className="mt-1 text-xs text-muted">Founder and multidisciplinary digital professional</p></div>
-                <span className="hidden rounded-full bg-blue-50 px-3 py-1.5 text-[0.65rem] font-semibold text-primary sm:block">Lagos, Nigeria</span>
+                <span className="hidden rounded-full bg-primary/[0.07] px-3 py-1.5 text-[0.65rem] font-semibold text-primary sm:block">Lagos, Nigeria</span>
               </div>
               </div>
             </div>

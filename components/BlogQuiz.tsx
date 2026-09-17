@@ -54,18 +54,18 @@ export default function BlogQuiz({ quiz }: { quiz: BlogQuizData }) {
           const isAnswer = index === quiz.answer;
           const isChoice = index === choice;
           const tone = !answered
-            ? "border-ink-border bg-white hover:-translate-y-px hover:border-primary hover:shadow-[0_6px_18px_rgba(37,99,235,0.1)]"
+            ? "border-ink-border bg-surface hover:-translate-y-px hover:border-primary hover:shadow-[0_6px_18px_rgba(37,99,235,0.1)]"
             : isAnswer
               ? "border-emerald-500 bg-emerald-50 text-emerald-950"
               : isChoice
                 ? "border-red-400 bg-red-50 text-red-950"
-                : "border-ink-border bg-white opacity-55";
+                : "border-ink-border bg-surface opacity-55";
           const badge = !answered
             ? "border-ink-border text-muted"
             : isAnswer
-              ? "border-emerald-500 bg-emerald-500 text-white"
+              ? "border-emerald-500 bg-emerald-500 text-on-primary"
               : isChoice
-                ? "border-red-400 bg-red-400 text-white"
+                ? "border-red-400 bg-red-400 text-on-primary"
                 : "border-ink-border text-muted";
 
           return (

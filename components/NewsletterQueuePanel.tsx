@@ -76,12 +76,12 @@ export default function NewsletterQueuePanel({ password }: { password: string })
 
   if (!status)
     return message ? (
-      <p className="mt-6 rounded-xl bg-white px-4 py-3 text-sm text-muted">{message}</p>
+      <p className="mt-6 rounded-xl bg-surface px-4 py-3 text-sm text-muted">{message}</p>
     ) : null;
 
   const left = Math.max(0, status.dailyAllowance - status.usedToday);
   return (
-    <div className="mt-7 rounded-2xl border border-ink-border bg-white p-5 md:p-6">
+    <div className="mt-7 rounded-2xl border border-ink-border bg-surface p-5 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="font-display text-lg font-semibold">Email queue</h2>
@@ -100,7 +100,7 @@ export default function NewsletterQueuePanel({ password }: { password: string })
             disabled={busy || left === 0}
             onClick={sendNow}
             title={left === 0 ? "The daily limit is used up" : undefined}
-            className="shrink-0 rounded-full border border-primary/30 bg-blue-50 px-5 py-2.5 text-sm font-semibold text-primary disabled:opacity-50"
+            className="shrink-0 rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-2.5 text-sm font-semibold text-primary disabled:opacity-50"
           >
             {busy ? "Sending..." : "Send next batch now"}
           </button>

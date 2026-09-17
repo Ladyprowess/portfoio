@@ -64,7 +64,7 @@ function Reveal({ children, delay = 0, className }: { children: React.ReactNode;
 export default function AboutCredentials() {
   return (
     <>
-      <section className="border-b border-ink-border bg-white px-6 py-20 sm:px-8 md:px-20 md:py-28">
+      <section className="border-b border-ink-border bg-surface px-6 py-20 sm:px-8 md:px-20 md:py-28">
         <div className="mx-auto max-w-[1180px]">
           <Reveal className="mb-10">
             <span className="font-head text-[0.64rem] font-bold tracking-[0.2em] uppercase text-primary block mb-4">
@@ -131,7 +131,7 @@ export default function AboutCredentials() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {expertise.map((item, i) => (
-              <Reveal key={item.num} delay={i * 0.08} className="rounded-2xl border border-ink-border bg-white p-7 transition-shadow hover:shadow-[0_18px_50px_rgba(18,18,18,0.06)]">
+              <Reveal key={item.num} delay={i * 0.08} className="rounded-2xl border border-ink-border bg-surface p-7 transition-shadow hover:shadow-[0_18px_50px_rgba(18,18,18,0.06)]">
                 <span className="font-display font-extrabold text-primary/60 text-[0.9rem]">{item.num}</span>
                 <h3 className="font-head font-bold text-lg text-parchment mt-2 mb-3">{item.title}</h3>
                 <p className="text-[0.9rem] text-muted leading-[1.85]">{item.desc}</p>
@@ -141,8 +141,8 @@ export default function AboutCredentials() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-white px-6 py-20 sm:px-8 md:px-20 md:py-28">
-        <div aria-hidden className="absolute right-0 top-0 h-72 w-72 rounded-full bg-blue-50 blur-3xl" />
+      <section className="relative overflow-hidden bg-surface px-6 py-20 sm:px-8 md:px-20 md:py-28">
+        <div aria-hidden className="absolute right-0 top-0 h-72 w-72 rounded-full bg-primary/[0.07] blur-3xl" />
         <div className="mx-auto max-w-[1180px]">
           <Reveal className="relative mb-12 grid gap-5 md:grid-cols-[0.8fr_1.2fr] md:items-end">
             <div><span className="mb-4 block font-head text-[0.64rem] font-bold uppercase tracking-[0.2em] text-primary">Tools and skills</span><h2 className="font-display text-3xl font-extrabold leading-tight text-parchment md:text-4xl">How I approach the work.</h2></div>
@@ -151,8 +151,8 @@ export default function AboutCredentials() {
 
           <div className="relative grid gap-4 md:grid-cols-2">
             {toolGroups.map((group, i) => (
-              <Reveal key={group.title} delay={i * 0.06} className="group rounded-2xl border border-ink-border bg-bg p-6 transition duration-300 hover:border-primary/30 hover:bg-white hover:shadow-[0_18px_50px_rgba(18,18,18,0.06)] md:p-7">
-                <div className="flex items-start gap-5"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 font-head text-[0.65rem] font-bold text-primary">{group.number}</span><div><h3 className="font-display text-lg font-extrabold text-parchment">{group.title}</h3><p className="mt-2 text-[0.86rem] leading-6 text-muted">{group.description}</p></div></div>
+              <Reveal key={group.title} delay={i * 0.06} className="group rounded-2xl border border-ink-border bg-bg p-6 transition duration-300 hover:border-primary/30 hover:bg-surface hover:shadow-[0_18px_50px_rgba(18,18,18,0.06)] md:p-7">
+                <div className="flex items-start gap-5"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/[0.07] font-head text-[0.65rem] font-bold text-primary">{group.number}</span><div><h3 className="font-display text-lg font-extrabold text-parchment">{group.title}</h3><p className="mt-2 text-[0.86rem] leading-6 text-muted">{group.description}</p></div></div>
                 <div className="mt-6 grid grid-cols-1 gap-2 border-t border-ink-border pt-5 sm:grid-cols-2">
                   {group.tools.map((tool) => (
                     <span key={tool} className="flex items-center gap-2 text-[0.78rem] font-semibold text-parchment"><span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />{tool}</span>

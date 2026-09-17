@@ -324,19 +324,19 @@ export default function SubscribersPage() {
           <div>
             <button
               onClick={() => setImportOpen(true)}
-              className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white"
+              className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary"
             >
               Import CSV
             </button>
           </div>
         </div>
         {message && (
-          <p className="mt-6 rounded-xl bg-white px-4 py-3 text-sm text-muted" role="status">
+          <p className="mt-6 rounded-xl bg-surface px-4 py-3 text-sm text-muted" role="status">
             {message}
           </p>
         )}
         <NewsletterQueuePanel password={password} />
-        <div className="mt-7 grid gap-3 rounded-2xl border border-ink-border bg-white p-3 md:grid-cols-[1fr_200px_150px_190px]">
+        <div className="mt-7 grid gap-3 rounded-2xl border border-ink-border bg-surface p-3 md:grid-cols-[1fr_200px_150px_190px]">
           <input
             value={query}
             onChange={(event) => changeFilter(() => setQuery(event.target.value))}
@@ -385,7 +385,7 @@ export default function SubscribersPage() {
         </p>
 
         {selected.size > 0 && (
-          <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-primary/30 bg-blue-50/60 p-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-primary/30 bg-primary/[0.05] p-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap items-center gap-3 px-1 text-sm">
               <span className="font-semibold">{selected.size} selected</span>
               {selected.size < filtered.length && (
@@ -414,7 +414,7 @@ export default function SubscribersPage() {
                   bulkUpdate({ topics: [event.target.value] }, `moved to ${event.target.value}`)
                 }
                 aria-label="Change topic for selected subscribers"
-                className="rounded-full border border-ink-border bg-white px-3 py-2 text-xs font-semibold disabled:opacity-50"
+                className="rounded-full border border-ink-border bg-surface px-3 py-2 text-xs font-semibold disabled:opacity-50"
               >
                 <option value="">Change topic…</option>
                 <option value="All">All</option>
@@ -435,7 +435,7 @@ export default function SubscribersPage() {
                   )
                 }
                 aria-label="Change tier for selected subscribers"
-                className="rounded-full border border-ink-border bg-white px-3 py-2 text-xs font-semibold disabled:opacity-50"
+                className="rounded-full border border-ink-border bg-surface px-3 py-2 text-xs font-semibold disabled:opacity-50"
               >
                 <option value="">Change tier…</option>
                 <option value="free">Free</option>
@@ -445,7 +445,7 @@ export default function SubscribersPage() {
                 type="button"
                 disabled={busy}
                 onClick={() => bulkUpdate({ status: "unsubscribed" }, "marked as unsubscribed")}
-                className="rounded-full border border-ink-border bg-white px-3 py-2 text-xs font-semibold disabled:opacity-50"
+                className="rounded-full border border-ink-border bg-surface px-3 py-2 text-xs font-semibold disabled:opacity-50"
               >
                 Mark unsubscribed
               </button>
@@ -453,7 +453,7 @@ export default function SubscribersPage() {
                 type="button"
                 disabled={busy}
                 onClick={() => remove(Array.from(selected))}
-                className="rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                className="rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-on-primary disabled:opacity-50"
               >
                 Delete selected
               </button>
@@ -461,7 +461,7 @@ export default function SubscribersPage() {
           </div>
         )}
 
-        <div className="mt-3 overflow-x-auto rounded-2xl border border-ink-border bg-white">
+        <div className="mt-3 overflow-x-auto rounded-2xl border border-ink-border bg-surface">
           <table className="w-full min-w-[950px] text-left text-sm">
             <thead className="bg-surface-2 text-xs uppercase tracking-wider text-muted">
               <tr>
@@ -489,7 +489,7 @@ export default function SubscribersPage() {
               {visible.map((item) => (
                 <tr
                   key={item.id}
-                  className={`border-t border-ink-border ${selected.has(item.id) ? "bg-blue-50/40" : ""}`}
+                  className={`border-t border-ink-border ${selected.has(item.id) ? "bg-primary/[0.04]" : ""}`}
                 >
                   <td className="p-4">
                     <input
@@ -607,7 +607,7 @@ export default function SubscribersPage() {
           onKeyDown={(event) => event.key === "Escape" && !busy && closeImport()}
           onClick={(event) => event.target === event.currentTarget && !busy && closeImport()}
         >
-          <div className="mx-auto max-w-lg rounded-3xl bg-white p-6 shadow-2xl md:p-8">
+          <div className="mx-auto max-w-lg rounded-3xl bg-surface p-6 shadow-2xl md:p-8">
             <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">
               Import subscribers
             </p>
@@ -661,7 +661,7 @@ export default function SubscribersPage() {
                     type="button"
                     aria-pressed={importTopics.includes(value)}
                     onClick={() => toggleImportTopic(value)}
-                    className={`rounded-full border px-4 py-2 text-xs font-semibold ${importTopics.includes(value) ? "border-primary bg-primary text-white" : "border-ink-border bg-white text-muted hover:border-primary"}`}
+                    className={`rounded-full border px-4 py-2 text-xs font-semibold ${importTopics.includes(value) ? "border-primary bg-primary text-on-primary" : "border-ink-border bg-surface text-muted hover:border-primary"}`}
                   >
                     {value}
                   </button>
@@ -684,7 +684,7 @@ export default function SubscribersPage() {
                 type="button"
                 disabled={busy || !importRows.length || !importTopics.length}
                 onClick={runImport}
-                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white disabled:opacity-50"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary disabled:opacity-50"
               >
                 {busy
                   ? "Importing..."

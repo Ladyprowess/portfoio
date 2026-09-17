@@ -8,13 +8,14 @@ import NewsletterSignup from '@/components/NewsletterSignup'
 import { blogPosts } from '@/lib/blog-posts'
 import { getPublishedPosts, readTime } from '@/lib/blog-cms'
 import { categoryFromSlug } from '@/lib/blog-categories'
+import { DEFAULT_ACCENT } from '@/lib/accent'
 
 type CategoryPageProps = { params: { category: string } }
 
 async function archivePosts(): Promise<BlogArchivePost[]> {
   const cmsPosts = await getPublishedPosts()
   return [
-    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, newsletterTopic: post.newsletter_topic, date: post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', year: 'numeric' }) : '', publishedAt: post.published_at || post.created_at, readTime: readTime(post.content_html), accent: '#2563EB', cover: post.cover_image })),
+    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, newsletterTopic: post.newsletter_topic, date: post.published_at ? new Date(post.published_at).toLocaleDateString('en', { month: 'long', year: 'numeric' }) : '', publishedAt: post.published_at || post.created_at, readTime: readTime(post.content_html), accent: DEFAULT_ACCENT, cover: post.cover_image })),
     ...blogPosts.map(post => ({ ...post, publishedAt: new Date(post.date).toISOString(), cover: null as string | null })),
   ]
 }
