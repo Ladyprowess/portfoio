@@ -1,5 +1,6 @@
 import BlogQuiz from "@/components/BlogQuiz";
 import { splitQuizSegments } from "@/lib/blog-quiz";
+import { stripAuthoredColours } from "@/lib/article-html";
 
 // Renders CMS article HTML, swapping stored quiz blocks for the interactive quiz.
 export default function ArticleContent({ html }: { html: string }) {
@@ -12,7 +13,7 @@ export default function ArticleContent({ html }: { html: string }) {
           <div
             key={`html-${index}`}
             className="blog-content"
-            dangerouslySetInnerHTML={{ __html: segment.html }}
+            dangerouslySetInnerHTML={{ __html: stripAuthoredColours(segment.html) }}
           />
         ),
       )}

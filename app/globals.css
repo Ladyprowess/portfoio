@@ -384,6 +384,13 @@ body::before {
   text-decoration: none;
 }
 
+/* Pasted documents often carry justified text. Without hyphenation the web
+   opens rivers between the words, so the reading column always sets left. */
+.reading [style*="justify"],
+.reading .blog-content [style*="justify"] {
+  text-align: left !important;
+}
+
 @media (max-width: 640px) {
   .reading { font-size: 1.075rem; line-height: 1.75; }
 }

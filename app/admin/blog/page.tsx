@@ -382,7 +382,10 @@ function normaliseGoogleDocsPaste(html: string) {
         const usefulStyles = attribute.value
           .split(";")
           .filter((value) =>
-            /^(?:text-align|font-weight|font-style|text-decoration|color|background-color|border-color)\s*:/i.test(
+            // Colour is deliberately NOT carried over. Pasted documents stamp
+            // every block with their own ink (Google Docs uses #000000), which
+            // beats the stylesheet and leaves the text invisible in dark mode.
+            /^(?:text-align|font-weight|font-style|text-decoration)\s*:/i.test(
               value.trim(),
             ),
           );
