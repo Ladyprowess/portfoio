@@ -16,6 +16,7 @@ import {
   queueCampaign,
   queueStatus,
 } from "@/lib/newsletter-queue";
+import { SITE_URL } from "@/lib/site";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
       );
     const from = `${senderName(topic)} <hello@ladyprowess.com>`;
     const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || "https://ladyprowess.com";
+      SITE_URL;
     const postSlug = makeBlogSlug(String(payload.slug || title));
     const postUrl = `${siteUrl}/blog/${encodeURIComponent(postSlug)}`;
 

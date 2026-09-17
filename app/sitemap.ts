@@ -3,8 +3,9 @@ import { blogPosts } from '@/lib/blog-posts'
 import { getPublishedPosts } from '@/lib/blog-cms'
 import { categorySlug } from '@/lib/blog-categories'
 import { ventures } from '@/lib/ventures'
+import { SITE_URL } from '@/lib/site'
 
-const base = 'https://ladyprowess.com'
+const base = SITE_URL
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const cmsPosts = await getPublishedPosts()

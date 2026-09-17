@@ -2,16 +2,22 @@ import { ImageResponse } from 'next/og'
 import { getBlogPost } from '@/lib/blog-posts'
 import { getPublishedPost, readTime } from '@/lib/blog-cms'
 import { OgCard, OG_SIZE, ogAccent, ogFonts, absoluteImage } from '@/lib/og/card'
+import { SITE_URL } from '@/lib/site'
 
 export const runtime = 'nodejs'
 export const alt = 'Lady Prowess article'
 export const size = OG_SIZE
 export const contentType = 'image/png'
 
-const SITE_URL = 'https://ladyprowess.com'
-
 export default async function Image({ params }: { params: { slug: string } }) {
-  const post = getBlogPost(params.slug) || (await getPublishedPost(params.slug))
+  // A card that fails to render is worse than a plain one: the crawler gets a
+  // 500 and falls back to the favicon, so the CMS lookup must never throw.
+  let post: Awaited<ReturnType<typeof getPublishedPost>> | ReturnType<typeof getBlogPost> = null
+  try {
+    post = getBlogPost(params.slug) || (await getPublishedPost(params.slug))
+  } catch {
+    post = null
+  }
   const fonts = await ogFonts()
 
   const card = {

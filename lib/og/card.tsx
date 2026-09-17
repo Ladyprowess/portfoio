@@ -3,11 +3,12 @@ import type { ReactElement } from 'react'
 
 export const OG_SIZE = { width: 1200, height: 630 }
 
-const INK = '#F4F3EF'
-const INK_MUTED = '#8C9497'
-const CANVAS = '#0B0D0E'
-const PANEL = '#14181A'
-const BRAND = '#5B9BFF'
+const INK = '#121212'
+const INK_MUTED = '#6B7280'
+const CANVAS = '#F9F9FB'
+const PANEL = '#F1F3F6'
+const HAIRLINE = '#E1E5EA'
+const BRAND = '#2563EB'
 const COVER_WIDTH = 430
 
 // These routes run on the Node runtime so the fonts can be read from disk.
@@ -133,7 +134,7 @@ export function OgCard({
           left: -160,
           width: 900,
           height: 620,
-          background: `radial-gradient(closest-side, ${accent}2E, ${accent}00)`,
+          background: `radial-gradient(closest-side, ${accent}1A, ${accent}00)`,
           display: 'flex',
         }}
       />
@@ -178,7 +179,7 @@ export function OgCard({
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', height: 1, background: '#262C2E' }} />
+          <div style={{ display: 'flex', height: 1, background: HAIRLINE }} />
           <div
             style={{
               display: 'flex',
@@ -224,7 +225,7 @@ export function OgCard({
               width: COVER_WIDTH,
               height: OG_SIZE.height,
               display: 'flex',
-              background: `linear-gradient(90deg, ${CANVAS} 0%, ${CANVAS}E0 20%, ${CANVAS}59 62%, ${CANVAS}33 100%)`,
+              background: `linear-gradient(90deg, ${CANVAS} 0%, ${CANVAS}E0 20%, ${CANVAS}4D 60%, ${CANVAS}1A 100%)`,
             }}
           />
         </div>
@@ -238,7 +239,7 @@ export function OgCard({
             width: 250,
             height: '100%',
             background: PANEL,
-            borderLeft: `1px solid #22282A`,
+            borderLeft: `1px solid ${HAIRLINE}`,
           }}
         >
           <div

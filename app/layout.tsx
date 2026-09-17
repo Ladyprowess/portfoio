@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
 import PostHogProvider from '@/components/PostHogProvider'
 import { themeBootstrapScript } from '@/lib/theme'
+import { SITE_URL } from '@/lib/site'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({
@@ -38,7 +39,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ladyprowess.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Lady Prowess | Ngozi Peace Okafor',
     template: '%s | Lady Prowess',
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   description:
     'Ngozi Peace Okafor is a product marketer, technical writer, WordPress designer, Web3 educator, and founder of Prowess Digital Solutions.',
   applicationName: 'Lady Prowess',
-  authors: [{ name: 'Ngozi Peace Okafor', url: 'https://ladyprowess.com/about' }],
+  authors: [{ name: 'Ngozi Peace Okafor', url: `${SITE_URL}/about` }],
   creator: 'Ngozi Peace Okafor',
   publisher: 'Lady Prowess',
   keywords: ['Lady Prowess', 'Ngozi Peace Okafor', 'product marketing', 'technical writing', 'WordPress design', 'Web3 education', 'business strategy'],
@@ -75,7 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: 'Ngozi Peace Okafor', alternateName: 'Lady Prowess', url: 'https://ladyprowess.com', jobTitle: ['Product Marketer', 'Technical Writer', 'WordPress Designer', 'Web3 Educator'], worksFor: { '@type': 'Organization', name: 'Prowess Digital Solutions' } }).replace(/</g, '\\u003c') }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: 'Ngozi Peace Okafor', alternateName: 'Lady Prowess', url: SITE_URL, jobTitle: ['Product Marketer', 'Technical Writer', 'WordPress Designer', 'Web3 Educator'], worksFor: { '@type': 'Organization', name: 'Prowess Digital Solutions' } }).replace(/</g, '\\u003c') }}
         />
         <PostHogProvider>{children}</PostHogProvider>
       </body>

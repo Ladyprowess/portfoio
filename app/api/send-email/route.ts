@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { db } from '@/lib/email-store'
+import { SITE_URL } from "@/lib/site";
 
 // This route sends real email from hello@ladyprowess.com via Resend.
 // It is intentionally locked behind COMPOSE_PASSWORD so that, even though the
@@ -33,7 +34,7 @@ const SIGNATURE_HTML = `
         &nbsp;&middot;&nbsp;
         <a href="https://kivorapay.com" style="color:#a2a7b3;text-decoration:none;">kivorapay.com</a>
         &nbsp;&middot;&nbsp;
-        <a href="https://ladyprowess.com" style="color:#a2a7b3;text-decoration:none;">ladyprowess.com</a>
+        <a href=SITE_URL style="color:#a2a7b3;text-decoration:none;">ladyprowess.com</a>
       </div>
       <div style="font-size:13px;margin-top:16px;line-height:1.6;">
         ${SOCIALS.map(

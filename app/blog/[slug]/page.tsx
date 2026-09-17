@@ -12,6 +12,7 @@ import ArticleOpening from '@/components/ArticleOpening'
 import ReadingProgress from '@/components/ReadingProgress'
 import ArticleSnap from '@/components/ArticleSnap'
 import { DEFAULT_ACCENT } from '@/lib/accent'
+import { SITE_URL } from '@/lib/site'
 
 type BlogPostPageProps = {
   params: {
@@ -94,7 +95,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: { title: post.title, description: post.excerpt, url: `/blog/${post.slug}`, siteName: 'Lady Prowess', type: 'article', publishedTime: 'published_at' in post ? post.published_at || undefined : undefined, authors: ['Ngozi Peace Okafor'], section: post.category, images: [{ url: `/blog/${post.slug}/opengraph-image`, width: 1200, height: 630, alt: post.title }] },
+    openGraph: { title: post.title, description: post.excerpt, url: `/blog/${post.slug}`, siteName: 'Lady Prowess', type: 'article', publishedTime: 'published_at' in post ? post.published_at || undefined : undefined, authors: ['Ngozi Peace Okafor'], section: post.category, images: [{ url: `/blog/${post.slug}/opengraph-image`, width: 1200, height: 630, alt: post.title, type: 'image/png' }] },
     twitter: { card: 'summary_large_image', title: post.title, description: post.excerpt, images: [`/blog/${post.slug}/opengraph-image`] },
   }
 }
@@ -129,10 +130,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     description: post.excerpt,
     datePublished: publishedDate,
     dateModified: 'updated_at' in post ? post.updated_at || publishedDate : publishedDate,
-    mainEntityOfPage: `https://ladyprowess.com/blog/${post.slug}`,
-    image: `https://ladyprowess.com/blog/${post.slug}/opengraph-image`,
-    author: { '@type': 'Person', name: 'Ngozi Peace Okafor', url: 'https://ladyprowess.com/about' },
-    publisher: { '@type': 'Person', name: 'Lady Prowess', url: 'https://ladyprowess.com' },
+    mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+    image: `${SITE_URL}/blog/${post.slug}/opengraph-image`,
+    author: { '@type': 'Person', name: 'Ngozi Peace Okafor', url: `${SITE_URL}/about` },
+    publisher: { '@type': 'Person', name: 'Lady Prowess', url: SITE_URL },
   }
 
   return (

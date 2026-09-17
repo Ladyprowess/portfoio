@@ -16,7 +16,7 @@ export default function MediaPage() {
   return (
     <main className="min-h-screen bg-bg">
       <Nav />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'ProfilePage', name: 'Lady Prowess Media Kit', description: 'Official biography and media resources for Ngozi Peace Okafor.', url: 'https://ladyprowess.com/media', mainEntity: { '@type': 'Person', name: 'Ngozi Peace Okafor', alternateName: 'Lady Prowess', url: 'https://ladyprowess.com/about', jobTitle: 'Digital Product and Content Specialist', knowsAbout: ['Technical writing', 'WordPress design', 'Web3', 'Fintech', 'Product communication', 'Content strategy', 'SEO'] } }).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'ProfilePage', name: 'Lady Prowess Media Kit', description: 'Official biography and media resources for Ngozi Peace Okafor.', url: 'https://ladyprowess.com/media', mainEntity: { '@type': 'Person', name: 'Ngozi Peace Okafor', alternateName: 'Lady Prowess', url: 'https://www.ladyprowess.com/about', jobTitle: 'Digital Product and Content Specialist', knowsAbout: ['Technical writing', 'WordPress design', 'Web3', 'Fintech', 'Product communication', 'Content strategy', 'SEO'] } }).replace(/</g, '\\u003c') }} />
       <Media />
       <Footer />
     </main>
