@@ -10,6 +10,7 @@ import NewsletterSignup from '@/components/NewsletterSignup'
 import ArticleContent from '@/components/ArticleContent'
 import ArticleOpening from '@/components/ArticleOpening'
 import ReadingProgress from '@/components/ReadingProgress'
+import ArticleSnap from '@/components/ArticleSnap'
 import { DEFAULT_ACCENT } from '@/lib/accent'
 
 type BlogPostPageProps = {
@@ -139,8 +140,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }} />
       <Nav />
       <ReadingProgress />
+      <ArticleSnap />
 
-      <div className="mx-auto w-full min-w-0 max-w-4xl">
+      <div className="mx-auto w-full min-w-0 max-w-[46rem]">
         <ArticleOpening
           title={post.title}
           date={displayDate}
@@ -151,15 +153,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         />
       </div>
 
-      <article className="mx-auto w-full min-w-0 max-w-4xl px-5 pb-24 md:px-8">
-        <div id="article-body">
+      <article className="mx-auto w-full min-w-0 max-w-[46rem] px-5 pb-24 md:px-8">
+        <div id="article-body" className="scroll-mt-[5.25rem]">
         {'cover_image' in post && post.cover_image && <div className="relative aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
 
-        {'content_html' in post ? <div className="reading w-full min-w-0 max-w-[40rem] py-16 md:py-20">
+        {'content_html' in post ? <div className="reading w-full min-w-0 py-14 md:py-16">
           <ArticleContent html={cmsArticleParts?.[0] || post.content_html} />
           <div className="reading-reset my-12"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
           {cmsArticleParts?.[1] && <ArticleContent html={cmsArticleParts[1]} />}
-        </div> : <div className="reading w-full min-w-0 max-w-[40rem] py-16 md:py-20">
+        </div> : <div className="reading w-full min-w-0 py-14 md:py-16">
           {post.body.map((block, index) => {
             const articleBlock = (() => {
             if (block.type === 'quote') {

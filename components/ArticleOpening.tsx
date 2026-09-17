@@ -34,7 +34,7 @@ export default function ArticleOpening({
 
       {/* The headline block sits on the optical third, not dead centre. */}
       <div className="flex flex-1 items-center">
-        <div className="w-full max-w-3xl">
+        <div className="w-full">
           <div className="flex items-center gap-3">
             <span className="h-px w-8 flex-none" style={{ background: accent }} aria-hidden="true" />
             <span
@@ -50,7 +50,7 @@ export default function ArticleOpening({
           </h1>
 
           {excerpt && (
-            <p className="mt-7 max-w-xl font-serif text-[1.05rem] italic leading-[1.65] text-muted md:text-[1.15rem] [text-wrap:pretty]">
+            <p className="mt-7 max-w-[34rem] font-serif text-[1.05rem] italic leading-[1.65] text-muted md:text-[1.15rem] [text-wrap:pretty]">
               {excerpt}
             </p>
           )}
