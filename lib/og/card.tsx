@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import type { ReactElement } from 'react'
+import { jetbrains700, newsreader400, newsreader600 } from './fonts'
 
 export const OG_SIZE = { width: 1200, height: 630 }
 
@@ -11,28 +12,23 @@ const HAIRLINE = '#E1E5EA'
 const BRAND = '#2563EB'
 const COVER_WIDTH = 430
 
-// These routes run on the Node runtime so the fonts can be read from disk.
-// On edge, `new URL(..., import.meta.url)` resolves to a bundler path with no
-// origin, which `fetch` rejects during the production prerender.
-const fontFiles = [
-  ['Newsreader', 600, 'newsreader-600.woff'],
-  ['Newsreader', 400, 'newsreader-400.woff'],
-  ['JetBrains Mono', 700, 'jetbrains-700.woff'],
-] as const
+// Font data is embedded (see ./fonts.ts) rather than read from disk. Reading it
+// at request time made this depend on the files being traced into the
+// serverless bundle, and when that failed every article's preview image
+// returned a 500 and social platforms fell back to the favicon.
+const fontPromise = Promise.resolve([
+  { name: 'Newsreader', weight: 600 as const, style: 'normal' as const, data: decodeFont(newsreader600) },
+  { name: 'Newsreader', weight: 400 as const, style: 'normal' as const, data: decodeFont(newsreader400) },
+  { name: 'JetBrains Mono', weight: 700 as const, style: 'normal' as const, data: decodeFont(jetbrains700) },
+])
 
-// Read once per lambda, not once per request.
-const fontPromise = (async () => {
-  const { readFile } = await import('node:fs/promises')
-  const { join } = await import('node:path')
-  return Promise.all(
-    fontFiles.map(async ([name, weight, file]) => ({
-      name,
-      weight: weight as 400 | 600 | 700,
-      style: 'normal' as const,
-      data: await readFile(join(process.cwd(), 'lib/og/fonts', file)),
-    })),
-  )
-})()
+function decodeFont(base64: string): ArrayBuffer {
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+  for (let index = 0; index < binary.length; index += 1)
+    bytes[index] = binary.charCodeAt(index)
+  return bytes.buffer
+}
 
 export function ogFonts() {
   return fontPromise
