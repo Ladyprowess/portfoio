@@ -6,7 +6,7 @@ export const newsletterTopics = [
   "Technology",
   "Business",
   "Lifestyle",
-  "Omenala",
+  "Igbo Heritage",
 ] as const;
 
 export type NewsletterTopic = (typeof newsletterTopics)[number];
@@ -75,12 +75,11 @@ export function sameTopics(a: string[], b: string[]): boolean {
 
 /**
  * Topics that go out under their own masthead. Anything not listed here is sent
- * as Lady Prowess. Omenala maps to itself so it keeps its own masthead rather
- * than falling back to the default.
+ * as Lady Prowess.
  */
 const mastheads: Record<string, string> = {
   Web3: "Decode Web3",
-  Omenala: "Omenala",
+  "Igbo Heritage": "Omenala",
 };
 
 export function publicationName(topic: string) {
