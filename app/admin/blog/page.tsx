@@ -15,6 +15,7 @@ import {
   type BlogQuiz,
 } from "@/lib/blog-quiz";
 import { newsletterTopics } from "@/lib/newsletter";
+import { compressBlogImage, MAX_IMAGE_BYTES } from "@/lib/compress-blog-image";
 
 const fieldClass =
   "w-full rounded-xl border border-ink-border bg-surface px-4 py-3 text-sm outline-none focus:border-primary";
@@ -24,13 +25,6 @@ const POSTS_PER_PAGE = 5;
 
 /** Largest article body the save endpoint accepts, in bytes. */
 const MAX_ARTICLE_BYTES = 900000;
-
-/**
- * Images are sent as base64 inside JSON, which inflates them by about a third.
- * The host rejects request bodies over 4.5 MB with a bare 413, so anything much
- * above 3 MB never reaches the endpoint's own 4 MB check.
- */
-const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -1060,10 +1054,8 @@ export default function BlogCmsPage() {
   }
 
   async function uploadBlogImage(file: File) {
-    if (file.size > MAX_IMAGE_BYTES)
-      throw new Error(
-        `That image is ${formatBytes(file.size)}. Resize it under ${formatBytes(MAX_IMAGE_BYTES)} and try again.`,
-      );
+    if (file.size > MAX_IMAGE_BYTES) setStatus("Compressing large image before uploading...");
+    file = await compressBlogImage(file);
     const content = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(String(reader.result).split(",")[1]);
