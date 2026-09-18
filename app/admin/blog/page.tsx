@@ -21,6 +21,22 @@ const fieldClass =
 const toolbarButtonClass =
   "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-parchment transition hover:bg-surface hover:text-primary focus-visible:ring-2 focus-visible:ring-primary";
 const POSTS_PER_PAGE = 5;
+
+/** Largest article body the save endpoint accepts, in bytes. */
+const MAX_ARTICLE_BYTES = 900000;
+
+/**
+ * Images are sent as base64 inside JSON, which inflates them by about a third.
+ * The host rejects request bodies over 4.5 MB with a bare 413, so anything much
+ * above 3 MB never reaches the endpoint's own 4 MB check.
+ */
+const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 type PostState = "draft" | "published" | "scheduled";
 type PublicationMode = "now" | "schedule";
 
@@ -475,7 +491,7 @@ export default function BlogCmsPage() {
     } catch {
       if (response.status === 413 || /request entity too large/i.test(text))
         throw new Error(
-          "This article is too large to save because the pasted document contains embedded data. Paste it again, then upload images with the image button.",
+          "The server rejected this request for being too large. If you were adding an image, use one under 3 MB; otherwise the article needs to be shorter.",
         );
       throw new Error(
         text.trim().slice(0, 180) || "The server returned an invalid response.",
@@ -917,17 +933,50 @@ export default function BlogCmsPage() {
     }
   }
 
+  /**
+   * Pasted documents can carry their pictures inline as data: URIs. Those
+   * inflate the article past the request size limit, and the platform rejects
+   * the save with a bare 413 before the app ever sees it. The paste handler
+   * lifts them out, but anything reaching the editor another way — a
+   * drag-and-drop, an image pasted on its own, a partial upload — would
+   * otherwise leave the writer stuck being told to paste the whole document
+   * again. Lift whatever is left at save time instead.
+   */
+  async function liftEmbeddedImages(html: string) {
+    if (!/<img[^>]+src=["']data:image\//i.test(html)) return html;
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const embedded = Array.from(parsed.querySelectorAll("img")).filter((image) =>
+      /^data:image\//i.test(image.getAttribute("src") || ""),
+    );
+    if (!embedded.length) return html;
+
+    for (let index = 0; index < embedded.length; index += 1) {
+      setStatus(`Uploading pasted image ${index + 1} of ${embedded.length}...`);
+      const source = embedded[index].getAttribute("src") || "";
+      const blob = await fetch(source).then((response) => response.blob());
+      const extension = blob.type.split("/")[1] || "png";
+      const file = new File([blob], `pasted-image-${index + 1}.${extension}`, {
+        type: blob.type,
+      });
+      embedded[index].setAttribute("src", await uploadBlogImage(file));
+    }
+    return parsed.body.innerHTML;
+  }
+
   async function save(postStatus: PostState) {
     setSaving(true);
     setStatus("");
     try {
-      const compactContent = normaliseGoogleDocsPaste(
-        editorRef.current?.innerHTML || contentHtml,
+      const compactContent = await liftEmbeddedImages(
+        normaliseGoogleDocsPaste(editorRef.current?.innerHTML || contentHtml),
       );
-      if (new Blob([compactContent]).size > 900000)
+      const articleBytes = new Blob([compactContent]).size;
+      if (articleBytes > MAX_ARTICLE_BYTES)
         throw new Error(
-          "This article is still too large. Remove embedded images and upload them with the image button.",
+          `This article is ${formatBytes(articleBytes)} of text, over the ${formatBytes(MAX_ARTICLE_BYTES)} limit. Split it into two posts, or shorten it.`,
         );
+      // Put the lifted markup back in the editor so a retry does not re-upload.
+      if (editorRef.current) editorRef.current.innerHTML = compactContent;
       setContentHtml(compactContent);
       if (publicationMode === "schedule" && !publishedAt)
         throw new Error("Choose a publication date and time.");
@@ -1009,6 +1058,10 @@ export default function BlogCmsPage() {
   }
 
   async function uploadBlogImage(file: File) {
+    if (file.size > MAX_IMAGE_BYTES)
+      throw new Error(
+        `That image is ${formatBytes(file.size)}. Resize it under ${formatBytes(MAX_IMAGE_BYTES)} and try again.`,
+      );
     const content = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(String(reader.result).split(",")[1]);
