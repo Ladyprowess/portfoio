@@ -967,8 +967,10 @@ export default function BlogCmsPage() {
     setSaving(true);
     setStatus("");
     try {
-      const compactContent = await liftEmbeddedImages(
-        normaliseGoogleDocsPaste(editorRef.current?.innerHTML || contentHtml),
+      // Lift first: normaliseGoogleDocsPaste deletes any img still holding a
+      // data: URI, so running it first would silently drop the pictures.
+      const compactContent = normaliseGoogleDocsPaste(
+        await liftEmbeddedImages(editorRef.current?.innerHTML || contentHtml),
       );
       const articleBytes = new Blob([compactContent]).size;
       if (articleBytes > MAX_ARTICLE_BYTES)
