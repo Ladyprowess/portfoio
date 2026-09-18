@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import posthog from 'posthog-js'
 import Nav from './Nav'
 import Footer from './Footer'
+import { CV_URL } from '@/lib/site'
 
 // Add future photos from public/hero to this list.
 const heroPhotos = ['/hero/mine.jpeg', '/hero/headshot1.png']
@@ -86,7 +87,7 @@ export default function PortfolioExperience() {
           <div className="mb-6 flex items-center gap-2 text-sm text-muted"><span className="h-2 w-2 rounded-full bg-[#84CC16]" />Available for selected projects</div>
           <h1 className="max-w-3xl font-display text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.045em]">I help digital products become easier to understand, use and grow.</h1>
           <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi Peace Okafor, a Digital Product and Content Specialist. I combine product communication, content strategy and practical digital execution to turn complex ideas into useful experiences.</p>
-          <div className="mt-9 flex flex-wrap gap-3"><a href="/services" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim">Explore my work</a><a href="https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border bg-surface px-6 py-3 text-sm font-semibold hover:border-muted">View résumé ↗</a></div>
+          <div className="mt-9 flex flex-wrap gap-3"><a href="/services" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim">Explore my work</a><a href={CV_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border bg-surface px-6 py-3 text-sm font-semibold hover:border-muted">View résumé ↗</a></div>
           <div className="mt-12 grid max-w-xl grid-cols-3 border-t border-ink-border pt-6"><div><strong className="block font-display text-xl">9+</strong><span className="text-xs text-muted">Years building</span></div><div><strong className="block font-display text-xl">200+</strong><span className="text-xs text-muted">People trained</span></div><div><strong className="block font-display text-xl">3</strong><span className="text-xs text-muted">Ventures founded</span></div></div>
         </div>
 

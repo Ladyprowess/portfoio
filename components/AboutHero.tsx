@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
+import { CV_URL } from '@/lib/site'
 
 export default function AboutHero() {
   const ref = useRef(null)
@@ -60,7 +61,7 @@ export default function AboutHero() {
                 View my work
               </a>
               <a
-                href="https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing"
+                href={CV_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-11 items-center justify-center border border-ink-border bg-surface px-7 py-3.5 font-display text-sm font-bold text-parchment transition-colors hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"

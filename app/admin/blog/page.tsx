@@ -14,6 +14,7 @@ import {
   readQuizAttribute,
   type BlogQuiz,
 } from "@/lib/blog-quiz";
+import { newsletterTopics } from "@/lib/newsletter";
 
 const fieldClass =
   "w-full rounded-xl border border-ink-border bg-surface px-4 py-3 text-sm outline-none focus:border-primary";
@@ -1217,7 +1218,7 @@ export default function BlogCmsPage() {
                   className={`mt-2 ${fieldClass}`}
                 >
                   <option value="All">All subscribers</option>
-                  {categoryOptions.map((item) => <option key={item} value={item}>{item}</option>)}
+                  {newsletterTopics.map((item) => <option key={item} value={item}>{item}</option>)}
                 </select>
               </label>
               <label className="text-sm font-semibold">

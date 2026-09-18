@@ -3,10 +3,11 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import posthog from 'posthog-js'
+import { CV_URL, RECOMMENDATION_URL } from '@/lib/site'
 
 const docs = [
-  { label: 'View Resume',        href: 'https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing' },
-  { label: 'Recommendation',     href: 'https://drive.google.com/file/d/1AtpOwk6TLtV6mj10E2GkU8Ohfa20Q8Bd/view?usp=sharing' },
+  { label: 'View Resume',        href: CV_URL },
+  { label: 'Recommendation',     href: RECOMMENDATION_URL },
 ]
 
 const socials = [

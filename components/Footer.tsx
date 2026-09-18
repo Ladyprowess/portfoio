@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { CV_URL } from '@/lib/site'
 
 const columns = [
   {
@@ -25,7 +26,7 @@ const columns = [
       { label: 'Awards', href: '/awards' },
       {
         label: 'CV',
-        href: 'https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing',
+        href: CV_URL,
       },
     ],
   },

@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
 import posthog from 'posthog-js'
 import { useEffect, useState } from 'react'
+import { CV_URL } from '@/lib/site'
 
 // Add future hero photos here after placing their files in public/hero.
 const heroPhotos = [
@@ -106,7 +107,7 @@ export default function Hero() {
                 See the Work
               </a>
               <a
-                href="https://drive.google.com/file/d/1VhYNSzSsOgS_nyyNS0fbmquKZxPCkPde/view?usp=sharing"
+                href={CV_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => posthog.capture('resume_downloaded', { placement: 'hero' })}

@@ -6,6 +6,7 @@ export const newsletterTopics = [
   "Technology",
   "Business",
   "Lifestyle",
+  "Omenala",
 ] as const;
 
 export type NewsletterTopic = (typeof newsletterTopics)[number];
@@ -72,13 +73,23 @@ export function sameTopics(a: string[], b: string[]): boolean {
   return a.length === b.length && a.every((topic) => b.includes(topic));
 }
 
+/**
+ * Topics that go out under their own masthead. Anything not listed here is sent
+ * as Lady Prowess. Omenala maps to itself so it keeps its own masthead rather
+ * than falling back to the default.
+ */
+const mastheads: Record<string, string> = {
+  Web3: "Decode Web3",
+  Omenala: "Omenala",
+};
+
 export function publicationName(topic: string) {
-  return topic === "Web3" ? "Decode Web3" : "Lady Prowess";
+  return mastheads[topic] || "Lady Prowess";
 }
 
 export function senderName(topic: string) {
   if (topic === "All") return "Lady Prowess";
-  return `Lady Prowess from ${topic === "Web3" ? "Decode Web3" : topic}`;
+  return `Lady Prowess from ${mastheads[topic] || topic}`;
 }
 
 function emailSafeArticleHtml(contentHtml: string) {
