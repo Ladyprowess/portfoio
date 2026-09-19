@@ -59,7 +59,7 @@ export default function ArticleOpening({
         </div>
       </div>
       </div>
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center pb-20 pt-4">
         <ScrollCue />
       </div>
     </header>

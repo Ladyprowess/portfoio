@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ArticleEngagementProvider, ArticleActions, ArticleComments } from '@/components/ArticleEngagement'
 import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getBlogPost } from '@/lib/blog-posts'
@@ -84,6 +85,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <ReadingProgress />
       <ArticleSnap />
 
+      <ArticleEngagementProvider slug={post.slug} title={post.title}>
       <div className="mx-auto w-full min-w-0 max-w-6xl">
         <ArticleOpening
           title={post.title}
@@ -137,6 +139,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="mx-auto w-full max-w-3xl">
+        <ArticleComments />
         <div className="mb-12"><NewsletterSignup compact availableTopics={[newsletterTopic]} defaultTopics={[newsletterTopic]} /></div>
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -153,6 +156,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <Link href="/blog" className="mt-8 inline-flex min-h-11 items-center text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">← Explore more articles</Link>
         </div>
       </article>
+      <ArticleActions />
+      </ArticleEngagementProvider>
       <Footer />
     </main>
   )

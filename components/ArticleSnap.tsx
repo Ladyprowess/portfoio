@@ -29,6 +29,7 @@ export default function ArticleSnap({ targetId = 'article-body' }: { targetId?: 
     }
 
     const onWheel = (event: WheelEvent) => {
+      if (event.target instanceof Element && event.target.closest('[data-article-actions]')) return
       if (locked) { event.preventDefault(); return }
       if (event.deltaY <= 0 || !atTop()) return
       event.preventDefault()
@@ -38,6 +39,7 @@ export default function ArticleSnap({ targetId = 'article-body' }: { targetId?: 
     let touchStartY = 0
     const onTouchStart = (event: TouchEvent) => { touchStartY = event.touches[0].clientY }
     const onTouchMove = (event: TouchEvent) => {
+      if (event.target instanceof Element && event.target.closest('[data-article-actions]')) return
       if (locked) { event.preventDefault(); return }
       if (!atTop()) return
       // Finger travelling up the screen means "scroll down".
