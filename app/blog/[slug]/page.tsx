@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
-import { blogPosts, getBlogPost } from '@/lib/blog-posts'
+import { getBlogPost } from '@/lib/blog-posts'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Image from 'next/image'
@@ -84,7 +84,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <ReadingProgress />
       <ArticleSnap />
 
-      <div className="mx-auto w-full min-w-0 max-w-[46rem]">
+      <div className="mx-auto w-full min-w-0 max-w-6xl">
         <ArticleOpening
           title={post.title}
           date={displayDate}
@@ -95,15 +95,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         />
       </div>
 
-      <article className="mx-auto w-full min-w-0 max-w-[46rem] px-5 pb-24 md:px-8">
+      <article className="mx-auto w-full min-w-0 max-w-6xl px-5 pb-20 md:px-8 md:pb-28">
         <div id="article-body" className="scroll-mt-[5.25rem]">
-        {'cover_image' in post && post.cover_image && <div className="relative aspect-[16/8] overflow-hidden rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 900px) 100vw, 900px" className="object-cover" priority /></div>}
+        {'cover_image' in post && post.cover_image && <div className="relative aspect-[4/3] overflow-hidden rounded-2xl md:aspect-[2/1] md:rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 1152px) 100vw, 1088px" className="object-cover" priority /></div>}
 
-        {'content_html' in post ? <div className="reading w-full min-w-0 py-14 md:py-16">
+        {'content_html' in post ? <div className="reading mx-auto w-full min-w-0 max-w-3xl py-10 md:py-14">
           <ArticleContent html={cmsArticleParts?.[0] || post.content_html} />
           <div className="reading-reset my-12"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
           {cmsArticleParts?.[1] && <ArticleContent html={cmsArticleParts[1]} />}
-        </div> : <div className="reading w-full min-w-0 py-14 md:py-16">
+        </div> : <div className="reading mx-auto w-full min-w-0 max-w-3xl py-10 md:py-14">
           {post.body.map((block, index) => {
             const articleBlock = (() => {
             if (block.type === 'quote') {
@@ -136,19 +136,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>}
         </div>
 
+        <div className="mx-auto w-full max-w-3xl">
         <div className="mb-12"><NewsletterSignup compact availableTopics={[newsletterTopic]} defaultTopics={[newsletterTopic]} /></div>
 
         <footer className="pt-10 border-t border-ink-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <span className="font-head text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted">
+          <span className="text-sm text-muted">
             Written by Ngozi Peace Okafor
           </span>
           <Link
             href="/#contact"
-            className="font-head text-[0.67rem] font-bold tracking-[0.14em] uppercase text-on-primary bg-primary px-5 py-3 hover:bg-primary/85 transition-colors duration-200 text-center"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-bg"
           >
             Work With Me
           </Link>
         </footer>
+        <Link href="/blog" className="mt-8 inline-flex min-h-11 items-center text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">← Explore more articles</Link>
+        </div>
       </article>
       <Footer />
     </main>
