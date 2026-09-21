@@ -12,7 +12,7 @@ export function ArticleLanguageProvider({ available, children }: { available: bo
 export function ArticleLanguageSwitch() {
  const { igbo, available, toggle } = useContext(Language)
  if (!available) return null
- return <div className="mt-4 flex gap-2" role="group" aria-label="Article language">{[{ code: false, label: 'English', lang: 'en' }, { code: true, label: 'Igbo', lang: 'ig' }].map(option => <button key={option.lang} type="button" lang={option.lang} aria-pressed={igbo === option.code} onClick={() => toggle(option.code)} className={`min-h-11 rounded-full border px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${igbo === option.code ? 'border-primary bg-primary text-on-primary' : 'border-ink-border text-muted hover:text-primary'}`}>{option.label}</button>)}</div>
+ return <div className="mt-3 inline-flex w-fit self-start rounded-lg border border-ink-border bg-surface-2 p-1" role="group" aria-label="Article language">{[{ code: false, label: 'English', lang: 'en' }, { code: true, label: 'Igbo', lang: 'ig' }].map(option => <button key={option.lang} type="button" lang={option.lang} aria-pressed={igbo === option.code} onClick={() => toggle(option.code)} className={`relative inline-flex h-10 w-20 items-center justify-center rounded-md text-xs font-semibold transition-colors focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${igbo === option.code ? 'bg-bg text-parchment shadow-sm ring-1 ring-ink-border' : 'text-muted hover:text-parchment'}`}>{option.label}</button>)}</div>
 }
 export function ArticleLanguageText({ english, igbo: translation }: { english: string; igbo?: string }) {
  const { igbo } = useContext(Language)
