@@ -1,5 +1,7 @@
 'use client'
 import { useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
+import { insertEditorContent } from '@/lib/insert-editor-content'
 import { normaliseGoogleDocsPaste, prepareBlogPaste } from '@/lib/blog-editor-paste'
 import ArticleContent from '@/components/ArticleContent'
 import { igboEditorHtml, storeIgboHtml } from '@/lib/igbo-html'
@@ -76,10 +78,10 @@ export default function IgboTranslationEditor(props: Props) {
   saveSelection(); setUploading(true); setPasteStatus('Preparing pasted content and compressing images…')
   try {
    const prepared = await prepareBlogPaste(html, files, props.uploadImage)
-   editor.current?.focus()
-   if (selection.current) { const current = window.getSelection(); current?.removeAllRanges(); current?.addRange(selection.current) }
-   if (prepared) command('insertHTML', prepared)
-   else if (text) command('insertText', text)
+   flushSync(() => setUploading(false))
+   if (!editor.current) throw new Error('The editor is closed. Reopen it and retry.')
+   insertEditorContent(editor.current, selection.current, prepared || text, Boolean(prepared))
+   sync()
    setPasteStatus('Content added.')
   } catch (error) { setPasteStatus(error instanceof Error ? error.message : 'Could not paste. Please try again.') }
   finally { setUploading(false) }
@@ -90,9 +92,10 @@ export default function IgboTranslationEditor(props: Props) {
   setUploading(true); setPasteStatus('Compressing and uploading images…')
   try {
    const html = await prepareBlogPaste('', files, props.uploadImage)
-   editor.current?.focus()
-   if (range) { const current = window.getSelection(); current?.removeAllRanges(); current?.addRange(range) }
-   command('insertHTML', html); setPasteStatus('Images uploaded.')
+   flushSync(() => setUploading(false))
+   if (!editor.current) throw new Error('The editor is closed. Reopen it and retry.')
+   insertEditorContent(editor.current, range, html, true)
+   sync(); setPasteStatus('Images uploaded.')
   } catch (error) { setPasteStatus(error instanceof Error ? error.message : 'Image upload failed. Please retry.') }
   finally { setUploading(false) }
  }
