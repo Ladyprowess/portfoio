@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import IgboTranslationEditor from "@/components/IgboTranslationEditor";
+import { normaliseGoogleDocsPaste, prepareBlogPaste } from "@/lib/blog-editor-paste";
 import AdminNav from "@/components/AdminNav";
 import ArticleContent from "@/components/ArticleContent";
 import PostEmailReport, { EmailSummaryLine } from "@/components/PostEmailReport";
@@ -212,203 +213,6 @@ function ToolbarButton({
       {children}
     </button>
   );
-}
-
-const checklistMarker = /^\s*(?:☐|☑|☒|□|✓|✔|\[\s?\]|\[[xX]\])\s*/;
-
-function flattenChecklistWrappers(list: HTMLUListElement | HTMLOListElement) {
-  let foundWrapper = true;
-
-  while (foundWrapper) {
-    foundWrapper = false;
-
-    Array.from(list.children).forEach((item) => {
-      if (item.tagName !== "LI") return;
-      const nestedList = item.querySelector("ul, ol");
-      if (!nestedList) return;
-
-      const visibleCopy = item.cloneNode(true) as HTMLElement;
-      visibleCopy
-        .querySelectorAll("ul, ol")
-        .forEach((childList) => childList.remove());
-      visibleCopy
-        .querySelectorAll('input[type="checkbox"], [aria-hidden="true"]')
-        .forEach((element) => element.remove());
-      const ownText = (visibleCopy.textContent || "")
-        .replace(checklistMarker, "")
-        .replace(/\u200B/g, "")
-        .trim();
-      const hasWrittenContent = /[A-Za-z0-9]/.test(ownText);
-      if (hasWrittenContent || visibleCopy.querySelector("img, table")) return;
-
-      Array.from(nestedList.children).forEach((nestedItem) =>
-        list.insertBefore(nestedItem, item),
-      );
-      item.remove();
-      foundWrapper = true;
-    });
-  }
-}
-
-function prepareChecklist(
-  list: HTMLUListElement | HTMLOListElement,
-  removeEmptyItems = false,
-) {
-  flattenChecklistWrappers(list);
-  list.className = "blog-checklist";
-  list.querySelectorAll(":scope > li").forEach((item) => {
-    const sourceCheckboxes = Array.from(
-      item.querySelectorAll('input[type="checkbox"]'),
-    ) as HTMLInputElement[];
-    const itemText = (item.textContent || "")
-      .replace(checklistMarker, "")
-      .replace(/\u200B/g, "")
-      .trim();
-    if (removeEmptyItems && !itemText && !item.querySelector("img, table")) {
-      item.remove();
-      return;
-    }
-    const checked =
-      sourceCheckboxes.some(
-        (checkbox) => checkbox.checked || checkbox.hasAttribute("checked"),
-      ) ||
-      /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(item.textContent?.trim() || "") ||
-      item.getAttribute("aria-checked") === "true";
-    sourceCheckboxes.forEach((checkbox) => checkbox.remove());
-    item
-      .querySelectorAll("label")
-      .forEach((sourceLabel) =>
-        sourceLabel.replaceWith(...Array.from(sourceLabel.childNodes)),
-      );
-    const textWalker = document.createTreeWalker(item, NodeFilter.SHOW_TEXT);
-    let textNode = textWalker.nextNode();
-    while (textNode) {
-      if (textNode.textContent && checklistMarker.test(textNode.textContent)) {
-        textNode.textContent = textNode.textContent.replace(
-          checklistMarker,
-          "",
-        );
-        break;
-      }
-      textNode = textWalker.nextNode();
-    }
-    const contents = document.createElement("span");
-    while (item.firstChild) contents.appendChild(item.firstChild);
-    const label = document.createElement("label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = checked;
-    if (checked) checkbox.setAttribute("checked", "");
-    label.append(checkbox, contents);
-    item.replaceChildren(label);
-    item.removeAttribute("aria-checked");
-  });
-}
-
-function normaliseGoogleDocsPaste(html: string) {
-  const documentCopy = new DOMParser().parseFromString(html, "text/html");
-  const isGoogleDocs = /docs-internal-guid|google-docs|kix-/i.test(html);
-
-  documentCopy
-    .querySelectorAll("script, meta, link")
-    .forEach((element) => element.remove());
-  const checklistLists = new Set<HTMLUListElement | HTMLOListElement>();
-  documentCopy.querySelectorAll("li").forEach((item) => {
-    const text = item.textContent?.trim() || "";
-    const style = item.getAttribute("style") || "";
-    const list = item.closest("ul, ol");
-    const looksLikeChecklist =
-      item.hasAttribute("aria-checked") ||
-      checklistMarker.test(text) ||
-      (isGoogleDocs && /list-style-type:\s*none/i.test(style));
-    if (looksLikeChecklist && list)
-      checklistLists.add(list as HTMLUListElement | HTMLOListElement);
-  });
-  Array.from(checklistLists)
-    .filter(
-      (list) =>
-        !Array.from(checklistLists).some(
-          (otherList) => otherList !== list && otherList.contains(list),
-        ),
-    )
-    .forEach((list) => prepareChecklist(list, true));
-  documentCopy.querySelectorAll("p, div").forEach((block) => {
-    if (
-      block.closest(".blog-checklist") ||
-      !checklistMarker.test(block.textContent?.trim() || "")
-    )
-      return;
-    const list = documentCopy.createElement("ul");
-    list.className = "blog-checklist";
-    const item = documentCopy.createElement("li");
-    const label = documentCopy.createElement("label");
-    const checkbox = documentCopy.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = /^(?:☑|☒|✓|✔|\[[xX]\])/i.test(
-      block.textContent?.trim() || "",
-    );
-    if (checkbox.checked) checkbox.setAttribute("checked", "");
-    const contents = documentCopy.createElement("span");
-    contents.innerHTML = block.innerHTML.replace(checklistMarker, "");
-    label.append(checkbox, contents);
-    item.appendChild(label);
-    list.appendChild(item);
-    block.replaceWith(list);
-  });
-
-  documentCopy.querySelectorAll("style").forEach((element) => element.remove());
-  documentCopy.querySelectorAll("img").forEach((image) => {
-    if (/^data:/i.test(image.getAttribute("src") || "")) image.remove();
-  });
-  documentCopy.querySelectorAll("*").forEach((element) => {
-    Array.from(element.attributes).forEach((attribute) => {
-      const allowed = [
-        "href",
-        "src",
-        "alt",
-        "checked",
-        "scope",
-        "colspan",
-        "rowspan",
-        "target",
-        "rel",
-      ];
-      const quizAttribute =
-        (attribute.name === "data-quiz" ||
-          attribute.name === "contenteditable") &&
-        element.classList.contains("blog-quiz");
-      if (quizAttribute) return;
-      if (attribute.name === "class") {
-        const usefulClasses = attribute.value
-          .split(/\s+/)
-          .filter(
-            (value) =>
-              value === "blog-checklist" ||
-              value === "blog-table-wrap" ||
-              value.startsWith("blog-quiz"),
-          );
-        if (usefulClasses.length)
-          element.setAttribute("class", usefulClasses.join(" "));
-        else element.removeAttribute("class");
-      } else if (attribute.name === "style") {
-        const usefulStyles = attribute.value
-          .split(";")
-          .filter((value) =>
-            // Colour is deliberately NOT carried over. Pasted documents stamp
-            // every block with their own ink (Google Docs uses #000000), which
-            // beats the stylesheet and leaves the text invisible in dark mode.
-            /^(?:text-align|font-weight|font-style|text-decoration)\s*:/i.test(
-              value.trim(),
-            ),
-          );
-        if (usefulStyles.length)
-          element.setAttribute("style", usefulStyles.join(";"));
-        else element.removeAttribute("style");
-      } else if (!allowed.includes(attribute.name))
-        element.removeAttribute(attribute.name);
-    });
-  });
-  return documentCopy.body.innerHTML;
 }
 
 export default function BlogCmsPage() {
@@ -763,41 +567,9 @@ export default function BlogCmsPage() {
 
     try {
       setStatus(imageFiles.length || containsEmbeddedImages ? "Uploading pasted image..." : "Pasting article...");
-      let preparedHtml = html;
-
-      if (containsEmbeddedImages) {
-        const pastedDocument = new DOMParser().parseFromString(html, "text/html");
-        const embeddedImages = Array.from(pastedDocument.querySelectorAll("img")).filter((image) =>
-          /^data:image\//i.test(image.getAttribute("src") || ""),
-        );
-        for (let index = 0; index < embeddedImages.length; index += 1) {
-          const image = embeddedImages[index];
-          const source = image.getAttribute("src") || "";
-          const blob = await fetch(source).then((response) => response.blob());
-          const extension = blob.type.split("/")[1] || "png";
-          const file = new File([blob], `pasted-image-${index + 1}.${extension}`, { type: blob.type });
-          image.setAttribute("src", await uploadBlogImage(file));
-        }
-        preparedHtml = pastedDocument.body.innerHTML;
-      }
-
-      let uploadedClipboardImages = "";
-      if (imageFiles.length && !containsEmbeddedImages) {
-        const imageUrls: string[] = [];
-        for (const file of imageFiles) imageUrls.push(await uploadBlogImage(file));
-        uploadedClipboardImages = imageUrls
-          .map((imageUrl) => `<p><img src="${imageUrl}" alt="" /></p>`)
-          .join("");
-        if (/<img\b/i.test(preparedHtml)) {
-          const pastedDocument = new DOMParser().parseFromString(preparedHtml, "text/html");
-          pastedDocument.querySelectorAll("img").forEach((image) => image.remove());
-          preparedHtml = pastedDocument.body.innerHTML;
-        }
-      }
-
+      const cleanedHtml = await prepareBlogPaste(html, imageFiles, uploadBlogImage);
       restoreSelection();
-      const cleanedHtml = preparedHtml ? normaliseGoogleDocsPaste(preparedHtml) : "";
-      document.execCommand("insertHTML", false, `${cleanedHtml}${uploadedClipboardImages}<p><br></p>`);
+      document.execCommand("insertHTML", false, `${cleanedHtml}<p><br></p>`);
 
       setContentHtml(editorRef.current?.innerHTML || "");
       setStatus(imageFiles.length || containsEmbeddedImages ? "Image pasted and uploaded." : "Article pasted.");
@@ -1156,7 +928,7 @@ export default function BlogCmsPage() {
                 {id ? "Edit post" : "Create a post"}
               </h1>
             </div>
-            <IgboTranslationEditor key={id || "new"} title={titleIg} excerpt={excerptIg} body={bodyIg} approved={igboApproved} onChange={value => { setTitleIg(value.title); setExcerptIg(value.excerpt); setBodyIg(value.body); setIgboApproved(value.approved); }} />
+            <IgboTranslationEditor uploadImage={uploadBlogImage} key={id || "new"} title={titleIg} excerpt={excerptIg} body={bodyIg} approved={igboApproved} onChange={value => { setTitleIg(value.title); setExcerptIg(value.excerpt); setBodyIg(value.body); setIgboApproved(value.approved); }} />
             {id && (
               <button
                 onClick={clearForm}

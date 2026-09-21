@@ -2,8 +2,10 @@
 export const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 
 export async function compressBlogImage(file: File): Promise<File> {
-  if (file.size <= MAX_IMAGE_BYTES) return file;
+  const targetBytes = 500 * 1024;
+  if (file.size <= targetBytes) return file;
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    if (file.size <= MAX_IMAGE_BYTES) return file;
     throw new Error("This image is too large. Automatic compression supports JPG, PNG, and WebP. For an animated GIF, choose a file under 3 MB.");
   }
 
@@ -26,9 +28,10 @@ export async function compressBlogImage(file: File): Promise<File> {
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
       for (const quality of [0.88, 0.76, 0.64]) {
         const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", quality));
-        if (blob && blob.size <= MAX_IMAGE_BYTES) {
+        if (blob && blob.size <= targetBytes) {
           // Browsers without WebP encoding fall back to PNG.
           const extension = blob.type === "image/webp" ? "webp" : "png";
+          if (blob.size >= file.size && file.size <= MAX_IMAGE_BYTES) return file;
           return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.${extension}`, { type: blob.type });
         }
       }

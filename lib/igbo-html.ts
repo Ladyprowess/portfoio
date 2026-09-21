@@ -4,7 +4,7 @@ const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;
 export function sanitizeIgboHtml(html: string) {
  return html.replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|iframe|object|svg|math)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '').replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (tag, name: string) => {
   const lower = name.toLowerCase()
-  if (!['p','div','br','h2','h3','strong','b','em','i','u','s','strike','blockquote','pre','code','ul','ol','li','a','img','table','thead','tbody','tr','th','td','hr'].includes(lower)) return ''
+  if (!['span','p','div','br','h2','h3','strong','b','em','i','u','s','strike','blockquote','pre','code','ul','ol','li','a','img','table','thead','tbody','tr','th','td','hr'].includes(lower)) return ''
   if (tag.startsWith('</')) return ['img','br','hr'].includes(lower) ? '' : `</${lower}>`
   if (lower === 'a' || lower === 'img') {
    const attr = lower === 'a' ? 'href' : 'src'
@@ -13,7 +13,9 @@ export function sanitizeIgboHtml(html: string) {
    if (!/^https?:\/\/[^\s<>"']+$/i.test(url) || /&(?:#|colon)/i.test(url)) return lower === 'img' ? '' : '<a>'
    return `<${lower} ${attr}="${escape(url.replace(/&amp;/g, '&'))}"${lower === 'img' ? ' alt=""' : ' rel="noopener noreferrer"'}>`
   }
-  return `<${lower}>`
+  const style = tag.match(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/i)
+  const declarations = (style?.[1] || style?.[2] || '').split(';').map(s => s.trim()).filter(s => /^(?:text-align\s*:\s*(?:left|center|right|justify)|font-family\s*:\s*(?:Inter|Georgia|monospace)|font-weight\s*:\s*(?:normal|bold|[1-9]00)|font-style\s*:\s*(?:normal|italic)|text-decoration\s*:\s*(?:underline|line-through|none))$/i.test(s))
+  return `<${lower}${declarations.length ? ` style="${declarations.join(';')}"` : ''}>`
  })
 }
 export function igboEditorHtml(value: string) {
