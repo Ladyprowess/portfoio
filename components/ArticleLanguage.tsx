@@ -1,4 +1,6 @@
 'use client'
+import ArticleContent from '@/components/ArticleContent'
+import { igboEditorHtml } from '@/lib/igbo-html'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 const Language = createContext({ igbo: false, available: false, toggle: (_igbo: boolean) => {} })
 export function ArticleLanguageProvider({ available, children }: { available: boolean; children: ReactNode }) {
@@ -19,5 +21,5 @@ export function ArticleLanguageText({ english, igbo: translation }: { english: s
 export function ArticleLanguageBody({ children, translation }: { children: ReactNode; translation?: string }) {
  const { igbo } = useContext(Language)
  if (!igbo || !translation) return <div lang="en">{children}</div>
- return <div lang="ig" className="reading mx-auto w-full min-w-0 max-w-3xl py-10 md:py-14">{translation.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => <p key={index} className="whitespace-pre-line">{paragraph}</p>)}</div>
+ return <div lang="ig" className="reading mx-auto w-full min-w-0 max-w-3xl py-10 md:py-14">{<ArticleContent html={igboEditorHtml(translation)} />}</div>
 }
