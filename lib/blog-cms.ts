@@ -3,6 +3,10 @@ import { db } from './email-store'
 export type CmsPost = {
   id: string
   slug: string
+  title_ig?: string
+  excerpt_ig?: string
+  body_ig?: string
+  igbo_approved?: boolean
   title: string
   excerpt: string
   category: string
@@ -43,6 +47,10 @@ function normalisePost(value: unknown): CmsPost | null {
     id: text(row.id),
     slug,
     title,
+    title_ig: text(row.title_ig),
+    excerpt_ig: text(row.excerpt_ig),
+    body_ig: text(row.body_ig),
+    igbo_approved: row.igbo_approved === true,
     excerpt: text(row.excerpt),
     category: text(row.category, 'Insights'),
     newsletter_topic: text(row.newsletter_topic, 'Web3'),

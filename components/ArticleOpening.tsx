@@ -1,7 +1,10 @@
+import { ArticleLanguageSwitch, ArticleLanguageText } from '@/components/ArticleLanguage'
 import Link from 'next/link'
 import ScrollCue from '@/components/ScrollCue'
 
 type ArticleOpeningProps = {
+  titleIg?: string
+  excerptIg?: string
   title: string
   date: string
   category: string
@@ -12,6 +15,8 @@ type ArticleOpeningProps = {
 
 export default function ArticleOpening({
   title,
+  titleIg,
+  excerptIg,
   date,
   category,
   readTime,
@@ -26,6 +31,7 @@ export default function ArticleOpening({
       >
         ← All posts
       </Link>
+      <ArticleLanguageSwitch />
 
       <div className="flex flex-1 items-center py-8 md:py-10">
       <div className="w-full">
@@ -37,12 +43,12 @@ export default function ArticleOpening({
         </div>
 
         <h1 className="mt-6 max-w-5xl font-serif text-[clamp(2.5rem,1.25rem+4vw,5rem)] font-medium leading-[1.08] tracking-tight text-parchment [overflow-wrap:anywhere] [text-wrap:balance]">
-          {title}
+          <ArticleLanguageText english={title} igbo={titleIg} />
         </h1>
 
         {excerpt && (
           <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted md:mt-8 md:text-xl [text-wrap:pretty]">
-            {excerpt}
+            <ArticleLanguageText english={excerpt} igbo={excerptIg} />
           </p>
         )}
 

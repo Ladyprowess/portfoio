@@ -1,3 +1,5 @@
+import { ArticleLanguageProvider, ArticleLanguageBody } from '@/components/ArticleLanguage'
+import { hasIgboTranslation } from '@/lib/blog-translation'
 import Link from 'next/link'
 import { ArticleEngagementProvider, ArticleActions, ArticleComments } from '@/components/ArticleEngagement'
 import { notFound, permanentRedirect } from 'next/navigation'
@@ -53,6 +55,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (post.slug !== params.slug) {
     permanentRedirect(`/blog/${post.slug}`)
   }
+  const translation = 'content_html' in post && hasIgboTranslation(post) ? post : null
   const accent = 'accent' in post ? post.accent : DEFAULT_ACCENT
   const newsletterTopic = 'newsletter_topic' in post ? post.newsletter_topic : post.newsletterTopic
   const publishedDate = 'date' in post ? undefined : post.published_at || undefined
@@ -85,10 +88,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <ReadingProgress />
       <ArticleSnap />
 
+      <ArticleLanguageProvider available={Boolean(translation)}>
       <ArticleEngagementProvider slug={post.slug} title={post.title}>
       <div className="mx-auto w-full min-w-0 max-w-6xl">
         <ArticleOpening
           title={post.title}
+          titleIg={translation?.title_ig}
+          excerptIg={translation?.excerpt_ig}
           date={displayDate}
           category={post.category}
           readTime={displayReadTime}
@@ -101,6 +107,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div id="article-body" className="scroll-mt-[5.25rem]">
         {'cover_image' in post && post.cover_image && <div className="relative aspect-[4/3] overflow-hidden rounded-2xl md:aspect-[2/1] md:rounded-3xl bg-surface-2"><Image src={post.cover_image} alt="" fill unoptimized sizes="(max-width: 1152px) 100vw, 1088px" className="object-cover" priority /></div>}
 
+        <ArticleLanguageBody translation={translation?.body_ig}>
         {'content_html' in post ? <div className="reading mx-auto w-full min-w-0 max-w-3xl py-10 md:py-14">
           <ArticleContent html={cmsArticleParts?.[0] || post.content_html} />
           <div className="reading-reset my-12"><NewsletterSignup inline defaultTopics={[newsletterTopic]} /></div>
@@ -136,6 +143,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           })}
         </div>}
+        </ArticleLanguageBody>
         </div>
 
         <div className="mx-auto w-full max-w-3xl">
@@ -158,6 +166,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </article>
       <ArticleActions />
       </ArticleEngagementProvider>
+      </ArticleLanguageProvider>
       <Footer />
     </main>
   )

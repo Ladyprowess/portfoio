@@ -1,3 +1,4 @@
+import { translationRecord } from '@/lib/blog-translation'
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/email-store'
 import { makeBlogSlug } from '@/lib/blog-cms'
@@ -50,7 +51,12 @@ export async function POST(request: Request) {
     const slug = !requestedSlug || requestedSlug === titleSlug.replace(/-/g, '')
       ? titleSlug
       : requestedSlug
+    let translation = {}
+    if (['titleIg', 'excerptIg', 'bodyIg', 'igboApproved'].some(key => key in payload)) {
+      try { translation = translationRecord(payload) } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Invalid translation.' }, { status: 400 }) }
+    }
     const record = {
+      ...translation,
       title,
       slug,
       excerpt,

@@ -415,6 +415,10 @@ export default function BlogCmsPage() {
   const [posts, setPosts] = useState<CmsPost[]>([]);
   const [id, setId] = useState("");
   const [title, setTitle] = useState("");
+  const [titleIg, setTitleIg] = useState("");
+  const [excerptIg, setExcerptIg] = useState("");
+  const [bodyIg, setBodyIg] = useState("");
+  const [igboApproved, setIgboApproved] = useState(false);
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [category, setCategory] = useState("Insights");
@@ -813,6 +817,10 @@ export default function BlogCmsPage() {
   function edit(post: CmsPost) {
     setId(post.id);
     setTitle(post.title);
+    setTitleIg(post.title_ig || "");
+    setExcerptIg(post.excerpt_ig || "");
+    setBodyIg(post.body_ig || "");
+    setIgboApproved(post.igbo_approved === true);
     setSlug(post.slug);
     setExcerpt(post.excerpt);
     setCategory(post.category);
@@ -829,6 +837,7 @@ export default function BlogCmsPage() {
   function clearForm() {
     setId("");
     setTitle("");
+    setTitleIg(""); setExcerptIg(""); setBodyIg(""); setIgboApproved(false);
     setSlug("");
     setExcerpt("");
     setCategory("Insights");
@@ -995,6 +1004,7 @@ export default function BlogCmsPage() {
         newsletterTopic,
         coverImage,
         contentHtml: compactContent,
+        titleIg, excerptIg, bodyIg, igboApproved,
         status: postStatus === "draft" ? "draft" : "published",
         publishedAt: effectivePublishedAt,
       });
@@ -1154,6 +1164,18 @@ export default function BlogCmsPage() {
               </button>
             )}
           </div>
+          <details className="mt-6 rounded-2xl border border-ink-border p-5">
+            <summary className="cursor-pointer font-semibold focus-visible:ring-2 focus-visible:ring-primary">Igbo translation</summary>
+            <p className="mt-3 text-sm text-muted">Enter your reviewed translation. Readers only see the language switch after you approve and save a complete version.</p>
+            <div className="mt-4 space-y-4">
+              <label className="block text-sm font-semibold">Igbo title<input lang="ig" maxLength={500} value={titleIg} onChange={e => { setTitleIg(e.target.value); setIgboApproved(false); }} className={`mt-2 ${fieldClass}`} /></label>
+              <label className="block text-sm font-semibold">Igbo summary<textarea lang="ig" maxLength={3000} value={excerptIg} onChange={e => { setExcerptIg(e.target.value); setIgboApproved(false); }} rows={3} className={`mt-2 ${fieldClass}`} /></label>
+              <label className="block text-sm font-semibold">Igbo article<textarea lang="ig" maxLength={200000} value={bodyIg} onChange={e => { setBodyIg(e.target.value); setIgboApproved(false); }} rows={14} className={`mt-2 ${fieldClass}`} /></label>
+              <p className="text-xs text-muted">Use a blank line between paragraphs. This field accepts plain text, not HTML.</p>
+              <label className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={igboApproved} onChange={e => setIgboApproved(e.target.checked)} className="h-5 w-5 accent-primary" />I have reviewed and approve this Igbo translation.</label>
+              {bodyIg && <details><summary className="min-h-11 cursor-pointer text-sm font-semibold">Preview Igbo version</summary><div lang="ig" className="mt-4 rounded-xl border border-ink-border p-5"><h2 className="font-serif text-3xl">{titleIg}</h2><p className="mt-4 text-muted">{excerptIg}</p><div className="reading mt-6">{bodyIg.split(/\n\s*\n/).filter(Boolean).map((text, index) => <p key={index} className="whitespace-pre-line">{text}</p>)}</div></div></details>}
+            </div>
+          </details>
           <div className="mt-7 grid gap-4 md:grid-cols-2">
             <label className="text-sm font-semibold">
               Title
