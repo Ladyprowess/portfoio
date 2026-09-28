@@ -10,7 +10,7 @@ const clients = [
   { name: 'txFusion',                  industry: 'Web3',           href: 'https://www.txfusion.io/',                                   logo: '/brands/txfusion.png' },
   { name: 'Kivora Pay',                industry: 'DeFi / Africa',  href: 'https://kivorapay.com/',                                     logo: '/brands/kivorapay.png' },
   { name: 'Prowess Digital Solutions', industry: 'Consulting',     href: 'https://www.prowessdigitalsolutions.com',                    logo: '/brands/pds.png' },
-  { name: 'Dritchwear',                industry: 'Merch / Branded Items', href: 'https://app.dritchwear.com/shop',                     logo: '/brands/dritchwear.png' },
+  { name: 'Dritchwear',                industry: 'Merch / Branded Items', href: 'https://dritchwear.com/shop',                     logo: '/brands/dritchwear.png' },
   { name: 'CWallet',                   industry: 'Crypto',         href: '#',                                                          logo: '/brands/cwallet.png' },
   { name: 'Bullring Finance',          industry: 'DeFi',           href: 'https://blog.bullring.finance/en/author/ngozipeaceokafor/',   logo: '/brands/BF.svg' },
   { name: 'WriteTech Hub',             industry: 'Tech Writing',   href: 'https://writetechhub.org/author/ladyprowess/',                logo: '/brands/writechtechhub.webp' },

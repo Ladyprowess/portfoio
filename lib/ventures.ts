@@ -105,7 +105,7 @@ export const ventures: Venture[] = [
     name: 'Dritchwear',
     eyebrow: 'Wear it. Brand it. Gift it.',
     logo: '/brands/dritchwear.png',
-    website: 'https://app.dritchwear.com/shop',
+    website: 'https://dritchwear.com/shop',
     status: 'Open to production, distribution, and corporate partnerships',
     summary: 'Dritchwear is a Nigerian streetwear and custom merchandise business for individuals, brands, teams, companies, and events.',
     introduction: 'Dritchwear combines everyday menswear with custom streetwear, branded merchandise, corporate gifts, and event kits made for real use.',

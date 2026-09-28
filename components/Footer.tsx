@@ -16,7 +16,7 @@ const columns = [
     links: [
       { label: 'Prowess Digital Solutions', href: 'https://www.prowessdigitalsolutions.com' },
       { label: 'Kivora Pay', href: 'https://kivorapay.com/' },
-      { label: 'Dritchwear', href: 'https://app.dritchwear.com/shop' },
+      { label: 'Dritchwear', href: 'https://dritchwear.com/shop' },
     ],
   },
   {

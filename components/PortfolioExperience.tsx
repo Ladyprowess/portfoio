@@ -20,7 +20,7 @@ const roles = [
 ]
 
 const projects = [
-  { name: 'Dritchwear', type: 'Commerce & merchandise', image: '/brands/dritchwear.png', colour: 'bg-[#F3F0EC]', summary: 'A men’s streetwear and custom merchandise business built for individuals, companies, and events.', work: ['Brand strategy', 'Online commerce', 'Marketing', 'Operations'], href: 'https://app.dritchwear.com/shop' },
+  { name: 'Dritchwear', type: 'Commerce & merchandise', image: '/brands/dritchwear.png', colour: 'bg-[#F3F0EC]', summary: 'A men’s streetwear and custom merchandise business built for individuals, companies, and events.', work: ['Brand strategy', 'Online commerce', 'Marketing', 'Operations'], href: 'https://dritchwear.com/shop' },
   { name: 'Prowess Digital Solutions', type: 'Business education', image: '/brands/pds.png', colour: 'bg-[#EDF5F5]', summary: 'Practical tools and training that help small businesses replace guesswork with structure.', work: ['Founder', 'Digital tools', 'Training', 'Content systems'], href: 'https://www.prowessdigitalsolutions.com' },
   { name: 'KivoraPay', type: 'Fintech product', image: '/brands/kivorapay.png', colour: 'bg-[#EAFBF5]', summary: 'A spending layer that lets people use crypto for everyday bills and merchant payments.', work: ['Product strategy', 'Messaging', 'User flows', 'Market strategy'], href: 'https://kivorapay.com/' },
 ]
