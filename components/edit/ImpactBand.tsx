@@ -33,11 +33,13 @@ function CountUp({ value }: { value: string }) {
   const reduce = useReducedMotion()
   const target = parseInt(value, 10)
   const suffix = value.replace(/^\d+/, '')
-  const [n, setN] = useState(reduce ? target : 0)
+  // Always holds the real number; the count-up only plays once the band is on
+  // screen, so no one (or no crawler) ever sees a 0.
+  const [n, setN] = useState(target)
   useEffect(() => {
     if (!inView || reduce) return
     const controls = animate(0, target, { duration: 1.4, ease: [0.22, 1, 0.36, 1], onUpdate: v => setN(Math.round(v)) })
-    return () => controls.stop()
+    return () => { controls.stop(); setN(target) }
   }, [inView, reduce, target])
   return <span ref={ref}>{n}<span className="text-accent-invert">{suffix}</span></span>
 }
