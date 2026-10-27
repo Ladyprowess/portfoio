@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
-import PortfolioExperience from '@/components/PortfolioExperience'
+import HomePage from '@/components/home/HomePage'
 import { blogPosts } from '@/lib/blog-posts'
 import { getPublishedPosts, readTime } from '@/lib/blog-cms'
+import { welcomeBootstrapScript } from '@/lib/welcome'
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-// Refresh the "From the notebook" articles hourly.
+// Refresh the latest articles hourly.
 export const revalidate = 3600
 
 export default async function Home() {
@@ -21,6 +22,12 @@ export default async function Home() {
     .map(({ publishedAt, ...post }) => ({ ...post, date: new Date(publishedAt).toLocaleDateString('en', { month: 'long', year: 'numeric' }) }))
 
   return (
-    <PortfolioExperience posts={latest} />
+    <>
+      {/* Hides the welcome screen before paint for visitors who have already seen it this session. */}
+      <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: welcomeBootstrapScript }} />
+      {/* Without JavaScript the welcome could never be dismissed, so it is not shown at all. */}
+      <noscript><style>{'.welcome{display:none!important}body{overflow:auto!important}'}</style></noscript>
+      <HomePage posts={latest} />
+    </>
   )
 }

@@ -176,30 +176,16 @@ body::before {
 
 .animate-brand-marquee { animation: brand-marquee 34s linear infinite; }
 
-@keyframes dash { to { stroke-dashoffset: -24; } }
+/* ── Homepage welcome screen ───────────────────── */
+html[data-welcome="skip"] .welcome { display: none; }
+html:not([data-welcome]):has(.welcome) body { overflow: hidden; }
 
-/* The "desk" the editor window sits on: a soft dot grid. */
+/* A soft dot grid behind the homepage hero. */
 .desk-dots {
   background-image: radial-gradient(rgb(var(--muted) / 0.22) 1px, transparent 1.2px);
   background-size: 22px 22px;
 }
 
-/* Ruled writing lines for paper surfaces. */
-.ruled {
-  background-image: repeating-linear-gradient(transparent 0 35px, rgb(var(--primary) / 0.12) 35px 36px);
-}
-
-/* Faint ruled-paper lines behind the homepage hero. */
-.paper-rules { isolation: isolate; }
-.paper-rules::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(to bottom, transparent 0 47px, rgb(var(--primary) / 0.06) 47px 48px);
-  mask-image: linear-gradient(to bottom, black 55%, transparent);
-}
 .marquee-mask { mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); }
 
 .animate-marquee {
