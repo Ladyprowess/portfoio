@@ -7,14 +7,12 @@ export const THEME_STORAGE_KEY = 'lp-theme'
  * wrong theme. Kept dependency-free and self-contained on purpose: it is
  * stringified into a <script> tag, not bundled.
  */
+// Light is the default for everyone; dark only when the visitor has chosen it
+// with the toggle. The OS preference is deliberately not followed.
 export const themeBootstrapScript = `
 (function () {
   try {
-    var stored = localStorage.getItem('${THEME_STORAGE_KEY}');
-    var theme = stored === 'light' || stored === 'dark'
-      ? stored
-      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.theme = localStorage.getItem('${THEME_STORAGE_KEY}') === 'dark' ? 'dark' : 'light';
   } catch (e) {
     document.documentElement.dataset.theme = 'light';
   }

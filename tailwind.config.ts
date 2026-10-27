@@ -28,6 +28,7 @@ const config: Config = {
         parchment: token('parchment'),
         muted:     token('muted'),
         'ink-border': token('border'),
+        paper:     token('paper'),
         success:   token('success'),
         // Feature panels and the content sitting on them.
         panel:      token('panel'),

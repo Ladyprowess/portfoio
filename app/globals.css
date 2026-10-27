@@ -17,6 +17,8 @@
   --parchment:      18  18  18;
   --muted:         107 114 128;
   --border:        227 230 234;
+  /* Warm writing paper: drafts, letters, the editor page. */
+  --paper:         255 253 247;
 
   /* Ink for anything sitting on the accent fill. */
   --on-primary:    255 255 255;
@@ -61,6 +63,7 @@
   --parchment:     242 241 237;
   --muted:         156 163 163;
   --border:         34  41  42;
+  --paper:          24  28  30;
 
   --on-primary:     10  12  13;
 
@@ -94,6 +97,9 @@ body {
   color: rgb(var(--parchment));
   overflow-x: hidden;
 }
+
+/* Even out heading lines so no single word is left hanging. */
+h1, h2, h3 { text-wrap: balance; }
 
 /* Theme swap should feel like a dimmer, not a flash.
    The `.theme-transition` class is added by ThemeToggle only
@@ -169,6 +175,31 @@ body::before {
 }
 
 .animate-brand-marquee { animation: brand-marquee 34s linear infinite; }
+
+@keyframes dash { to { stroke-dashoffset: -24; } }
+
+/* The "desk" the editor window sits on: a soft dot grid. */
+.desk-dots {
+  background-image: radial-gradient(rgb(var(--muted) / 0.22) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* Ruled writing lines for paper surfaces. */
+.ruled {
+  background-image: repeating-linear-gradient(transparent 0 35px, rgb(var(--primary) / 0.12) 35px 36px);
+}
+
+/* Faint ruled-paper lines behind the homepage hero. */
+.paper-rules { isolation: isolate; }
+.paper-rules::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 47px, rgb(var(--primary) / 0.06) 47px 48px);
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+}
 .marquee-mask { mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); }
 
 .animate-marquee {

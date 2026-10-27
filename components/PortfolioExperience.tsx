@@ -1,142 +1,32 @@
 'use client'
 
-import Image from 'next/image'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
-import posthog from 'posthog-js'
 import Nav from './Nav'
 import Footer from './Footer'
-import { CV_URL } from '@/lib/site'
+import RewriteHero from './edit/RewriteHero'
+import ClientStrip from './edit/ClientStrip'
+import ProcessStory from './edit/ProcessStory'
+import JargonTranslator from './edit/JargonTranslator'
+import ImpactBand from './edit/ImpactBand'
+import CraftBento from './edit/CraftBento'
+import DraftToShipped from './edit/DraftToShipped'
+import LatestWriting, { type LatestPost } from './edit/LatestWriting'
+import FeedbackComments from './edit/FeedbackComments'
+import LetterContact from './edit/LetterContact'
 
-// Add future photos from public/hero to this list.
-const heroPhotos = ['/hero/mine.jpeg', '/hero/headshot1.png']
-
-const roles = [
-  { key: 'product', label: 'Product marketing', title: 'I help products make sense to the people they are built for.', body: 'Positioning, product messaging, launch campaigns, onboarding, customer education, and go to market support, especially for fintech, payments, and Web3.', tools: ['Positioning', 'Launch strategy', 'User education', 'Campaigns'] },
-  { key: 'writing', label: 'Technical writing', title: 'I turn difficult subjects into content people can follow.', body: 'Documentation, explainers, SEO articles, help content, and product guides that reduce confusion without removing the important details.', tools: ['Documentation', 'SEO content', 'Tutorials', 'Product copy'] },
-  { key: 'web', label: 'WordPress design', title: 'I design websites around the user journey, not decoration.', body: 'Responsive WordPress and Elementor websites with clear structure, useful pages, clean content hierarchy, and practical conversion paths.', tools: ['WordPress', 'Elementor', 'UX structure', 'Landing pages'] },
-  { key: 'education', label: 'Education & AI', title: 'I teach technology and use AI as a practical production tool.', body: 'Web3 education and training, plus AI-supported workflows for writing, research, visual design, and video production.', tools: ['Web3 education', 'Training', 'AI writing', 'AI design & video'] },
-  { key: 'business', label: 'Business building', title: 'I build ideas into systems people can actually run.', body: 'Offer development, digital tools, business processes, founder strategy, and hands-on execution across the ventures I own and support.', tools: ['Business strategy', 'Digital systems', 'Operations', 'Founder support'] },
-]
-
-const projects = [
-  { name: 'Dritchwear', type: 'Commerce & merchandise', image: '/brands/dritchwear.png', colour: 'bg-[#F3F0EC]', summary: 'A men’s streetwear and custom merchandise business built for individuals, companies, and events.', work: ['Brand strategy', 'Online commerce', 'Marketing', 'Operations'], href: 'https://dritchwear.com/shop' },
-  { name: 'Prowess Digital Solutions', type: 'Business education', image: '/brands/pds.png', colour: 'bg-[#EDF5F5]', summary: 'Practical tools and training that help small businesses replace guesswork with structure.', work: ['Founder', 'Digital tools', 'Training', 'Content systems'], href: 'https://www.prowessdigitalsolutions.com' },
-  { name: 'KivoraPay', type: 'Fintech product', image: '/brands/kivorapay.png', colour: 'bg-[#EAFBF5]', summary: 'A spending layer that lets people use crypto for everyday bills and merchant payments.', work: ['Product strategy', 'Messaging', 'User flows', 'Market strategy'], href: 'https://kivorapay.com/' },
-]
-
-const brands = [
-  { name: 'txFusion', image: '/brands/txfusion.png', href: 'https://www.txfusion.io/', relationship: 'API and developer documentation' },
-  { name: 'Cwallet', image: '/brands/cwallet.png', href: 'https://cwallet.com', relationship: 'Content writing' },
-  { name: 'Bullring Finance', image: '/brands/BF.svg', href: 'https://www.bullring.finance/', relationship: 'Content strategy and writing' },
-  { name: 'WriteTech Hub', image: '/brands/writechtechhub.webp', href: 'https://writetechhub.org/', relationship: 'Technical writer' },
-  { name: 'CoinTime ATM', image: '/brands/cointime.png', href: 'https://cointimeatm.com/', relationship: 'Content writing' },
-  { name: 'CustomersChain', image: '/brands/customerschain.png', href: 'https://customerschain.com/', relationship: 'Content marketing' },
-  { name: 'LW Commerce', image: '/brands/moc.png', href: 'https://lwcommerce.org/', relationship: 'WordPress design and content' },
-  { name: 'zkSync', image: '/brands/zksync.png', href: 'https://www.zksync.io/', relationship: 'API and developer documentation' },
-  { name: 'Xcentrique Media', image: '/brands/xm lab.jpg', href: 'https://www.xcentriquemedia.com/', relationship: 'Technical content writer' },
-  { name: 'UPay', image: '/brands/upay.jpeg', href: 'https://upay.com/', relationship: 'Content writing' },
-  { name: 'UEEx', image: '/brands/ueex.png', href: 'https://ueex.com/', relationship: 'Content writing' },
-]
-
-const testimonials = [
-  { quote: 'I got maximum satisfaction from the work Ngozi did for me. She is a great writer, honest in dealing with people, and her work is excellent.', name: 'Mondesce Nigeria Ltd', role: 'Client' },
-  { quote: 'Working with Lady Prowess was an absolute delight. The process was easy, clear, and I would strongly recommend her for guaranteed satisfaction.', name: 'Stanley Williams', role: 'Client' },
-  { quote: 'One of the best technical writers I have come across. Ngozi has a real gift for turning complex ideas into structured, clear, engaging content.', name: 'Abdullah T.', role: 'Data Engineer' },
-  { quote: 'Peace worked quickly, was responsive to learning new things, and delivered great value. Highly recommended.', name: 'Smidh Vadera', role: 'Web App & Odoo ERP Expert' },
-]
-
-export default function PortfolioExperience() {
-  const [role, setRole] = useState(roles[0])
-  const [project, setProject] = useState<(typeof projects)[0] | null>(null)
-  const [testimonial, setTestimonial] = useState(0)
-  const [heroPhoto, setHeroPhoto] = useState(0)
-  const [heroPaused, setHeroPaused] = useState(false)
-  const reduceMotion = useReducedMotion()
-
-  useEffect(() => {
-    if (heroPaused || reduceMotion || heroPhotos.length < 2) return
-    const timer = window.setInterval(() => {
-      if (!document.hidden) setHeroPhoto(current => (current + 1) % heroPhotos.length)
-    }, 5000)
-    return () => window.clearInterval(timer)
-  }, [heroPaused, reduceMotion])
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setTestimonial(current => (current + 1) % testimonials.length), 5500)
-    return () => window.clearInterval(timer)
-  }, [])
-
+// The homepage, "The Edit": every section shows a draft becoming something clear.
+export default function PortfolioExperience({ posts }: { posts: LatestPost[] }) {
   return <main className="min-h-screen bg-bg text-parchment">
     <Nav />
-
-    <section id="top" className="mx-auto max-w-[1240px] px-5 pb-20 pt-28 md:px-8 md:pb-28 md:pt-36">
-      <div className="grid items-center gap-12 lg:grid-cols-[1.12fr_.88fr]">
-        <div className="relative order-2 mx-auto w-full max-w-[460px] lg:col-start-2 lg:row-start-1">
-          <div className="absolute -left-5 -top-5 h-full w-full rounded-[2rem] border border-primary/20 bg-primary/5" />
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-surface-2">
-            {heroPhotos.map((src, index) => <Image key={src} src={src} alt="Ngozi Peace Okafor" aria-hidden={index !== heroPhoto} fill priority={index === 0} loading={index === 0 ? undefined : 'eager'} sizes="(max-width: 500px) calc(100vw - 40px), 460px" className={`object-cover object-top motion-safe:transition-opacity motion-safe:duration-500 ${index === heroPhoto ? 'opacity-100' : 'opacity-0'}`} />)}
-            <div className="absolute right-3 top-3 flex rounded-full border border-ink-border bg-surface p-1 text-parchment">
-              {!reduceMotion && <button type="button" onClick={() => setHeroPaused(current => !current)} aria-label={heroPaused ? 'Resume photo slideshow' : 'Pause photo slideshow'} className="min-h-10 rounded-full px-3 text-xs font-semibold focus-visible:ring-2 focus-visible:ring-primary">{heroPaused ? 'Play' : 'Pause'}</button>}
-              {heroPhotos.map((src, index) => <button key={src} type="button" aria-label={`Show photo ${index + 1}`} aria-pressed={index === heroPhoto} onClick={() => { setHeroPhoto(index); setHeroPaused(true) }} className="flex h-10 w-10 items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-primary"><span className={`h-2 w-2 rounded-full ${index === heroPhoto ? 'bg-primary' : 'bg-muted'}`} /></button>)}
-            </div>
-          </div>
-          <div className="absolute -bottom-5 -left-4 rounded-2xl border border-ink-border bg-surface p-4 shadow-[0_16px_45px_rgba(17,24,39,.12)]"><p className="font-head text-[10px] uppercase tracking-wider text-muted">Currently building</p><p className="mt-1 text-sm font-semibold">KivoraPay · Prowess Digital Solutions · Dritchwear</p></div>
-        </div>
-        <div className="order-1 lg:col-start-1 lg:row-start-1">
-          <div className="mb-6 flex items-center gap-2 text-sm text-muted"><span className="h-2 w-2 rounded-full bg-[#84CC16]" />Available for selected projects</div>
-          <h1 className="max-w-3xl font-display text-[clamp(2.25rem,4vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.045em]">I help digital products become easier to understand, use and grow.</h1>
-          <p className="mt-7 max-w-2xl text-base leading-8 text-muted md:text-lg">I’m Ngozi, a Digital Product and Content Specialist. I combine product communication, content strategy and practical digital execution to turn complex ideas into useful experiences.</p>
-          <div className="mt-9 flex flex-wrap gap-3"><a href="/services" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim">Explore my work</a><a href={CV_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border bg-surface px-6 py-3 text-sm font-semibold hover:border-muted">View résumé ↗</a></div>
-          <div className="mt-12 grid max-w-xl grid-cols-3 border-t border-ink-border pt-6"><div><strong className="block font-display text-xl">9+</strong><span className="text-xs text-muted">Years building</span></div><div><strong className="block font-display text-xl">200+</strong><span className="text-xs text-muted">People trained</span></div><div><strong className="block font-display text-xl">3</strong><span className="text-xs text-muted">Ventures founded</span></div></div>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="expertise" className="border-y border-ink-border bg-surface py-20 md:py-24">
-      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <div className="mb-10 max-w-xl"><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">How I work</p><h2 className="mt-3 font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">One person. Different ways to solve the problem.</h2></div>
-        <div className="overflow-hidden rounded-3xl border border-ink-border bg-bg lg:grid lg:grid-cols-[.82fr_1.18fr]">
-          <div className="flex gap-2 overflow-x-auto border-b border-ink-border p-3 lg:block lg:border-b-0 lg:border-r lg:p-3">{roles.map((item, i) => <button key={item.key} onClick={() => setRole(item)} className={`min-w-max rounded-xl px-4 py-3 text-left text-sm transition lg:flex lg:w-full lg:items-center lg:gap-4 lg:px-5 lg:py-4 ${role.key === item.key ? 'bg-panel font-semibold text-on-panel shadow-sm' : 'text-muted hover:bg-surface hover:text-parchment'}`}><span className="hidden font-head text-[10px] opacity-50 lg:inline">0{i + 1}</span>{item.label}</button>)}</div>
-          <div className="min-h-[360px] p-7 md:p-12"><AnimatePresence mode="wait"><motion.div key={role.key} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: .2 }}><p className="font-head text-[11px] uppercase tracking-wider text-primary">Selected expertise</p><h3 className="mt-5 max-w-2xl font-display text-2xl font-semibold leading-tight tracking-[-.03em] md:text-4xl">{role.title}</h3><p className="mt-5 max-w-2xl leading-7 text-muted">{role.body}</p><div className="mt-8 flex flex-wrap gap-2">{role.tools.map(tool => <span key={tool} className="rounded-full border border-ink-border bg-surface px-4 py-2 text-xs font-medium text-muted">{tool}</span>)}</div></motion.div></AnimatePresence></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="work" className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28">
-      <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Selected work</p><h2 className="mt-3 font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">Built, not only discussed.</h2></div><p className="max-w-md text-sm leading-6 text-muted">Ventures I built and founded from scratch.</p></div>
-      <div className="grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">{projects.map(item => <button key={item.name} onClick={() => { setProject(item); posthog.capture('project_details_viewed', { project_name: item.name, project_type: item.type }) }} className={`group flex h-full w-full appearance-none flex-col overflow-hidden rounded-3xl border border-ink-border p-0 text-left align-top transition hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_18px_45px_rgba(17,24,39,.08)] ${item.colour}`}><div className="flex h-48 w-full shrink-0 items-center justify-center px-8 text-[#121212]">{item.name === 'KivoraPay' ? <div className="font-display text-2xl font-extrabold tracking-[-0.06em]"><span>Kivora</span><span className="text-[#2DD4A0]">Pay</span></div> : <Image src={item.image} alt={`${item.name} logo`} width={210} height={86} className={`w-auto object-contain transition duration-300 group-hover:scale-105 ${item.name === 'Dritchwear' ? 'max-h-12 max-w-[220px]' : 'max-h-20 max-w-[230px]'}`} />}</div><div className="flex flex-1 flex-col border-t border-ink-border bg-surface p-6"><div className="flex items-center justify-between"><span className="font-head text-[10px] uppercase tracking-wider text-muted">{item.type}</span><span className="text-primary">↗</span></div><h3 className="mt-3 font-display text-xl font-semibold">{item.name}</h3><p className="mt-2 text-sm leading-6 text-muted">{item.summary}</p></div></button>)}</div>
-    </section>
-
-    <section className="overflow-hidden border-y border-ink-border bg-surface py-14">
-      <p className="text-center font-head text-[10px] uppercase tracking-[.14em] text-muted">Companies I have supported through writing, product communication, strategy or website work</p>
-      <div className="marquee-mask mt-8 overflow-hidden">
-        <div className="animate-brand-marquee flex w-max gap-4 px-2 hover:[animation-play-state:paused]">
-          {[...brands, ...brands].map((brand, index) => <a key={`${brand.name}-${index}`} href={brand.href} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${brand.name}`} className="flex h-32 w-60 shrink-0 flex-col items-center justify-center rounded-2xl border border-ink-border bg-bg p-5 text-center transition hover:border-primary/40 hover:bg-primary/[0.04]">
-            {brand.image ? <span className="brand-plate flex items-center justify-center rounded-lg px-2.5 py-1.5"><Image src={brand.image} alt={brand.name} width={135} height={48} className="max-h-9 max-w-[135px] object-contain" /></span> : <span className="font-display text-base font-bold text-muted">{brand.name}</span>}
-            <span className="mt-4 text-[11px] leading-4 text-muted">{brand.relationship}</span>
-          </a>)}
-        </div>
-      </div>
-    </section>
-
-    <section className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28">
-      <div className="grid gap-8 lg:grid-cols-[.68fr_1.32fr] lg:items-start">
-        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Testimonials</p><h2 className="mt-3 max-w-sm font-display text-3xl font-semibold tracking-[-.035em] md:text-4xl">What people say after working with me.</h2></div>
-        <div className="overflow-hidden rounded-3xl border border-ink-border bg-surface p-7 md:p-10">
-          <div className="min-h-[225px]"><AnimatePresence mode="wait"><motion.div key={testimonial} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: .3 }}>
-            <span className="font-display text-4xl leading-none text-primary">“</span><p className="mt-2 max-w-3xl font-display text-xl font-medium leading-8 tracking-[-.02em] md:text-2xl">{testimonials[testimonial].quote}</p><div className="mt-7 border-t border-ink-border pt-5"><p className="text-sm font-semibold">{testimonials[testimonial].name}</p><p className="mt-1 text-xs text-muted">{testimonials[testimonial].role}</p></div>
-          </motion.div></AnimatePresence></div>
-          <div className="mt-5 flex items-center justify-between border-t border-ink-border pt-5"><div className="flex gap-2">{testimonials.map((item, index) => <button key={item.name} onClick={() => setTestimonial(index)} aria-label={`Show testimonial ${index + 1}`} className={`h-2 rounded-full transition-all ${testimonial === index ? 'w-7 bg-primary' : 'w-2 bg-muted/40'}`} />)}</div><div className="flex gap-2"><button onClick={() => setTestimonial(current => (current - 1 + testimonials.length) % testimonials.length)} aria-label="Previous testimonial" className="flex h-9 w-9 items-center justify-center rounded-full border border-ink-border hover:border-primary">←</button><button onClick={() => setTestimonial(current => (current + 1) % testimonials.length)} aria-label="Next testimonial" className="flex h-9 w-9 items-center justify-center rounded-full border border-ink-border hover:border-primary">→</button></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" className="mx-auto max-w-[1240px] px-5 py-20 md:px-8 md:py-28"><div className="grid overflow-hidden rounded-3xl bg-panel text-on-panel md:grid-cols-[1.2fr_.8fr]"><div className="p-8 md:p-14"><p className="font-head text-[10px] uppercase tracking-wider text-accent-invert">Have something to build?</p><h2 className="mt-4 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-4xl">Discuss your project.</h2><p className="mt-5 max-w-lg leading-7 text-on-panel/65">Tell me what you are building, what is not working and where you need support.</p></div><div className="flex items-end border-t border-white/10 p-8 md:border-l md:border-t-0 md:p-14"><a href="mailto:hello@ladyprowess.com" className="w-full rounded-full bg-surface px-6 py-4 text-center text-sm font-semibold text-parchment hover:bg-primary/[0.07]">Start a conversation</a></div></div></section>
-
+    <RewriteHero />
+    <ClientStrip />
+    <ProcessStory />
+    <JargonTranslator />
+    <ImpactBand />
+    <CraftBento />
+    <DraftToShipped />
+    <LatestWriting posts={posts} />
+    <FeedbackComments />
+    <LetterContact />
     <Footer />
-
-    <AnimatePresence>{project && <motion.div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/40 p-3 backdrop-blur-sm md:items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setProject(null)}><motion.div role="dialog" aria-modal="true" initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} onClick={e => e.stopPropagation()} className="w-full max-w-xl rounded-3xl bg-surface p-7 shadow-2xl md:p-9"><div className="flex items-start justify-between"><div><p className="font-head text-[10px] uppercase tracking-wider text-primary">{project.type}</p><h3 className="mt-2 font-display text-3xl font-semibold tracking-[-.035em]">{project.name}</h3></div><button onClick={() => setProject(null)} className="rounded-full bg-surface-2 px-3 py-2 text-sm text-muted hover:text-parchment">Close</button></div><p className="mt-5 leading-7 text-muted">{project.summary}</p><p className="mt-7 text-xs font-semibold uppercase tracking-wider">My work</p><div className="mt-3 flex flex-wrap gap-2">{project.work.map(item => <span key={item} className="rounded-full border border-ink-border px-4 py-2 text-xs">{item}</span>)}</div><a href={project.href} target="_blank" onClick={() => posthog.capture('project_website_visited', { project_name: project.name, project_type: project.type })} className="mt-8 block rounded-full bg-primary px-6 py-3 text-center text-sm font-semibold text-on-primary">Visit project ↗</a></motion.div></motion.div>}</AnimatePresence>
   </main>
 }

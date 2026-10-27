@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { THEME_STORAGE_KEY, readStoredTheme, systemTheme, type Theme } from '@/lib/theme'
+import { THEME_STORAGE_KEY, type Theme } from '@/lib/theme'
 
 type ThemeToggleProps = {
   /** `bar` sits in the nav; `floating` pins itself to the bottom-right of the viewport. */
@@ -14,25 +14,13 @@ export default function ThemeToggle({ variant = 'bar', className = '' }: ThemeTo
   // the real theme is read in an effect, after the bootstrap script has run.
   const [theme, setTheme] = useState<Theme | null>(null)
 
+  // Light unless the visitor picked dark; the OS preference is not followed.
   useEffect(() => {
-    const current = (document.documentElement.dataset.theme as Theme | undefined) ?? systemTheme()
-    setTheme(current)
-
-    // Follow the OS only while the visitor has not made an explicit choice.
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const onSystemChange = (event: MediaQueryListEvent) => {
-      if (readStoredTheme()) return
-      const next: Theme = event.matches ? 'dark' : 'light'
-      document.documentElement.dataset.theme = next
-      setTheme(next)
-    }
-
-    media.addEventListener('change', onSystemChange)
-    return () => media.removeEventListener('change', onSystemChange)
+    setTheme((document.documentElement.dataset.theme as Theme | undefined) ?? 'light')
   }, [])
 
   const toggle = useCallback(() => {
-    const next: Theme = (theme ?? systemTheme()) === 'dark' ? 'light' : 'dark'
+    const next: Theme = theme === 'dark' ? 'light' : 'dark'
     const root = document.documentElement
 
     // Ease the swap, then drop the class so it never taxes ordinary paints.
