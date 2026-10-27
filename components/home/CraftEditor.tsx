@@ -58,6 +58,10 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
       {/* Title bar */}
       <div className="flex items-center gap-3 border-b border-ink-border px-4 py-3">
         <span className="hidden gap-1.5 sm:flex" aria-hidden="true">{['#F87171', '#FBBF24', '#34D399'].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />)}</span>
+        {/* Phones have no room for the collaborator card, so the changing portrait sits here */}
+        <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full ring-2 ring-primary/30 md:hidden">
+          {photos.map((src, i) => <Image key={src} src={src} alt="" fill sizes="28px" className={`object-cover object-[50%_18%] transition-opacity duration-700 ${i === photo ? 'opacity-100' : 'opacity-0'}`} />)}
+        </span>
         <AnimatePresence mode="wait"><motion.span key={meta.file} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="truncate text-[13px] font-semibold">{meta.file}</motion.span></AnimatePresence>
         <span className={`ml-auto shrink-0 rounded-full px-2.5 py-0.5 font-head text-[9px] font-semibold uppercase tracking-wider transition-colors ${done ? 'bg-success/10 text-success' : 'bg-primary/10 text-primary'}`}>{done ? '✓ Done' : '✎ Editing'}</span>
       </div>
@@ -76,7 +80,7 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
       </div>
 
       <div className="grid sm:grid-cols-[1fr_170px]">
-        <div className="relative min-h-[320px] bg-paper p-5 md:p-7 lg:min-h-[400px]" role="tabpanel">
+        <div className="relative min-h-[290px] bg-paper p-5 md:min-h-[320px] md:p-7 lg:min-h-[400px]" role="tabpanel">
           <div aria-hidden="true" className="desk-dots absolute inset-0 opacity-50" />
           <AnimatePresence mode="wait">
             <motion.div key={active} className="relative" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}>

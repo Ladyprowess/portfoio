@@ -35,7 +35,7 @@ export default function YourTurn({ intent }: { intent: string | null }) {
     window.location.href = `mailto:hello@ladyprowess.com?subject=${subject}&body=${body}`
   }
 
-  return <section id="contact" className="scroll-mt-24 bg-surface-2/60 py-20 md:py-28">
+  return <section id="contact" className="scroll-mt-24 bg-surface-2/60 py-14 md:py-28">
     <div className="mx-auto grid max-w-[1320px] gap-12 px-5 md:px-8 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
       <div>
         <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Your turn</p>
@@ -67,8 +67,8 @@ export default function YourTurn({ intent }: { intent: string | null }) {
         </div>
 
         <form onSubmit={e => { e.preventDefault(); send() }} className="border-t border-ink-border p-4 md:p-5">
-          <div className="mb-3 flex flex-wrap gap-2">
-            {intents.map(i => <button key={i.key} type="button" onClick={() => setMessage(m => (m.trim() ? `${m.trim()} ${i.label}.` : `${i.label}.`))} className="rounded-full border border-ink-border px-3 py-1.5 text-xs text-muted transition hover:border-primary hover:text-primary">+ {i.label}</button>)}
+          <div className="-mx-4 mb-3 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+            {intents.map(i => <button key={i.key} type="button" onClick={() => setMessage(m => (m.trim() ? `${m.trim()} ${i.label}.` : `${i.label}.`))} className="shrink-0 whitespace-nowrap rounded-full border border-ink-border px-3 py-1.5 text-xs text-muted transition hover:border-primary hover:text-primary">+ {i.label}</button>)}
           </div>
           <label htmlFor="your-turn-message" className="sr-only">Your message</label>
           <textarea id="your-turn-message" value={message} onChange={e => setMessage(e.target.value)} rows={3} placeholder="Type your message…" className="w-full resize-none rounded-2xl border border-ink-border bg-bg px-4 py-3 text-[15px] leading-6 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10" />

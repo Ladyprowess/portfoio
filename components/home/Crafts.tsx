@@ -7,10 +7,10 @@ import { facets, type FacetKey } from '@/lib/home-content'
 // Five crafts as panels: on desktop the open one widens and shows its work;
 // on phones they stack. The hero's "What brings you here?" opens one.
 export default function Crafts({ open, onOpen }: { open: FacetKey; onOpen: (key: FacetKey) => void }) {
-  return <section id="crafts" className="scroll-mt-24 bg-surface-2/60 py-20 md:py-28">
+  return <section id="crafts" className="scroll-mt-24 bg-surface-2/60 py-14 md:py-28">
     <div className="mx-auto max-w-[1320px] px-5 md:px-8">
-      <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Five crafts</p><h2 className="mt-3 max-w-2xl font-display text-3xl font-bold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]">Multifaceted, on purpose.</h2></div>
+      <div className="mb-7 flex flex-col justify-between gap-3 md:mb-10 md:flex-row md:items-end md:gap-4">
+        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Five crafts</p><h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]">Multifaceted, on purpose.</h2></div>
         <p className="max-w-sm text-sm leading-6 text-muted">Most problems are not only a writing problem or only a design problem. Being able to do all five means nothing gets lost between them.</p>
       </div>
 
