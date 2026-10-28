@@ -75,7 +75,7 @@ function MarketingDemo({ active }: { active: boolean }) {
 
       {/* What visitors do */}
       <div className="absolute inset-x-5 bottom-5 rounded-xl border border-ink-border bg-surface p-3.5 md:inset-x-8 md:bottom-7">
-        <div className="flex items-center justify-between text-[11px]"><span className="font-semibold">Visitors who sign up</span><span className="font-head text-muted">example</span></div>
+        <div className="flex items-center justify-between text-[11px]"><span className="font-semibold">Visitors who sign up</span></div>
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"><motion.div className={`h-full rounded-full ${step >= 3 ? 'bg-success' : 'bg-[#EF4444]/70'}`} animate={{ width: step >= 3 ? '72%' : '14%' }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} /></div>
         <p className={`mt-2 text-xs font-semibold ${step >= 3 ? 'text-success' : 'text-[#DC2626]'}`}>{step >= 3 ? 'People understand it, so they sign up.' : 'Most visitors leave in a few seconds.'}</p>
       </div>
@@ -215,7 +215,7 @@ function BusinessDemo({ active }: { active: boolean }) {
           </div>
           <AnimatePresence>{step >= 2 && <motion.p {...fade} className="mt-3 text-xs font-semibold text-success">✓ Runs every day, with or without you watching.</motion.p>}</AnimatePresence>
           <AnimatePresence>{step >= 3 && <motion.div {...fade} className="mt-3 rounded-xl border border-ink-border bg-surface p-3">
-            <div className="flex justify-between text-[11px]"><span className="font-semibold">Weekly report</span><span className="font-head text-muted">example</span></div>
+            <div className="flex justify-between text-[11px]"><span className="font-semibold">Weekly report</span></div>
             <div className="mt-2 flex h-16 items-end gap-1.5">{[30, 42, 38, 55, 63, 71, 86].map((h, i) => <motion.span key={i} className="flex-1 rounded-t bg-primary/80" initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: i * 0.08, duration: 0.5 }} />)}</div>
           </motion.div>}</AnimatePresence>
         </div>}
