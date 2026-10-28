@@ -26,8 +26,8 @@ export function TypeHeading({ text, as = 'h2', className = '' }: { text: string;
   const typing = inView && n < text.length
   return createElement(as, { ref, className: `grid ${className}` },
     <span key="sr" className="sr-only">{text}</span>,
-    <span key="ghost" aria-hidden="true" className="invisible [grid-area:1/1]">{text}<span className="ml-[0.04em] inline-block w-[3px]" /></span>,
-    <span key="typed" aria-hidden="true" className="[grid-area:1/1]">
+    <span key="ghost" aria-hidden="true" className="invisible select-none [grid-area:1/1]">{text}<span className="ml-[0.04em] inline-block w-[3px]" /></span>,
+    <span key="typed" aria-hidden="true" className="select-none [grid-area:1/1]">
       {text.slice(0, n)}
       {(typing || (inView && n >= text.length)) && <span className={`ml-[0.04em] inline-block h-[0.8em] w-[3px] translate-y-[0.08em] bg-primary ${typing ? '' : 'animate-[cursor-out_1.6s_ease_forwards]'}`} />}
     </span>,

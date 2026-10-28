@@ -4,26 +4,13 @@ import Image from 'next/image'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { TypeHeading } from './Motion'
-import { clients, testimonials } from '@/lib/home-content'
+import Testimonials from './Testimonials'
+import { clients } from '@/lib/home-content'
 
 // Who I have worked with (tiles flip to say what I did) and what they said
-// (cards you can drag sideways).
+// (a carousel, in Testimonials.tsx).
 export default function Proof() {
-  const viewport = useRef<HTMLDivElement>(null)
-  const strip = useRef<HTMLDivElement>(null)
-  const [limit, setLimit] = useState(0)
   const reduce = useReducedMotion()
-  // Drag is for mouse users on wide screens; touch screens use native swiping.
-  const [wide, setWide] = useState(false)
-
-  useEffect(() => {
-    const q = window.matchMedia('(min-width: 1024px)')
-    const update = () => setWide(q.matches)
-    update()
-    q.addEventListener('change', update)
-    return () => q.removeEventListener('change', update)
-  }, [])
-
   // Touch screens cannot hover, so the tiles flip on their own, one at a time, while the wall is on screen.
   const wall = useRef<HTMLDivElement>(null)
   const wallInView = useInView(wall, { margin: '-80px' })
@@ -35,12 +22,6 @@ export default function Proof() {
     return () => window.clearInterval(t)
   }, [wallInView, reduce])
 
-  useEffect(() => {
-    const measure = () => setLimit(Math.max(0, (strip.current?.scrollWidth ?? 0) - (viewport.current?.clientWidth ?? 0)))
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [])
 
   return <section className="border-y border-ink-border bg-surface py-14 md:py-28">
     <div className="mx-auto max-w-[1320px] px-5 md:px-8">
@@ -64,20 +45,7 @@ export default function Proof() {
         <a href="/services" className="flex h-[76px] flex-col items-center justify-center rounded-xl border border-dashed border-ink-border px-2 text-center text-xs font-semibold text-primary transition hover:border-primary hover:bg-primary/[0.04] md:h-28 md:rounded-2xl md:text-sm">See all my work →</a>
       </div>
 
-      <div className="mt-14 flex items-end justify-between gap-4 md:mt-20">
-        <TypeHeading as="h3" className="font-display text-2xl font-semibold tracking-[-.03em] md:text-3xl" text="In their words" />
-        <p className="text-sm text-muted"><span className="lg:hidden">Swipe</span><span className="hidden lg:inline">Drag</span> →</p>
-      </div>
-      {/* Phones and tablets scroll natively with snapping; desktop drags */}
-      <div ref={viewport} className="-mx-5 mt-5 snap-x snap-mandatory overflow-x-auto px-5 [scrollbar-width:none] md:-mx-8 md:px-8 lg:mx-0 lg:mt-6 lg:snap-none lg:overflow-hidden lg:px-0">
-        <motion.div ref={strip} drag={reduce || !wide ? false : 'x'} dragConstraints={{ left: -limit, right: 0 }} dragElastic={0.08} className="flex w-max gap-3 md:gap-4 lg:cursor-grab lg:active:cursor-grabbing">
-          {testimonials.map((t, i) => <figure key={t.name} className={`flex w-[82vw] max-w-[440px] shrink-0 snap-center select-none flex-col rounded-3xl p-6 md:p-9 ${i === 0 ? 'bg-primary text-on-primary' : 'border border-ink-border bg-bg'}`}>
-            <span aria-hidden="true" className={`font-display text-5xl leading-none md:text-6xl ${i === 0 ? 'text-on-primary/50' : 'text-primary'}`}>“</span>
-            <blockquote className="mt-1 font-serif text-lg leading-7 md:mt-2 md:text-xl md:leading-8">{t.quote}</blockquote>
-            <figcaption className={`mt-auto pt-7 text-sm ${i === 0 ? 'text-on-primary/80' : 'text-muted'}`}><span className={`block font-semibold ${i === 0 ? 'text-on-primary' : 'text-parchment'}`}>{t.name}</span>{t.role}</figcaption>
-          </figure>)}
-        </motion.div>
-      </div>
+      <Testimonials />
     </div>
   </section>
 }

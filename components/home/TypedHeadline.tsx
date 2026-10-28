@@ -55,9 +55,9 @@ export default function TypedHeadline({ className = '' }: { className?: string }
   return <h1 className={`grid ${className}`}>
     <span className="sr-only">{FULL}</span>
     {/* Invisible full headline: reserves the final size */}
-    <span aria-hidden="true" className="invisible [grid-area:1/1]">{segments.map((s, i) => <span key={i} className={s.className}>{s.text}</span>)}<span className="ml-[0.04em] inline-block w-[3px]" /></span>
+    <span aria-hidden="true" className="invisible select-none [grid-area:1/1]">{segments.map((s, i) => <span key={i} className={s.className}>{s.text}</span>)}<span className="ml-[0.04em] inline-block w-[3px]" /></span>
     {/* The typed copy, drawn on top */}
-    <span aria-hidden="true" className="[grid-area:1/1]">
+    <span aria-hidden="true" className="select-none [grid-area:1/1]">
       {segments.map((s, i) => {
         const shown = s.text.slice(0, Math.max(0, left))
         left -= s.text.length

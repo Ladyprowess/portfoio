@@ -20,9 +20,9 @@ export default function Ventures() {
       <p className="mt-3 leading-7 text-muted md:mt-4">Everything I advise clients on, I have had to do myself first.</p>
     </div>
 
-    {/* The stacking effect is desktop only: on phones the cards would cover each other */}
+    {/* Cards stack as you scroll, on phones and desktop: each one sticks a little lower than the last and the next slides over it */}
     <div className="space-y-4 md:space-y-6">
-      {ventures.map((v, i) => <motion.article key={v.name} initial={{ opacity: 0, y: 48, scale: 0.97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className={`overflow-hidden rounded-[1.75rem] md:sticky md:rounded-[2rem] ${v.tone} shadow-[0_-20px_60px_-30px_rgba(0,0,0,.45)] md:[top:var(--stack-top)]`} style={{ '--stack-top': `${96 + i * 28}px` } as React.CSSProperties}>
+      {ventures.map((v, i) => <motion.article key={v.name} initial={{ opacity: 0, y: 48, scale: 0.97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className={`sticky overflow-hidden rounded-[1.75rem] md:rounded-[2rem] ${v.tone} shadow-[0_-20px_60px_-30px_rgba(0,0,0,.45)] [top:var(--stack-top)] md:[top:var(--stack-top-md)]`} style={{ '--stack-top': `${84 + i * 16}px`, '--stack-top-md': `${96 + i * 28}px` } as React.CSSProperties}>
         <div className="grid md:min-h-[480px] md:grid-cols-[1fr_1.1fr]">
           {/* Phones: picture first, then the words */}
           <div className="order-2 flex flex-col p-6 md:order-1 md:p-12">

@@ -13,13 +13,17 @@ export const revalidate = 3600
 
 export default async function Home() {
   const cmsPosts = await getPublishedPosts()
-  const latest = [
-    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, publishedAt: post.published_at || post.created_at, readTime: readTime(post.content_html), cover: post.cover_image || null })),
-    ...blogPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, publishedAt: new Date(post.date).toISOString(), readTime: post.readTime, cover: null })),
-  ]
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  const all = [
+    ...cmsPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, topic: post.newsletter_topic, publishedAt: post.published_at || post.created_at, readTime: readTime(post.content_html), cover: post.cover_image || null })),
+    ...blogPosts.map(post => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, topic: post.newsletterTopic, publishedAt: new Date(post.date).toISOString(), readTime: post.readTime, cover: null })),
+  ].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+
+  // The notebook leads with the newest Web3 article, then the two latest other posts.
+  const isWeb3 = (p: (typeof all)[number]) => /web3/i.test(`${p.title} ${p.category} ${p.topic}`)
+  const lead = all.find(isWeb3) ?? all[0]
+  const latest = (lead ? [lead, ...all.filter(p => p !== lead)] : [])
     .slice(0, 3)
-    .map(({ publishedAt, ...post }) => ({ ...post, date: new Date(publishedAt).toLocaleDateString('en', { month: 'long', year: 'numeric' }) }))
+    .map(({ publishedAt, topic: _topic, ...post }) => ({ ...post, date: new Date(publishedAt).toLocaleDateString('en', { month: 'long', year: 'numeric' }) }))
 
   return (
     <>
