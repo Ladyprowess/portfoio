@@ -271,7 +271,7 @@ bun add posthog-node
 
 For the app router, we can initialize the `posthog-node` SDK once with a `PostHogClient` function, and import it into files.
 
-This enables us to send events and fetch data from PostHog on the server – without making client-side requests.
+This enables us to send events and fetch data from PostHog on the server - without making client-side requests.
 
 JavaScript
 

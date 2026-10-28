@@ -74,7 +74,7 @@ Due to the cost of processing them, anonymous events can be up to 4x cheaper tha
 
 When a user starts browsing your website or app, PostHog automatically assigns them an **anonymous ID**, which is stored locally.
 
-Provided you've [configured persistence](/docs/libraries/js/persistence.md) to use cookies or `localStorage`, this enables us to track anonymous users – even across different sessions.
+Provided you've [configured persistence](/docs/libraries/js/persistence.md) to use cookies or `localStorage`, this enables us to track anonymous users - even across different sessions.
 
 By calling `identify` with a `distinct_id` of your choice (usually the user's ID in your database, or their email), you link the anonymous ID and distinct ID together.
 

@@ -50,7 +50,7 @@ export default function ServicesHero() {
       </h1>
 
       <AnimatePresence>{done && <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
-        <p className="mt-6 max-w-xl text-base leading-7 text-muted md:text-lg">Which of these sounds like you? Pick one and I’ll show you how I’d fix it, live.</p>
+        <p className="mt-6 max-w-xl text-base leading-7 text-muted md:text-lg">Which of these sounds like you? Pick one and I’ll show you how I’d fix it.</p>
         {/* Phones: one swipeable row. Desktop: a grid. */}
         <div className="-mx-5 mt-7 flex snap-x gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0">
           {services.map((s, i) => <motion.a key={s.key} href={`#${s.key}`} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.08 }}
