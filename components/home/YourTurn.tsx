@@ -24,8 +24,16 @@ export default function YourTurn({ intent }: { intent: string | null }) {
     return () => window.clearTimeout(t)
   }, [inView])
 
-  // If they told the hero what brought them here, start the message for them.
-  useEffect(() => { if (chosen && !message) setMessage(`${chosen.label}. `) }, [chosen]) // eslint-disable-line react-hooks/exhaustive-deps
+  // If they said what brought them here, start the message for them. A new
+  // choice replaces a suggestion, but never text they have typed themselves.
+  const suggested = useRef('')
+  useEffect(() => {
+    if (!chosen) return
+    if (!message.trim() || message === suggested.current) {
+      suggested.current = `${chosen.label}. `
+      setMessage(suggested.current)
+    }
+  }, [chosen]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const ready = message.trim().length > 0
   const send = () => {

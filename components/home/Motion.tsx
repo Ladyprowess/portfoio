@@ -8,7 +8,7 @@ import { createElement, useEffect, useRef, useState, type ReactNode } from 'reac
 // hero) and blocks slide in as they enter the screen.
 
 /** A heading that types itself once it scrolls into view. Space is reserved, so nothing jumps. */
-export function TypeHeading({ text, as = 'h2', className = '' }: { text: string; as?: 'h2' | 'h3'; className?: string }) {
+export function TypeHeading({ text, as = 'h2', className = '' }: { text: string; as?: 'h1' | 'h2' | 'h3'; className?: string }) {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-15% 0px' })
   const reduce = useReducedMotion()
