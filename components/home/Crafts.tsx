@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Reveal, TypeHeading } from './Motion'
 import { facets, type FacetKey } from '@/lib/home-content'
 
 // Five crafts as panels: on desktop the open one widens and shows its work;
@@ -10,11 +11,11 @@ export default function Crafts({ open, onOpen }: { open: FacetKey; onOpen: (key:
   return <section id="crafts" className="scroll-mt-24 bg-surface-2/60 py-14 md:py-28">
     <div className="mx-auto max-w-[1320px] px-5 md:px-8">
       <div className="mb-7 flex flex-col justify-between gap-3 md:mb-10 md:flex-row md:items-end md:gap-4">
-        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Five crafts</p><h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]">Multifaceted, on purpose.</h2></div>
+        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Five crafts</p><TypeHeading className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]" text="Multifaceted, on purpose." /></div>
         <p className="max-w-sm text-sm leading-6 text-muted">Most problems are not only a writing problem or only a design problem. Being able to do all five means nothing gets lost between them.</p>
       </div>
 
-      <div className="flex flex-col gap-3 lg:h-[600px] lg:flex-row">
+      <Reveal className="flex flex-col gap-3 lg:h-[600px] lg:flex-row">
         {facets.map((f, i) => {
           const isOpen = open === f.key
           return <motion.article key={f.key} onMouseEnter={() => onOpen(f.key)}
@@ -55,7 +56,7 @@ export default function Crafts({ open, onOpen }: { open: FacetKey; onOpen: (key:
             </AnimatePresence>
           </motion.article>
         })}
-      </div>
+      </Reveal>
     </div>
   </section>
 }

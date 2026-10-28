@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useInView } from 'framer-motion'
 import posthog from 'posthog-js'
 import { useEffect, useRef, useState } from 'react'
 import { intents } from '@/lib/home-content'
+import { Reveal, TypeHeading } from './Motion'
 import { CV_URL } from '@/lib/site'
 
 // The page ends the way it began: a conversation. Ngozi types a question when
@@ -36,10 +37,10 @@ export default function YourTurn({ intent }: { intent: string | null }) {
   }
 
   return <section id="contact" className="scroll-mt-24 bg-surface-2/60 py-14 md:py-28">
-    <div className="mx-auto grid max-w-[1320px] gap-12 px-5 md:px-8 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
+    <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-12 px-5 md:px-8 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
       <div>
         <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Your turn</p>
-        <h2 className="mt-3 max-w-md font-display text-3xl font-bold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]">I typed first. Now it’s your turn.</h2>
+        <TypeHeading className="mt-3 max-w-md font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]" text="I typed first. Now it’s your turn." />
         <p className="mt-5 max-w-md leading-7 text-muted">Tell me what you are building and where it is stuck. A rough message is fine; making things clear is my job.</p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm">
           <a href="mailto:hello@ladyprowess.com" className="font-semibold text-primary hover:underline">hello@ladyprowess.com</a>
@@ -48,6 +49,7 @@ export default function YourTurn({ intent }: { intent: string | null }) {
         </div>
       </div>
 
+      <Reveal y={40} className="min-w-0">
       <div ref={box} className="overflow-hidden rounded-[2rem] border border-ink-border bg-surface shadow-[0_40px_100px_-40px_rgba(17,24,39,.4)]">
         <div className="flex items-center gap-3 border-b border-ink-border px-5 py-4">
           <span className="relative h-10 w-10 overflow-hidden rounded-full"><Image src="/hero/mine.jpeg" alt="" fill sizes="40px" className="object-cover object-top" /></span>
@@ -80,6 +82,7 @@ export default function YourTurn({ intent }: { intent: string | null }) {
           <p className="mt-2.5 text-[11px] text-muted">Opens in your email app so you can check it before it goes.</p>
         </form>
       </div>
+      </Reveal>
     </div>
   </section>
 }

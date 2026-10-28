@@ -176,6 +176,18 @@ body::before {
 
 .animate-brand-marquee { animation: brand-marquee 34s linear infinite; }
 
+/* A slow push-in and pan, so pictures feel alive without hover. */
+@keyframes drift {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.08) translate(-1.5%, -2%); }
+}
+
+/* A typed heading's cursor blinks a few times, then fades away. */
+@keyframes cursor-out {
+  0%, 30%, 60% { opacity: 1; }
+  15%, 45%, 75%, 100% { opacity: 0; }
+}
+
 /* ── Homepage welcome screen ───────────────────── */
 html[data-welcome="skip"] .welcome { display: none; }
 html:not([data-welcome]):has(.welcome) body { overflow: hidden; }

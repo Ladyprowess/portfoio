@@ -58,10 +58,6 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
       {/* Title bar */}
       <div className="flex items-center gap-3 border-b border-ink-border px-4 py-3">
         <span className="hidden gap-1.5 sm:flex" aria-hidden="true">{['#F87171', '#FBBF24', '#34D399'].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />)}</span>
-        {/* Phones have no room for the collaborator card, so the changing portrait sits here */}
-        <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full ring-2 ring-primary/30 md:hidden">
-          {photos.map((src, i) => <Image key={src} src={src} alt="" fill sizes="28px" className={`object-cover object-[50%_18%] transition-opacity duration-700 ${i === photo ? 'opacity-100' : 'opacity-0'}`} />)}
-        </span>
         <AnimatePresence mode="wait"><motion.span key={meta.file} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="truncate text-[13px] font-semibold">{meta.file}</motion.span></AnimatePresence>
         <span className={`ml-auto shrink-0 rounded-full px-2.5 py-0.5 font-head text-[9px] font-semibold uppercase tracking-wider transition-colors ${done ? 'bg-success/10 text-success' : 'bg-primary/10 text-primary'}`}>{done ? '✓ Done' : '✎ Editing'}</span>
       </div>
@@ -92,8 +88,8 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
             </motion.div>
           </AnimatePresence>
         </div>
-        {/* Margin note from Ngozi */}
-        <div className="hidden border-l border-ink-border bg-surface-2/40 p-3.5 sm:block">
+        {/* Margin note from Ngozi. Phones: a strip under the page, leaving room on the right for her photo card */}
+        <div className="border-t border-ink-border bg-surface-2/40 p-3.5 pr-[124px] sm:border-l sm:border-t-0 sm:pr-3.5">
           <p className="mb-2.5 font-head text-[9px] uppercase tracking-wider text-muted">Comment</p>
           <AnimatePresence mode="wait">
             <motion.div key={active} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: 0.5, duration: 0.35 }}
@@ -109,13 +105,13 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
 
     {/* Ngozi, pinned to the corner of the window like a collaborator */}
     {/* Sits over the empty foot of the comment column, never over the demo */}
-    <div className="absolute -bottom-12 -right-5 hidden w-[132px] rotate-[4deg] rounded-2xl border border-ink-border bg-surface p-2 shadow-[0_24px_50px_-20px_rgba(17,24,39,.45)] transition-transform duration-500 hover:rotate-0 md:block">
+    <div className="absolute -bottom-7 -right-1.5 w-[104px] rotate-[4deg] rounded-2xl border border-ink-border bg-surface p-1.5 shadow-[0_24px_50px_-20px_rgba(17,24,39,.45)] transition-transform duration-500 hover:rotate-0 md:-bottom-12 md:-right-5 md:w-[132px] md:p-2">
       {/* All portraits stay mounted and crossfade, so switching never flashes empty */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-2">
         {photos.map((src, i) => <Image key={src} src={src} alt={i === photo ? 'Ngozi Peace Okafor' : ''} aria-hidden={i !== photo} fill sizes="132px"
           className={`object-cover object-[50%_18%] transition-[opacity,transform] duration-700 ${i === photo ? 'scale-100 opacity-100' : 'scale-105 opacity-0'}`} />)}
       </div>
-      <p className="mt-2 flex items-center gap-1.5 px-0.5 text-[11px] font-semibold"><span className="h-1.5 w-1.5 rounded-full bg-[#84CC16] motion-safe:animate-pulse" />Ngozi is editing</p>
+      <p className="mt-1.5 flex items-center gap-1.5 whitespace-nowrap px-0.5 text-[9.5px] font-semibold md:mt-2 md:text-[11px]"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#84CC16] motion-safe:animate-pulse" />Ngozi is editing</p>
     </div>
   </div>
 }

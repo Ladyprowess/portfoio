@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import { Reveal, TypeHeading } from './Motion'
 
 export type LatestPost = { slug: string; title: string; excerpt: string; category: string; date: string; readTime: string; cover: string | null }
 
@@ -17,10 +18,10 @@ export default function LatestWriting({ posts }: { posts: LatestPost[] }) {
   return <section className="border-y border-ink-border bg-surface-2/60 py-14 md:py-28">
     <div className="mx-auto max-w-[1320px] px-5 md:px-8">
       <div className="mb-7 flex flex-col justify-between gap-3 md:mb-10 md:flex-row md:items-end md:gap-5">
-        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">From the notebook</p><h2 className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.035em] md:text-[2.75rem] md:leading-[1.08]">I write in public, too.</h2></div>
+        <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">From the notebook</p><TypeHeading className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.035em] md:text-[2.75rem] md:leading-[1.08]" text="I write in public, too." /></div>
         <a href="/blog" className="text-sm font-semibold text-primary hover:underline">Read the blog →</a>
       </div>
-      <div className="grid gap-4 lg:grid-cols-[1.25fr_1fr]">
+      <Reveal className="grid gap-4 lg:grid-cols-[1.25fr_1fr]">
         <a href={`/blog/${lead.slug}`} className="group relative flex min-h-[240px] flex-col justify-end overflow-hidden rounded-3xl border border-ink-border bg-panel p-6 text-on-panel md:min-h-[380px] md:p-10">
           {lead.cover ? <Image src={lead.cover} alt="" fill unoptimized sizes="(max-width: 1024px) 100vw, 700px" className="object-cover opacity-40 transition duration-700 group-hover:scale-105 group-hover:opacity-50" />
             : <div aria-hidden="true" className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/40 blur-[90px]" />}
@@ -50,7 +51,7 @@ export default function LatestWriting({ posts }: { posts: LatestPost[] }) {
             </div>
           </div>
         </div>
-      </div>
+      </Reveal>
     </div>
   </section>
 }

@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import posthog from 'posthog-js'
+import { motion } from 'framer-motion'
+import { TypeHeading } from './Motion'
 import { ventures } from '@/lib/home-content'
 
 const shots: Record<string, string | undefined> = {
@@ -14,13 +16,13 @@ export default function Ventures() {
   return <section id="ventures" className="mx-auto max-w-[1320px] px-5 py-14 md:px-8 md:py-28">
     <div className="mb-8 max-w-2xl md:mb-12">
       <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Built, not only advised</p>
-      <h2 className="mt-3 font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]">Three companies I founded.</h2>
+      <TypeHeading className="mt-3 font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]" text="Three companies I founded." />
       <p className="mt-3 leading-7 text-muted md:mt-4">Everything I advise clients on, I have had to do myself first.</p>
     </div>
 
     {/* The stacking effect is desktop only: on phones the cards would cover each other */}
     <div className="space-y-4 md:space-y-6">
-      {ventures.map((v, i) => <article key={v.name} className={`overflow-hidden rounded-[1.75rem] md:sticky md:rounded-[2rem] ${v.tone} shadow-[0_-20px_60px_-30px_rgba(0,0,0,.45)] md:[top:var(--stack-top)]`} style={{ '--stack-top': `${96 + i * 28}px` } as React.CSSProperties}>
+      {ventures.map((v, i) => <motion.article key={v.name} initial={{ opacity: 0, y: 48, scale: 0.97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className={`overflow-hidden rounded-[1.75rem] md:sticky md:rounded-[2rem] ${v.tone} shadow-[0_-20px_60px_-30px_rgba(0,0,0,.45)] md:[top:var(--stack-top)]`} style={{ '--stack-top': `${96 + i * 28}px` } as React.CSSProperties}>
         <div className="grid md:min-h-[480px] md:grid-cols-[1fr_1.1fr]">
           {/* Phones: picture first, then the words */}
           <div className="order-2 flex flex-col p-6 md:order-1 md:p-12">
@@ -32,11 +34,14 @@ export default function Ventures() {
               className="mt-6 inline-flex w-max items-center gap-2 rounded-full bg-white/10 px-5 py-3 text-sm font-semibold backdrop-blur transition hover:bg-white/20 md:mt-auto">Visit {v.name} <span>↗</span></a>
           </div>
           <div className="relative order-1 m-2.5 mb-0 aspect-[16/10] overflow-hidden rounded-[1.25rem] md:order-2 md:m-4 md:ml-0 md:aspect-auto md:min-h-[260px] md:rounded-[1.5rem]">
-            {shots[v.name] ? <Image src={shots[v.name]!} alt={`The ${v.name} website`} fill sizes="(max-width: 768px) 100vw, 640px" className="object-cover object-top" />
-              : <KivoraMock />}
+            {/* A slow drift keeps the picture alive, with no hover needed */}
+            <div className="absolute inset-0 motion-safe:animate-[drift_16s_ease-in-out_infinite_alternate]">
+              {shots[v.name] ? <Image src={shots[v.name]!} alt={`The ${v.name} website`} fill sizes="(max-width: 768px) 100vw, 640px" className="object-cover object-top" />
+                : <KivoraMock />}
+            </div>
           </div>
         </div>
-      </article>)}
+      </motion.article>)}
     </div>
   </section>
 }

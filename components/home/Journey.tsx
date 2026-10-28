@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { journey } from '@/lib/home-content'
+import { TypeHeading } from './Motion'
 import PenNib from './PenNib'
 
 // "From a phone screen": the real milestones. On desktop the section pins and
@@ -29,7 +30,7 @@ export default function Journey() {
     <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:overflow-hidden">
       <div className="mx-auto w-full max-w-[1320px] px-5 pt-14 md:px-8 md:pt-20 lg:pt-16">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end md:gap-4">
-          <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-accent-invert">My story</p><h2 className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]">It started on a phone screen.</h2></div>
+          <div><p className="font-head text-[11px] uppercase tracking-[.14em] text-accent-invert">My story</p><TypeHeading className="mt-3 max-w-xl font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]" text="It started on a phone screen." /></div>
           <a href="/blog/from-a-phone-screen-to-a-movement" className="text-sm font-semibold text-accent-invert hover:underline">Read the full story →</a>
         </div>
       </div>
