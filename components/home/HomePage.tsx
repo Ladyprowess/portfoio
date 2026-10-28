@@ -12,6 +12,7 @@ import Ventures from './Ventures'
 import Proof from './Proof'
 import LatestWriting, { type LatestPost } from './LatestWriting'
 import YourTurn from './YourTurn'
+import RecruiterPill from './RecruiterPill'
 
 // The homepage. What a visitor says brought them here (in the hero) opens the
 // matching craft and starts their message in the contact section.
@@ -51,5 +52,6 @@ export default function HomePage({ posts }: { posts: LatestPost[] }) {
       <YourTurn intent={intent} />
       <Footer />
     </main>
+    <RecruiterPill />
   </>
 }

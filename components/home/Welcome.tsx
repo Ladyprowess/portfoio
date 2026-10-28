@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
+import posthog from 'posthog-js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 // The cinematic welcome: a dark screen where Ngozi "types" a note to the
@@ -45,6 +46,13 @@ export default function Welcome() {
     // screen with CSS, so the lift-away exit animation can play.
     document.documentElement.dataset.welcome = 'done'
   }, [])
+
+  // Recruiters go straight to the one-page summary. Mark the welcome as seen so
+  // "See the full portfolio" brings them back to the page, not the intro again.
+  const toRecruiter = () => {
+    try { sessionStorage.setItem(WELCOME_KEY, '1') } catch { /* storage blocked */ }
+    posthog.capture('recruiter_view_opened', { from: 'welcome' })
+  }
 
   useEffect(() => {
     if (document.documentElement.dataset.welcome === 'skip') { setOpen(false); return }
@@ -106,9 +114,13 @@ export default function Welcome() {
 
       <div className="relative z-10 flex items-center justify-between px-6 pt-[calc(7vh+1rem)] md:px-12">
         <span className="font-head text-[10px] uppercase tracking-[.3em] text-white/50">Lady Prowess</span>
-        <button type="button" onClick={close} className="flex items-center gap-2 rounded-full border border-white/15 px-3.5 py-1.5 text-xs text-white/70 transition hover:border-white/40 hover:text-white">
-          Skip <kbd className="font-head text-[9px] text-white/40">Esc</kbd>
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Available from the first second, so a busy recruiter never waits for the typing */}
+          <a href="/recruiter" onClick={toRecruiter} className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20">Recruiter view</a>
+          <button type="button" onClick={close} className="flex items-center gap-2 rounded-full border border-white/15 px-3.5 py-1.5 text-xs text-white/70 transition hover:border-white/40 hover:text-white">
+            Skip <kbd className="hidden font-head text-[9px] text-white/40 sm:inline">Esc</kbd>
+          </button>
+        </div>
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center px-6 md:px-12">
@@ -133,7 +145,9 @@ export default function Welcome() {
                 className="group flex items-center gap-3 rounded-full bg-white px-7 py-4 text-sm font-semibold text-[#0A0C0D] shadow-[0_0_60px_rgba(96,165,250,.35)] transition hover:shadow-[0_0_80px_rgba(96,165,250,.55)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#60A5FA]/60">
                 Open my portfolio <span className="transition-transform group-hover:translate-x-1">→</span>
               </button>
-              <span className="text-xs text-white/40">or press Enter</span>
+              <a href="/recruiter" onClick={toRecruiter} className="group flex items-center gap-2 rounded-full border border-white/20 px-6 py-4 text-sm font-semibold text-white transition hover:border-white/50 hover:bg-white/5">
+                Hiring? See the 60-second version <span className="transition-transform group-hover:translate-x-1">→</span>
+              </a>
             </motion.div>}
           </AnimatePresence>
         </div>
