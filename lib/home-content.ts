@@ -29,10 +29,11 @@ export const facets: { key: FacetKey; label: string; short: string; title: strin
     label: 'Website design',
     short: 'Websites',
     title: 'I build websites around the people who will use them.',
-    body: 'WordPress and Elementor sites with clear structure, useful pages and practical paths to action, for businesses, communities and events.',
-    proof: ['Prowess Digital Solutions', 'Testers Connect', 'Dritchwear', 'BEGIN', 'LoveWorld Trade & Investment Forum'],
-    image: '/service-proof/prowess-digital-solutions.png',
-    imageAlt: 'The Prowess Digital Solutions website',
+    body: 'Custom-coded sites like Chidexun Plumbing Supplies, and WordPress and Elementor builds: clear structure, useful pages and practical paths to action, for businesses, communities and events.',
+    proof: ['Chidexun', 'Prowess Digital Solutions', 'Testers Connect', 'Dritchwear', 'BEGIN', 'LoveWorld Trade & Investment Forum'],
+    // Chidexun is the lead example of her website work wherever it is shown.
+    image: '/projects/chidexun.jpg',
+    imageAlt: 'The Chidexun Plumbing Supplies website',
   },
   {
     key: 'education',

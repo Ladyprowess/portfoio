@@ -83,7 +83,7 @@ export const certifications = [
 
 export const proof = [
   { label: 'Writing samples', title: 'Published articles for LBank, Bullring Finance, UEEx, CCPayment and more', href: '/services#writing' },
-  { label: 'Websites', title: 'LWCommerce, BEGIN, LTIF and other WordPress sites I built', href: '/services#web' },
+  { label: 'Websites', title: 'Chidexun Plumbing Supplies, LWCommerce and other sites I built', href: 'https://www.chidexun.com/' },
   { label: 'Product', title: 'KivoraPay, the crypto payments platform I founded', href: 'https://kivorapay.com/' },
 ]
 
