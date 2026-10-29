@@ -69,9 +69,9 @@ export const intents: { key: string; label: string; facet: FacetKey | null; repl
 export const journey = [
   { year: '2016', title: 'A phone and a love for words', body: 'I started writing on my phone, just because I wanted to. That same year I got into the University of Uyo.' },
   { year: '2017', title: 'Five posts a day', body: 'My first paid writing role: five blog posts a day, Monday to Saturday, for five thousand naira a month. I showed up every day.' },
-  { year: '2018', title: 'Learning to build', body: 'A friend showed me web development. WordPress, then HTML, CSS, JavaScript and PHP, learned after school in a cyber café.' },
+  { year: '2018', title: 'My first job and learning to build', body: 'Customer support at Soofluffy, over email and social media. After hours, a friend showed me web development, learned in a cyber café.' },
   { year: '2019', title: 'My first business', body: 'I sold hair growth products and made it profitable, until fake versions flooded the market. I learned, and kept moving.' },
-  { year: '2020', title: 'Remote, in a closed world', body: 'COVID shut everything down. I found my first remote job in customer support and kept myself going.' },
+  { year: '2020', title: 'Fixing problems at the source', body: 'COVID shut everything down, but I kept going. At Soofluffy I cut recurring customer issues by 45% before moving on in November.' },
   { year: '2021', title: 'The door finally opened', body: 'Payment walls that had blocked me for years came down. I went back to freelancing properly and built a reputation piece by piece.' },
   { year: '2022', title: 'Technical Writer', body: 'My first full-time role, at WriteTech Hub. Proof that none of the hard years had been wasted.' },
   { year: 'Now', title: 'Founder and strategist', body: 'I run Prowess Digital Solutions, built KivoraPay and founded Dritchwear, and I work with teams across fintech and Web3.' },
@@ -80,7 +80,7 @@ export const journey = [
 export const ventures = [
   // Colours follow KivoraPay's current brand (navy and blue, from kivora-codebase brand.css).
   { name: 'KivoraPay', tag: 'Fintech · Solana', line: 'The spending layer for crypto.', body: 'Pay bills, receive money and run a business with crypto, built for the African market on Solana. I lead product strategy, messaging and user flows.', href: 'https://kivorapay.com/', tone: 'bg-[#0E223C] text-white', accent: 'text-[#8DBBFF]' },
-  { name: 'Prowess Digital Solutions', tag: 'Business consulting', line: 'Structure in place of guesswork.', body: 'A remote business consulting firm for African entrepreneurs: practical tools, training and content systems.', href: 'https://www.prowessdigitalsolutions.com', tone: 'bg-[#0E2A2C] text-[#EDF5F5]', accent: 'text-[#5EC4C9]' },
+  { name: 'Prowess Digital Solutions', tag: 'Business consulting', line: 'Structure in place of guesswork.', body: 'A business consulting firm for African entrepreneurs: practical tools, training and content systems.', href: 'https://www.prowessdigitalsolutions.com', tone: 'bg-[#0E2A2C] text-[#EDF5F5]', accent: 'text-[#5EC4C9]' },
   { name: 'Dritchwear', tag: 'Streetwear & merchandise', line: 'Clothes and merch people are proud of.', body: 'A streetwear and branded merchandise label for individuals, companies and events.', href: 'https://dritchwear.com/shop', tone: 'bg-[#2A1E3D] text-[#F3F0EC]', accent: 'text-[#F5B841]' },
 ]
 

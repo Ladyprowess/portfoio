@@ -70,7 +70,7 @@ export default function RecruiterView() {
           <ol className="relative space-y-6 border-l border-ink-border pl-6">
             {experience.map(e => <li key={e.role + e.when} className="relative">
               <span className="absolute -left-[29px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-surface bg-primary" />
-              <p className="font-head text-[10px] uppercase tracking-wider text-primary">{e.when} · {e.where}</p>
+              <p className="font-head text-[10px] uppercase tracking-wider text-primary">{e.when}{e.where && ` · ${e.where}`}</p>
               <p className="mt-1 font-display text-lg font-semibold leading-snug tracking-[-.02em]">{e.role} <span className="font-normal text-muted">at</span> {e.org}</p>
               <ul className="mt-2 space-y-1.5">{e.points.map(pt => <li key={pt} className="flex gap-2 text-sm leading-6 text-muted"><span className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-muted" />{pt}</li>)}</ul>
             </li>)}

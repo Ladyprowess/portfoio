@@ -18,36 +18,45 @@ export const glance = [
 
 export const experience: { role: string; org: string; when: string; where: string; points: string[] }[] = [
   {
-    role: 'WordPress Content & Digital Product Specialist', org: 'LWCommerce', when: '04/2026 – 09/2026', where: 'Remote',
+    role: 'WordPress Content & Digital Product Specialist', org: 'LWCommerce', when: '04/2026 – 09/2026', where: '',
     points: ['Designed and built WordPress websites, landing pages and responsive layouts across LWCommerce, including BEGIN and LTIF.', 'Built an event management and attendee check-in workflow for on-site participant verification.'],
   },
   {
-    role: 'Content Strategist', org: 'Bullring Finance', when: '01/2025 – 03/2025', where: 'Brazil · Remote',
+    role: 'Content Strategist', org: 'Bullring Finance', when: '01/2025 – 03/2025', where: 'Brazil',
     points: ['Increased user engagement by 200% through high-performing infographics and multimedia content.', 'Led content strategy, editorial planning, SEO and brand consistency for a financial services audience.'],
   },
   {
-    role: 'Technical Writer', org: 'txFusion', when: '06/2024 – 04/2025', where: 'Serbia · Remote',
+    role: 'Technical Writer', org: 'txFusion', when: '06/2024 – 04/2025', where: 'Serbia',
     points: ['Wrote and maintained API documentation and integration guides for cross-border payment systems.', 'Improved developer satisfaction by 25% and cut support queries by 15%; automated docs deployment with Jenkins and GitHub Actions.'],
   },
   {
-    role: 'Technical Content Writer', org: 'Hawkish Group', when: '04/2024 – 06/2024', where: 'United Kingdom · Remote',
+    role: 'Technical Content Writer', org: 'Hawkish Group', when: '04/2024 – 06/2024', where: 'United Kingdom',
     points: ['Created business and technical documentation, system manuals and marketing content; raised client engagement by 15%.'],
   },
   {
-    role: 'Crypto Content Writer', org: 'Cwallet', when: '03/2023 – 07/2024', where: 'Europe · Remote',
+    role: 'Crypto Content Writer', org: 'Cwallet', when: '03/2023 – 07/2024', where: 'Europe',
     points: ['Product-led blogs, newsletters and technical guides for crypto products including CCPayment and Giveaway.com.', 'Improved user engagement by 50% and organic traffic by 10% through SEO-focused product content.'],
   },
   {
-    role: 'Founder', org: 'Prowess Digital Solutions', when: '07/2023 – Present', where: 'Nigeria · Remote',
+    role: 'Founder', org: 'Prowess Digital Solutions', when: '07/2023 – Present', where: 'Nigeria',
     points: ['Lead a digital content business for fintech and emerging-market clients.', 'Improved client SEO and organic traffic by 20%; trained more than 200 businesses and individuals.'],
   },
   {
-    role: 'Senior Technical Writer', org: 'WriteTech Hub', when: '07/2022 – 02/2025', where: 'Nigeria · Remote',
+    role: 'Senior Technical Writer', org: 'WriteTech Hub', when: '07/2022 – 02/2025', where: 'Nigeria',
     points: ['Managed technical writing projects and team delivery across fintech, blockchain and DevOps.', 'Cut documentation turnaround by 20%; led eBook and content-localisation projects for global audiences.'],
   },
   {
-    role: 'Open Source Contributor (Contract)', org: 'Jenkins', when: '03/2022 – 06/2022', where: 'Remote',
+    role: 'Open Source Contributor (Contract)', org: 'Jenkins', when: '03/2022 – 06/2022', where: '',
     points: ['Improved open-source documentation and version-control guides for developers.'],
+  },
+  {
+    role: 'Customer Support Specialist', org: 'Soofluffy', when: '02/2018 – 11/2020', where: '',
+    points: [
+      'Reduced recurring customer issues by 45% by tracing the most common questions to their root cause and fixing them with clearer answers and processes.',
+      'Ran customer support across email and social media, resolving order, delivery and product queries end to end.',
+      'Managed order fulfilment and order queries, keeping customers informed from purchase to delivery.',
+      'Turned repeated customer questions into reusable responses and help content, the start of my documentation work.',
+    ],
   },
 ]
 

@@ -62,7 +62,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'divider' },
       {
         type: 'paragraph',
-        text: `In 2018, a friend she calls Hero, whose name is Israel, sat with her and showed her something new. Web development. She started with WordPress, learning how to build websites from the ground up. Then she kept going. HTML. CSS. JavaScript. PHP. She was not in a classroom or a bootcamp. She was in a cyber cafe called Nafias, going there after school, sitting among people who were already deep in tech, absorbing everything around her. That place shaped her in ways she probably did not fully realise at the time. The minds she met there pushed her further. She was building skills quietly, with no guarantee they would ever pay off, but she kept going anyway. That is the thread running through her entire story. She just kept going.`,
+        text: `In February 2018, she took her first job, as a customer support specialist for Soofluffy. She answered customers by email and on social media, fulfilled orders, chased down order queries and kept people updated until their package arrived. It taught her something she would use for the rest of her career: the questions people keep asking are a map of where things are unclear. By tracing those questions back to their cause, she cut recurring customer issues by 45%. That same year, a friend she calls Hero, whose name is Israel, sat with her and showed her something new. Web development. She started with WordPress, learning how to build websites from the ground up. Then she kept going. HTML. CSS. JavaScript. PHP. She was not in a classroom or a bootcamp. She was in a cyber cafe called Nafias, going there after school, sitting among people who were already deep in tech, absorbing everything around her. That place shaped her in ways she probably did not fully realise at the time. The minds she met there pushed her further. She was building skills quietly, with no guarantee they would ever pay off, but she kept going anyway. That is the thread running through her entire story. She just kept going.`,
       },
       {
         type: 'paragraph',
@@ -70,7 +70,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: 'paragraph',
-        text: `Then 2020 arrived and brought COVID-19 with it. The world stopped. Jobs disappeared. Remote work was not yet the widely available thing it is today. In the middle of all that uncertainty, she found a customer support role. It was her first remote job. It was not where she had imagined herself. But she took it. She worked it. She kept herself going. That quiet discipline of doing what needs to be done without waiting for perfect conditions is something that shows up again and again in who she is.`,
+        text: `Then 2020 arrived and brought COVID-19 with it. The world stopped. Jobs disappeared. In the middle of all that uncertainty, she kept her customer support role going, as she had for two years, until November 2020. It was not where she had imagined herself. But she took it. She worked it. She kept herself going. That quiet discipline of doing what needs to be done without waiting for perfect conditions is something that shows up again and again in who she is.`,
       },
       {
         type: 'paragraph',
