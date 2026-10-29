@@ -65,7 +65,7 @@ export const skills = [
   { group: 'Product & developer content', items: ['Product education', 'Developer communication', 'User guides', 'Onboarding'] },
   { group: 'Technology', items: ['Web3', 'Blockchain', 'Fintech', 'Payments', 'APIs'] },
   { group: 'Content strategy', items: ['SEO', 'Editorial planning', 'Product communication'] },
-  { group: 'Web & CMS', items: ['WordPress', 'Responsive web design', 'Website implementation'] },
+  { group: 'Web & CMS', items: ['Custom-coded websites', 'WordPress', 'Responsive web design'] },
   { group: 'Customer support', items: ['Email and social media support', 'Order fulfilment', 'Issue resolution', 'Help content'] },
   { group: 'Delivery', items: ['Cross-functional work', 'Docs workflows', 'Jenkins', 'GitHub Actions', 'Open source'] },
 ]

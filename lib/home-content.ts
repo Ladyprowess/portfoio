@@ -29,7 +29,7 @@ export const facets: { key: FacetKey; label: string; short: string; title: strin
     label: 'Website design',
     short: 'Websites',
     title: 'I build websites around the people who will use them.',
-    body: 'Custom-coded sites like Chidexun Plumbing Supplies, and WordPress and Elementor builds: clear structure, useful pages and practical paths to action, for businesses, communities and events.',
+    body: 'Custom-coded websites like Chidexun Plumbing Supplies, Prowess Digital Solutions and Dritchwear, plus WordPress for the LWCommerce ecosystem: clear structure, useful pages and practical paths to action.',
     proof: ['Chidexun', 'Prowess Digital Solutions', 'Testers Connect', 'Dritchwear', 'BEGIN', 'LoveWorld Trade & Investment Forum'],
     // Chidexun is the lead example of her website work wherever it is shown.
     image: '/projects/chidexun.jpg',
