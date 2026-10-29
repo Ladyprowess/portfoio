@@ -56,10 +56,20 @@ export const facets: { key: FacetKey; label: string; short: string; title: strin
   },
 ]
 
+/** Tabs in the hero's live editor: the five crafts, plus customer support,
+    where the work started (2018–2020 at Soofluffy). */
+export type EditorKey = FacetKey | 'support'
+export const editorTabs: { key: EditorKey; short: string }[] = [
+  ...facets.slice(0, 2).map(f => ({ key: f.key as EditorKey, short: f.short })),
+  { key: 'support', short: 'Support' },
+  ...facets.slice(2).map(f => ({ key: f.key as EditorKey, short: f.short })),
+]
+
 /** "What brings you here?" — each answer points the page at one craft. */
-export const intents: { key: string; label: string; facet: FacetKey | null; reply: string }[] = [
+export const intents: { key: string; label: string; facet: EditorKey | null; reply: string }[] = [
   { key: 'explain', label: 'My product is hard to explain', facet: 'product', reply: 'Then we start with the words. I will find what your users actually need to hear.' },
   { key: 'docs', label: 'I need docs developers can follow', facet: 'writing', reply: 'Good docs are a feature. I have written them for zkSync and txFusion.' },
+  { key: 'support', label: 'My customers keep asking the same questions', facet: 'support', reply: 'I spent nearly three years in customer support and cut recurring issues by 45%. Let’s find what your customers are stuck on and answer it once, properly.' },
   { key: 'site', label: 'I need a website that works', facet: 'web', reply: 'A site people can find their way around, built around what they came to do.' },
   { key: 'learn', label: 'My team needs Web3 or AI training', facet: 'education', reply: 'I have trained over 200 people. Plain explanations, practical lessons.' },
   { key: 'build', label: 'I am building a business', facet: 'business', reply: 'I have built three. Let us make yours easier to run and easier to sell.' },

@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { facets, type FacetKey } from '@/lib/home-content'
+import { editorTabs, type EditorKey } from '@/lib/home-content'
 
 // The hero's live editor: one tab per craft, each playing a short demo of the
 // work being done, with Ngozi's note in the margin. It rotates through the
@@ -11,7 +11,8 @@ import { facets, type FacetKey } from '@/lib/home-content'
 
 const CYCLE_MS = 7000
 
-const files: Record<FacetKey, { file: string; note: string }> = {
+const files: Record<EditorKey, { file: string; note: string }> = {
+  support: { file: 'support-inbox', note: 'If people keep asking, the answer is missing somewhere.' },
   product: { file: 'launch-headline.docx', note: 'Say what it does for them, not what it is.' },
   writing: { file: 'payments-api.md', note: 'Developers skim. Lead with the answer.' },
   web: { file: 'home-page.html', note: 'One clear action, above the fold.' },
@@ -24,7 +25,7 @@ const photos = ['/personal photo/headshot6.jpg', '/hero/mine.jpeg', '/personal p
 const PHOTO_MS = 3200
 
 /** onSelect's second argument is true when the visitor chose the tab (which stops the rotation). */
-type Props = { active: FacetKey; onSelect: (key: FacetKey, byVisitor: boolean) => void; locked: boolean }
+type Props = { active: EditorKey; onSelect: (key: EditorKey, byVisitor: boolean) => void; locked: boolean }
 
 export default function CraftEditor({ active, onSelect, locked }: Props) {
   const reduce = useReducedMotion()
@@ -45,8 +46,8 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
     const finish = window.setTimeout(() => setDone(true), reduce ? 0 : 4200)
     if (locked || paused || reduce) return () => window.clearTimeout(finish)
     const next = window.setTimeout(() => {
-      const i = facets.findIndex(f => f.key === active)
-      onSelect(facets[(i + 1) % facets.length].key, false)
+      const i = editorTabs.findIndex(f => f.key === active)
+      onSelect(editorTabs[(i + 1) % editorTabs.length].key, false)
     }, CYCLE_MS)
     return () => { window.clearTimeout(finish); window.clearTimeout(next) }
   }, [active, locked, paused, reduce, onSelect])
@@ -64,7 +65,7 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
 
       {/* One tab per craft, with a timer bar on the active one */}
       <div role="tablist" aria-label="Crafts" className="flex overflow-x-auto border-b border-ink-border bg-surface-2/50 [scrollbar-width:none]">
-        {facets.map(f => {
+        {editorTabs.map(f => {
           const on = f.key === active
           return <button key={f.key} role="tab" aria-selected={on} type="button" onClick={() => onSelect(f.key, true)}
             className={`relative shrink-0 px-3.5 py-2.5 text-[12px] font-semibold transition-colors ${on ? 'bg-surface text-parchment' : 'text-muted hover:text-parchment'}`}>
@@ -82,6 +83,7 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
             <motion.div key={active} className="relative" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}>
               {active === 'product' && <ProductDemo />}
               {active === 'writing' && <WritingDemo />}
+              {active === 'support' && <SupportDemo />}
               {active === 'web' && <WebDemo />}
               {active === 'education' && <EducationDemo />}
               {active === 'business' && <BusinessDemo />}
@@ -163,6 +165,28 @@ function WritingDemo() {
       <p className="text-[#64748B]">{'{ "amount": 5000, "currency": "NGN" }'}</p>
     </motion.div>
     <p className="mt-4 min-h-[3.2em] text-[15px] leading-6"><span className="font-semibold">In plain words: </span><Typed text="sent the same request twice by accident? You are only charged once." delay={1.1} speed={24} /></p>
+  </div>
+}
+
+/** A repeated customer question gets answered, then becomes a help article. */
+function SupportDemo() {
+  return <div>
+    <Label>Support inbox · Email and social</Label>
+    <motion.div {...step(0, 0.2)} className="mt-4 rounded-xl border border-ink-border bg-surface p-3.5 shadow-sm">
+      <div className="flex items-center justify-between text-[11px]"><span className="font-semibold">Ada · Instagram DM</span><span className="rounded-full bg-[#EF4444]/10 px-2 py-0.5 font-semibold text-[#DC2626]">3rd time asking</span></div>
+      <p className="mt-1.5 text-[13px] leading-5">Where is my order? I paid last week and nobody has told me anything.</p>
+    </motion.div>
+    <motion.div {...step(0, 1.1)} className="ml-auto mt-2.5 max-w-[88%] rounded-xl rounded-tr-sm bg-primary/10 p-3.5">
+      <p className="text-[13px] leading-5"><Typed text="So sorry, Ada! It shipped yesterday. Here is your tracking link, and it arrives Friday." delay={1.4} speed={18} /></p>
+    </motion.div>
+    <motion.div {...step(0, 3.4)} className="mt-3 flex items-center gap-2.5 rounded-xl border border-success/40 bg-success/[0.06] p-3">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-success text-xs text-white">✓</span>
+      <p className="text-[12.5px] leading-5"><span className="font-semibold">New help article:</span> “Where’s my order? Track it in 3 steps”</p>
+    </motion.div>
+    <motion.div {...step(0, 4)} className="mt-3 flex flex-wrap gap-2 text-[11px]">
+      <span className="rounded-full bg-success/10 px-2.5 py-1 font-semibold text-success">−45% repeat issues</span>
+      <span className="rounded-full bg-surface-2 px-2.5 py-1 text-muted">Soofluffy · 2018–2020</span>
+    </motion.div>
   </div>
 }
 

@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import posthog from 'posthog-js'
-import { facets, intents, type FacetKey } from '@/lib/home-content'
+import { facets, intents, type EditorKey } from '@/lib/home-content'
 import PenNib from './PenNib'
 import CraftEditor from './CraftEditor'
 import TypedHeadline from './TypedHeadline'
@@ -11,9 +11,9 @@ import TypedHeadline from './TypedHeadline'
 type Props = {
   intent: string | null
   onIntent: (key: string) => void
-  onExplore: (facet: FacetKey | null) => void
-  facet: FacetKey
-  onFacet: (key: FacetKey, byVisitor: boolean) => void
+  onExplore: (facet: EditorKey | null) => void
+  facet: EditorKey
+  onFacet: (key: EditorKey, byVisitor: boolean) => void
   locked: boolean
 }
 
@@ -21,7 +21,7 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
   const reduce = useReducedMotion()
   const chosen = intents.find(i => i.key === intent) ?? null
   const lit = chosen?.facet ?? null
-  const facetLabel = lit ? facets.find(f => f.key === lit)!.short.toLowerCase() : null
+  const facetLabel = lit === 'support' ? 'support' : lit ? facets.find(f => f.key === lit)!.short.toLowerCase() : null
 
   return <section id="top" className="relative overflow-hidden pb-12 pt-24 md:pb-28 md:pt-36">
     <div aria-hidden="true" className="desk-dots absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
@@ -78,8 +78,8 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
       </div>
     </div>
 
-    <dl className="relative mx-auto mt-12 grid max-w-[1320px] grid-cols-2 gap-y-6 px-5 md:mt-20 md:grid-cols-4 md:px-8">
-      {[['9+', 'Years of writing and building'], ['200+', 'People trained'], ['3', 'Ventures founded'], ['11', 'Companies I have worked with']].map(([v, l]) => <div key={l} className="flex flex-col-reverse border-l border-ink-border pl-5">
+    <dl className="relative mx-auto mt-12 grid max-w-[1320px] grid-cols-2 gap-y-6 px-5 md:mt-20 md:grid-cols-5 md:px-8">
+      {[['9+', 'Years of writing and building'], ['200+', 'People trained'], ['3', 'Ventures founded'], ['11', 'Companies I have worked with'], ['−45%', 'Repeat customer issues, in support']].map(([v, l], i) => <div key={l} className={`flex flex-col-reverse border-l border-ink-border pl-5 ${i === 4 ? 'col-span-2 md:col-span-1' : ''}`}>
         <dt className="mt-1 text-xs text-muted">{l}</dt><dd className="font-display text-3xl font-bold tracking-[-.04em] md:text-4xl">{v}</dd>
       </div>)}
     </dl>

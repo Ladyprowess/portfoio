@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import { intents, type FacetKey } from '@/lib/home-content'
+import { intents, type EditorKey } from '@/lib/home-content'
 import Welcome from './Welcome'
 import HomeHero from './HomeHero'
 import Crafts from './Crafts'
@@ -18,7 +18,7 @@ import RecruiterPill from './RecruiterPill'
 // matching craft and starts their message in the contact section.
 export default function HomePage({ posts }: { posts: LatestPost[] }) {
   const [intent, setIntent] = useState<string | null>(null)
-  const [facet, setFacet] = useState<FacetKey>('product')
+  const [facet, setFacet] = useState<EditorKey>('product')
   // Once the visitor picks a craft (by answer or by tab), the hero editor stops rotating.
   const [locked, setLocked] = useState(false)
 
@@ -29,12 +29,12 @@ export default function HomePage({ posts }: { posts: LatestPost[] }) {
   }
 
   // Stable, so the editor's rotation timer is not reset on every render.
-  const pickFacet = useCallback((key: FacetKey, byVisitor: boolean) => {
+  const pickFacet = useCallback((key: EditorKey, byVisitor: boolean) => {
     setFacet(key)
     if (byVisitor) setLocked(true)
   }, [])
 
-  const explore = (f: FacetKey | null) => {
+  const explore = (f: EditorKey | null) => {
     if (f) setFacet(f)
     document.getElementById('crafts')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -44,7 +44,7 @@ export default function HomePage({ posts }: { posts: LatestPost[] }) {
     <main className="min-h-screen bg-bg text-parchment">
       <Nav />
       <HomeHero intent={intent} onIntent={chooseIntent} onExplore={explore} facet={facet} onFacet={pickFacet} locked={locked} />
-      <Crafts open={facet} onOpen={setFacet} />
+      <Crafts open={facet === 'support' ? 'writing' : facet} onOpen={setFacet} />
       <Journey />
       <Ventures />
       <Proof />
