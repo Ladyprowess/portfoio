@@ -19,7 +19,7 @@ export const facets: { key: FacetKey; label: string; short: string; title: strin
     label: 'Technical writing',
     short: 'Writing',
     title: 'I turn difficult subjects into content people can follow.',
-    body: 'API and developer documentation, explainers, help content and guides that remove confusion without removing the important details.',
+    body: 'I started in customer support, so I know the questions people actually ask. API and developer documentation, help content and guides that answer them, without dropping the important details.',
     proof: ['zkSync', 'txFusion', 'LBank', 'UEEx', 'CCPayment', 'WriteTech Hub', 'DEV Community'],
     image: '/service-proof/case-study-lbank.jpg',
     imageAlt: 'Articles written for LBank',

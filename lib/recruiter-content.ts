@@ -6,12 +6,12 @@ export const headline = 'Technical Writer & Content Strategist'
 
 export const openTo = ['Technical Writing', 'API Documentation', 'Developer Education', 'Content Strategy', 'Product Communication']
 
-export const pitch = 'I build, explain and grow digital products across fintech, Web3, payments and web platforms. API documentation, integration guides, tutorials and product education, written so people can actually use them, working across product, engineering, marketing and business teams.'
+export const pitch = 'I started in customer support, answering the questions people get stuck on. Now I write the documentation, guides and product education that stop those questions coming: API docs, integration guides and tutorials across fintech, Web3, payments and web platforms, working with product, engineering, marketing and business teams.'
 
 /** Results taken straight from the CV. */
 export const glance = [
   { value: '+25%', label: 'developer satisfaction', where: 'txFusion' },
-  { value: '−15%', label: 'support queries', where: 'txFusion' },
+  { value: '−45%', label: 'recurring customer issues', where: 'Soofluffy' },
   { value: '+200%', label: 'user engagement', where: 'Bullring Finance' },
   { value: '200+', label: 'businesses and people trained', where: 'Prowess Digital Solutions' },
 ]
@@ -66,6 +66,7 @@ export const skills = [
   { group: 'Technology', items: ['Web3', 'Blockchain', 'Fintech', 'Payments', 'APIs'] },
   { group: 'Content strategy', items: ['SEO', 'Editorial planning', 'Product communication'] },
   { group: 'Web & CMS', items: ['WordPress', 'Responsive web design', 'Website implementation'] },
+  { group: 'Customer support', items: ['Email and social media support', 'Order fulfilment', 'Issue resolution', 'Help content'] },
   { group: 'Delivery', items: ['Cross-functional work', 'Docs workflows', 'Jenkins', 'GitHub Actions', 'Open source'] },
 ]
 

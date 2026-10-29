@@ -35,7 +35,7 @@ export const services: {
     name: 'Technical writing',
     problem: 'Developers struggle to use my docs.',
     title: 'Your docs should answer questions, not create them.',
-    body: 'I write API references, guides and help content that developers can follow on the first read, without dropping the technical detail. I have done it for zkSync and txFusion.',
+    body: 'Years in customer support taught me which questions people keep asking. I write API references, guides and help content that answer them on the first read, without dropping the technical detail. I have done it for zkSync and txFusion.',
     includes: ['API and developer documentation', 'Quickstarts and tutorials', 'Help centre articles', 'Technical and SEO articles'],
     proofTitle: 'Where my writing is published',
     proof: writing.map(w => ({ label: w.title, href: w.href })),
