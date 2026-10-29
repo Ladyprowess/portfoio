@@ -4,6 +4,7 @@
 export type WorkItem = { title: string; description: string; image: string; href: string; linkLabel: string }
 
 export const websites: WorkItem[] = [
+      { title: 'Chidexun', description: 'A plumbing supplies website helping retail and wholesale customers explore products, plan project quantities, and request quotes.', image: '/projects/chidexun.jpg', href: 'https://www.chidexun.com/', linkLabel: 'Visit website' },
       { title: 'Prowess Digital Solutions', description: 'A practical platform connecting people with learning, opportunities, tools, and business support.', image: '/service-proof/prowess-digital-solutions.png', href: 'https://www.prowessdigitalsolutions.com', linkLabel: 'Visit website' },
       { title: 'Testers Connect', description: 'A community website built to connect quality assurance professionals with resources, events, jobs, and mentorship.', image: '/service-proof/testers-connect.png', href: 'https://testersconnect.com', linkLabel: 'View project preview' },
       { title: 'Dritchwear', description: 'A merchandise commerce experience for custom apparel, corporate gifts, event kits, and branded products.', image: '/service-proof/dritchwear.png', href: 'https://dritchwear.com', linkLabel: 'Visit website' },
