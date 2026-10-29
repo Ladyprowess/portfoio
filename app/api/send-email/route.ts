@@ -22,25 +22,30 @@ const SOCIALS: { label: string; url: string }[] = [
   { label: 'Substack', url: 'https://ladyprowess.substack.com' },
 ]
 
-// Branded signature footer appended to every email, using the brand background.
+const TAGLINE = 'I help tech products get understood and trusted.'
+
+// Branded signature footer appended to every email: logo, a blue rule, then name and links.
 const SIGNATURE_HTML = `
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;border-radius:10px;background-color:#08090b;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:32px;font-family:Arial,Helvetica,sans-serif;color:#22292A;font-size:14px;line-height:1.4;">
   <tr>
-    <td style="padding:26px 28px;font-family:Arial,Helvetica,sans-serif;">
-      <div style="font-size:18px;font-weight:bold;color:#f0ece3;line-height:1.2;">Ngozi Peace Okafor</div>
-      <div style="font-size:12px;font-weight:bold;letter-spacing:1.4px;text-transform:uppercase;color:#41d7c7;margin-top:6px;">Lady Prowess</div>
-      <div style="font-size:13px;color:#a2a7b3;margin-top:14px;line-height:1.6;">
-        <a href="mailto:hello@ladyprowess.com" style="color:#a2a7b3;text-decoration:none;">hello@ladyprowess.com</a>
-        &nbsp;&middot;&nbsp;
-        <a href="https://kivorapay.com" style="color:#a2a7b3;text-decoration:none;">kivorapay.com</a>
-        &nbsp;&middot;&nbsp;
-        <a href=SITE_URL style="color:#a2a7b3;text-decoration:none;">ladyprowess.com</a>
+    <td style="padding-right:16px;vertical-align:top;">
+      <a href="${SITE_URL}" style="text-decoration:none;">
+        <img src="${SITE_URL}/icon-blue.png" width="64" height="64" alt="Lady Prowess" style="display:block;border:0;border-radius:8px;">
+      </a>
+    </td>
+    <td style="border-left:2px solid #2563EB;padding-left:16px;vertical-align:top;">
+      <div style="font-size:16px;font-weight:bold;color:#131718;">Ngozi Peace Okafor</div>
+      <div style="color:#2563EB;font-weight:bold;">Lady Prowess</div>
+      <div style="color:#5B6466;font-style:italic;padding-bottom:8px;">${TAGLINE}</div>
+      <div>
+        <a href="mailto:hello@ladyprowess.com" style="color:#22292A;text-decoration:none;">hello@ladyprowess.com</a>
+        <span style="color:#9CA3A3;">&nbsp;|&nbsp;</span>
+        <a href="${SITE_URL}" style="color:#22292A;text-decoration:none;">ladyprowess.com</a>
       </div>
-      <div style="font-size:13px;margin-top:16px;line-height:1.6;">
+      <div style="padding-top:6px;font-size:13px;">
         ${SOCIALS.map(
-          (s) =>
-            `<a href="${s.url}" style="color:#41d7c7;text-decoration:none;font-weight:bold;">${s.label}</a>`,
-        ).join('<span style="color:#272b35;">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>')}
+          (s) => `<a href="${s.url}" style="color:#2563EB;text-decoration:none;">${s.label}</a>`,
+        ).join('<span style="color:#9CA3A3;">&nbsp;&middot;&nbsp;</span>')}
       </div>
     </td>
   </tr>
@@ -51,7 +56,8 @@ const SIGNATURE_TEXT = `
 -
 Ngozi Peace Okafor
 Lady Prowess
-hello@ladyprowess.com · kivorapay.com · ladyprowess.com
+${TAGLINE}
+hello@ladyprowess.com · ladyprowess.com
 ${SOCIALS.map((s) => `${s.label}: ${s.url}`).join('\n')}`
 
 type Attachment = {
