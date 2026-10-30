@@ -2,6 +2,7 @@ export type Venture = {
   slug: string
   name: string
   eyebrow: string
+  tagline: string
   logo: string
   website: string
   status: string
@@ -30,6 +31,7 @@ export const ventures: Venture[] = [
     slug: 'kivorapay',
     name: 'KivoraPay',
     eyebrow: 'Crypto payments for everyday life',
+    tagline: 'The spending layer for crypto.',
     logo: '/brands/kivorapay.png',
     website: 'https://kivorapay.com',
     status: 'Currently seeking funding and strategic support',
@@ -47,8 +49,8 @@ export const ventures: Venture[] = [
       { title: 'Crypto invoices', body: 'Create an invoice, lock the amount, share the payment link, and receive an automatic payment confirmation.' },
       { title: 'Payment links', body: 'Receive supported crypto through a personal or business payment link without building a checkout.' },
       { title: 'Merchant stores', body: 'Create a storefront, list products, accept orders, manage stock, and receive crypto payments.' },
-      { title: 'Balance and direct payment', body: 'Fund a KivoraPay balance or complete a supported payment directly through an invoice.' },
-      { title: 'Business tools', body: 'Use product uploads, cashier payment codes, invoices, order updates, and bank payouts from one account.' },
+      { title: 'Fund with crypto', body: 'Fund a naira balance with USDT or USDC on Solana, or with Bitcoin, and see the rate and fees before confirming.' },
+      { title: 'Business tools', body: 'Use product uploads, cashier payment codes, inventory, team payroll, order updates, and bank payouts from one account.' },
     ],
     stats: [
       { value: '500+', label: 'Registered users' },
@@ -75,6 +77,7 @@ export const ventures: Venture[] = [
     slug: 'prowess-digital-solutions',
     name: 'Prowess Digital Solutions',
     eyebrow: 'Business education, tools, and digital execution',
+    tagline: 'Structure in place of guesswork.',
     logo: '/brands/pds.png',
     website: 'https://www.prowessdigitalsolutions.com',
     status: 'Open to partnerships, sponsorships, and growth support',
@@ -103,8 +106,9 @@ export const ventures: Venture[] = [
   {
     slug: 'dritchwear',
     name: 'Dritchwear',
-    eyebrow: 'Wear it. Brand it. Gift it.',
-    logo: '/brands/dritchwear.png',
+    eyebrow: 'Custom merch, corporate gifts, branded apparel',
+    tagline: 'We build merch people actually keep.',
+    logo: '/brands/dritchwear-trim.png',
     website: 'https://dritchwear.com/shop',
     status: 'Open to production, distribution, and corporate partnerships',
     summary: 'Dritchwear is a Nigerian streetwear and custom merchandise business for individuals, brands, teams, companies, and events.',
@@ -121,10 +125,10 @@ export const ventures: Venture[] = [
       { title: 'Custom merchandise', body: 'Create branded T shirts, hoodies, caps, tote bags, flasks, notebooks, and custom items.' },
       { title: 'Corporate gifts', body: 'Prepare useful branded gifts for staff, clients, partners, and special occasions.' },
       { title: 'Event kits', body: 'Produce coordinated merchandise for conferences, communities, campaigns, and events.' },
-      { title: 'Bulk orders', body: 'Place custom orders from 20 pieces with support for product choice, design, and delivery.' },
+      { title: 'Bulk orders', body: 'Produce from 10 to 10,000 pieces, with specs kept on file so every reorder matches the last.' },
       { title: 'Digital ordering', body: 'Browse products, request a quote, and manage the first stage of an order online.' },
     ],
-    stats: [{ value: '100+', label: 'Orders delivered' }, { value: '50+', label: 'Custom designs' }, { value: '5 star', label: 'Google rating' }, { value: '20', label: 'Minimum bulk quantity' }],
+    stats: [{ value: '500+', label: 'Orders delivered' }, { value: '100+', label: 'Brands served' }, { value: '5.0', label: 'Google rating' }, { value: '10', label: 'Minimum bulk quantity' }],
     model: ['Direct sales of ready made clothing', 'Bulk custom merchandise orders', 'Corporate gifting projects', 'Event and campaign merchandise'],
     priorities: ['Increase production capacity', 'Improve fulfilment and delivery systems', 'Expand the menswear collection', 'Reach more corporate buyers', 'Strengthen the digital ordering experience'],
     support: ['Production partnerships', 'Corporate introductions', 'Equipment and inventory funding', 'Distribution partnerships', 'Event and merchandise contracts'],

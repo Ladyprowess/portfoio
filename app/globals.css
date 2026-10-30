@@ -431,3 +431,10 @@ html:not([data-welcome]):has(.welcome) body { overflow: hidden; }
 }
 
 .animate-cue { animation: cue-drift 2.4s ease-in-out infinite; }
+
+/* Venture tone tints: --t and --a are hex brand colours set per venture. */
+.t-soft { background-color: color-mix(in srgb, var(--t) 11%, transparent); }
+.t-mid  { background-color: color-mix(in srgb, var(--t) 40%, transparent); }
+.a-mid  { background-color: color-mix(in srgb, var(--a) 55%, transparent); }
+.t-ink  { color: var(--t); }
+:root[data-theme="dark"] .t-ink { color: var(--a); }
