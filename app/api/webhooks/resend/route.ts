@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/email-store'
+import { advance, type LeadStatus } from '@/lib/outreach'
 
 export const runtime = 'nodejs'
 
@@ -9,6 +10,10 @@ type ResendEvent = {
   created_at: string
   data: {
     email_id?: string
+    // Inbound (email.received): who sent it and what it says.
+    from?: string | { email?: string; address?: string }
+    subject?: string
+    text?: string
     click?: {
       link?: string
       timestamp?: string
@@ -45,19 +50,21 @@ export async function POST(request: Request) {
   if (!verify(payload, request)) return new NextResponse('Invalid webhook', { status: 400 })
 
   const event = JSON.parse(payload) as ResendEvent
-  if (event.type !== 'email.opened' && event.type !== 'email.clicked') return NextResponse.json({ ok: true })
+  if (event.type === 'email.received') return recordReply(event, request.headers.get('svix-id') || '')
+  if (event.type !== 'email.opened' && event.type !== 'email.clicked' && event.type !== 'email.bounced') return NextResponse.json({ ok: true })
   if (!event.data.email_id) return NextResponse.json({ ok: true })
 
   try {
     const resendId = encodeURIComponent(event.data.email_id)
-    const eventType = event.type === 'email.opened' ? 'open' : 'click'
+    const eventType = event.type === 'email.opened' ? 'open' : event.type === 'email.clicked' ? 'click' : 'bounce'
     const occurredAt = event.data.click?.timestamp || event.created_at
     const url = event.data.click?.link || null
     const providerEventId = request.headers.get('svix-id') || ''
     const ignoreDuplicates = { Prefer: 'resolution=ignore-duplicates,return=representation' }
 
-    const emails = await db(`sent_emails?select=id&resend_id=eq.${resendId}&limit=1`)
+    const emails = await db(`sent_emails?select=id,lead_id&resend_id=eq.${resendId}&limit=1`)
     if (emails[0]?.id) {
+      if (emails[0].lead_id) await updateLead(String(emails[0].lead_id), eventType, occurredAt)
       await db('email_events?on_conflict=provider_event_id', {
         method: 'POST',
         headers: ignoreDuplicates,
@@ -74,7 +81,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true })
     }
 
-    // Newsletter emails are matched through the queue's delivery rows.
+    // Newsletter emails are matched through the queue's delivery rows (opens and clicks only).
+    if (eventType === 'bounce') return NextResponse.json({ ok: true })
     const deliveries = await db(`newsletter_deliveries?select=id,campaign_id&resend_id=eq.${resendId}&limit=1`)
     const delivery = deliveries[0]
     if (delivery)
@@ -93,5 +101,44 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true })
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Webhook processing failed.' }, { status: 500 })
+  }
+}
+
+/** Moves an outreach lead forward when its email is opened, clicked or bounces. */
+async function updateLead(leadId: string, eventType: 'open' | 'click' | 'bounce', at: string) {
+  const rows = await db(`outreach_leads?select=status,opened_at,clicked_at&id=eq.${encodeURIComponent(leadId)}`)
+  const lead = rows[0] as { status: LeadStatus; opened_at: string | null; clicked_at: string | null } | undefined
+  if (!lead) return
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() }
+  if (eventType === 'bounce') { patch.status = advance(lead.status, 'bounced'); patch.bounced_at = at }
+  if (eventType === 'open') { patch.status = advance(lead.status, 'opened'); patch.opened_at = lead.opened_at || at }
+  if (eventType === 'click') { patch.status = advance(lead.status, 'clicked'); patch.clicked_at = lead.clicked_at || at; patch.opened_at = lead.opened_at || at }
+  await db(`outreach_leads?id=eq.${encodeURIComponent(leadId)}`, { method: 'PATCH', body: JSON.stringify(patch) })
+}
+
+/** An inbound email to hello@ladyprowess.com: if the sender is a lead, they replied. */
+async function recordReply(event: ResendEvent, providerEventId: string) {
+  try {
+    const raw = event.data.from
+    const fromText = typeof raw === 'string' ? raw : raw?.email || raw?.address || ''
+    const address = (fromText.match(/<([^>]+)>/)?.[1] || fromText).trim().toLowerCase()
+    if (!address) return NextResponse.json({ ok: true })
+    // Exact, case-insensitive match. Wildcards are escaped so an address cannot match others.
+    const pattern = encodeURIComponent(address.replace(/[%_*\\]/g, m => `\\${m}`))
+    const leads = await db(`outreach_leads?select=id,status&email=ilike.${pattern}&limit=1`)
+    const lead = leads[0] as { id: string; status: LeadStatus } | undefined
+    if (!lead) return NextResponse.json({ ok: true })
+    const at = event.created_at || new Date().toISOString()
+    await db('outreach_replies?on_conflict=provider_event_id', {
+      method: 'POST',
+      headers: { Prefer: 'resolution=ignore-duplicates,return=representation' },
+      body: JSON.stringify({ lead_id: lead.id, from_email: address, subject: event.data.subject || null, snippet: (event.data.text || '').slice(0, 500) || null, provider_event_id: providerEventId || null, received_at: at }),
+    })
+    // A reply always counts, even after a bounce on an old address.
+    if (lead.status !== 'replied' && lead.status !== 'stopped')
+      await db(`outreach_leads?id=eq.${lead.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'replied', replied_at: at, updated_at: new Date().toISOString() }) })
+    return NextResponse.json({ ok: true })
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Reply processing failed.' }, { status: 500 })
   }
 }
