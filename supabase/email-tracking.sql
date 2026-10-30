@@ -27,6 +27,9 @@ create table if not exists public.email_events (
 create index if not exists email_events_email_id_idx on public.email_events(email_id);
 alter table public.email_events add column if not exists source text not null default 'custom';
 alter table public.email_events add column if not exists provider_event_id text;
-create unique index if not exists email_events_provider_event_id_idx on public.email_events(provider_event_id) where provider_event_id is not null;
+-- PostgREST's on_conflict=provider_event_id needs an unconditional unique index.
+-- A partial index (WHERE provider_event_id IS NOT NULL) causes SQLSTATE 42P10.
+-- PostgreSQL already allows multiple NULLs in an ordinary unique index.
+create unique index if not exists email_events_provider_event_id_unique_idx on public.email_events(provider_event_id);
 alter table public.sent_emails enable row level security;
 alter table public.email_events enable row level security;

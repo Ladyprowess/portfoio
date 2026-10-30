@@ -8,7 +8,8 @@ export async function POST(request: Request) {
   if (!process.env.COMPOSE_PASSWORD || password !== process.env.COMPOSE_PASSWORD) return NextResponse.json({ error: 'Wrong password.' }, { status: 401 })
   try {
     const [emails, events] = await Promise.all([
-      db('sent_emails?select=*&order=sent_at.desc&limit=100'),
+      // Logged entries (emails sent from another inbox) have no content to show here.
+      db('sent_emails?select=*&status=neq.logged&order=sent_at.desc&limit=100'),
       db('email_events?select=*&source=eq.resend&order=occurred_at.desc'),
     ])
     return NextResponse.json({ emails: emails.map(email => ({ ...email, events: events.filter(event => event.email_id === email.id) })) })

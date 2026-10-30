@@ -73,3 +73,24 @@ alter table public.email_events add constraint email_events_event_type_check che
 alter table public.outreach_leads enable row level security;
 alter table public.outreach_replies enable row level security;
 alter table public.outreach_settings enable row level security;
+
+-- ── Templates library ──────────────────────────────────────────
+-- Any number of named emails (pitches, job applications, LinkedIn follow-ups…).
+-- Each is personalised per contact and can be edited before it is sent.
+create table if not exists public.outreach_templates (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  subject text not null default '',
+  body text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.outreach_templates enable row level security;
+
+-- Contacts can come from anywhere, not only Apollo: 'apollo', 'linkedin',
+-- 'referral', 'event', 'website', 'other'. (Free text; the dashboard offers these.)
+alter table public.outreach_leads alter column source set default 'other';
+
+-- Scheduled emails sit in sent_emails with status 'scheduled' and sent_at set to
+-- the time Resend will deliver them; cancelled ones keep status 'cancelled'.
+create index if not exists sent_emails_status_sent_at_idx on public.sent_emails (status, sent_at);

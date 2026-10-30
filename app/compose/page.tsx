@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { SOURCES } from '@/lib/outreach'
 import Link from 'next/link'
 import posthog from 'posthog-js'
 import AdminNav from '@/components/AdminNav'
@@ -84,6 +85,9 @@ export default function ComposePage() {
 
   const [sending, setSending] = useState(false)
   const [status, setStatus] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
+  // Optionally add the recipient to the Outreach tracker once the email is sent.
+  const [track, setTrack] = useState(false)
+  const [contact, setContact] = useState({ first_name: '', last_name: '', company: '', title: '', source: 'other', linkedin: '' })
   const [history, setHistory] = useState<SentEmail[]>([])
   const [historyPage, setHistoryPage] = useState(1)
   const [selectedEmail, setSelectedEmail] = useState<SentEmail | null>(null)
@@ -174,7 +178,14 @@ export default function ComposePage() {
         recipient_count: [to, cc, bcc].flatMap((recipients) => recipients.split(',').filter(Boolean)).length,
         attachment_count: files.length,
       })
-      setStatus({ type: 'ok', text: 'Sent. Your email is on its way.' })
+      let tracked = ''
+      if (track && data.emailId) {
+        const recipient = to.split(/[\n,;]+/).map(a => a.trim()).filter(Boolean)[0]
+        const link = await fetch('/api/outreach', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password, action: 'link', emailId: data.emailId, lead: { ...contact, email: recipient } }) })
+        tracked = link.ok ? ' Added to Outreach, so opens, clicks and replies are tracked.' : ' (Could not add it to Outreach. Has supabase/outreach.sql been run?)'
+        if (link.ok) { setTrack(false); setContact({ first_name: '', last_name: '', company: '', title: '', source: 'other', linkedin: '' }) }
+      }
+      setStatus({ type: 'ok', text: `Sent. Your email is on its way.${tracked}` })
       setTo('')
       setCc('')
       setBcc('')
@@ -422,6 +433,23 @@ export default function ComposePage() {
                 ))}
               </ul>
             )}
+          </div>
+
+          {/* Track this email in Outreach */}
+          <div className="rounded-2xl border border-ink-border bg-bg p-4">
+            <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold">
+              <input type="checkbox" checked={track} onChange={e => setTrack(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--primary))]" />
+              Track in Outreach
+              <span className="font-normal text-muted">· adds the recipient as a contact, with follow-up reminders</span>
+            </label>
+            {track && <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {([['first_name', 'First name'], ['last_name', 'Last name'], ['company', 'Company'], ['title', 'Job title'], ['linkedin', 'LinkedIn URL']] as const).map(([k, t]) =>
+                <input key={k} value={contact[k]} onChange={e => setContact({ ...contact, [k]: e.target.value })} placeholder={t} className="rounded-xl border border-ink-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary" />)}
+              <select value={contact.source} onChange={e => setContact({ ...contact, source: e.target.value })} className="rounded-xl border border-ink-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary">
+                {SOURCES.map(s => <option key={s.key} value={s.key}>Met via {s.label}</option>)}
+              </select>
+              <p className="text-xs text-muted sm:col-span-2">Uses the first address in “To”. If they are already a contact, blanks are filled in and nothing is duplicated.</p>
+            </div>}
           </div>
 
           {status && (
