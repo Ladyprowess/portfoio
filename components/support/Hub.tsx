@@ -17,72 +17,85 @@ const kivora = ventures.find(v => v.slug === 'kivorapay')!
 /* ── 1. Meet the founder ─────────────────────── */
 
 export function FounderHero() {
-  const words = 'I build businesses from problems I’ve lived.'.split(' ')
+  const lines = [['I', 'build', 'businesses'], ['from', 'problems'], ['I\u2019ve', 'lived.']]
+  let w = 0
   return (
-    <section className="relative overflow-hidden border-b border-ink-border bg-surface px-6 pb-20 pt-32 sm:px-8 md:px-20 md:pb-24 md:pt-40">
-      <div aria-hidden className="absolute -left-40 -top-24 h-[36rem] w-[36rem] rounded-full bg-primary/[0.09] blur-3xl" />
-      <div aria-hidden className="absolute -bottom-40 right-0 h-[30rem] w-[30rem] rounded-full bg-[#F5A70E]/[0.08] blur-3xl" />
-      <div className="relative mx-auto grid max-w-[1280px] gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+    <section className="relative overflow-hidden border-b border-ink-border bg-surface px-6 pb-16 pt-32 sm:px-8 md:px-20 md:pb-20 md:pt-36">
+      <div aria-hidden className="absolute inset-0 opacity-60" style={{ backgroundImage: 'linear-gradient(rgb(var(--border)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--border)) 1px, transparent 1px)', backgroundSize: '56px 56px', maskImage: 'radial-gradient(70% 60% at 70% 40%, black, transparent)' }} />
+      <motion.div aria-hidden className="absolute -right-32 -top-32 h-[38rem] w-[38rem] rounded-full bg-primary/[0.10] blur-3xl" animate={{ scale: [1, 1.08, 1] }} transition={{ repeat: Infinity, duration: 12 }} />
+      <div aria-hidden className="absolute -bottom-40 left-1/3 h-[26rem] w-[26rem] rounded-full bg-[#F5A70E]/[0.08] blur-3xl" />
+
+      <div className="relative mx-auto grid max-w-[1240px] gap-16 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:gap-12">
         <div>
-          <Reveal><p className={`${label} text-primary`}>Founder portfolio · Investment and partnerships</p></Reveal>
-          <h1 className="mt-6 font-display text-[clamp(2.6rem,5.6vw,5rem)] font-extrabold leading-[1.02] tracking-[-0.035em]">
-            {words.map((w, n) => (
-              <motion.span key={n} initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.1 + n * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className={`mr-[0.22em] inline-block ${n >= words.length - 2 ? 'bg-[linear-gradient(100deg,#2563EB,#0E9AA0_55%,#D9900B)] bg-clip-text text-transparent' : ''}`}>{w}</motion.span>
+          <Reveal>
+            <a href="#invest" className="inline-flex items-center gap-2.5 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-4 text-xs font-semibold shadow-sm transition hover:border-primary/40">
+              <span className="relative flex h-6 items-center gap-1.5 rounded-full bg-primary px-2.5 text-[0.68rem] font-bold text-on-primary"><span className="relative flex h-1.5 w-1.5"><span className="absolute inset-0 animate-ping rounded-full bg-white/80" /><span className="h-1.5 w-1.5 rounded-full bg-white" /></span>Raising</span>
+              KivoraPay $500K seed round <span className="text-muted">→</span>
+            </a>
+          </Reveal>
+          <h1 className="mt-7 font-display text-[clamp(2.6rem,5vw,4.6rem)] font-extrabold leading-[1.02] tracking-[-0.035em]">
+            {lines.map((line, l) => (
+              <span key={l} className="block">
+                {line.map(word => {
+                  const n = w++
+                  return <motion.span key={word} initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.1 + n * 0.07, duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className={`mr-[0.22em] inline-block ${l === 2 ? 'bg-[linear-gradient(100deg,#2563EB,#0E9AA0_55%,#D9900B)] bg-clip-text pb-1 text-transparent' : ''}`}>{word}</motion.span>
+                })}
+              </span>
             ))}
           </h1>
-          <Reveal delay={0.5}><p className="mt-7 max-w-xl text-[1.04rem] leading-[1.85] text-muted md:text-[1.12rem]">I&apos;m Ngozi Peace Okafor. For nine years I&apos;ve written, marketed and shaped products for fintech and Web3 teams. Now I&apos;m building three companies of my own, each one born from a problem I hit first.</p></Reveal>
-          <Reveal delay={0.65}>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+          <Reveal delay={0.45}><p className="mt-7 max-w-[34rem] text-[1.04rem] leading-[1.8] text-muted md:text-[1.1rem]">I&apos;m Ngozi Peace Okafor. For nine years I&apos;ve written, marketed and shaped products for fintech and Web3 teams. Now I&apos;m building three companies of my own, each born from a problem I hit first.</p></Reveal>
+          <Reveal delay={0.6}>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a href={MEETING} className={`${btn} bg-primary text-on-primary shadow-[0_14px_30px_-12px_rgba(37,99,235,0.7)] hover:-translate-y-0.5 hover:bg-primary-dim`}>Book a meeting</a>
               <Donate className={`${btn} border border-ink-border bg-surface hover:border-primary/40`}>Donate to our cause</Donate>
             </div>
-            <a href="#films" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary"><svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5v9l7.5-4.5z" /></svg></span>Watch the three companies in 90 seconds</a>
-          </Reveal>
-          <Reveal delay={0.8}>
-            <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-ink-border pt-8 sm:grid-cols-4">
-              {[['9+', 'years writing and building'], [`${clients.length}`, 'teams in fintech, Web3 and tech'], ['200+', 'people trained'], ['3', 'ventures live']].map(([v, l]) => (
-                <div key={l}><dt className="sr-only">{l}</dt><dd className="font-display text-3xl font-extrabold"><Count value={v} /></dd><p className="mt-1 text-xs leading-5 text-muted">{l}</p></div>
-              ))}
-            </dl>
           </Reveal>
         </div>
         <Portrait />
       </div>
+
+      <Reveal delay={0.8} className="relative mx-auto mt-20 max-w-[1240px] lg:mt-24">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-[1.6rem] border border-ink-border bg-surface/80 backdrop-blur md:grid-cols-4">
+          {[['9+', 'years writing and building'], [`${clients.length}`, 'teams in fintech, Web3 and tech'], ['200+', 'people trained'], ['3', 'ventures live']].map(([v, l], n) => (
+            <div key={l} className={`flex flex-col-reverse gap-1 p-6 md:p-7 ${n % 2 ? 'border-l border-ink-border' : ''} ${n > 1 ? 'border-t border-ink-border md:border-t-0' : ''} ${n === 2 ? 'md:border-l' : ''}`}>
+              <dt className="text-xs leading-5 text-muted">{l}</dt>
+              <dd className="font-display text-3xl font-extrabold tracking-[-0.02em] md:text-4xl"><Count value={v} /></dd>
+            </div>
+          ))}
+        </dl>
+      </Reveal>
     </section>
   )
 }
 
-function Portrait() {
-  const chips = [
-    { slug: 'kivorapay', pos: 'left-[-6%] top-[12%]', d: 0, body: <><Dot c="#1D4ED8" /><span><b className="block text-[0.82rem]">Electricity paid</b><span className="text-[0.72rem] text-muted">with USDT · KivoraPay</span></span></> },
-    { slug: 'prowess-digital-solutions', pos: 'right-[-7%] top-[44%]', d: 1.2, body: <><Dot c="#2F6E72" /><span><b className="block text-[0.82rem]">Health check ready</b><span className="text-[0.72rem] text-muted">Next steps · PDS</span></span></> },
-    { slug: 'dritchwear', pos: 'bottom-[24%] left-[-6%]', d: 2.4, body: <><Dot c="#4A2D82" /><span><b className="block text-[0.82rem]">Hoodies in production</b><span className="text-[0.72rem] text-muted">Logo approved · Dritchwear</span></span></> },
-  ]
-  return (
-    <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }} className="relative mx-auto w-full max-w-[460px]">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[2.2rem] bg-[linear-gradient(160deg,#DBEAFE,#F1F5F9_45%,#FDF0D5)] shadow-[0_40px_90px_-40px_rgba(15,23,42,0.45)] dark:bg-[linear-gradient(160deg,#172554,#131718_45%,#3B2A0C)]">
-        <svg aria-hidden className="absolute inset-0 h-full w-full" viewBox="0 0 400 500">
-          {[120, 170, 220].map((r, n) => <motion.circle key={r} cx="200" cy="230" r={r} fill="none" stroke="rgb(var(--primary))" strokeOpacity={0.14} strokeDasharray="3 8" animate={{ rotate: n % 2 ? -360 : 360 }} transition={{ repeat: Infinity, duration: 60 + n * 20, ease: 'linear' }} style={{ originX: '200px', originY: '230px' }} />)}
-        </svg>
-        <Image src="/personal%20photo/headshot2.png" alt="Ngozi Peace Okafor" fill priority sizes="(max-width: 1024px) 90vw, 460px" className="object-cover object-top" />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-6 pt-20 text-white">
-          <p className="font-display text-xl font-extrabold">Ngozi Peace Okafor</p>
-          <p className="text-sm text-white/80">Founder · KivoraPay, PDS, Dritchwear</p>
-        </div>
-      </div>
-      {chips.map(c => (
-        <motion.div key={c.slug} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 + c.d / 3, duration: 0.6 }} className={`absolute z-10 ${c.pos}`}>
-          <motion.div animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 5, delay: c.d, ease: 'easeInOut' }}>
-            <Link href={`/support/${c.slug}`} className="flex items-center gap-3 rounded-2xl border border-ink-border bg-surface/95 px-4 py-3 shadow-[0_18px_40px_-16px_rgba(15,23,42,0.4)] backdrop-blur transition hover:-translate-y-1">{c.body}</Link>
-          </motion.div>
-        </motion.div>
-      ))}
-    </motion.div>
-  )
-}
+const rail = [
+  { slug: 'kivorapay', name: 'KivoraPay', line: 'Crypto payments', c: '#1D4ED8' },
+  { slug: 'prowess-digital-solutions', name: 'PDS', line: 'Business support', c: '#2F6E72' },
+  { slug: 'dritchwear', name: 'Dritchwear', line: 'Custom merch', c: '#4A2D82' },
+]
 
-function Dot({ c }: { c: string }) {
-  return <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full" style={{ background: c }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></span>
+function Portrait() {
+  return (
+    <div className="relative mx-auto w-full max-w-[440px] pb-12">
+      <div aria-hidden className="absolute -inset-10 top-10 rounded-full bg-[radial-gradient(closest-side,rgba(37,99,235,0.18),transparent)] blur-2xl" />
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] bg-surface-2 shadow-[0_40px_90px_-40px_rgba(15,23,42,0.55)] ring-[6px] ring-surface">
+        <Image src="/personal%20photo/headshot2.png" alt="Ngozi Peace Okafor" fill priority sizes="(max-width: 1024px) 90vw, 440px" className="object-cover object-top" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
+        <span className="absolute left-4 top-4 rounded-full bg-surface/90 px-3.5 py-1.5 text-xs font-bold shadow backdrop-blur">Ngozi Peace Okafor · Founder</span>
+      </motion.div>
+      <div className="absolute inset-x-[-6%] bottom-0 grid grid-cols-3 gap-2 sm:inset-x-[-10%]">
+        {rail.map((r, n) => (
+          <motion.div key={r.slug} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 + n * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+            <Link href={`/support/${r.slug}`} className="group block rounded-2xl border border-ink-border bg-surface p-3 shadow-[0_18px_40px_-18px_rgba(15,23,42,0.45)] transition hover:-translate-y-1 sm:p-4">
+              <span className="block h-1 w-8 rounded-full" style={{ background: r.c }} />
+              <b className="mt-2.5 block truncate font-display text-[0.86rem] font-extrabold sm:text-[0.95rem]">{r.name}</b>
+              <span className="block truncate text-[0.7rem] text-muted sm:text-xs">{r.line}</span>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 /* ── 2. Track record ─────────────────────────── */

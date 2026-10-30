@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   manifest: '/admin.webmanifest',
   robots: { index: false, follow: false },
   appleWebApp: { capable: true, title: 'LP Admin', statusBarStyle: 'default' },
-  icons: { apple: '/admin-app/apple-touch-icon.png' },
+  // Setting `icons` here replaces the root's app/icon.png, so the favicon has to be listed again.
+  icons: { icon: '/icon.png', apple: '/admin-app/apple-touch-icon.png' },
 }
 
 export const viewport: Viewport = {
