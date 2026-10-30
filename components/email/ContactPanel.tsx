@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { isFinished, SOURCES, type Lead, type Reply, type SentEmail } from '@/lib/outreach'
-import { ago, Avatar, field, fullName, localInput, SidePanel, StatusPill, when } from './shared'
+import { ago, Avatar, CheckText, field, fullName, localInput, SidePanel, StatusPill, when } from './shared'
+import Icon from './Icon'
 
 // One contact: who they are, everything that has happened, notes, and the
 // actions you can take next.
@@ -50,7 +51,7 @@ export default function ContactPanel({ lead: l, emails, replies, followUpDue, on
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm font-semibold">
-        <button onClick={onWrite} className="rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim">✉ Write email</button>
+        <button onClick={onWrite} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim"><Icon name="mail" />Write email</button>
         <button onClick={() => setLogging(v => !v)} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-primary">Log an email I sent elsewhere</button>
         {l.status !== 'replied' && <button onClick={() => onPatch({ status: 'replied' })} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-success hover:text-success">Mark replied</button>}
         {!isFinished(l.status) ? <button onClick={() => onPatch({ status: 'stopped' })} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-muted">Stop emailing</button>
@@ -65,7 +66,7 @@ export default function ContactPanel({ lead: l, emails, replies, followUpDue, on
         </div>
         <button className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary">Log email</button>
       </form>}
-      {logMsg && <p className="text-sm font-semibold text-success">{logMsg}</p>}
+      {logMsg && <p className="text-sm font-semibold text-success"><CheckText text={logMsg} /></p>}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-xs font-semibold text-muted">Met via
@@ -89,7 +90,7 @@ export default function ContactPanel({ lead: l, emails, replies, followUpDue, on
             <span className={`relative mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full border-2 border-surface ${t.reply || t.key === 'replied' ? 'bg-success' : t.key === 'bounce' ? 'bg-[#EF4444]' : t.email ? 'bg-primary' : 'bg-ink-border'}`} />
             <div className="min-w-0 flex-1 text-sm">
               {t.email ? <>
-                <button onClick={() => onViewEmail(t.email!.id)} className={`text-left font-semibold hover:text-primary hover:underline ${t.email.status === 'cancelled' ? 'text-muted line-through' : ''}`}>{t.email.subject} <span aria-hidden="true" className="text-muted">›</span></button>
+                <button onClick={() => onViewEmail(t.email!.id)} className={`text-left font-semibold hover:text-primary hover:underline ${t.email.status === 'cancelled' ? 'text-muted line-through' : ''}`}><span className="inline-flex items-center gap-0.5">{t.email.subject}<Icon name="chevronRight" className="h-3.5 w-3.5 text-muted" /></span></button>
                 <p className="text-xs text-muted">
                   {t.email.status === 'scheduled' ? `Scheduled for ${when(t.email.sent_at)}` : t.email.status === 'logged' ? `Sent from another inbox · ${when(t.email.sent_at)}` : t.email.status === 'cancelled' ? 'Cancelled' : t.email.status === 'failed' ? 'Failed to send' : `Sent ${ago(t.email.sent_at)} · ${when(t.email.sent_at)}`}
                   {t.email.status === 'scheduled' && <button onClick={() => onCancel(t.email!)} className="ml-2 font-semibold text-[#DC2626] dark:text-[#F87171]">Cancel</button>}

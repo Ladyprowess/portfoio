@@ -10,6 +10,7 @@ import ContactPanel from './ContactPanel'
 import EmailPanel from './EmailPanel'
 import { AddContactsPanel, RulesPanel, TemplatesView } from './Library'
 import { ago, Avatar, fullName, PAGE_SIZE, Pager, Progress, sourceLabel, StatusPill, when } from './shared'
+import Icon, { type IconName } from './Icon'
 
 // The one place for email: write and send (to contacts or anyone), see who to
 // follow up, who is waiting and who replied, and every email ever sent.
@@ -21,15 +22,15 @@ type View = 'follow_up' | 'waiting' | 'replied' | 'new' | 'scheduled' | 'sent' |
 type Event = { email_id: string; event_type: 'open' | 'click' | 'bounce' }
 type Progress = { done: number; total: number; label: string; errors: string[]; finished: boolean }
 
-const VIEWS: { key: View; label: string; icon: string; group: string; hint: string; empty: string }[] = [
-  { key: 'follow_up', label: 'Follow up now', icon: '↻', group: 'To do', hint: 'Emailed a while ago with no reply yet. Tick the people you want to follow up, then “Write email”.', empty: 'Nobody needs a follow-up right now. 🎉' },
-  { key: 'scheduled', label: 'Scheduled', icon: '◷', group: 'To do', hint: 'Emails waiting to go out at the time you chose. Cancel any you no longer want to send.', empty: 'Nothing scheduled.' },
-  { key: 'new', label: 'Not contacted yet', icon: '○', group: 'Contacts', hint: 'People you’ve added but haven’t emailed. Tick the ones you want to email, then “Write email”.', empty: 'Everyone in your contacts has been emailed.' },
-  { key: 'waiting', label: 'Waiting for reply', icon: '◔', group: 'Contacts', hint: 'Emailed recently. They’ll move to “Follow up now” if they don’t reply in time.', empty: 'Nobody is waiting on a reply.' },
-  { key: 'replied', label: 'Replied', icon: '✓', group: 'Contacts', hint: 'People who answered. Pick the conversation up in your inbox.', empty: 'No replies yet.' },
-  { key: 'all', label: 'All contacts', icon: '☰', group: 'Contacts', hint: 'Everyone, including bounced and stopped contacts.', empty: 'No contacts yet. Use “Add contacts”, or tick “Add to my contacts” when you send an email.' },
-  { key: 'sent', label: 'Sent', icon: '➤', group: 'Library', hint: 'Every email sent from hello@ladyprowess.com, to contacts or anyone else.', empty: 'No emails sent yet.' },
-  { key: 'templates', label: 'Templates', icon: '❐', group: 'Library', hint: 'Reusable emails. Pick one when writing, then edit it for the person.', empty: '' },
+const VIEWS: { key: View; label: string; icon: IconName; group: string; hint: string; empty: string }[] = [
+  { key: 'follow_up', label: 'Follow up now', icon: 'refresh', group: 'To do', hint: 'Emailed a while ago with no reply yet. Tick the people you want to follow up, then “Write email”.', empty: 'Nobody needs a follow-up right now. You’re all caught up.' },
+  { key: 'scheduled', label: 'Scheduled', icon: 'clock', group: 'To do', hint: 'Emails waiting to go out at the time you chose. Cancel any you no longer want to send.', empty: 'Nothing scheduled.' },
+  { key: 'new', label: 'Not contacted yet', icon: 'circle', group: 'Contacts', hint: 'People you’ve added but haven’t emailed. Tick the ones you want to email, then “Write email”.', empty: 'Everyone in your contacts has been emailed.' },
+  { key: 'waiting', label: 'Waiting for reply', icon: 'hourglass', group: 'Contacts', hint: 'Emailed recently. They’ll move to “Follow up now” if they don’t reply in time.', empty: 'Nobody is waiting on a reply.' },
+  { key: 'replied', label: 'Replied', icon: 'checkCircle', group: 'Contacts', hint: 'People who answered. Pick the conversation up in your inbox.', empty: 'No replies yet.' },
+  { key: 'all', label: 'All contacts', icon: 'users', group: 'Contacts', hint: 'Everyone, including bounced and stopped contacts.', empty: 'No contacts yet. Use “Add contacts”, or tick “Add to my contacts” when you send an email.' },
+  { key: 'sent', label: 'Sent', icon: 'send', group: 'Library', hint: 'Every email sent from hello@ladyprowess.com, to contacts or anyone else.', empty: 'No emails sent yet.' },
+  { key: 'templates', label: 'Templates', icon: 'template', group: 'Library', hint: 'Reusable emails. Pick one when writing, then edit it for the person.', empty: '' },
 ]
 
 const wait = (ms: number) => new Promise(r => setTimeout(r, ms))
@@ -38,7 +39,8 @@ export default function EmailWorkspace() {
   const params = useSearchParams()
   const [password, setPassword] = useState('')
   const [unlocked, setUnlocked] = useState(false)
-  const [authError, setAuthError] = useState('')
+  // A load problem that isn't the password (e.g. the email tables don't exist yet).
+  const [setupError, setSetupError] = useState('')
   const [leads, setLeads] = useState<Lead[]>([])
   const [emails, setEmails] = useState<(SentEmail & { recipients?: string[] })[]>([])
   const [events, setEvents] = useState<Event[]>([])
@@ -66,16 +68,27 @@ export default function EmailWorkspace() {
 
   const load = useCallback(async (pw = password) => {
     const { ok, status, data } = await call('load', {}, pw)
-    if (!ok) { setAuthError(status === 401 ? 'Wrong password.' : data.error || 'Could not load. Has supabase/outreach.sql been run?'); setUnlocked(false); return false }
-    sessionStorage.setItem(PW_KEY, pw)
+    if (!ok) {
+      // One login for the whole admin: a bad or missing password goes back to it.
+      if (status === 401) { toAdminLogin(); return false }
+      setSetupError(data.error || 'Could not load your email.')
+      return false
+    }
     setLeads(data.leads); setEmails(data.emails); setEvents(data.events || []); setReplies(data.replies); setTemplates(data.templates); setSettings(data.settings); setSentToday(data.sentToday)
-    setUnlocked(true); setAuthError('')
+    setUnlocked(true); setSetupError('')
     return true
-  }, [call, password])
+  }, [call, password]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  function toAdminLogin() {
+    sessionStorage.removeItem(PW_KEY)
+    window.location.replace(`/admin?next=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+  }
 
   useEffect(() => {
     const saved = sessionStorage.getItem(PW_KEY)
-    if (saved) { setPassword(saved); load(saved).then(ok => { if (ok && params.get('compose')) setComposer({ leads: [], templateId: null }) }) }
+    if (!saved) { toAdminLogin(); return }
+    setPassword(saved)
+    load(saved).then(ok => { if (ok && params.get('compose')) setComposer({ leads: [], templateId: null }) })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Opens, clicks and replies arrive by webhook, so refresh quietly every minute.
@@ -165,14 +178,17 @@ export default function EmailWorkspace() {
     putLead(data.lead)
   }
 
-  if (!unlocked) return <main className="flex min-h-screen items-center justify-center bg-bg px-5">
-    <form onSubmit={e => { e.preventDefault(); load(password) }} className="w-full max-w-sm rounded-3xl border border-ink-border bg-surface p-7">
-      <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Private · Email</p>
-      <h1 className="mt-3 font-display text-3xl font-semibold tracking-[-.03em]">Unlock your email</h1>
-      <input type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Admin password" className="mt-6 w-full rounded-full border border-ink-border bg-bg px-4 py-3 text-sm outline-none focus:border-primary" />
-      {authError && <p className="mt-3 text-sm text-[#DC2626]">{authError}</p>}
-      <button className="mt-4 w-full rounded-full bg-primary px-5 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim">Unlock</button>
-    </form>
+  if (!unlocked) return <main className="min-h-screen bg-bg">
+    <AdminNav />
+    <div className="mx-auto max-w-[1240px] px-5 py-14 md:px-8">
+      {setupError ? <div className="max-w-xl rounded-3xl border border-ink-border bg-surface p-7">
+        <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Private · Email</p>
+        <h1 className="mt-3 font-display text-2xl font-semibold tracking-[-.03em]">Your email isn’t set up yet</h1>
+        <p className="mt-3 text-sm leading-6 text-muted">{setupError}</p>
+        <p className="mt-3 text-sm leading-6 text-muted">If this is the first time, open Supabase → SQL Editor, paste everything in <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">supabase/outreach.sql</code> and press Run. Then try again.</p>
+        <button onClick={() => { setSetupError(''); load() }} className="mt-5 flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-dim"><Icon name="refresh" />Try again</button>
+      </div> : <div className="space-y-3">{[0, 1, 2, 3].map(i => <div key={i} className="h-16 animate-pulse rounded-2xl bg-surface-2" />)}</div>}
+    </div>
   </main>
 
   return <main className="min-h-screen bg-bg pb-28 text-parchment">
@@ -187,9 +203,9 @@ export default function EmailWorkspace() {
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <Stat label="sent today" value={`${sentToday}/${settings.daily_limit}`} />
           <Stat label="reply rate" value={`${replyRate}%`} />
-          <button onClick={() => setPanel('rules')} aria-label="Sending rules" title="Sending rules" className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-border text-base hover:border-primary">⚙</button>
-          <button onClick={() => setPanel('add')} className="rounded-full border border-ink-border px-4 py-2.5 text-sm font-semibold hover:border-primary">+ Add contacts</button>
-          <button onClick={() => setComposer({ leads: [], templateId: null })} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary shadow-[0_10px_30px_-12px_rgb(var(--primary)/.7)] hover:bg-primary-dim">✎ New email</button>
+          <button onClick={() => setPanel('rules')} aria-label="Sending rules" title="Sending rules" className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-border text-muted hover:border-primary hover:text-primary"><Icon name="settings" className="h-[18px] w-[18px]" /></button>
+          <button onClick={() => setPanel('add')} className="flex items-center gap-1.5 rounded-full border border-ink-border px-4 py-2.5 text-sm font-semibold hover:border-primary"><Icon name="plus" />Add contacts</button>
+          <button onClick={() => setComposer({ leads: [], templateId: null })} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary shadow-[0_10px_30px_-12px_rgb(var(--primary)/.7)] hover:bg-primary-dim"><span className="flex items-center gap-2"><Icon name="pen" />New email</span></button>
         </div>
       </div>
     </header>
@@ -203,7 +219,7 @@ export default function EmailWorkspace() {
             const n = count(v.key), on = view === v.key, urgent = v.key === 'follow_up' && n > 0
             return <button key={v.key} onClick={() => switchView(v.key)} aria-current={on ? 'page' : undefined}
               className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition lg:w-full ${on ? 'bg-primary/10 font-semibold text-primary' : 'text-parchment/80 hover:bg-surface'}`}>
-              <span aria-hidden="true" className="w-4 text-center text-muted">{v.icon}</span>
+              <Icon name={v.icon} className={`h-[18px] w-[18px] ${on ? 'text-primary' : 'text-muted'}`} />
               <span className="flex-1 whitespace-nowrap">{v.label}</span>
               {n > 0 && <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${urgent ? 'bg-primary text-on-primary' : 'bg-surface-2 text-muted'}`}>{n}</span>}
             </button>
@@ -265,7 +281,7 @@ export default function EmailWorkspace() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="pointer-events-auto flex items-center gap-3 rounded-full border border-ink-border bg-surface py-2 pl-5 pr-2 shadow-[0_20px_50px_-15px_rgba(17,24,39,.5)]">
         <span className="text-sm font-semibold">{selected.size} {selected.size === 1 ? 'person' : 'people'} selected</span>
         <button onClick={() => setSelected(new Set())} className="text-xs text-muted hover:text-parchment">Clear</button>
-        <button onClick={() => write(leads.filter(l => selected.has(l.id)))} className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary hover:bg-primary-dim">✎ Write email</button>
+        <button onClick={() => write(leads.filter(l => selected.has(l.id)))} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary hover:bg-primary-dim"><Icon name="pen" />Write email</button>
       </motion.div>
     </div>}</AnimatePresence>
 
@@ -329,7 +345,7 @@ function ContactRow({ lead: l, checked, onCheck, onOpen, onWrite, note }: { lead
         {note && <span className="whitespace-nowrap text-[11px] font-semibold text-primary">{note}</span>}
       </span>
     </button>
-    <button onClick={onWrite} aria-label={`Write to ${fullName(l)}`} title="Write email" className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-ink-border text-sm text-muted transition hover:border-primary hover:text-primary sm:flex">✎</button>
+    <button onClick={onWrite} aria-label={`Write to ${fullName(l)}`} title="Write email" className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-ink-border text-sm text-muted transition hover:border-primary hover:text-primary sm:flex"><Icon name="pen" /></button>
   </li>
 }
 
@@ -381,7 +397,7 @@ function SentList({ emails, events, leads, onOpen, onAdd }: { emails: (SentEmail
               <span className={`rounded-full px-2 py-0.5 ${n ? 'bg-primary/15 font-semibold text-primary' : 'bg-surface-2 text-muted'}`}>{n ? `Opened${n > 1 ? ` ×${n}` : ''}` : 'Not opened'}</span>
               {clicked.has(e.id) && <span className="rounded-full bg-primary px-2 py-0.5 font-semibold text-on-primary">Clicked</span>}
             </span>}
-            <button onClick={() => onOpen(e.id)} aria-label="View email" className="hidden shrink-0 text-muted hover:text-primary md:block">›</button>
+            <button onClick={() => onOpen(e.id)} aria-label="View email" className="hidden shrink-0 text-muted hover:text-primary md:block"><Icon name="chevronRight" /></button>
             {addable && <button onClick={() => onAdd(e.id, e.recipients![0])} className="shrink-0 rounded-full border border-ink-border px-3 py-1.5 text-[11px] font-semibold hover:border-primary hover:text-primary">+ Add to contacts</button>}
           </li>
         })}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { apolloToLead, parseCsv } from '@/lib/csv'
 import { personalise, SOURCES, type Lead, type OutreachSettings, type Template } from '@/lib/outreach'
-import { field, fullName, localInput, SidePanel } from './shared'
+import { CheckText, field, fullName, localInput, SidePanel } from './shared'
 
 // Templates view, the "Add contacts" panel (one person or a CSV), and sending rules.
 
@@ -38,7 +38,7 @@ export function TemplatesView({ templates, sample, onSave, onDelete }: { templat
           <button onClick={async () => { const t = await onSave({ ...draft, id: id ?? undefined }); if (t) { setId(t.id); setSaved('✓ Saved') } else setSaved('Could not save'); window.setTimeout(() => setSaved(''), 2500) }} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-dim">Save template</button>
           {id && <button onClick={async () => { const t = await onSave({ name: `${draft.name} (copy)`, subject: draft.subject, body: draft.body }); if (t) setId(t.id) }} className="text-sm font-semibold text-muted hover:text-parchment">Duplicate</button>}
           {id && <button onClick={async () => { if (window.confirm(`Delete “${draft.name}”?`)) { await onDelete(id); setId(templates.find(t => t.id !== id)?.id ?? null) } }} className="text-sm font-semibold text-[#DC2626] dark:text-[#F87171]">Delete</button>}
-          <span className="text-sm font-semibold text-success">{saved}</span>
+          <span className="text-sm font-semibold text-success"><CheckText text={saved} /></span>
         </div>
       </div>
       <div className="rounded-2xl border border-ink-border bg-surface-2/40 p-5 xl:sticky xl:top-6 xl:self-start">
@@ -128,7 +128,7 @@ export function AddContactsPanel({ onClose, onAdd, onImport }: {
         </div>}
       </div>}
 
-      {msg && <p className={`mt-4 rounded-2xl p-3.5 text-sm font-semibold ${msg.startsWith('✓') ? 'bg-success/10 text-success' : 'bg-surface-2 text-muted'}`}>{msg}</p>}
+      {msg && <p className={`mt-4 rounded-2xl p-3.5 text-sm font-semibold ${msg.startsWith('✓') ? 'bg-success/10 text-success' : 'bg-surface-2 text-muted'}`}><CheckText text={msg} /></p>}
     </div>
   </SidePanel>
 }
@@ -144,7 +144,7 @@ export function RulesPanel({ settings, onClose, onSave }: { settings: OutreachSe
           <span className="block text-xs text-muted">{hint}</span>
           <input type="number" min={lo} max={hi} value={s[k]} onChange={e => setS({ ...s, [k]: Number(e.target.value) })} className={`mt-2 w-32 ${field}`} />
         </label>)}
-      <button onClick={async () => { await onSave(s); setSaved(true); window.setTimeout(() => setSaved(false), 2000) }} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-dim">{saved ? '✓ Saved' : 'Save rules'}</button>
+      <button onClick={async () => { await onSave(s); setSaved(true); window.setTimeout(() => setSaved(false), 2000) }} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-dim">{saved ? <CheckText text="✓ Saved" /> : 'Save rules'}</button>
     </div>
   </SidePanel>
 }

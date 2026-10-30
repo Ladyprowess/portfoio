@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { EMAIL_RE, isFinished, personalise, SOURCES, type Lead, type Template } from '@/lib/outreach'
 import { Avatar, field, fullName, localInput, SidePanel, statusLabel } from './shared'
+import Icon from './Icon'
 
 // The one place to write an email. "To" takes saved contacts or any address;
 // each person gets their own copy (personalised and tracked). New addresses
@@ -120,9 +121,9 @@ export default function Composer({ contacts, templates, initial, initialEmails =
           <div className="relative mt-1.5">
             <div onClick={() => input.current?.focus()} className="flex min-h-[46px] flex-wrap items-center gap-1.5 rounded-xl border border-ink-border bg-bg px-2 py-1.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
               {to.map(r => <span key={r.email} className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-2 text-xs font-semibold ${r.lead ? 'bg-primary/10 text-primary' : 'bg-surface-2'}`}>
-                {r.lead ? <Avatar lead={r.lead} size="sm" /> : <span className="flex h-7 w-7 items-center justify-center rounded-full bg-surface text-[10px]">@</span>}
+                {r.lead ? <Avatar lead={r.lead} size="sm" /> : <span className="flex h-7 w-7 items-center justify-center rounded-full bg-surface text-muted"><Icon name="at" className="h-3.5 w-3.5" /></span>}
                 {r.lead ? fullName(r.lead) : r.email}{!r.lead && <span className="font-normal text-muted">new</span>}
-                <button onClick={e => { e.stopPropagation(); setTo(t => t.filter(x => x.email !== r.email)) }} aria-label={`Remove ${r.email}`} className="ml-0.5 text-sm opacity-60 hover:opacity-100">×</button>
+                <button onClick={e => { e.stopPropagation(); setTo(t => t.filter(x => x.email !== r.email)) }} aria-label={`Remove ${r.email}`} className="ml-0.5 opacity-60 hover:opacity-100"><Icon name="x" className="h-3.5 w-3.5" /></button>
               </span>)}
               <input id="to" ref={input} value={typed} onChange={e => { setTyped(e.target.value); setError('') }} placeholder={to.length ? 'Add another…' : 'Type a name from your contacts, or any email address'}
                 onKeyDown={e => { if (['Enter', ',', 'Tab'].includes(e.key) && typed.trim()) { e.preventDefault(); suggestions[0] && !EMAIL_RE.test(typed.trim()) ? add({ lead: suggestions[0], email: suggestions[0].email }) : addTyped() } else if (e.key === 'Backspace' && !typed) setTo(t => t.slice(0, -1)) }}
@@ -149,8 +150,8 @@ export default function Composer({ contacts, templates, initial, initialEmails =
         <p className="-mt-2 text-xs text-muted">{'{first_name}'}, {'{company}'} and {'{title}'} are filled in for each person. Editing here doesn’t change the saved template.</p>
 
         <div className="flex flex-wrap items-center gap-2">
-          <label className="cursor-pointer rounded-full border border-ink-border px-3.5 py-2 text-xs font-semibold hover:border-primary">📎 Attach file<input type="file" multiple className="sr-only" onChange={e => { attach(e.target.files); e.target.value = '' }} /></label>
-          {files.map(f => <span key={f.filename} className="flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs">{f.filename}<button onClick={() => setFiles(fs => fs.filter(x => x !== f))} aria-label={`Remove ${f.filename}`} className="text-muted hover:text-parchment">×</button></span>)}
+          <label className="flex cursor-pointer items-center gap-1.5 rounded-full border border-ink-border px-3.5 py-2 text-xs font-semibold hover:border-primary"><Icon name="paperclip" className="h-3.5 w-3.5" />Attach file<input type="file" multiple className="sr-only" onChange={e => { attach(e.target.files); e.target.value = '' }} /></label>
+          {files.map(f => <span key={f.filename} className="flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs">{f.filename}<button onClick={() => setFiles(fs => fs.filter(x => x !== f))} aria-label={`Remove ${f.filename}`} className="text-muted hover:text-parchment"><Icon name="x" className="h-3.5 w-3.5" /></button></span>)}
         </div>
 
         <div className="rounded-2xl border border-ink-border p-3.5">
@@ -175,7 +176,7 @@ export default function Composer({ contacts, templates, initial, initialEmails =
           <p className="text-xs text-muted">From Lady Prowess &lt;hello@ladyprowess.com&gt;{p ? ` · to ${p.email}` : ''}</p>
           <p className="mt-1.5 font-semibold">{shown.subject || 'No subject'}</p>
           <div className="mt-4 whitespace-pre-wrap">{shown.body || <span className="text-muted">Your message appears here.</span>}</div>
-          {files.length > 0 && <p className="mt-4 text-xs text-muted">📎 {files.map(f => f.filename).join(', ')}</p>}
+          {files.length > 0 && <p className="mt-4 flex items-center gap-1.5 text-xs text-muted"><Icon name="paperclip" className="h-3.5 w-3.5" />{files.map(f => f.filename).join(', ')}</p>}
           <p className="mt-4 border-t border-ink-border pt-3 text-xs text-muted">+ your Lady Prowess signature</p>
         </div>
         {finished.length > 0 && <p className="mt-3 rounded-xl bg-surface p-3 text-xs text-muted">{finished.length} of these {finished.length > 1 ? 'have' : 'has'} already replied, bounced or been stopped. You’ll be asked before they’re included.</p>}

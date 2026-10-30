@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, type ReactNode } from 'react'
 import { SOURCES, type Lead, type LeadStatus } from '@/lib/outreach'
+import Icon from './Icon'
 
 // Small pieces shared by the Email workspace.
 
@@ -71,7 +72,7 @@ export function SidePanel({ title, onClose, children, footer, wide = false }: { 
       <div className="flex items-center gap-3 border-b border-ink-border px-5 py-3.5">
         <span className="flex gap-1.5" aria-hidden="true">{['#F87171', '#FBBF24', '#34D399'].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />)}</span>
         <div className="min-w-0 flex-1 truncate text-sm font-semibold">{title}</div>
-        <button onClick={onClose} aria-label="Close" className="flex h-8 w-8 items-center justify-center rounded-full text-lg text-muted hover:bg-surface-2 hover:text-parchment">×</button>
+        <button onClick={onClose} aria-label="Close" className="flex h-8 w-8 items-center justify-center rounded-full text-muted hover:bg-surface-2 hover:text-parchment"><Icon name="x" /></button>
       </div>
       <div className="flex-1 overflow-y-auto">{children}</div>
       {footer && <div className="border-t border-ink-border bg-surface px-5 py-4">{footer}</div>}
@@ -100,4 +101,10 @@ export function Pager({ page, total, onPage }: { page: number; total: number; on
       <button onClick={() => onPage(page + 1)} disabled={page === pages} className="rounded-full border border-ink-border px-3 py-1.5 text-xs font-semibold disabled:opacity-40">Next →</button>
     </span>
   </nav>
+}
+
+/** Shows a status message; a leading "✓" (used to mark success) is drawn as an SVG check. */
+export function CheckText({ text }: { text: string }) {
+  const ok = text.startsWith('✓')
+  return <span className="inline-flex items-center gap-1.5">{ok && <Icon name="check" className="h-4 w-4" strokeWidth={2.4} />}{ok ? text.slice(1).trim() : text}</span>
 }

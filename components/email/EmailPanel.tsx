@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { Lead } from '@/lib/outreach'
 import { ago, Avatar, fullName, SidePanel, when } from './shared'
+import Icon from './Icon'
 
 // One sent email: who it went to, when it was opened and which links were
 // clicked, the email itself, and what to do next.
@@ -48,7 +49,7 @@ export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpen
 
   return <SidePanel onClose={onClose} title={e?.subject || 'Email'}
     footer={e && <div className="flex flex-wrap gap-2 text-sm font-semibold">
-      {e.status !== 'scheduled' && e.status !== 'cancelled' && <button onClick={() => onFollowUp(to, e.subject.startsWith('Re:') ? e.subject : `Re: ${e.subject}`)} className="rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim">↻ Follow up</button>}
+      {e.status !== 'scheduled' && e.status !== 'cancelled' && <button onClick={() => onFollowUp(to, e.subject.startsWith('Re:') ? e.subject : `Re: ${e.subject}`)} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim"><Icon name="refresh" />Follow up</button>}
       {e.status === 'scheduled' && <button onClick={() => onCancel(e.id)} className="rounded-full border border-[#EF4444]/40 px-4 py-2.5 text-[#DC2626] hover:bg-[#EF4444]/10 dark:text-[#F87171]">Cancel this email</button>}
       {lead ? <button onClick={() => onOpenContact(lead.id)} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-primary">Open contact card</button>
         : to && <button disabled={adding} onClick={async () => { setAdding(true); await onAddContact(e.id, to); setAdding(false) }} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-primary disabled:opacity-50">{adding ? 'Adding…' : '+ Add to contacts'}</button>}
@@ -58,7 +59,7 @@ export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpen
     {e && <div className="space-y-6 p-5">
       {/* Who and when */}
       <div className="flex items-start gap-3">
-        {lead ? <Avatar lead={lead} /> : <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-2 text-sm text-muted">@</span>}
+        {lead ? <Avatar lead={lead} /> : <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-2 text-muted"><Icon name="at" /></span>}
         <div className="min-w-0 flex-1 text-sm">
           <p className="font-semibold">{lead ? fullName(lead) : to}{lead?.company ? <span className="font-normal text-muted"> · {lead.company}</span> : null}</p>
           <p className="truncate text-xs text-muted">To {e.recipients.join(', ')}{e.cc?.length ? ` · Cc ${e.cc.join(', ')}` : ''}</p>
