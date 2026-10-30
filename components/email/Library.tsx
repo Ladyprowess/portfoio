@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { apolloToLead, parseCsv } from '@/lib/csv'
 import { personalise, SOURCES, type Lead, type OutreachSettings, type Template } from '@/lib/outreach'
 import { CheckText, field, fullName, localInput, SidePanel } from './shared'
+import Icon from './Icon'
 
 // Templates view, the "Add contacts" panel (one person or a CSV), and sending rules.
 
@@ -61,6 +62,7 @@ export function AddContactsPanel({ onClose, onAdd, onImport }: {
   const [tab, setTab] = useState<'one' | 'csv'>('one')
   const blank = { email: '', first_name: '', last_name: '', company: '', title: '', linkedin: '', source: 'linkedin', notes: '' }
   const [f, setF] = useState(blank)
+  const [extra, setExtra] = useState<string[]>([])
   const [already, setAlready] = useState(false)
   const [sent, setSent] = useState({ subject: '', at: localInput(new Date()) })
   const [msg, setMsg] = useState('')
@@ -86,9 +88,15 @@ export function AddContactsPanel({ onClose, onAdd, onImport }: {
         {([['one', 'One person'], ['csv', 'Import a CSV']] as const).map(([k, t]) => <button key={k} onClick={() => { setTab(k); setMsg('') }} className={`flex-1 rounded-full px-4 py-2 ${tab === k ? 'bg-primary text-on-primary' : 'text-muted'}`}>{t}</button>)}
       </div>
 
-      {tab === 'one' && <form onSubmit={async e => { e.preventDefault(); setBusy(true); const m = await onAdd(f, already ? { subject: sent.subject, at: new Date(sent.at).toISOString() } : null); setBusy(false); setMsg(m); if (m.startsWith('✓')) { setF(blank); setAlready(false) } }} className="mt-5 space-y-3">
+      {tab === 'one' && <form onSubmit={async e => { e.preventDefault(); setBusy(true); const m = await onAdd({ ...f, other_emails: extra.join(',') }, already ? { subject: sent.subject, at: new Date(sent.at).toISOString() } : null); setBusy(false); setMsg(m); if (m.startsWith('✓')) { setF(blank); setExtra([]); setAlready(false) } }} className="mt-5 space-y-3">
         <p className="text-sm text-muted">Someone from LinkedIn, a referral, an event… anyone.</p>
         <input required type="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} placeholder="Email address *" className={field} />
+        {extra.map((x, i) => <div key={i} className="flex items-center gap-2">
+          <input type="email" value={x} onChange={e => setExtra(extra.map((v, j) => j === i ? e.target.value : v))} placeholder="Another email address" className={field} />
+          <button type="button" onClick={() => setExtra(extra.filter((_, j) => j !== i))} aria-label="Remove this email" className="shrink-0 rounded-full p-2 text-muted hover:text-[#DC2626]"><Icon name="x" className="h-4 w-4" /></button>
+        </div>)}
+        {extra.length < 5 && <button type="button" onClick={() => setExtra([...extra, ''])} className="text-sm font-semibold text-primary hover:underline">+ Add another email</button>}
+        {extra.length > 0 && <p className="text-xs text-muted">Every email to them goes to all of these addresses at once.</p>}
         <div className="grid grid-cols-2 gap-3">
           {([['first_name', 'First name'], ['last_name', 'Last name'], ['company', 'Company'], ['title', 'Job title']] as const).map(([k, t]) => <input key={k} value={f[k]} onChange={e => setF({ ...f, [k]: e.target.value })} placeholder={t} className={field} />)}
         </div>

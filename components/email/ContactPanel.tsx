@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { isFinished, SOURCES, type Lead, type Reply, type SentEmail } from '@/lib/outreach'
+import { isFinished, leadEmails, SOURCES, type Lead, type Reply, type SentEmail } from '@/lib/outreach'
 import { ago, Avatar, CheckText, field, fullName, localInput, SidePanel, StatusPill, when } from './shared'
 import Icon from './Icon'
 
@@ -43,7 +43,7 @@ export default function ContactPanel({ lead: l, emails, replies, followUpDue, on
           <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
             <StatusPill status={l.status} />
             {followUpDue && <span className="rounded-full bg-primary px-2.5 py-1 font-semibold text-on-primary">Follow up now</span>}
-            <a href={`mailto:${l.email}`} className="text-muted hover:text-primary">{l.email}</a>
+            {leadEmails(l).map(e => <a key={e} href={`mailto:${e}`} className="text-muted hover:text-primary">{e}</a>)}
             {l.linkedin && <a href={l.linkedin} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary">LinkedIn ↗</a>}
             {l.website && <a href={l.website} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary">Website ↗</a>}
           </div>
@@ -74,6 +74,9 @@ export default function ContactPanel({ lead: l, emails, replies, followUpDue, on
         </label>
         <label className="text-xs font-semibold text-muted">Company
           <input defaultValue={l.company || ''} onBlur={e => e.target.value !== (l.company || '') && onPatch({ company: e.target.value })} className={`mt-1.5 ${field}`} />
+        </label>
+        <label className="text-xs font-semibold text-muted sm:col-span-2">Other emails <span className="font-normal">(separate with commas; every email goes to all of them)</span>
+          <input key={(l.other_emails ?? []).join(',')} defaultValue={(l.other_emails ?? []).join(', ')} onBlur={e => e.target.value.replace(/\s/g, '') !== (l.other_emails ?? []).join(',') && onPatch({ other_emails: e.target.value })} placeholder="e.g. michael@gmail.com" className={`mt-1.5 ${field}`} />
         </label>
       </div>
 

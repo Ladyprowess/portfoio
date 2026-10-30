@@ -5,6 +5,8 @@ export type LeadStatus = 'new' | 'sent' | 'opened' | 'clicked' | 'replied' | 'bo
 export type Lead = {
   id: string
   email: string
+  /** Extra addresses for the same person; emails go to these as well as `email`. */
+  other_emails?: string[] | null
   first_name: string | null
   last_name: string | null
   title: string | null
@@ -148,3 +150,27 @@ export function followUpDue(lead: Lead, s: OutreachSettings, now = Date.now()) {
 }
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/** Every address for a contact, main one first. */
+export const leadEmails = (l: Pick<Lead, 'email' | 'other_emails'>) => [l.email, ...(l.other_emails ?? [])]
+
+/** Extra addresses from a list or a comma/space separated string: lowercase, valid, no repeats, never `main`. */
+export function parseOtherEmails(value: unknown, main = '') {
+  const items = Array.isArray(value) ? value : String(value ?? '').split(/[\s,;]+/)
+  const seen = new Set([main.toLowerCase()])
+  const out: string[] = []
+  for (const raw of items) {
+    const e = String(raw ?? '').trim().toLowerCase()
+    if (!e || seen.has(e)) continue
+    if (!EMAIL_RE.test(e)) throw new Error(`"${e}" is not a valid email address.`)
+    seen.add(e); out.push(e)
+  }
+  return out.slice(0, 5)
+}
+
+/** PostgREST filter matching a contact by any of their addresses (exact, case-insensitive). */
+export function addressFilter(email: string) {
+  const e = email.trim().toLowerCase()
+  const pattern = e.replace(/[%_*\\]/g, m => `\\${m}`)
+  return `or=${encodeURIComponent(`(email.ilike.${pattern},other_emails.cs.{"${e.replace(/["\\]/g, '')}"})`)}`
+}

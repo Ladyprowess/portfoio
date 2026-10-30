@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/email-store'
-import { advance, type LeadStatus } from '@/lib/outreach'
+import { addressFilter, advance, type LeadStatus } from '@/lib/outreach'
 
 export const runtime = 'nodejs'
 
@@ -106,11 +106,12 @@ export async function POST(request: Request) {
 
 /** Moves an outreach lead forward when its email is opened, clicked or bounces. */
 async function updateLead(leadId: string, eventType: 'open' | 'click' | 'bounce', at: string) {
-  const rows = await db(`outreach_leads?select=status,opened_at,clicked_at&id=eq.${encodeURIComponent(leadId)}`)
-  const lead = rows[0] as { status: LeadStatus; opened_at: string | null; clicked_at: string | null } | undefined
+  const rows = await db(`outreach_leads?select=status,opened_at,clicked_at,other_emails&id=eq.${encodeURIComponent(leadId)}`)
+  const lead = rows[0] as { status: LeadStatus; opened_at: string | null; clicked_at: string | null; other_emails: string[] | null } | undefined
   if (!lead) return
   const patch: Record<string, unknown> = { updated_at: new Date().toISOString() }
-  if (eventType === 'bounce') { patch.status = advance(lead.status, 'bounced'); patch.bounced_at = at }
+  // With several addresses, one bouncing doesn't end the sequence: the others may still work.
+  if (eventType === 'bounce') { if (!lead.other_emails?.length) patch.status = advance(lead.status, 'bounced'); patch.bounced_at = at }
   if (eventType === 'open') { patch.status = advance(lead.status, 'opened'); patch.opened_at = lead.opened_at || at }
   if (eventType === 'click') { patch.status = advance(lead.status, 'clicked'); patch.clicked_at = lead.clicked_at || at; patch.opened_at = lead.opened_at || at }
   await db(`outreach_leads?id=eq.${encodeURIComponent(leadId)}`, { method: 'PATCH', body: JSON.stringify(patch) })
@@ -123,9 +124,8 @@ async function recordReply(event: ResendEvent, providerEventId: string) {
     const fromText = typeof raw === 'string' ? raw : raw?.email || raw?.address || ''
     const address = (fromText.match(/<([^>]+)>/)?.[1] || fromText).trim().toLowerCase()
     if (!address) return NextResponse.json({ ok: true })
-    // Exact, case-insensitive match. Wildcards are escaped so an address cannot match others.
-    const pattern = encodeURIComponent(address.replace(/[%_*\\]/g, m => `\\${m}`))
-    const leads = await db(`outreach_leads?select=id,status&email=ilike.${pattern}&limit=1`)
+    // Exact, case-insensitive match on any of the contact's addresses.
+    const leads = await db(`outreach_leads?select=id,status&${addressFilter(address)}&limit=1`)
     const lead = leads[0] as { id: string; status: LeadStatus } | undefined
     if (!lead) return NextResponse.json({ ok: true })
     const at = event.created_at || new Date().toISOString()

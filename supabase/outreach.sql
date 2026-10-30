@@ -94,3 +94,8 @@ alter table public.outreach_leads alter column source set default 'other';
 -- Scheduled emails sit in sent_emails with status 'scheduled' and sent_at set to
 -- the time Resend will deliver them; cancelled ones keep status 'cancelled'.
 create index if not exists sent_emails_status_sent_at_idx on public.sent_emails (status, sent_at);
+
+-- A contact can have more than one address. The main one stays in `email`;
+-- the rest live here (lowercase) and every email to the contact goes to all of them.
+alter table public.outreach_leads add column if not exists other_emails text[] not null default '{}';
+create index if not exists outreach_leads_other_emails_idx on public.outreach_leads using gin (other_emails);

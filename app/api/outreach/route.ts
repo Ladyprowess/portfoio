@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { db, dbAll, dbCount } from '@/lib/email-store'
 import { FROM, REPLY_TO, SIGNATURE_HTML, SIGNATURE_TEXT } from '@/lib/email-signature'
-import { advance, DEFAULT_SETTINGS, EMAIL_RE, isFinished, startOfDay, STARTER_TEMPLATES, textToHtml, type Lead, type OutreachSettings } from '@/lib/outreach'
+import { addressFilter, advance, DEFAULT_SETTINGS, EMAIL_RE, isFinished, leadEmails, parseOtherEmails, startOfDay, STARTER_TEMPLATES, textToHtml, type Lead, type OutreachSettings } from '@/lib/outreach'
 
 // Private API for the outreach tracker. Every action needs the admin password
 // (COMPOSE_PASSWORD). Emails are stored in sent_emails with a lead_id, so the
@@ -45,13 +45,15 @@ async function countForDay(at: Date) {
 async function upsertLead(details: Json): Promise<{ lead: Lead; created: boolean }> {
   const email = str(details.email, 320).toLowerCase()
   if (!EMAIL_RE.test(email)) throw new Error(`"${email}" is not a valid email address.`)
-  const pattern = encodeURIComponent(email.replace(/[%_*\\]/g, m => `\\${m}`))
-  const found = (await db(`outreach_leads?select=*&email=ilike.${pattern}&limit=1`))[0] as Lead | undefined
+  const others = parseOtherEmails(details.other_emails, email)
+  const found = (await db(`outreach_leads?select=*&${addressFilter(email)}&limit=1`))[0] as Lead | undefined
   if (found) {
     // Fill in any blanks with the new details, without overwriting what is there.
     const patch: Json = {}
     for (const f of LEAD_FIELDS) if (f !== 'email' && f !== 'notes' && !found[f as keyof Lead] && str(details[f])) patch[f] = str(details[f])
     if (str(details.notes)) patch.notes = [found.notes, str(details.notes, 5000)].filter(Boolean).join('\n')
+    const merged = parseOtherEmails([...(found.other_emails ?? []), ...others], found.email)
+    if (merged.length !== (found.other_emails ?? []).length) patch.other_emails = merged
     if (!Object.keys(patch).length) return { lead: found, created: false }
     const rows = await db(`outreach_leads?id=eq.${found.id}`, { method: 'PATCH', body: JSON.stringify({ ...patch, updated_at: new Date().toISOString() }) })
     return { lead: rows[0] as Lead, created: false }
@@ -59,6 +61,7 @@ async function upsertLead(details: Json): Promise<{ lead: Lead; created: boolean
   const row: Json = { source: 'other' }
   for (const f of LEAD_FIELDS) if (str(details[f], f === 'notes' ? 5000 : 500)) row[f] = str(details[f], f === 'notes' ? 5000 : 500)
   row.email = email
+  if (others.length) row.other_emails = others
   const rows = await db('outreach_leads', { method: 'POST', body: JSON.stringify(row) })
   return { lead: rows[0] as Lead, created: true }
 }
@@ -114,7 +117,7 @@ export async function POST(request: Request) {
 
       case 'import': {
         const incoming = Array.isArray(body.leads) ? (body.leads as Json[]) : []
-        const existing = new Set((await dbAll('outreach_leads?select=email&order=email.asc')).map(r => String(r.email).toLowerCase()))
+        const existing = new Set((await dbAll('outreach_leads?select=email,other_emails&order=email.asc')).flatMap(r => leadEmails(r as Lead)).map(e => String(e).toLowerCase()))
         const fresh: Json[] = []
         let skipped = 0, invalid = 0
         for (const raw of incoming) {
@@ -145,6 +148,11 @@ export async function POST(request: Request) {
           if (body.status === 'replied') patch.replied_at = new Date().toISOString()
         }
         for (const f of ['first_name', 'last_name', 'title', 'company', 'linkedin', 'website', 'source'] as const) if (typeof body[f] === 'string') patch[f] = str(body[f]) || null
+        if (body.other_emails !== undefined) {
+          const lead = await leadById(body.id)
+          if (!lead) return NextResponse.json({ error: 'Contact not found.' }, { status: 404 })
+          patch.other_emails = parseOtherEmails(body.other_emails, lead.email)
+        }
         const rows = await db(`outreach_leads?id=eq.${encodeURIComponent(str(body.id))}`, { method: 'PATCH', body: JSON.stringify(patch) })
         return NextResponse.json({ lead: rows[0] })
       }
@@ -180,11 +188,12 @@ export async function POST(request: Request) {
       case 'send': {
         const apiKey = process.env.RESEND_API_KEY
         if (!apiKey) return NextResponse.json({ error: 'RESEND_API_KEY is not set on the server.' }, { status: 500 })
-        // Either a saved contact (id) or any address typed into "To" (to).
+        // Either a saved contact (id), sent to all of their addresses at once, or any address typed into "To" (to).
         const lead = body.id ? await leadById(body.id) : undefined
         if (body.id && !lead) return NextResponse.json({ error: 'Contact not found.' }, { status: 404 })
-        const to = lead ? lead.email : str(body.to, 320).toLowerCase()
-        if (!EMAIL_RE.test(to)) return NextResponse.json({ error: `"${to}" is not a valid email address.` }, { status: 400 })
+        const to = lead ? leadEmails(lead) : [str(body.to, 320).toLowerCase()]
+        const badAddress = to.find(a => !EMAIL_RE.test(a))
+        if (badAddress !== undefined) return NextResponse.json({ error: `"${badAddress}" is not a valid email address.` }, { status: 400 })
         // Contacts who replied, bounced or were stopped are only emailed when chosen on purpose (force).
         if (lead && isFinished(lead.status) && body.force !== true) return NextResponse.json({ error: `${lead.email} is ${lead.status}; skipped.`, skipped: true }, { status: 409 })
         const attachments = (Array.isArray(body.attachments) ? body.attachments as Json[] : [])
@@ -210,12 +219,12 @@ export async function POST(request: Request) {
 
         const followUp = !!lead && lead.status !== 'new'
         const bodyHtml = textToHtml(text)
-        const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: [to], subject, preview: '', body_html: bodyHtml, lead_id: lead?.id ?? null, kind: lead ? (followUp ? 'outreach_follow_up' : 'outreach') : 'compose' }) })
+        const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: to, subject, preview: '', body_html: bodyHtml, lead_id: lead?.id ?? null, kind: lead ? (followUp ? 'outreach_follow_up' : 'outreach') : 'compose' }) })
         const emailId = String(records[0]?.id || '')
         const tracking = process.env.OUTREACH_REPLY_TRACKING_ADDRESS
         const { data, error } = await new Resend(apiKey).emails.send({
           from: FROM,
-          to: [to],
+          to,
           // Replies reach the normal inbox (iCloud) and, when set, a tracking address
           // Resend receives, so replies are detected without moving the main domain's mail.
           replyTo: tracking ? [REPLY_TO, tracking] : REPLY_TO,
@@ -232,7 +241,7 @@ export async function POST(request: Request) {
         const sentAt = at.toISOString()
         const email = (await db(`sent_emails?id=eq.${emailId}`, { method: 'PATCH', body: JSON.stringify({ status: scheduled ? 'scheduled' : 'sent', resend_id: data?.id, sent_at: sentAt }) }))[0]
         const updated = lead ? await markSent(lead, emailId, sentAt, followUp) : undefined
-        return NextResponse.json({ lead: updated, email: { id: emailId, lead_id: lead?.id ?? null, recipients: [to], subject, sent_at: sentAt, status: email?.status, kind: email?.kind }, sentToday: await countForDay(new Date()) })
+        return NextResponse.json({ lead: updated, email: { id: emailId, lead_id: lead?.id ?? null, recipients: to, subject, sent_at: sentAt, status: email?.status, kind: email?.kind }, sentToday: await countForDay(new Date()) })
       }
 
       // One email in full, with every open and click, for the email detail panel.
@@ -265,7 +274,7 @@ export async function POST(request: Request) {
         const at = new Date(str(body.sentAt) || Date.now())
         if (Number.isNaN(at.getTime())) return NextResponse.json({ error: 'That date is not valid.' }, { status: 400 })
         const subject = str(body.subject, 300) || '(sent from another inbox)'
-        const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: [lead.email], subject, preview: '', body_html: '', lead_id: lead.id, kind: 'outreach_logged', status: 'logged', sent_at: at.toISOString() }) })
+        const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: leadEmails(lead), subject, preview: '', body_html: '', lead_id: lead.id, kind: 'outreach_logged', status: 'logged', sent_at: at.toISOString() }) })
         const updated = await markSent(lead, String(records[0]?.id), at.toISOString(), lead.status !== 'new')
         return NextResponse.json({ lead: updated, email: records[0] })
       }

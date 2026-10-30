@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import AdminNav from '@/components/AdminNav'
-import { DEFAULT_SETTINGS, followUpDue, isFinished, SOURCES, type Lead, type OutreachSettings, type Reply, type SentEmail, type Template } from '@/lib/outreach'
+import { DEFAULT_SETTINGS, followUpDue, isFinished, leadEmails, SOURCES, type Lead, type OutreachSettings, type Reply, type SentEmail, type Template } from '@/lib/outreach'
 import Composer, { type Outgoing, type Recipient } from './Composer'
 import ContactPanel from './ContactPanel'
 import EmailPanel from './EmailPanel'
@@ -120,7 +120,7 @@ export default function EmailWorkspace() {
   const count = (v: View) => (v === 'scheduled' ? upcoming.length : v === 'sent' ? emails.filter(e => e.status !== 'cancelled').length : v === 'templates' ? templates.length : leads.filter(l => inView(l, v)).length)
 
   const q = query.trim().toLowerCase()
-  const list = leads.filter(l => inView(l, view) && (source === 'all' || (l.source || 'other') === source) && (!q || [l.email, l.first_name, l.last_name, l.company, l.title].some(v => v?.toLowerCase().includes(q))))
+  const list = leads.filter(l => inView(l, view) && (source === 'all' || (l.source || 'other') === source) && (!q || [...leadEmails(l), l.first_name, l.last_name, l.company, l.title].some(v => v?.toLowerCase().includes(q))))
   const isContactView = !['scheduled', 'sent', 'templates'].includes(view)
   const meta = VIEWS.find(v => v.key === view)!
   const contacted = leads.filter(l => l.status !== 'new').length
@@ -169,6 +169,7 @@ export default function EmailWorkspace() {
   async function patch(lead: Lead, change: Record<string, unknown>) {
     const { ok, data } = await call('update', { id: lead.id, ...change })
     if (ok) putLead(data.lead)
+    else if (data?.error) window.alert(data.error)
   }
   async function cancel(e: SentEmail) {
     if (!window.confirm('Cancel this scheduled email? It won’t be sent.')) return
@@ -305,7 +306,7 @@ export default function EmailWorkspace() {
         onDelete={async () => { if (window.confirm(`Remove ${fullName(openLead)} and their history?`)) { await call('delete', { id: openLead.id }); setLeads(ls => ls.filter(x => x.id !== openLead.id)); setOpenId(null) } }} />}
       {emailId && <EmailPanel key={`email-${emailId}`} id={emailId} lead={leads.find(l => l.id === emails.find(e => e.id === emailId)?.lead_id)}
         load={loadEmail} onClose={() => setEmailId(null)}
-        onFollowUp={(to, subject) => { setEmailId(null); const l = leads.find(x => x.email.toLowerCase() === to.toLowerCase()); setComposer({ leads: l ? [l] : [], emails: l ? [] : [to], subject, templateId: null }) }}
+        onFollowUp={(to, subject) => { setEmailId(null); const l = leads.find(x => leadEmails(x).some(e => e.toLowerCase() === to.toLowerCase())); setComposer({ leads: l ? [l] : [], emails: l ? [] : [to], subject, templateId: null }) }}
         onOpenContact={id => { setEmailId(null); setOpenId(id) }}
         onAddContact={async (id, address) => { const { ok } = await call('link', { emailId: id, lead: { email: address, source: 'other' } }); if (ok) await load() }}
         onCancel={async id => { const e = emails.find(x => x.id === id); if (e) { await cancel(e); setEmailId(null) } }} />}
@@ -360,7 +361,7 @@ function SentList({ emails, events, leads, onOpen, onAdd }: { emails: (SentEmail
   const opens = useMemo(() => { const m = new Map<string, number>(); for (const e of events) if (e.event_type === 'open') m.set(e.email_id, (m.get(e.email_id) || 0) + 1); return m }, [events])
   const clicked = useMemo(() => new Set(events.filter(e => e.event_type === 'click').map(e => e.email_id)), [events])
   const byId = useMemo(() => new Map(leads.map(l => [l.id, l])), [leads])
-  const known = useMemo(() => new Set(leads.map(l => l.email.toLowerCase())), [leads])
+  const known = useMemo(() => new Set(leads.flatMap(l => leadEmails(l)).map(e => e.toLowerCase())), [leads])
 
   const q = query.trim().toLowerCase()
   const all = emails.filter(e => e.status !== 'cancelled')
