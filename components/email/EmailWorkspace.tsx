@@ -7,6 +7,7 @@ import AdminNav from '@/components/AdminNav'
 import { DEFAULT_SETTINGS, followUpDue, isFinished, SOURCES, type Lead, type OutreachSettings, type Reply, type SentEmail, type Template } from '@/lib/outreach'
 import Composer, { type Outgoing, type Recipient } from './Composer'
 import ContactPanel from './ContactPanel'
+import EmailPanel from './EmailPanel'
 import { AddContactsPanel, RulesPanel, TemplatesView } from './Library'
 import { ago, Avatar, fullName, PAGE_SIZE, Pager, Progress, sourceLabel, StatusPill, when } from './shared'
 
@@ -51,7 +52,8 @@ export default function EmailWorkspace() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
   const [openId, setOpenId] = useState<string | null>(null)
-  const [composer, setComposer] = useState<{ leads: Lead[]; templateId: string | null } | null>(null)
+  const [composer, setComposer] = useState<{ leads: Lead[]; templateId: string | null; emails?: string[]; subject?: string } | null>(null)
+  const [emailId, setEmailId] = useState<string | null>(null)
   const [panel, setPanel] = useState<'add' | 'rules' | null>(null)
   const [progress, setProgress] = useState<Progress | null>(null)
   const stop = useRef(false)
@@ -149,6 +151,8 @@ export default function EmailWorkspace() {
     setSelected(new Set())
   }
 
+  const loadEmail = useCallback(async (id: string) => { const { ok, data } = await call('email', { id }); return ok ? data : null }, [call])
+
   async function patch(lead: Lead, change: Record<string, unknown>) {
     const { ok, data } = await call('update', { id: lead.id, ...change })
     if (ok) putLead(data.lead)
@@ -242,12 +246,12 @@ export default function EmailWorkspace() {
         {view === 'scheduled' && (!upcoming.length ? <Empty>{meta.empty}</Empty> : <><ul className="space-y-2">
           {upcoming.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(e => { const l = leads.find(x => x.id === e.lead_id); return <li key={e.id} className="flex items-center gap-4 rounded-2xl border border-ink-border bg-surface p-4">
             <span className="w-20 shrink-0 text-center"><span className="block font-display text-lg font-semibold">{new Date(e.sent_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span><span className="text-[11px] text-muted">{new Date(e.sent_at).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}</span></span>
-            <button onClick={() => l && setOpenId(l.id)} className="min-w-0 flex-1 text-left"><span className="block truncate text-sm font-semibold">{l ? fullName(l) : e.recipients?.[0]}{l?.company ? ` · ${l.company}` : ''}</span><span className="block truncate text-xs text-muted">{e.subject}</span></button>
+            <button onClick={() => setEmailId(e.id)} className="min-w-0 flex-1 text-left"><span className="block truncate text-sm font-semibold">{l ? fullName(l) : e.recipients?.[0]}{l?.company ? ` · ${l.company}` : ''}</span><span className="block truncate text-xs text-muted">{e.subject}</span></button>
             <button onClick={() => cancel(e)} className="shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold text-[#DC2626] hover:bg-[#EF4444]/10 dark:text-[#F87171]">Cancel</button>
           </li> })}
         </ul><Pager page={page} total={upcoming.length} onPage={setPage} /></>)}
 
-        {view === 'sent' && <SentList emails={emails} events={events} leads={leads} onOpen={id => setOpenId(id)}
+        {view === 'sent' && <SentList emails={emails} events={events} leads={leads} onOpen={id => setEmailId(id)}
           onAdd={async (emailId, email) => { const { ok } = await call('link', { emailId, lead: { email, source: 'other' } }); if (ok) await load() }} />}
 
         {view === 'templates' && <TemplatesView templates={templates} sample={leads[0]}
@@ -278,11 +282,17 @@ export default function EmailWorkspace() {
     </div>}</AnimatePresence>
 
     <AnimatePresence>
-      {composer && <Composer key="composer" contacts={leads} templates={templates} initial={composer.leads} initialTemplate={composer.templateId} busy={sending} onClose={() => setComposer(null)} onSend={deliver} />}
+      {composer && <Composer key="composer" contacts={leads} templates={templates} initial={composer.leads} initialEmails={composer.emails} initialSubject={composer.subject} initialTemplate={composer.templateId} busy={sending} onClose={() => setComposer(null)} onSend={deliver} />}
       {openLead && <ContactPanel key="contact" lead={openLead} followUpDue={due(openLead)} emails={emails.filter(e => e.lead_id === openLead.id)} replies={replies.filter(r => r.lead_id === openLead.id)}
-        onClose={() => setOpenId(null)} onWrite={() => { setOpenId(null); write([openLead]) }} onPatch={c => patch(openLead, c)} onCancel={cancel}
+        onClose={() => setOpenId(null)} onViewEmail={id => { setOpenId(null); setEmailId(id) }} onWrite={() => { setOpenId(null); write([openLead]) }} onPatch={c => patch(openLead, c)} onCancel={cancel}
         onLog={async (subject, at) => { const { ok, data } = await call('log', { lead: { email: openLead.email }, subject, sentAt: at }); if (ok) { putLead(data.lead); putEmail(data.email) } return ok ? '' : data.error }}
         onDelete={async () => { if (window.confirm(`Remove ${fullName(openLead)} and their history?`)) { await call('delete', { id: openLead.id }); setLeads(ls => ls.filter(x => x.id !== openLead.id)); setOpenId(null) } }} />}
+      {emailId && <EmailPanel key={`email-${emailId}`} id={emailId} lead={leads.find(l => l.id === emails.find(e => e.id === emailId)?.lead_id)}
+        load={loadEmail} onClose={() => setEmailId(null)}
+        onFollowUp={(to, subject) => { setEmailId(null); const l = leads.find(x => x.email.toLowerCase() === to.toLowerCase()); setComposer({ leads: l ? [l] : [], emails: l ? [] : [to], subject, templateId: null }) }}
+        onOpenContact={id => { setEmailId(null); setOpenId(id) }}
+        onAddContact={async (id, address) => { const { ok } = await call('link', { emailId: id, lead: { email: address, source: 'other' } }); if (ok) await load() }}
+        onCancel={async id => { const e = emails.find(x => x.id === id); if (e) { await cancel(e); setEmailId(null) } }} />}
       {panel === 'add' && <AddContactsPanel key="add" onClose={() => setPanel(null)}
         onAdd={async (lead, sent) => {
           const { ok, data } = sent ? await call('log', { lead, subject: sent.subject, sentAt: sent.at }) : await call('add_lead', { lead })
@@ -363,7 +373,7 @@ function SentList({ emails, events, leads, onOpen, onAdd }: { emails: (SentEmail
           const n = opens.get(e.id) || 0
           const addable = !lead && e.recipients?.length === 1 && !known.has(e.recipients[0].toLowerCase())
           return <li key={e.id} className="flex items-center gap-3 px-4 py-3">
-            <button onClick={() => lead && onOpen(lead.id)} disabled={!lead} className="min-w-0 flex-1 text-left">
+            <button onClick={() => onOpen(e.id)} className="min-w-0 flex-1 text-left">
               <span className="block truncate text-sm"><span className="font-semibold">{to}</span><span className="text-muted"> · {e.subject}</span></span>
               <span className="block text-xs text-muted">{e.status === 'scheduled' ? `Scheduled for ${when(e.sent_at)}` : e.status === 'logged' ? `Sent from another inbox · ${when(e.sent_at)}` : e.status === 'failed' ? 'Failed to send' : when(e.sent_at)}</span>
             </button>
@@ -371,6 +381,7 @@ function SentList({ emails, events, leads, onOpen, onAdd }: { emails: (SentEmail
               <span className={`rounded-full px-2 py-0.5 ${n ? 'bg-primary/15 font-semibold text-primary' : 'bg-surface-2 text-muted'}`}>{n ? `Opened${n > 1 ? ` ×${n}` : ''}` : 'Not opened'}</span>
               {clicked.has(e.id) && <span className="rounded-full bg-primary px-2 py-0.5 font-semibold text-on-primary">Clicked</span>}
             </span>}
+            <button onClick={() => onOpen(e.id)} aria-label="View email" className="hidden shrink-0 text-muted hover:text-primary md:block">›</button>
             {addable && <button onClick={() => onAdd(e.id, e.recipients![0])} className="shrink-0 rounded-full border border-ink-border px-3 py-1.5 text-[11px] font-semibold hover:border-primary hover:text-primary">+ Add to contacts</button>}
           </li>
         })}

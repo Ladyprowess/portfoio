@@ -11,9 +11,10 @@ type Props = {
   lead: Lead; emails: SentEmail[]; replies: Reply[]; followUpDue: boolean
   onClose: () => void; onWrite: () => void; onPatch: (c: Record<string, unknown>) => void
   onLog: (subject: string, at: string) => Promise<string>; onCancel: (e: SentEmail) => void; onDelete: () => void
+  onViewEmail: (id: string) => void
 }
 
-export default function ContactPanel({ lead: l, emails, replies, followUpDue, onClose, onWrite, onPatch, onLog, onCancel, onDelete }: Props) {
+export default function ContactPanel({ lead: l, emails, replies, followUpDue, onClose, onWrite, onPatch, onLog, onCancel, onDelete, onViewEmail }: Props) {
   const [notes, setNotes] = useState(l.notes)
   const [logging, setLogging] = useState(false)
   const [log, setLog] = useState({ subject: '', at: localInput(new Date()) })
@@ -88,7 +89,7 @@ export default function ContactPanel({ lead: l, emails, replies, followUpDue, on
             <span className={`relative mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full border-2 border-surface ${t.reply || t.key === 'replied' ? 'bg-success' : t.key === 'bounce' ? 'bg-[#EF4444]' : t.email ? 'bg-primary' : 'bg-ink-border'}`} />
             <div className="min-w-0 flex-1 text-sm">
               {t.email ? <>
-                <p className={`font-semibold ${t.email.status === 'cancelled' ? 'text-muted line-through' : ''}`}>{t.email.subject}</p>
+                <button onClick={() => onViewEmail(t.email!.id)} className={`text-left font-semibold hover:text-primary hover:underline ${t.email.status === 'cancelled' ? 'text-muted line-through' : ''}`}>{t.email.subject} <span aria-hidden="true" className="text-muted">›</span></button>
                 <p className="text-xs text-muted">
                   {t.email.status === 'scheduled' ? `Scheduled for ${when(t.email.sent_at)}` : t.email.status === 'logged' ? `Sent from another inbox · ${when(t.email.sent_at)}` : t.email.status === 'cancelled' ? 'Cancelled' : t.email.status === 'failed' ? 'Failed to send' : `Sent ${ago(t.email.sent_at)} · ${when(t.email.sent_at)}`}
                   {t.email.status === 'scheduled' && <button onClick={() => onCancel(t.email!)} className="ml-2 font-semibold text-[#DC2626] dark:text-[#F87171]">Cancel</button>}

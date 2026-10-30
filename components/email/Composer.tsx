@@ -21,15 +21,15 @@ export type Outgoing = {
 
 const MAX_ATTACH = 3 * 1024 * 1024 // stays well under the hosting request limit
 
-export default function Composer({ contacts, templates, initial, initialTemplate, busy, onClose, onSend }: {
-  contacts: Lead[]; templates: Template[]; initial: Lead[]; initialTemplate?: string | null; busy: boolean
+export default function Composer({ contacts, templates, initial, initialEmails = [], initialSubject, initialTemplate, busy, onClose, onSend }: {
+  contacts: Lead[]; templates: Template[]; initial: Lead[]; initialEmails?: string[]; initialSubject?: string; initialTemplate?: string | null; busy: boolean
   onClose: () => void; onSend: (o: Outgoing) => void
 }) {
-  const [to, setTo] = useState<Recipient[]>(initial.map(l => ({ lead: l, email: l.email })))
+  const [to, setTo] = useState<Recipient[]>([...initial.map(l => ({ lead: l, email: l.email })), ...initialEmails.filter(e => !initial.some(l => l.email === e)).map(email => ({ email }))])
   const [typed, setTyped] = useState('')
   const [templateId, setTemplateId] = useState(initialTemplate ?? '')
   const tpl = templates.find(t => t.id === templateId)
-  const [subject, setSubject] = useState(tpl?.subject ?? '')
+  const [subject, setSubject] = useState(initialSubject ?? tpl?.subject ?? '')
   const [body, setBody] = useState(tpl?.body ?? '')
   const [files, setFiles] = useState<Attachment[]>([])
   const [mode, setMode] = useState<'now' | 'later'>('now')

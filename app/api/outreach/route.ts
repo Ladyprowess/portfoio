@@ -235,6 +235,17 @@ export async function POST(request: Request) {
         return NextResponse.json({ lead: updated, email: { id: emailId, lead_id: lead?.id ?? null, recipients: [to], subject, sent_at: sentAt, status: email?.status, kind: email?.kind }, sentToday: await countForDay(new Date()) })
       }
 
+      // One email in full, with every open and click, for the email detail panel.
+      case 'email': {
+        const id = encodeURIComponent(str(body.id))
+        const [rows, events] = await Promise.all([
+          db(`sent_emails?select=id,lead_id,recipients,cc,bcc,subject,preview,body_html,status,kind,sent_at&id=eq.${id}`),
+          db(`email_events?select=event_type,url,occurred_at,user_agent&email_id=eq.${id}&order=occurred_at.asc`),
+        ])
+        if (!rows[0]) return NextResponse.json({ error: 'Email not found.' }, { status: 404 })
+        return NextResponse.json({ email: rows[0], events })
+      }
+
       case 'cancel': {
         const apiKey = process.env.RESEND_API_KEY
         const email = (await db(`sent_emails?select=id,resend_id,lead_id,status&id=eq.${encodeURIComponent(str(body.emailId))}`))[0]
