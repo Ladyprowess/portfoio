@@ -713,8 +713,8 @@ export default function BlogCmsPage() {
    * Pasted documents can carry their pictures inline as data: URIs. Those
    * inflate the article past the request size limit, and the platform rejects
    * the save with a bare 413 before the app ever sees it. The paste handler
-   * lifts them out, but anything reaching the editor another way — a
-   * drag-and-drop, an image pasted on its own, a partial upload — would
+   * lifts them out, but anything reaching the editor another way - a
+   * drag-and-drop, an image pasted on its own, a partial upload - would
    * otherwise leave the writer stuck being told to paste the whole document
    * again. Lift whatever is left at save time instead.
    */

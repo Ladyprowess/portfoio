@@ -3,12 +3,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { clients, testimonials } from '@/lib/home-content'
 import { ventures, type Venture } from '@/lib/ventures'
 import { Count, DECK, Film, Loop, MEETING, Reveal, ScrollWords, partner, toneVars } from './kit'
 import { films } from './scenes'
 import Donate from './Donate'
+import { investmentStories } from './InvestorIntro'
 
 const label = 'font-head text-[0.64rem] font-bold uppercase tracking-[0.18em]'
 const btn = 'inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition'
@@ -46,7 +47,7 @@ export function FounderHero() {
           <Reveal delay={0.45}><p className="mt-7 max-w-[34rem] text-[1.04rem] leading-[1.8] text-muted md:text-[1.1rem]">I&apos;m Ngozi Peace Okafor. For nine years I&apos;ve written, marketed and shaped products for fintech and Web3 teams. Now I&apos;m building three companies of my own, each born from a problem I hit first.</p></Reveal>
           <Reveal delay={0.6}>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a href={MEETING} className={`${btn} bg-primary text-on-primary shadow-[0_14px_30px_-12px_rgba(37,99,235,0.7)] hover:-translate-y-0.5 hover:bg-primary-dim`}>Book a meeting</a>
+              <a href={MEETING} className={`${btn} bg-primary text-on-primary shadow-[0_14px_30px_-12px_rgba(37,99,235,0.7)] hover:-translate-y-0.5 hover:bg-primary-dim`}>Arrange a conversation</a>
               <Donate className={`${btn} border border-ink-border bg-surface hover:border-primary/40`}>Donate to our cause</Donate>
             </div>
           </Reveal>
@@ -179,18 +180,18 @@ export function Theatre() {
       <div className="mx-auto max-w-[1240px]">
         <Reveal className="mb-10 px-2">
           <p className={`${label} text-primary`}>What I&apos;m building</p>
-          <h2 className="mt-4 font-display text-[clamp(2.4rem,5vw,4.4rem)] font-extrabold leading-none tracking-[-0.03em]">Brand Story.</h2>
-          <p className="mt-5 max-w-xl text-[0.98rem] leading-7 text-muted">Three short films, about 30 seconds each: the problem, the product, and how it makes money. They play in order.</p>
+          <h2 className="mt-4 font-display text-[clamp(2.4rem,5vw,4.4rem)] font-extrabold leading-none tracking-[-0.03em]">See the problem. Understand the business.</h2>
+          <p className="mt-5 max-w-xl text-[0.98rem] leading-7 text-muted">Choose a venture and follow its product story. Explore each step at your own pace, then see who it serves, how it earns and what comes next.</p>
         </Reveal>
         <Reveal>
           <div style={toneVars(film.tone)} className="overflow-hidden rounded-[2rem] border border-ink-border bg-surface shadow-[0_40px_90px_-45px_rgba(15,23,42,0.5)]">
-            <div role="tablist" className="grid grid-cols-3 border-b border-ink-border">
+            <div aria-label="Choose a product story" className="grid grid-cols-3 border-b border-ink-border">
               {order.map((slug, n) => {
                 const f = films[slug]
                 const v = ventures.find(x => x.slug === slug)!
                 const on = n === i
                 return (
-                  <button key={slug} role="tab" aria-selected={on} type="button" onClick={() => setI(n)} style={toneVars(f.tone)} className={`relative flex flex-col items-start gap-1.5 px-3 py-4 text-left transition sm:px-6 md:flex-row md:items-center md:gap-4 ${n ? 'border-l border-ink-border' : ''} ${on ? 'bg-surface' : 'bg-bg/70 hover:bg-surface'}`}>
+                  <button key={slug} aria-pressed={on} type="button" onClick={() => setI(n)} style={toneVars(f.tone)} className={`relative flex flex-col items-start gap-1.5 px-3 py-4 text-left transition sm:px-6 md:flex-row md:items-center md:gap-4 ${n ? 'border-l border-ink-border' : ''} ${on ? 'bg-surface' : 'bg-bg/70 hover:bg-surface'}`}>
                     <span className="flex items-center gap-2"><span className={`h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--t)] transition ${on ? '' : 'opacity-40'}`} /><span className={`font-display text-[0.95rem] font-extrabold ${on ? '' : 'text-muted'}`}>{f.short}</span></span>
                     <span className={`hidden text-sm md:block ${on ? 'text-parchment' : 'text-muted'}`} aria-label={v.name}>{f.title}</span>
                     {on && <motion.span layoutId="film-tab" className="absolute inset-x-0 bottom-0 h-[3px] bg-[var(--t)]" />}
@@ -198,10 +199,13 @@ export function Theatre() {
                 )
               })}
             </div>
-            <Film key={order[i]} chapters scenes={film.scenes} tone={film.tone} label={`${film.short}: ${film.title}`} onEnded={() => setI(v => (v + 1) % order.length)} />
+            <Film key={order[i]} chapters scenes={film.scenes} tone={film.tone} label={`${film.short}: ${film.title}`} />
+            <dl className="grid gap-5 border-t border-ink-border px-6 py-6 md:grid-cols-3">
+              {[['Who it serves', investmentStories[order[i]].customer], ['Business model', investmentStories[order[i]].revenue], ['Where you fit', investmentStories[order[i]].support]].map(([title, text]) => <div key={title}><dt className="text-xs font-bold uppercase tracking-widest text-muted">{title}</dt><dd className="mt-2 text-sm font-semibold leading-6">{text}</dd></div>)}
+            </dl>
             <div className="flex items-center justify-between gap-4 border-t border-ink-border bg-bg/60 px-5 py-4 md:px-7">
-              <p className="hidden text-xs text-muted sm:block">Film {i + 1} of {order.length} · next: {films[order[(i + 1) % order.length]].short}</p>
-              <Link href={`/support/${order[i]}`} className="t-ink text-sm font-bold hover:underline">Explore {film.short} →</Link>
+              <p className="hidden text-xs text-muted sm:block">Product illustration · Select any chapter to explore</p>
+              <Link href={`/support/${order[i]}`} className="t-ink text-sm font-bold hover:underline">Read the {film.short} investment story →</Link>
             </div>
           </div>
         </Reveal>
@@ -215,16 +219,15 @@ const loopScene: Record<string, number> = { kivorapay: 2, 'prowess-digital-solut
 export function VentureStack() {
   const wrap = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: wrap, offset: ['start start', 'end end'] })
-  const wide = useWide()
   return (
-    <section className="border-t border-ink-border bg-bg px-4 pb-24 pt-20 sm:px-8 md:px-12 md:pb-32 md:pt-28">
-      <Reveal className="mx-auto mb-12 max-w-[1240px] px-2">
+    <section className="border-t border-ink-border bg-bg px-4 pb-16 pt-16 sm:px-8 md:px-12 md:pb-24 md:pt-24">
+      <Reveal className="mx-auto mb-8 max-w-[1240px] px-2 md:mb-10">
         <p className={`${label} text-primary`}>Each venture up close</p>
-        <h2 className="mt-4 max-w-3xl font-display text-[clamp(2rem,4vw,3.4rem)] font-extrabold leading-[1.05] tracking-[-0.02em]">Traction, revenue and where support goes.</h2>
+        <h2 className="mt-3 max-w-3xl font-display text-[clamp(1.8rem,4vw,3.2rem)] font-extrabold leading-[1.05] tracking-[-0.02em]">Traction, revenue and where support goes.</h2>
       </Reveal>
-      <div ref={wrap} className="mx-auto max-w-[1240px] space-y-6 lg:space-y-0">
+      <div ref={wrap} className="mx-auto max-w-[1240px]">
         {ventures.map((v, n) => (
-          <StackItem key={v.slug} n={n} count={ventures.length} progress={scrollYProgress} wide={wide}>
+          <StackItem key={v.slug} n={n} count={ventures.length} progress={scrollYProgress}>
             <VentureCard v={v} n={n} />
           </StackItem>
         ))}
@@ -233,25 +236,14 @@ export function VentureStack() {
   )
 }
 
-function useWide() {
-  const [wide, setWide] = useState(false)
-  useEffect(() => {
-    const m = window.matchMedia('(min-width: 1024px)')
-    const on = () => setWide(m.matches)
-    on()
-    m.addEventListener('change', on)
-    return () => m.removeEventListener('change', on)
-  }, [])
-  return wide
-}
-
-function StackItem({ n, count, progress, wide, children }: { n: number; count: number; progress: MotionValue<number>; wide: boolean; children: React.ReactNode }) {
-  const start = n / count
-  const scale = useTransform(progress, [start, 1], [1, 1 - (count - 1 - n) * 0.05])
-  const filter = useTransform(progress, [start, 1], ['brightness(1)', `brightness(${1 - (count - 1 - n) * 0.07})`])
+/** Each card pins below the nav; the next one slides over it while it shrinks back. */
+function StackItem({ n, count, progress, children }: { n: number; count: number; progress: MotionValue<number>; children: ReactNode }) {
+  const depth = count - 1 - n
+  const scale = useTransform(progress, [n / count, 1], [1, 1 - depth * 0.05])
+  const filter = useTransform(progress, [n / count, 1], ['brightness(1)', `brightness(${1 - depth * 0.08})`])
   return (
-    <div className="lg:sticky lg:h-[calc(100vh-110px)] lg:pb-10" style={{ top: 96 + n * 28 }}>
-      <motion.div style={wide ? { scale, filter, transformOrigin: 'top center' } : undefined} className="h-full">{children}</motion.div>
+    <div className="sticky pb-5 md:pb-8" style={{ top: `calc(var(--nav-h) + 12px + ${n * 18}px)` }}>
+      <motion.div style={{ scale, filter, transformOrigin: 'top center' }}>{children}</motion.div>
     </div>
   )
 }
@@ -259,30 +251,28 @@ function StackItem({ n, count, progress, wide, children }: { n: number; count: n
 function VentureCard({ v, n }: { v: Venture; n: number }) {
   const f = films[v.slug]
   return (
-    <article style={toneVars(f.tone)} className="relative grid h-full overflow-hidden rounded-[2rem] border border-ink-border bg-surface shadow-[0_30px_80px_-40px_rgba(15,23,42,0.5)] lg:grid-cols-[0.95fr_1.05fr]">
+    <article style={toneVars(f.tone)} className="relative grid overflow-hidden rounded-[1.8rem] border border-ink-border bg-surface shadow-[0_30px_80px_-40px_rgba(15,23,42,0.55)] lg:min-h-[500px] lg:grid-cols-[0.95fr_1.05fr]">
       <div aria-hidden className="absolute inset-0" style={{ background: 'radial-gradient(70% 60% at 0% 0%, color-mix(in srgb, var(--t) 10%, transparent), transparent 70%)' }} />
-      <div className="relative flex flex-col p-7 md:p-10">
+      <div className="relative order-2 flex flex-col p-5 md:p-9 lg:order-1">
         <div className="flex items-center justify-between gap-4">
-          <span className="relative block h-10 w-40"><Image src={v.logo} alt={v.name} fill sizes="160px" className="object-contain object-left" /></span>
+          <span className="relative block h-8 w-32 md:h-10 md:w-40"><Image src={v.logo} alt={v.name} fill sizes="160px" className="object-contain object-left" /></span>
           <span className="font-head text-xs font-bold text-muted">0{n + 1} / 03</span>
         </div>
-        <p className={`${label} t-ink mt-7`}>{v.eyebrow}</p>
-        <h3 className="mt-3 font-display text-[clamp(1.8rem,3vw,2.6rem)] font-extrabold leading-[1.05] tracking-[-0.02em]">{v.tagline}</h3>
-        <p className="mt-4 text-[0.95rem] leading-7 text-muted">{v.summary}</p>
-        <div className="mt-6 grid grid-cols-3 gap-3 border-y border-ink-border py-5">
-          {v.stats.slice(0, 3).map(s => <div key={s.label}><p className="t-ink font-display text-2xl font-extrabold"><Count value={s.value} /></p><p className="mt-1 text-[0.7rem] leading-4 text-muted">{s.label}</p></div>)}
+        <h3 className="mt-4 font-display text-[clamp(1.4rem,2.6vw,2.3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] md:mt-6">{v.tagline}</h3>
+        <p className="mt-3 hidden text-[0.95rem] leading-7 text-muted md:block">{v.summary}</p>
+        <div className="mt-4 grid grid-cols-3 gap-3 border-y border-ink-border py-4 md:mt-6 md:py-5">
+          {v.stats.slice(0, 3).map(s => <div key={s.label}><p className="t-ink font-display text-xl font-extrabold md:text-2xl"><Count value={s.value} /></p><p className="mt-1 text-[0.68rem] leading-4 text-muted">{s.label}</p></div>)}
         </div>
-        <p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-muted">How it earns</p>
-        <div className="mt-2 flex flex-wrap gap-2">{v.model.slice(0, 3).map(m => <span key={m} className="t-soft rounded-full px-3 py-1 text-[0.74rem] font-semibold">{m}</span>)}</div>
-        <div className="mt-auto flex flex-wrap gap-3 pt-7">
-          <Link href={`/support/${v.slug}`} className={`${btn} bg-[var(--t)] text-white hover:-translate-y-0.5 hover:opacity-95`}>Explore {f.short} →</Link>
-          {v.raise ? <a href={DECK} className={`${btn} border border-ink-border hover:border-[var(--t)]`}>Request the deck</a> : <a href={partner(v.name)} className={`${btn} border border-ink-border hover:border-[var(--t)]`}>Discuss a partnership</a>}
+        <div className="mt-4 hidden flex-wrap gap-2 md:flex">{v.model.slice(0, 3).map(m => <span key={m} className="t-soft rounded-full px-3 py-1 text-[0.74rem] font-semibold">{m}</span>)}</div>
+        <div className="mt-auto flex flex-wrap gap-3 pt-5 md:pt-7">
+          <Link href={`/support/${v.slug}`} className={`${btn} min-h-11 flex-1 bg-[var(--t)] px-5 py-3 text-white hover:-translate-y-0.5 hover:opacity-95 sm:flex-none`}>Explore {f.short} →</Link>
+          {v.raise ? <a href={DECK} className={`${btn} hidden border border-ink-border hover:border-[var(--t)] sm:inline-flex`}>Request the deck</a> : <a href={partner(v.name)} className={`${btn} hidden border border-ink-border hover:border-[var(--t)] sm:inline-flex`}>Discuss a partnership</a>}
         </div>
       </div>
-      <div className="relative flex items-center p-4 md:p-8 lg:pl-0">
-        <div className="w-full overflow-hidden rounded-[1.4rem] border border-ink-border shadow-[0_24px_60px_-30px_rgba(15,23,42,0.5)]">
+      <div className="relative order-1 flex items-center p-3 pb-0 md:p-8 lg:order-2 lg:pl-0">
+        <div className="w-full overflow-hidden rounded-[1.3rem] border border-ink-border shadow-[0_24px_60px_-30px_rgba(15,23,42,0.5)]">
           <Loop scene={f.scenes[loopScene[v.slug]]} tone={f.tone} every={6500} />
-          <p className="border-t border-ink-border bg-surface px-4 py-3 text-xs font-semibold text-muted"><span className="t-ink">● Live</span> · {f.scenes[loopScene[v.slug]].caption}</p>
+          <p className="hidden border-t border-ink-border bg-surface px-4 py-3 text-xs font-semibold text-muted md:block"><span className="t-ink">Product illustration</span> · {f.scenes[loopScene[v.slug]].caption}</p>
         </div>
       </div>
     </article>
@@ -361,7 +351,7 @@ export function RaiseBand() {
 
 export function Conversation() {
   const options = [
-    { title: 'Book a meeting', body: 'Walk through the ventures, the numbers and where you could fit.', href: MEETING, cta: 'Book a meeting', main: true },
+    { title: 'Arrange a conversation', body: 'Walk through the ventures, the numbers and where you could fit.', href: MEETING, cta: 'Arrange a conversation', main: true },
     { title: 'Donate to our cause', body: 'Give through crypto with KivoraPay, PayPal or Payoneer.', href: '', cta: 'Choose how to give', donate: true },
     { title: 'Partner or sponsor', body: 'Training, tools, production, distribution or corporate merch with PDS or Dritchwear.', href: partner('Prowess Digital Solutions or Dritchwear'), cta: 'Start the conversation' },
   ]

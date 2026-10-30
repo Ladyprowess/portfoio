@@ -81,8 +81,8 @@ export const ventures: Venture[] = [
     logo: '/brands/pds.png',
     website: 'https://www.prowessdigitalsolutions.com',
     status: 'Open to partnerships, sponsorships, and growth support',
-    summary: 'Prowess Digital Solutions helps entrepreneurs learn, structure their businesses, and access practical digital support.',
-    introduction: 'Prowess Digital Solutions brings business education, useful tools, opportunities, and digital services into one place for entrepreneurs who need practical help.',
+    summary: 'Prowess Digital Solutions helps people build businesses, prepare for work, find opportunities and learn practical skills.',
+    introduction: 'Prowess Digital Solutions brings business services, career support, opportunities and learning together. People can use practical tools, build skills or get hands-on help with their next step.',
     story: [
       'I built Prowess Digital Solutions after seeing how often good business ideas struggle because the owner lacks structure, clear information, or affordable digital support.',
       'The goal is not to overwhelm entrepreneurs with theory. It is to give them tools, learning, services, and guidance they can use to make better decisions and move forward.',
@@ -109,9 +109,9 @@ export const ventures: Venture[] = [
     eyebrow: 'Custom merch, corporate gifts, branded apparel',
     tagline: 'We build merch people actually keep.',
     logo: '/brands/dritchwear-trim.png',
-    website: 'https://dritchwear.com/shop',
+    website: 'https://dritchwear.com',
     status: 'Open to production, distribution, and corporate partnerships',
-    summary: 'Dritchwear is a Nigerian streetwear and custom merchandise business for individuals, brands, teams, companies, and events.',
+    summary: 'Dritchwear produces custom apparel, corporate gifts and event merchandise for companies, creators and communities in Nigeria.',
     introduction: 'Dritchwear combines everyday menswear with custom streetwear, branded merchandise, corporate gifts, and event kits made for real use.',
     story: [
       'Dritchwear began from my interest in creating a practical clothing business that could serve both individual customers and organisations.',

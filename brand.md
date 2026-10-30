@@ -1,4 +1,4 @@
-# Brand — Lady Prowess Portfolio
+# Brand - Lady Prowess Portfolio
 
 _Status: deferred_
 

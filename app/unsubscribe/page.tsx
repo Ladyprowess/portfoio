@@ -139,7 +139,7 @@ export default function EmailPreferencesPage() {
             <p className="mt-4 text-xs leading-5 text-muted" role="status">
               {selected.length
                 ? `${selected.length} of ${choices.length} topics selected.`
-                : "Nothing selected — saving now will unsubscribe you completely."}
+                : "Nothing selected - saving now will unsubscribe you completely."}
             </p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">

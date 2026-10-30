@@ -35,7 +35,7 @@ export default function ThemeToggle({ variant = 'bar', className = '' }: ThemeTo
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next)
     } catch {
-      /* Private mode or blocked storage — the choice just won't persist. */
+      /* Private mode or blocked storage - the choice just won't persist. */
     }
   }, [theme])
 

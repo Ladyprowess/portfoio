@@ -27,7 +27,7 @@ export type NewsletterSubscriber = {
 
 /**
  * Topic helpers. A subscriber's `topics` is a set, and "All" is a wildcard that
- * absorbs every other entry — see the send route, which matches on
+ * absorbs every other entry - see the send route, which matches on
  * `topics.includes("All") || topics.includes(topic)`.
  */
 
@@ -46,8 +46,8 @@ export function cleanTopics(value: unknown): string[] {
 
 /**
  * Adds topics to the ones a subscriber already has. Sign-up forms cannot know
- * what someone is already subscribed to — they have no idea who the visitor is
- * until the email is typed — so subscribing always adds and never replaces.
+ * what someone is already subscribed to - they have no idea who the visitor is
+ * until the email is typed - so subscribing always adds and never replaces.
  * Removing a topic is done from the preferences page, which is token-authenticated.
  */
 export function addTopics(current: string[], selected: string[]): string[] {

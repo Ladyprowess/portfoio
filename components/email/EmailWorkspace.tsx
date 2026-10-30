@@ -386,7 +386,7 @@ function SentList({ emails, events, leads, onOpen, onAdd }: { emails: (SentEmail
       <ul className="divide-y divide-ink-border">
         {shown.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(e => {
           const lead = e.lead_id ? byId.get(e.lead_id) : undefined
-          const to = lead ? fullName(lead) : e.recipients?.join(', ') || '—'
+          const to = lead ? fullName(lead) : e.recipients?.join(', ') || '-'
           const n = opens.get(e.id) || 0
           const addable = !lead && e.recipients?.length === 1 && !known.has(e.recipients[0].toLowerCase())
           return <li key={e.id} className="flex items-center gap-3 px-4 py-3">

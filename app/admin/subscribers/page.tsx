@@ -230,7 +230,7 @@ export default function SubscribersPage() {
       setMessage(
         `${plural(ids.length - skipped, "subscriber")} ${done}.` +
           (skipped
-            ? ` ${plural(skipped, "subscriber")} skipped — that was their only topic.`
+            ? ` ${plural(skipped, "subscriber")} skipped - that was their only topic.`
             : ""),
       );
       setSelected(new Set());

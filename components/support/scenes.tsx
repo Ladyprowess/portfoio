@@ -3,15 +3,16 @@
 import Image from 'next/image'
 import { animate, motion } from 'framer-motion'
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
-import type { Scene, Tone } from './kit'
+import { useMotionPreference, type Scene, type Tone } from './kit'
 
 /* ── Drawing primitives (all coordinates are on the 720×450 board) ── */
 
 const ease = [0.22, 1, 0.36, 1] as const
 
 function Pop({ at, d = 0, y = 18, x = 0, s = 0.94, className = '', style, children }: { at?: [number, number]; d?: number; y?: number; x?: number; s?: number; className?: string; style?: CSSProperties; children: ReactNode }) {
+  const reduce = useMotionPreference()
   return (
-    <motion.div initial={{ opacity: 0, x, y, scale: s }} animate={{ opacity: 1, x: 0, y: 0, scale: 1 }} transition={{ delay: d, duration: 0.55, ease }} className={`${at ? 'absolute' : ''} ${className}`} style={at ? { left: at[0], top: at[1], ...style } : style}>
+    <motion.div initial={reduce ? false : { opacity: 0, x, y, scale: s }} animate={{ opacity: 1, x: 0, y: 0, scale: 1 }} transition={{ delay: d, duration: 0.55, ease }} className={`${at ? 'absolute' : ''} ${className}`} style={at ? { left: at[0], top: at[1], ...style } : style}>
       {children}
     </motion.div>
   )
@@ -42,10 +43,12 @@ function Cross({ d = 0 }: { d?: number }) {
 
 function Roll({ to, d = 0, dur = 1.8, format }: { to: number; d?: number; dur?: number; format: (n: number) => string }) {
   const [v, setV] = useState(0)
+  const reduce = useMotionPreference()
   useEffect(() => {
+    if (reduce) { setV(to); return }
     const c = animate(0, to, { delay: d, duration: dur, ease: 'easeOut', onUpdate: setV })
     return () => c.stop()
-  }, [to, d, dur])
+  }, [to, d, dur, reduce])
   return <>{format(v)}</>
 }
 
@@ -67,6 +70,8 @@ function Brand({ src, w, h, at, d = 0 }: { src: string; w: number; h: number; at
 }
 
 function Pulse({ at, d = 0 }: { at: [number, number]; d?: number }) {
+  const reduce = useMotionPreference()
+  if (reduce) return null
   return (
     <motion.span className="absolute z-30 h-10 w-10 rounded-full border-[3px] border-[var(--a)]" style={{ left: at[0] - 20, top: at[1] - 20 }} initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: [0.3, 1.4], opacity: [0, 1, 0] }} transition={{ delay: d, duration: 0.8, repeat: 1 }} />
   )
@@ -117,14 +122,14 @@ function KProblem() {
   return (
     <>
       <Pop at={[36, 60]}><Card className="w-[210px] p-5"><Label>My wallet</Label><p className="mt-2 font-display text-[30px] font-extrabold">120.00</p><p className="text-[14px] font-semibold text-muted">USDT on Solana</p></Card></Pop>
-      <Pop at={[474, 60]} d={0.25}><Card className="w-[210px] p-5"><Label>Electricity bill</Label><p className="mt-2 font-display text-[30px] font-extrabold">₦12,500</p><motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1.1 }} className="mt-1 inline-block rounded-full bg-[#E5484D]/10 px-2.5 py-0.5 text-[12px] font-bold text-[#E5484D]">Due today</motion.span></Card></Pop>
+      <Pop at={[474, 60]} d={0.25}><Card className="w-[210px] p-5"><Label>Electricity bill</Label><p className="mt-2 font-display text-[30px] font-extrabold">₦12,500</p><motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.1 }} className="mt-1 inline-block rounded-full bg-[#E5484D]/10 px-2.5 py-0.5 text-[12px] font-bold text-[#E5484D]">Due today</motion.span></Card></Pop>
       <Line d={0.5} path="M250 125 C 330 125 390 125 470 125" color="#E5484D" />
       {['Find a trader', 'Agree on a rate', 'Wait for the transfer'].map((t, n) => (
         <Pop key={t} at={[238, 190 + n * 54]} d={0.9 + n * 0.55} x={-20} y={0}>
           <div className="flex w-[244px] items-center gap-3 rounded-xl border border-ink-border bg-surface px-4 py-2.5 shadow-sm"><span className="font-head text-[12px] font-bold text-muted">0{n + 1}</span><span className="flex-1 text-[15px] font-semibold">{t}</span><Cross d={1.2 + n * 0.55} /></div>
         </Pop>
       ))}
-      <Pop at={[214, 372]} d={2.8}><div className="flex items-center gap-3 rounded-full bg-[#0F172A] px-5 py-2.5 text-[15px] font-semibold text-white"><motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.6, ease: 'linear' }} className="inline-block h-4 w-4 rounded-full border-2 border-white border-t-transparent" />Hours later, the rate has moved.</div></Pop>
+      <Pop at={[214, 372]} d={2.8}><div className="flex items-center gap-3 rounded-full bg-[#0F172A] px-5 py-2.5 text-[15px] font-semibold text-white"><motion.span animate={{ rotate: 360 }} transition={{ duration: 1.6, ease: 'linear' }} className="inline-block h-4 w-4 rounded-full border-2 border-white border-t-transparent" />Hours later, the rate has moved.</div></Pop>
     </>
   )
 }
@@ -280,14 +285,14 @@ function PProblem() {
       ))}
       {scattered.map((s, n) => (
         <Pop key={s.t} at={[s.at[0], s.at[1]]} d={0.15 + n * 0.12}>
-          <motion.div animate={{ y: [0, n % 2 ? 8 : -8, 0], rotate: [0, n % 2 ? 2 : -2, 0] }} transition={{ repeat: Infinity, duration: 3 + n * 0.3 }}>
+          <motion.div animate={{ y: [0, n % 2 ? 8 : -8, 0], rotate: [0, n % 2 ? 2 : -2, 0] }} transition={{ duration: 3 + n * 0.3 }}>
             <Card className="w-[180px] overflow-hidden p-0"><div className="flex gap-1 border-b border-ink-border px-3 py-2">{[0, 1, 2].map(i => <span key={i} className="h-2 w-2 rounded-full bg-ink-border" />)}</div><p className="px-3 py-2.5 text-[14px] font-semibold">{s.t}</p></Card>
           </motion.div>
         </Pop>
       ))}
       <Pop at={[300, 165]} d={0.3}>
         <div className="relative flex h-[120px] w-[120px] items-center justify-center rounded-full bg-[var(--t)] text-center text-[14px] font-bold leading-tight text-white shadow-xl">
-          <motion.span className="absolute inset-0 rounded-full border-2 border-[var(--t)]" animate={{ scale: [1, 1.35], opacity: [0.6, 0] }} transition={{ repeat: Infinity, duration: 1.6 }} />
+          <motion.span className="absolute inset-0 rounded-full border-2 border-[var(--t)]" animate={{ scale: [1, 1.35], opacity: [0.6, 0] }} transition={{ duration: 1.6 }} />
           A founder<br />with an idea
         </div>
       </Pop>
@@ -456,7 +461,7 @@ function DProblem() {
   return (
     <>
       <Pop at={[250, 36]}>
-        <Card className="w-[220px] p-4 text-center"><Label>Your event</Label><p className="mt-1 font-display text-[26px] font-extrabold">Friday</p><motion.p animate={{ opacity: [1, 0.35, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="text-[12px] font-bold text-[#E5484D]">Merch not ready</motion.p></Card>
+        <Card className="w-[220px] p-4 text-center"><Label>Your event</Label><p className="mt-1 font-display text-[26px] font-extrabold">Friday</p><motion.p animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 1 }} className="text-[12px] font-bold text-[#E5484D]">Merch not ready</motion.p></Card>
       </Pop>
       {parties.map((p, n) => (
         <Pop key={p.t} at={[p.at[0], p.at[1]]} d={0.3 + n * 0.2}><Card className="w-[180px] p-5 text-center"><p className="text-[16px] font-bold">{p.t}</p><p className="mt-1 text-[12px] text-muted">Separate supplier</p></Card></Pop>
@@ -494,7 +499,7 @@ function DMethod() {
           <Merch kind="tee" size={240} mark={false} />
           <svg className="absolute left-0 top-0" width="240" height="240" viewBox="0 0 200 200">
             <rect x="76" y="76" width="48" height="34" rx="8" fill="var(--a)" />
-            <motion.rect x="70" y="70" width="60" height="46" rx="11" fill="none" stroke="white" strokeWidth="2" strokeDasharray="4 4" initial={{ strokeDashoffset: 0 }} animate={{ strokeDashoffset: -64 }} transition={{ repeat: Infinity, duration: 2, ease: 'linear' }} />
+            <motion.rect x="70" y="70" width="60" height="46" rx="11" fill="none" stroke="white" strokeWidth="2" strokeDasharray="4 4" initial={{ strokeDashoffset: 0 }} animate={{ strokeDashoffset: -64 }} transition={{ duration: 2, ease: 'linear' }} />
           </svg>
         </div>
       </Pop>
@@ -581,14 +586,14 @@ export const films: Record<string, VentureFilm> = {
       { key: 'p1', kicker: 'The problem', caption: 'Good ideas stall when the help is scattered across too many places.', view: () => <PProblem /> },
       { key: 'p2', kicker: 'One place', caption: 'Business, jobs, opportunities and learning, organised in one place.', view: () => <PRoutes /> },
       { key: 'p3', kicker: 'Diagnose', caption: 'Pick what is slowing you down. See the likely causes and the next steps.', view: () => <PDiagnose />, ms: 5200 },
-      { key: 'p4', kicker: 'Tools', caption: 'Free tools for the numbers: a health check, cashflow tracking and invoices.', view: () => <PTools /> },
+      { key: 'p4', kicker: 'Tools', caption: 'Practical tools: a health check, cashflow tracking and invoices.', view: () => <PTools /> },
       { key: 'p5', kicker: 'Execution', caption: 'When owners need hands, the team builds it: plans, websites and systems.', view: () => <PServices /> },
       { key: 'p6', kicker: 'Prowess Digital Solutions', caption: 'Structure in place of guesswork.', view: () => <End logo="/brands/pds.png" w={320} h={110} line="Structure in place of guesswork." stats={[['500+', 'small businesses impacted'], ['200+', 'people trained'], ['10+', 'products and tools']]} /> },
     ],
     steps: [
       { scene: 1, title: 'Choose the goal', body: 'Visitors start with what they are working towards: business, jobs, opportunities or learning.' },
       { scene: 2, title: 'Diagnose the business', body: 'The structure diagnostic turns everyday problems into likely causes and clear next steps.' },
-      { scene: 3, title: 'Use the tools', body: 'A business health check, a profit and cashflow tracker and an invoice builder, free to start.' },
+      { scene: 3, title: 'Use the tools', body: 'A business health check, a profit and cashflow tracker and an invoice builder, with access requirements shown on each tool.' },
       { scene: 4, title: 'Get it built', body: 'Business plans, websites, business systems and consultation, delivered by the team.' },
     ],
   },

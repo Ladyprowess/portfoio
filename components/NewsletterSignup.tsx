@@ -121,7 +121,7 @@ export default function NewsletterSignup({
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
         Pick as many topics as you like. If you are already subscribed, these are
-        added to what you receive — every email has a link to change them.
+        added to what you receive - every email has a link to change them.
       </p>
       <form onSubmit={subscribe} className="mt-6">
         <div className="flex flex-wrap gap-2">

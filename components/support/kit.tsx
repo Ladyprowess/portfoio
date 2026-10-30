@@ -1,7 +1,20 @@
 'use client'
 
-import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { AnimatePresence, MotionConfig, animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+
+/** Keep server and first client render identical before applying OS preferences. */
+export function useMotionPreference() {
+  const preference = useReducedMotion()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  return mounted && Boolean(preference)
+}
+
+export function SupportMotion({ children }: { children: ReactNode }) {
+  const reduce = useMotionPreference()
+  return <MotionConfig reducedMotion="user" transition={reduce ? { duration: 0, delay: 0 } : undefined}>{children}</MotionConfig>
+}
 
 export const MEETING = 'mailto:hello@ladyprowess.com?subject=Meeting%20request%20from%20your%20founder%20page'
 export const DECK = 'mailto:hello@ladyprowess.com?subject=KivoraPay%20deck%20request'
@@ -11,8 +24,9 @@ export type Tone = { t: string; a: string }
 export const toneVars = (tone: Tone) => ({ '--t': tone.t, '--a': tone.a }) as CSSProperties
 
 export function Reveal({ children, delay = 0, y = 28, className }: { children: ReactNode; delay?: number; y?: number; className?: string }) {
+  const reduce = useMotionPreference()
   return (
-    <motion.div initial={{ opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }} className={className}>
+    <motion.div initial={reduce ? false : { opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }} className={className}>
       {children}
     </motion.div>
   )
@@ -22,15 +36,16 @@ export function Reveal({ children, delay = 0, y = 28, className }: { children: R
 export function Count({ value, className }: { value: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const seen = useInView(ref, { once: true })
+  const reduce = useMotionPreference()
   const match = value.match(/^([^\d]*)([\d,.]+)(.*)$/)
   const [shown, setShown] = useState(match ? `${match[1]}0${match[3]}` : value)
   useEffect(() => {
-    if (!seen || !match) return setShown(value)
+    if (!seen || !match || reduce) return setShown(value)
     const target = parseFloat(match[2].replace(/,/g, ''))
     const decimals = match[2].includes('.') ? match[2].split('.')[1].length : 0
     const c = animate(0, target, { duration: 1.4, ease: 'easeOut', onUpdate: v => setShown(`${match[1]}${v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${match[3]}`) })
     return () => c.stop()
-  }, [seen]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [seen, reduce]) // eslint-disable-line react-hooks/exhaustive-deps
   return <span ref={ref} className={className}>{shown}</span>
 }
 
@@ -77,7 +92,7 @@ export type Scene = { key: string; kicker: string; caption: string; view: () => 
 export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters = false, className = '' }: { scenes: Scene[]; tone: Tone; label: string; onEnded?: () => void; autoplay?: boolean; chapters?: boolean; className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { amount: 0.45 })
-  const reduce = useReducedMotion()
+  const reduce = useMotionPreference()
   const [i, setI] = useState(0)
   const [playing, setPlaying] = useState(autoplay)
   const progress = useMotionValue(0)
@@ -95,7 +110,7 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
       last = now
       if (next >= 1) {
         progress.set(0)
-        if (i === scenes.length - 1) { onEnded ? onEnded() : setI(0); return }
+        if (i === scenes.length - 1) { progress.set(1); setPlaying(false); onEnded?.(); return }
         setI(i + 1)
         return
       }
@@ -106,8 +121,8 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
     return () => cancelAnimationFrame(raf)
   }, [run, i, scene, scenes.length, progress, onEnded])
 
-  const go = (n: number) => { progress.set(0); setI(n); setPlaying(true) }
-  const toggle = <PlayToggle on={playing && !reduce} onClick={() => setPlaying(p => !p)} />
+  const go = (n: number) => { progress.set(0); setI(n); setPlaying(false) }
+  const toggle = reduce ? <span className="text-xs text-muted">Manual playback</span> : <PlayToggle on={playing} onClick={() => { if (progress.get() >= 1) { progress.set(0); setI(0) } setPlaying(p => !p) }} />
   const stage = (
     <Canvas>
       <Stage>
@@ -131,13 +146,13 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
   // Chapter layout: the film on the left, an ordered list of its scenes on the right.
   if (chapters) return (
     <figure ref={ref} style={toneVars(tone)} className={`grid bg-surface lg:grid-cols-[1.6fr_1fr] ${className}`} aria-label={label}>
-      <div className="relative flex items-center border-b border-ink-border bg-bg lg:border-b-0 lg:border-r"><div className="w-full">{stage}</div></div>
+      <div className="relative flex items-center border-b border-ink-border bg-bg lg:border-b-0 lg:border-r"><div className="w-full">{stage}<div className="absolute right-3 top-3">{toggle}</div></div></div>
       <figcaption className="flex flex-col p-5 md:p-7">
         <div className="min-h-[5.5rem]">{caption}</div>
-        <ol className="mt-4 hidden space-y-1 md:block">
+        <ol className="mt-4 space-y-1">
           {scenes.map((s, n) => (
             <li key={s.key}>
-              <button type="button" onClick={() => go(n)} className={`relative flex w-full items-center gap-3 overflow-hidden rounded-xl px-3 py-2 text-left text-sm transition ${n === i ? 't-soft font-bold' : 'text-muted hover:bg-surface-2'}`}>
+              <button type="button" aria-pressed={n === i} onClick={() => go(n)} className={`relative flex min-h-11 w-full items-center gap-3 overflow-hidden rounded-xl px-3 py-2 text-left text-sm transition ${n === i ? 't-soft font-bold' : 'text-muted hover:bg-surface-2'}`}>
                 <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-head text-[0.62rem] font-bold ${n < i ? 'bg-[var(--t)] text-white' : n === i ? 'bg-surface text-parchment ring-2 ring-[var(--t)]' : 'bg-surface-2'}`}>{n < i ? '✓' : n + 1}</span>
                 <span className="flex-1">{s.kicker}</span>
                 {n === i && <span className="absolute inset-x-3 bottom-0 h-[2px] overflow-hidden rounded-full bg-ink-border"><Bar progress={progress} /></span>}
@@ -145,7 +160,7 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
             </li>
           ))}
         </ol>
-        <div className="mt-auto flex gap-1 pt-5 md:hidden">{scenes.map((s, n) => <button key={s.key} type="button" aria-label={`Scene ${n + 1}: ${s.kicker}`} onClick={() => go(n)} className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-ink-border">{n < i && <span className="absolute inset-0 bg-[var(--t)]" />}{n === i && <Bar progress={progress} />}</button>)}</div>
+        <div className="hidden">{scenes.map((s, n) => <button key={s.key} type="button" aria-label={`Scene ${n + 1}: ${s.kicker}`} onClick={() => go(n)} className="relative h-11 flex-1 overflow-hidden rounded-full bg-ink-border">{n < i && <span className="absolute inset-0 bg-[var(--t)]" />}{n === i && <Bar progress={progress} />}</button>)}</div>
       </figcaption>
     </figure>
   )
@@ -159,7 +174,7 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
       <figcaption className="border-t border-ink-border px-5 pb-5 pt-4 md:px-7">
         <div className="flex gap-1.5">
           {scenes.map((s, n) => (
-            <button key={s.key} type="button" onClick={() => go(n)} aria-label={`Scene ${n + 1}: ${s.kicker}`} className="group relative h-6 flex-1">
+            <button key={s.key} type="button" onClick={() => go(n)} aria-label={`Scene ${n + 1}: ${s.kicker}`} aria-pressed={n === i} className="group relative h-11 flex-1">
               <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-full bg-ink-border transition group-hover:h-[5px]">
                 {n < i && <span className="absolute inset-0 bg-[var(--t)]" />}
                 {n === i && <Bar progress={progress} />}
@@ -175,7 +190,7 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
 
 function PlayToggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} aria-label={on ? 'Pause film' : 'Play film'} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface/90 text-parchment shadow ring-1 ring-ink-border backdrop-blur transition hover:scale-105">
+    <button type="button" onClick={onClick} aria-label={on ? 'Pause film' : 'Play film'} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface/90 text-parchment shadow ring-1 ring-ink-border backdrop-blur transition hover:scale-105">
       {on ? <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg> : <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5v9l7.5-4.5z" /></svg>}
     </button>
   )
@@ -191,11 +206,12 @@ export function Loop({ scene, tone, every = 6000, className = '' }: { scene: Sce
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { amount: 0.3 })
   const [n, setN] = useState(0)
+  const reduce = useMotionPreference()
   useEffect(() => {
-    if (!inView) return
+    if (!inView || reduce) return
     const t = setInterval(() => setN(v => v + 1), every)
     return () => clearInterval(t)
-  }, [inView, every])
+  }, [inView, every, reduce])
   return (
     <div ref={ref} style={toneVars(tone)} className={className}>
       <Canvas><Stage>{inView && <div key={n} className="absolute inset-0">{scene.view()}</div>}</Stage></Canvas>

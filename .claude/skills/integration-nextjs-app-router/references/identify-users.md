@@ -10,7 +10,7 @@ Linking events to specific users enables you to build a full picture of how they
 
 This is straightforward to do when [capturing backend events](/docs/product-analytics/capture-events?tab=Node.js.md), as you associate events to a specific user using a `distinct_id`, which is a required argument.
 
-However, in the frontend of a [web](/docs/libraries/js/usage.md#capturing-events) or [mobile app](/docs/libraries/ios.md#capturing-events), a `distinct_id` is not a required argument — PostHog's SDKs will generate an anonymous `distinct_id` for you automatically and you can capture events anonymously, provided you use the appropriate [configuration](/docs/libraries/js/usage.md#capturing-anonymous-events).
+However, in the frontend of a [web](/docs/libraries/js/usage.md#capturing-events) or [mobile app](/docs/libraries/ios.md#capturing-events), a `distinct_id` is not a required argument - PostHog's SDKs will generate an anonymous `distinct_id` for you automatically and you can capture events anonymously, provided you use the appropriate [configuration](/docs/libraries/js/usage.md#capturing-anonymous-events).
 
 To link events to specific users, call `identify`:
 
@@ -198,7 +198,7 @@ Person properties can also be set being adding a `$set` property to a event `cap
 
 **\`$set\` and \`$set\_once\` aren't stored on events**
 
-These properties only tell PostHog how to update person data during ingestion — they aren't kept on the stored event, so you can't filter, break down, or query events by them. To query the values you set, use [person properties](/docs/product-analytics/person-properties.md) instead.
+These properties only tell PostHog how to update person data during ingestion - they aren't kept on the stored event, so you can't filter, break down, or query events by them. To query the values you set, use [person properties](/docs/product-analytics/person-properties.md) instead.
 
 See our [person properties docs](/docs/product-analytics/person-properties.md) for more details on how to work with them and best practices.
 

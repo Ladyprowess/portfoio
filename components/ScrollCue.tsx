@@ -5,7 +5,7 @@ import { TITLE_SCREEN_THRESHOLD } from '@/lib/reading'
 
 /**
  * The downward nudge on the article title screen. It steps aside as soon as the
- * reader takes the hint, and comes back if they return to the top — where the
+ * reader takes the hint, and comes back if they return to the top - where the
  * gesture it stands for is armed again.
  */
 export default function ScrollCue({ label = 'Read' }: { label?: string }) {

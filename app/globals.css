@@ -23,7 +23,7 @@
   /* Ink for anything sitting on the accent fill. */
   --on-primary:    255 255 255;
 
-  /* Feature panels — the near-black slabs that punctuate a light page.
+  /* Feature panels - the near-black slabs that punctuate a light page.
      In dark mode they stay dark and lift slightly instead of flipping to
      white, which would strobe against the surrounding page. */
   --panel:          18  18  18;
@@ -47,7 +47,7 @@
   --success:         4 120  87;
 
   --grain-opacity: 0.025;
-  /* Height of the fixed nav — the reading-progress rail hangs off it. */
+  /* Height of the fixed nav - the reading-progress rail hangs off it. */
   --nav-h: 4.75rem;
   color-scheme: light;
 }
@@ -364,7 +364,7 @@ html:not([data-welcome]):has(.welcome) body { overflow: hidden; }
   text-decoration-color: rgb(var(--primary));
 }
 
-/* Code stays in the UI face — serif monospace is a lie */
+/* Code stays in the UI face - serif monospace is a lie */
 .reading code,
 .reading pre,
 .reading .blog-content code,
@@ -438,3 +438,17 @@ html:not([data-welcome]):has(.welcome) body { overflow: hidden; }
 .a-mid  { background-color: color-mix(in srgb, var(--a) 55%, transparent); }
 .t-ink  { color: var(--t); }
 :root[data-theme="dark"] .t-ink { color: var(--a); }
+
+/* Venture pages share readable focus states and a quieter editorial rhythm. */
+.venture-support :is(a, button):focus-visible {
+  outline: 3px solid rgb(var(--primary));
+  outline-offset: 5px;
+}
+.venture-support #business-case { scroll-margin-top: 6rem; }
+@media (prefers-reduced-motion: reduce) {
+  .venture-support *, .venture-support *::before, .venture-support *::after {
+    animation: none !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}

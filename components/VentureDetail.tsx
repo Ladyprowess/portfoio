@@ -7,8 +7,9 @@ import { useRef, useState } from 'react'
 import { ventures, type Venture } from '@/lib/ventures'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
-import { Canvas, Count, DECK, Film, Loop, MEETING, Reveal, Stage, partner, toneVars } from '@/components/support/kit'
+import { Canvas, Count, DECK, SupportMotion, Film, Loop, MEETING, Reveal, Stage, partner, toneVars } from '@/components/support/kit'
 import { films, type VentureFilm } from '@/components/support/scenes'
+import { SupportImpact } from '@/components/support/InvestorIntro'
 import { RaiseBand } from '@/components/support/Hub'
 
 const label = 'font-head text-[0.64rem] font-bold uppercase tracking-[0.18em]'
@@ -21,7 +22,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
   const primary = v.raise ? { href: MEETING, text: `Discuss the ${v.raise.amount} round` } : { href: partner(v.name), text: 'Discuss a partnership' }
 
   return (
-    <main style={toneVars(f.tone)} className="min-h-screen overflow-x-clip bg-bg text-parchment">
+    <SupportMotion><main style={toneVars(f.tone)} className="venture-support min-h-screen overflow-x-clip bg-bg text-parchment">
       <Nav />
 
       {/* Hero: the film carries the explanation, the words carry the ask */}
@@ -49,6 +50,8 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
         </div>
       </section>
 
+      <nav aria-label="Venture sections" className="border-b border-ink-border bg-surface px-6 py-3"><div className="mx-auto flex max-w-[1240px] flex-wrap gap-x-8 gap-y-1 text-sm font-semibold"><a className="inline-flex min-h-11 items-center" href="#product-story">Product story ↓</a><a className="inline-flex min-h-11 items-center" href="#business-case">Business model ↓</a><a className="inline-flex min-h-11 items-center" href="#support-impact">Where you fit ↓</a><a className="inline-flex min-h-11 items-center text-primary" href={v.website} target="_blank" rel="noopener noreferrer">Visit {f.short} ↗</a></div></nav>
+
       {/* Why I built it */}
       <section className={`bg-bg ${wrap} py-20 md:py-28`}>
         <div className="mx-auto grid max-w-[1180px] gap-10 lg:grid-cols-[0.35fr_1fr]">
@@ -64,7 +67,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
       </section>
 
       {/* Problem → answer, shown as pictures first */}
-      <section className={`border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
+      <section id="product-story" className={`scroll-mt-24 border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
         <div className="mx-auto max-w-[1240px]">
           <Reveal className="mb-12 max-w-3xl"><p className={`${label} t-ink`}>The gap</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">What changes when {v.name} is there.</h2></Reveal>
           <div className="grid items-stretch gap-5 lg:grid-cols-[1fr_auto_1fr]">
@@ -90,7 +93,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
       {/* Everything it offers */}
       <section className={`border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
         <div className="mx-auto max-w-[1180px]">
-          <Reveal className="mb-12 grid gap-5 md:grid-cols-2 md:items-end"><div><p className={`${label} t-ink`}>The product</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">Everything it offers today.</h2></div><p className="max-w-md text-[0.96rem] leading-7 text-muted md:justify-self-end">Live on <a href={v.website} target="_blank" rel="noopener noreferrer" className="t-ink font-semibold underline-offset-4 hover:underline">{v.website.replace(/^https:\/\/(www\.)?/, '').replace(/\/.*$/, '')}</a>.</p></Reveal>
+          <Reveal className="mb-12 grid gap-5 md:grid-cols-2 md:items-end"><div><p className={`${label} t-ink`}>The product</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">Inside the product.</h2></div><p className="max-w-md text-[0.96rem] leading-7 text-muted md:justify-self-end">Live on <a href={v.website} target="_blank" rel="noopener noreferrer" className="t-ink font-semibold underline-offset-4 hover:underline">{v.website.replace(/^https:\/\/(www\.)?/, '').replace(/\/.*$/, '')}</a>.</p></Reveal>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {v.features.map((ft, n) => (
               <Reveal key={ft.title} delay={(n % 3) * 0.08}>
@@ -106,7 +109,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
       </section>
 
       {/* The business */}
-      <section className={`bg-bg ${wrap} py-20 md:py-28`}>
+      <section id="business-case" className={`bg-bg ${wrap} py-20 md:py-28`}>
         <div className="mx-auto max-w-[1180px]">
           <Reveal className="mb-12 max-w-3xl"><p className={`${label} t-ink`}>The business</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">Who pays, how it earns, what comes next.</h2></Reveal>
           <div className="grid gap-5 lg:grid-cols-3">
@@ -127,6 +130,8 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
           </div>
         </section>
       )}
+
+      <SupportImpact slug={v.slug} />
 
       {/* The ask */}
       <section className={`bg-bg ${wrap} py-20 md:py-28`}>
@@ -155,7 +160,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
         <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-6 text-muted">Information on this page is provided for general discussion. It is not investment advice or a public offer.</p>
       </section>
       <Footer />
-    </main>
+    </main></SupportMotion>
   )
 }
 
@@ -177,7 +182,7 @@ function HowItWorks({ v, f }: { v: Venture; f: VentureFilm }) {
               <h2 className="mt-4 font-display text-[clamp(2rem,3.4vw,3rem)] font-extrabold leading-tight">{f.title}, step by step.</h2>
               <ol className="mt-10 space-y-2">
                 {f.steps.map((s, n) => (
-                  <li key={s.title} className={`relative overflow-hidden rounded-2xl border p-5 transition-all duration-500 ${n === active ? 'border-[var(--t)] bg-surface shadow-lg' : 'border-transparent opacity-45'}`}>
+                  <li key={s.title} className={`relative overflow-hidden rounded-2xl border p-5 transition-colors duration-500 ${n === active ? 'border-[var(--t)] bg-surface shadow-lg' : 'border-transparent opacity-45'}`}>
                     <div className="flex items-baseline gap-4"><span className="t-ink font-head text-xs font-bold">0{n + 1}</span><div><h3 className="font-display text-lg font-extrabold">{s.title}</h3><AnimatePresence initial={false}>{n === active && <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-2 text-[0.9rem] leading-7 text-muted">{s.body}</motion.p>}</AnimatePresence></div></div>
                   </li>
                 ))}

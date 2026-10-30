@@ -3,7 +3,7 @@
  *
  * The previous approach walked the tag tree and only cut between top-level
  * elements. Pasted articles regularly carry an unclosed tag, and one is enough
- * for the walker to treat the whole rest of the document as a single node — so
+ * for the walker to treat the whole rest of the document as a single node - so
  * the only available cut was after the opening paragraph and the sign-up landed
  * a few hundred pixels into a 14,000px article.
  *
@@ -69,7 +69,7 @@ export function splitArticleHtml(html: string): [string, string] {
     if (!best || Math.abs(ratio - 0.5) < Math.abs(best.before / total - 0.5)) best = cut
   }
 
-  // Nothing lands in the middle third — a very short piece, or one long
+  // Nothing lands in the middle third - a very short piece, or one long
   // unbroken block. Leave the article whole rather than interrupt it badly.
   if (!best) return [html, '']
 

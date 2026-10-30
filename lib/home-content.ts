@@ -66,7 +66,7 @@ export const editorTabs: { key: EditorKey; short: string }[] = [
   ...facets.slice(2).map(f => ({ key: f.key as EditorKey, short: f.short })),
 ]
 
-/** "What brings you here?" — each answer points the page at one craft. */
+/** "What brings you here?" - each answer points the page at one craft. */
 export const intents: { key: string; label: string; facet: EditorKey | null; reply: string }[] = [
   { key: 'explain', label: 'My product is hard to explain', facet: 'product', reply: 'Then we start with the words. I will find what your users actually need to hear.' },
   { key: 'docs', label: 'I need docs developers can follow', facet: 'writing', reply: 'Good docs are a feature. I have written them for zkSync and txFusion.' },

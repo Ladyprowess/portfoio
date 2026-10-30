@@ -53,7 +53,7 @@ export function absoluteImage(src: string | null | undefined, siteUrl: string) {
 function truncate(value: string, limit: number) {
   const text = value.replace(/\s+/g, ' ').trim()
   if (text.length <= limit) return text
-  // Cut on a word boundary — "…busine…" reads like a rendering fault.
+  // Cut on a word boundary - "…busine…" reads like a rendering fault.
   const cut = text.slice(0, limit - 1)
   const lastSpace = cut.lastIndexOf(' ')
   const trimmed = lastSpace > limit * 0.6 ? cut.slice(0, lastSpace) : cut
