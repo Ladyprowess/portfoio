@@ -1,0 +1,22 @@
+{
+  "id": "/admin",
+  "name": "Lady Prowess Admin",
+  "short_name": "LP Admin",
+  "description": "Email, blog, comments and subscribers for ladyprowess.com.",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F9FB",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    { "src": "/admin-app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/admin-app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/admin-app/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Email", "url": "/admin/email", "icons": [{ "src": "/admin-app/icon-192.png", "sizes": "192x192" }] },
+    { "name": "New email", "url": "/admin/email?compose=1", "icons": [{ "src": "/admin-app/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Blog", "url": "/admin/blog", "icons": [{ "src": "/admin-app/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
