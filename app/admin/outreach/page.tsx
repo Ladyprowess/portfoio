@@ -1,8 +1,6 @@
-import type { Metadata } from 'next'
-import OutreachDashboard from '@/components/outreach/OutreachDashboard'
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = { title: 'Outreach', robots: { index: false, follow: false } }
-
+// Outreach and Compose became one page.
 export default function Page() {
-  return <OutreachDashboard />
+  redirect('/admin/email')
 }

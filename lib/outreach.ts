@@ -32,7 +32,7 @@ export type OutreachSettings = { daily_limit: number; follow_up_days: number; ma
 export type Template = { id: string; name: string; subject: string; body: string }
 
 /** One email in a contact's history. */
-export type SentEmail = { id: string; lead_id: string; subject: string; sent_at: string; status: 'sent' | 'scheduled' | 'cancelled' | 'failed' | 'preparing' | 'logged'; kind: string }
+export type SentEmail = { id: string; lead_id: string | null; recipients?: string[]; subject: string; sent_at: string; status: 'sent' | 'scheduled' | 'cancelled' | 'failed' | 'preparing' | 'logged'; kind: string }
 
 export type Reply = { id: number; lead_id: string | null; from_email: string; subject: string | null; snippet: string | null; received_at: string }
 

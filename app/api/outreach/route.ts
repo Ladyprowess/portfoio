@@ -103,11 +103,13 @@ export async function POST(request: Request) {
           dbAll('outreach_leads?select=*&order=created_at.desc'),
           loadSettings(),
           loadTemplates(),
-          dbAll('sent_emails?select=id,lead_id,subject,sent_at,status,kind&lead_id=not.is.null&order=sent_at.desc'),
+          dbAll('sent_emails?select=id,lead_id,recipients,subject,sent_at,status,kind&status=neq.preparing&order=sent_at.desc,id.desc'),
           db('outreach_replies?select=*&order=received_at.desc&limit=300'),
           countForDay(new Date()),
         ])
-        return NextResponse.json({ leads, settings, templates, emails, replies, sentToday: today })
+        // Recent opens and clicks; the dashboard matches them to the emails it shows.
+        const events = await db('email_events?select=email_id,event_type&order=id.desc&limit=5000')
+        return NextResponse.json({ leads, settings, templates, emails, events, replies, sentToday: today })
       }
 
       case 'import': {
@@ -178,10 +180,16 @@ export async function POST(request: Request) {
       case 'send': {
         const apiKey = process.env.RESEND_API_KEY
         if (!apiKey) return NextResponse.json({ error: 'RESEND_API_KEY is not set on the server.' }, { status: 500 })
-        const lead = await leadById(body.id)
-        if (!lead) return NextResponse.json({ error: 'Contact not found.' }, { status: 404 })
-        // Batches never email finished contacts; a single, deliberate email may (force).
-        if (isFinished(lead.status) && body.force !== true) return NextResponse.json({ error: `${lead.email} is ${lead.status}; skipped.`, skipped: true }, { status: 409 })
+        // Either a saved contact (id) or any address typed into "To" (to).
+        const lead = body.id ? await leadById(body.id) : undefined
+        if (body.id && !lead) return NextResponse.json({ error: 'Contact not found.' }, { status: 404 })
+        const to = lead ? lead.email : str(body.to, 320).toLowerCase()
+        if (!EMAIL_RE.test(to)) return NextResponse.json({ error: `"${to}" is not a valid email address.` }, { status: 400 })
+        // Contacts who replied, bounced or were stopped are only emailed when chosen on purpose (force).
+        if (lead && isFinished(lead.status) && body.force !== true) return NextResponse.json({ error: `${lead.email} is ${lead.status}; skipped.`, skipped: true }, { status: 409 })
+        const attachments = (Array.isArray(body.attachments) ? body.attachments as Json[] : [])
+          .filter(a => a && a.filename && a.content)
+          .map(a => ({ filename: str(a.filename, 200), content: Buffer.from(String(a.content), 'base64') }))
 
         const subject = str(body.subject, 300)
         const text = String(body.body ?? '').trim()
@@ -194,18 +202,20 @@ export async function POST(request: Request) {
           if (Number.isNaN(at.getTime()) || at.getTime() < Date.now() + 60_000) return NextResponse.json({ error: 'Pick a time at least a minute from now.' }, { status: 400 })
         }
 
-        const settings = await loadSettings()
-        const dayCount = await countForDay(at)
-        if (dayCount >= settings.daily_limit) return NextResponse.json({ error: `The daily limit of ${settings.daily_limit} is full for that day.`, limit: true }, { status: 429 })
+        // The daily limit protects the domain from cold-email bursts, so it applies to contacts.
+        if (lead) {
+          const settings = await loadSettings()
+          if ((await countForDay(at)) >= settings.daily_limit) return NextResponse.json({ error: `The daily limit of ${settings.daily_limit} is full for that day.`, limit: true }, { status: 429 })
+        }
 
-        const followUp = lead.status !== 'new'
+        const followUp = !!lead && lead.status !== 'new'
         const bodyHtml = textToHtml(text)
-        const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: [lead.email], subject, preview: '', body_html: bodyHtml, lead_id: lead.id, kind: followUp ? 'outreach_follow_up' : 'outreach' }) })
+        const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: [to], subject, preview: '', body_html: bodyHtml, lead_id: lead?.id ?? null, kind: lead ? (followUp ? 'outreach_follow_up' : 'outreach') : 'compose' }) })
         const emailId = String(records[0]?.id || '')
         const tracking = process.env.OUTREACH_REPLY_TRACKING_ADDRESS
         const { data, error } = await new Resend(apiKey).emails.send({
           from: FROM,
-          to: [lead.email],
+          to: [to],
           // Replies reach the normal inbox (iCloud) and, when set, a tracking address
           // Resend receives, so replies are detected without moving the main domain's mail.
           replyTo: tracking ? [REPLY_TO, tracking] : REPLY_TO,
@@ -213,6 +223,7 @@ export async function POST(request: Request) {
           text: `${text}${SIGNATURE_TEXT}`,
           html: `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${bodyHtml}</div>${SIGNATURE_HTML}`,
           ...(scheduled ? { scheduledAt: at.toISOString() } : {}),
+          ...(attachments.length ? { attachments } : {}),
         })
         if (error) {
           await db(`sent_emails?id=eq.${emailId}`, { method: 'PATCH', body: JSON.stringify({ status: 'failed' }) }).catch(() => null)
@@ -220,8 +231,8 @@ export async function POST(request: Request) {
         }
         const sentAt = at.toISOString()
         const email = (await db(`sent_emails?id=eq.${emailId}`, { method: 'PATCH', body: JSON.stringify({ status: scheduled ? 'scheduled' : 'sent', resend_id: data?.id, sent_at: sentAt }) }))[0]
-        const updated = await markSent(lead, emailId, sentAt, followUp)
-        return NextResponse.json({ lead: updated, email: { id: emailId, lead_id: lead.id, subject, sent_at: sentAt, status: email?.status, kind: email?.kind }, sentToday: await countForDay(new Date()) })
+        const updated = lead ? await markSent(lead, emailId, sentAt, followUp) : undefined
+        return NextResponse.json({ lead: updated, email: { id: emailId, lead_id: lead?.id ?? null, recipients: [to], subject, sent_at: sentAt, status: email?.status, kind: email?.kind }, sentToday: await countForDay(new Date()) })
       }
 
       case 'cancel': {
@@ -233,7 +244,7 @@ export async function POST(request: Request) {
           if (error) return NextResponse.json({ error: `Resend could not cancel it: ${error.message}` }, { status: 502 })
         }
         await db(`sent_emails?id=eq.${email.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'cancelled' }) })
-        return NextResponse.json({ lead: await recompute(String(email.lead_id)) })
+        return NextResponse.json({ lead: email.lead_id ? await recompute(String(email.lead_id)) : undefined })
       }
 
       // An email sent outside the site (Gmail, iCloud, LinkedIn InMail…), logged so
