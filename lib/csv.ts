@@ -26,18 +26,42 @@ export function parseCsv(text: string): Record<string, string>[] {
   return body.map(r => Object.fromEntries(header.map((h, i) => [h.trim(), (r[i] ?? '').trim()])))
 }
 
-/** Maps an Apollo contacts export row onto lead fields. */
+const norm = (h: string) => h.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+/** The first non-empty value among the given headers, ignoring case, spaces and punctuation. */
+function pick(r: Record<string, string>, ...names: string[]) {
+  const keys = Object.keys(r)
+  for (const n of names) {
+    const k = keys.find(k => norm(k) === norm(n))
+    if (k && r[k]) return r[k]
+  }
+  return ''
+}
+
+/** Maps a contacts row onto lead fields: Apollo exports, or simpler company lists
+    (Name, URL, Description, LinkedIn, Email…). A cell with several addresses keeps
+    the first as the main email and the rest as other_emails. */
 export function apolloToLead(r: Record<string, string>) {
+  const emails = [pick(r, 'Email', 'Email Address', 'Emails', 'Contact Email', 'Work Email'), pick(r, 'Secondary Email')]
+    .join(',').split(/[\s,;]+/).filter(Boolean)
+  const first = pick(r, 'First Name', 'Firstname')
+  const last = pick(r, 'Last Name', 'Lastname', 'Surname')
+  const company = pick(r, 'Company Name for Emails', 'Company Name', 'Company', 'Organization', 'Organisation')
+  // In a list with no separate company column, "Name" is the company itself.
+  const name = pick(r, 'Full Name', 'Name')
+  const [nameFirst, ...nameRest] = company && !first ? name.split(/\s+/) : []
   return {
-    email: r['Email'] || r['Secondary Email'] || '',
-    first_name: r['First Name'] || '',
-    last_name: r['Last Name'] || '',
-    title: r['Title'] || '',
-    company: r['Company Name for Emails'] || r['Company Name'] || '',
-    website: r['Website'] || '',
-    linkedin: r['Person Linkedin Url'] || '',
-    country: r['Country'] || r['Company Country'] || '',
-    industry: r['Industry'] || '',
-    source_id: r['Apollo Contact Id'] || '',
+    email: emails[0] || '',
+    other_emails: emails.slice(1).join(','),
+    first_name: first || nameFirst || '',
+    last_name: last || nameRest.join(' '),
+    title: pick(r, 'Title', 'Job Title', 'Position'),
+    company: company || name,
+    website: pick(r, 'Website', 'URL', 'Company Website', 'Domain'),
+    linkedin: pick(r, 'Person Linkedin Url', 'LinkedIn', 'LinkedIn URL', 'Company Linkedin Url'),
+    country: pick(r, 'Country', 'Company Country'),
+    industry: pick(r, 'Industry', 'Industries'),
+    notes: pick(r, 'Description', 'Notes', 'About'),
+    source_id: pick(r, 'Apollo Contact Id'),
   }
 }

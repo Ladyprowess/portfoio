@@ -124,11 +124,15 @@ export async function POST(request: Request) {
           const email = str(raw.email, 320).toLowerCase()
           if (!EMAIL_RE.test(email)) { invalid += 1; continue }
           if (existing.has(email)) { skipped += 1; continue }
+          let others: string[] = []
+          try { others = parseOtherEmails(raw.other_emails, email).filter(e => !existing.has(e)) } catch { /* a bad extra address never blocks the main one */ }
           existing.add(email)
+          others.forEach(e => existing.add(e))
           const row: Json = { source: str(body.source) || 'apollo' }
           for (const f of LEAD_FIELDS) if (f !== 'source') row[f] = str(raw[f]) || null
           row.email = email
-          row.notes = ''
+          row.notes = str(raw.notes, 5000)
+          row.other_emails = others
           fresh.push(row)
         }
         for (let i = 0; i < fresh.length; i += 200) await db('outreach_leads', { method: 'POST', body: JSON.stringify(fresh.slice(i, i + 200)) })

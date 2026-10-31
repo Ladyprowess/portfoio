@@ -131,7 +131,7 @@ export function AddContactsPanel({ onClose, onAdd, onImport }: {
             </div>
           </div>
           <ul className="max-h-72 divide-y divide-ink-border overflow-y-auto text-sm">
-            {rows.map(r => <li key={r.email} className="flex justify-between gap-3 px-3 py-2"><span className="truncate"><span className="font-semibold">{r.first_name} {r.last_name}</span> <span className="text-muted">· {r.title}</span></span><span className="shrink-0 text-muted">{r.company}</span></li>)}
+            {rows.map(r => <li key={r.email} className="flex justify-between gap-3 px-3 py-2"><span className="truncate"><span className="font-semibold">{[r.first_name, r.last_name].filter(Boolean).join(' ') || r.email}</span>{r.title && <span className="text-muted"> · {r.title}</span>}</span><span className="shrink-0 text-muted">{r.company}</span></li>)}
           </ul>
         </div>}
       </div>}
