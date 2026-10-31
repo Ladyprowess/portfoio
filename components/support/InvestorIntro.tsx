@@ -73,7 +73,7 @@ export function SupportImpact({ slug }: { slug?: string }) {
           {active === n && <motion.span key={v.slug} initial={{ scaleX: reduce ? 1 : 0 }} animate={{ scaleX: 1 }} transition={{ duration: reduce ? 0 : 0.7 }} className="absolute inset-x-0 bottom-0 h-1 origin-left bg-[var(--t)]" />}
         </button>)}
       </div>
-      <div className="mt-6 grid gap-6 rounded-2xl bg-bg p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center"><div><p className="text-xs font-bold uppercase tracking-widest text-muted">A useful first conversation</p><p className="mt-2 max-w-2xl text-sm leading-7">{story.question}. Let’s discuss the evidence, priorities and the role you could play.</p></div><a href={v.raise ? DECK : partner(v.name)} className={`${button} bg-[var(--t)] text-white hover:opacity-90`}>{v.raise ? 'Request the investor deck' : 'Explore a partnership'} ↗</a></div>
+      <div className="mt-6 grid gap-6 rounded-2xl bg-bg p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center"><div><p className="text-xs font-bold uppercase tracking-widest text-muted">A useful first conversation</p><p className="mt-2 max-w-2xl text-sm leading-7">{story.question}. Let’s discuss the evidence, priorities and the role you could play.</p></div><a href={v.raise ? DECK : partner(v.name)} target={v.raise ? '_blank' : undefined} rel="noopener noreferrer" className={`${button} bg-[var(--t)] text-white hover:opacity-90`}>{v.raise ? 'View the investor deck' : 'Explore a partnership'} ↗</a></div>
     </div>
   </section>
 }

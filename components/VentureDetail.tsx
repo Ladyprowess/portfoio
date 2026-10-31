@@ -38,7 +38,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
             <Reveal delay={0.35}>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a href={primary.href} className={`${btn} bg-[var(--t)] text-white shadow-[0_14px_30px_-12px_var(--t)] hover:-translate-y-0.5`}>{primary.text}</a>
-                {v.raise ? <a href={DECK} className={`${btn} border border-ink-border bg-surface hover:border-[var(--t)]`}>Request the deck</a> : <a href={v.website} target="_blank" rel="noopener noreferrer" className={`${btn} border border-ink-border bg-surface hover:border-[var(--t)]`}>Visit the website ↗</a>}
+                {v.raise ? <a href={DECK} target="_blank" rel="noopener noreferrer" className={`${btn} border border-ink-border bg-surface hover:border-[var(--t)]`}>View the pitch deck</a> : <a href={v.website} target="_blank" rel="noopener noreferrer" className={`${btn} border border-ink-border bg-surface hover:border-[var(--t)]`}>Visit the website ↗</a>}
               </div>
               <p className="mt-6 inline-flex items-center gap-2 rounded-full t-soft px-3.5 py-1.5 text-xs font-semibold"><span className="relative flex h-2 w-2"><span className="absolute inset-0 animate-ping rounded-full bg-[var(--t)] opacity-60" /><span className="h-2 w-2 rounded-full bg-[var(--t)]" /></span>{v.status}</p>
             </Reveal>
@@ -50,7 +50,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
         </div>
       </section>
 
-      <nav aria-label="Venture sections" className="border-b border-ink-border bg-surface px-6 py-3"><div className="mx-auto flex max-w-[1240px] flex-wrap gap-x-8 gap-y-1 text-sm font-semibold"><a className="inline-flex min-h-11 items-center" href="#product-story">Product story ↓</a><a className="inline-flex min-h-11 items-center" href="#business-case">Business model ↓</a><a className="inline-flex min-h-11 items-center" href="#support-impact">Where you fit ↓</a><a className="inline-flex min-h-11 items-center text-primary" href={v.website} target="_blank" rel="noopener noreferrer">Visit {f.short} ↗</a></div></nav>
+      <nav aria-label="Venture sections" className="border-b border-ink-border bg-surface px-6 py-3"><div className="mx-auto flex max-w-[1240px] flex-wrap gap-x-8 gap-y-1 text-sm font-semibold"><a className="inline-flex min-h-11 items-center" href="#how-it-works">How it works ↓</a><a className="inline-flex min-h-11 items-center" href="#business-case">Business model ↓</a><a className="inline-flex min-h-11 items-center" href="#support-impact">Where you fit ↓</a><a className="inline-flex min-h-11 items-center text-primary" href={v.website} target="_blank" rel="noopener noreferrer">Visit {f.short} ↗</a></div></nav>
 
       {/* Why I built it */}
       <section className={`bg-bg ${wrap} py-20 md:py-28`}>
@@ -66,41 +66,39 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
         </div>
       </section>
 
-      {/* Problem → answer, shown as pictures first */}
-      <section id="product-story" className={`scroll-mt-24 border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
-        <div className="mx-auto max-w-[1240px]">
-          <Reveal className="mb-12 max-w-3xl"><p className={`${label} t-ink`}>The gap</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">What changes when {v.name} is there.</h2></Reveal>
-          <div className="grid items-stretch gap-5 lg:grid-cols-[1fr_auto_1fr]">
-            <Reveal className="h-full">
-              <div className="flex h-full flex-col overflow-hidden rounded-[1.8rem] border border-ink-border bg-bg">
-                <Loop scene={f.scenes[0]} tone={f.tone} every={7000} />
-                <div className="p-7"><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#E5484D]">Without it</p><p className="mt-3 text-[0.98rem] leading-8 text-muted">{v.problem}</p></div>
-              </div>
-            </Reveal>
-            <div className="flex items-center justify-center"><motion.span initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} className="flex h-14 w-14 rotate-90 items-center justify-center rounded-full bg-[var(--t)] text-xl text-white shadow-lg lg:rotate-0">→</motion.span></div>
-            <Reveal delay={0.15} className="h-full">
-              <div className="flex h-full flex-col overflow-hidden rounded-[1.8rem] border-2 border-[var(--t)] bg-bg">
-                <Loop scene={f.scenes[f.steps[0].scene]} tone={f.tone} every={7000} />
-                <div className="p-7"><p className="t-ink text-xs font-bold uppercase tracking-[0.14em]">With {f.short}</p><p className="mt-3 text-[0.98rem] leading-8">{v.solution}</p></div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
       <HowItWorks v={v} f={f} />
+
+      {v.videos && (
+        <section className={`border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
+          <div className="mx-auto max-w-[1180px]">
+            <Reveal className="grid gap-4 md:grid-cols-2 md:items-end"><div><p className={`${label} t-ink`}>The live product</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">Recorded in the real app.</h2></div></Reveal>
+            <div className="mt-12 grid justify-items-center gap-10 md:grid-cols-3">
+              {v.videos.map((video, n) => (
+                <Reveal key={video.title} delay={n * 0.1} className="w-full max-w-[300px]">
+                  <figure>
+                    <div className="rounded-[2.6rem] bg-[#0F172A] p-2.5 shadow-[0_40px_80px_-40px_rgba(15,23,42,0.7)]">
+                      <div className="relative aspect-[9/19] overflow-hidden rounded-[2.1rem] bg-surface-2"><iframe className="absolute inset-0 h-full w-full" src={video.src} title={video.title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
+                    </div>
+                    <figcaption className="mt-4 text-center text-sm font-bold">{video.title}</figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
 
       {/* Everything it offers */}
       <section className={`border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
         <div className="mx-auto max-w-[1180px]">
-          <Reveal className="mb-12 grid gap-5 md:grid-cols-2 md:items-end"><div><p className={`${label} t-ink`}>The product</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">Inside the product.</h2></div><p className="max-w-md text-[0.96rem] leading-7 text-muted md:justify-self-end">Live on <a href={v.website} target="_blank" rel="noopener noreferrer" className="t-ink font-semibold underline-offset-4 hover:underline">{v.website.replace(/^https:\/\/(www\.)?/, '').replace(/\/.*$/, '')}</a>.</p></Reveal>
+          <Reveal className="mb-12 grid gap-5 md:grid-cols-2 md:items-end"><div><p className={`${label} t-ink`}>The product</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold leading-tight">Everything in one account.</h2></div><p className="max-w-md text-[0.96rem] leading-7 text-muted md:justify-self-end">Live on <a href={v.website} target="_blank" rel="noopener noreferrer" className="t-ink font-semibold underline-offset-4 hover:underline">{v.website.replace(/^https:\/\/(www\.)?/, '').replace(/\/.*$/, '')}</a>.</p></Reveal>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {v.features.map((ft, n) => (
               <Reveal key={ft.title} delay={(n % 3) * 0.08}>
-                <article className="group relative h-full overflow-hidden rounded-2xl border border-ink-border bg-bg p-7 transition hover:-translate-y-1 hover:border-[var(--t)] hover:shadow-xl">
-                  <span aria-hidden className="absolute -right-4 -top-6 font-display text-[6rem] font-extrabold leading-none text-transparent opacity-40 transition group-hover:opacity-100 [-webkit-text-stroke:1px_var(--t)]">{n + 1}</span>
-                  <h3 className="relative mt-10 font-display text-lg font-extrabold">{ft.title}</h3>
-                  <p className="relative mt-3 text-[0.86rem] leading-6 text-muted">{ft.body}</p>
+                <article className="group flex h-full items-start gap-4 rounded-2xl border border-ink-border bg-bg p-5 transition hover:-translate-y-1 hover:border-[var(--t)] hover:shadow-xl">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--t)] font-head text-xs font-bold text-white">0{n + 1}</span>
+                  <span><h3 className="font-display text-[1.02rem] font-extrabold">{ft.title}</h3><p className="mt-1 line-clamp-2 text-[0.82rem] leading-6 text-muted">{ft.body}</p></span>
                 </article>
               </Reveal>
             ))}
@@ -120,16 +118,6 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
         </div>
       </section>
 
-      {v.videos && (
-        <section className={`border-y border-ink-border bg-surface ${wrap} py-20 md:py-28`}>
-          <div className="mx-auto max-w-[1180px]">
-            <Reveal><p className={`${label} t-ink`}>Real product recordings</p><h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-extrabold">See {v.name} in use.</h2><p className="mt-4 max-w-xl text-[0.96rem] leading-7 text-muted">Screen recordings of the live product, not mock-ups.</p></Reveal>
-            <div className="mt-10 grid gap-5 md:grid-cols-3">
-              {v.videos.map((video, n) => <Reveal key={video.title} delay={n * 0.08}><article className="rounded-2xl border border-ink-border bg-bg p-3"><div className="h-[520px] overflow-hidden rounded-xl bg-surface-2"><iframe className="h-full w-full" src={video.src} title={video.title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><p className="px-2 pb-2 pt-4 text-sm font-bold">{video.title}</p></article></Reveal>)}
-            </div>
-          </div>
-        </section>
-      )}
 
       <SupportImpact slug={v.slug} />
 
@@ -174,7 +162,7 @@ function HowItWorks({ v, f }: { v: Venture; f: VentureFilm }) {
 
   return (
     <>
-      <section ref={ref} className="relative hidden bg-bg lg:block" style={{ height: `${f.steps.length * 85 + 15}vh` }}>
+      <section id="how-it-works" ref={ref} className="relative hidden scroll-mt-0 bg-bg lg:block" style={{ height: `${f.steps.length * 85 + 15}vh` }}>
         <div className={`sticky top-0 flex h-screen items-center ${wrap}`}>
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.8fr_1.2fr] items-center gap-14">
             <div>
@@ -189,7 +177,7 @@ function HowItWorks({ v, f }: { v: Venture; f: VentureFilm }) {
               </ol>
             </div>
             <div className="overflow-hidden rounded-[1.8rem] border border-ink-border shadow-[0_30px_80px_-30px_rgba(15,23,42,0.4)]">
-              <Canvas><Stage><AnimatePresence mode="wait"><motion.div key={step.scene} className="absolute inset-0" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.4 }}>{f.scenes[step.scene].view()}</motion.div></AnimatePresence></Stage></Canvas>
+              <Canvas><Stage bg={f.scenes[step.scene].bg}><AnimatePresence mode="wait"><motion.div key={step.scene} className="absolute inset-0" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.4 }}>{f.scenes[step.scene].view()}</motion.div></AnimatePresence></Stage></Canvas>
               <div className="flex gap-1.5 border-t border-ink-border bg-surface px-5 py-4">{f.steps.map((s, n) => <span key={s.title} className={`h-1 flex-1 rounded-full transition-colors duration-500 ${n <= active ? 'bg-[var(--t)]' : 'bg-ink-border'}`} />)}</div>
             </div>
           </div>

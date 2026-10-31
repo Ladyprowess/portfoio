@@ -181,7 +181,7 @@ export function Theatre() {
         <Reveal className="mb-10 px-2">
           <p className={`${label} text-primary`}>What I&apos;m building</p>
           <h2 className="mt-4 font-display text-[clamp(2.4rem,5vw,4.4rem)] font-extrabold leading-none tracking-[-0.03em]">See the problem. Understand the business.</h2>
-          <p className="mt-5 max-w-xl text-[0.98rem] leading-7 text-muted">Choose a venture and follow its product story. Explore each step at your own pace, then see who it serves, how it earns and what comes next.</p>
+          <p className="mt-5 max-w-xl text-[0.98rem] leading-7 text-muted">Choose a venture and follow its product story.</p>
         </Reveal>
         <Reveal>
           <div style={toneVars(film.tone)} className="overflow-hidden rounded-[2rem] border border-ink-border bg-surface shadow-[0_40px_90px_-45px_rgba(15,23,42,0.5)]">
@@ -199,12 +199,12 @@ export function Theatre() {
                 )
               })}
             </div>
-            <Film key={order[i]} chapters scenes={film.scenes} tone={film.tone} label={`${film.short}: ${film.title}`} />
+            <Film key={order[i]} chapters scenes={film.scenes} tone={film.tone} label={`${film.short}: ${film.title}`} onEnded={() => setI(v => (v + 1) % order.length)} />
             <dl className="grid gap-5 border-t border-ink-border px-6 py-6 md:grid-cols-3">
               {[['Who it serves', investmentStories[order[i]].customer], ['Business model', investmentStories[order[i]].revenue], ['Where you fit', investmentStories[order[i]].support]].map(([title, text]) => <div key={title}><dt className="text-xs font-bold uppercase tracking-widest text-muted">{title}</dt><dd className="mt-2 text-sm font-semibold leading-6">{text}</dd></div>)}
             </dl>
             <div className="flex items-center justify-between gap-4 border-t border-ink-border bg-bg/60 px-5 py-4 md:px-7">
-              <p className="hidden text-xs text-muted sm:block">Product illustration · Select any chapter to explore</p>
+              <p className="hidden text-xs text-muted sm:block">Product illustration </p>
               <Link href={`/support/${order[i]}`} className="t-ink text-sm font-bold hover:underline">Read the {film.short} investment story →</Link>
             </div>
           </div>
@@ -214,7 +214,7 @@ export function Theatre() {
   )
 }
 
-const loopScene: Record<string, number> = { kivorapay: 2, 'prowess-digital-solutions': 2, dritchwear: 1 }
+const loopScene: Record<string, number> = { kivorapay: 3, 'prowess-digital-solutions': 2, dritchwear: 2 }
 
 export function VentureStack() {
   const wrap = useRef<HTMLDivElement>(null)
@@ -266,7 +266,7 @@ function VentureCard({ v, n }: { v: Venture; n: number }) {
         <div className="mt-4 hidden flex-wrap gap-2 md:flex">{v.model.slice(0, 3).map(m => <span key={m} className="t-soft rounded-full px-3 py-1 text-[0.74rem] font-semibold">{m}</span>)}</div>
         <div className="mt-auto flex flex-wrap gap-3 pt-5 md:pt-7">
           <Link href={`/support/${v.slug}`} className={`${btn} min-h-11 flex-1 bg-[var(--t)] px-5 py-3 text-white hover:-translate-y-0.5 hover:opacity-95 sm:flex-none`}>Explore {f.short} →</Link>
-          {v.raise ? <a href={DECK} className={`${btn} hidden border border-ink-border hover:border-[var(--t)] sm:inline-flex`}>Request the deck</a> : <a href={partner(v.name)} className={`${btn} hidden border border-ink-border hover:border-[var(--t)] sm:inline-flex`}>Discuss a partnership</a>}
+          {v.raise ? <a href={DECK} target="_blank" rel="noopener noreferrer" className={`${btn} hidden border border-ink-border hover:border-[var(--t)] sm:inline-flex`}>View the pitch deck</a> : <a href={partner(v.name)} className={`${btn} hidden border border-ink-border hover:border-[var(--t)] sm:inline-flex`}>Discuss a partnership</a>}
         </div>
       </div>
       <div className="relative order-1 flex items-center p-3 pb-0 md:p-8 lg:order-2 lg:pl-0">
@@ -327,7 +327,7 @@ export function RaiseBand() {
           <p className="mt-4 max-w-md text-[0.98rem] leading-7 text-white/80">To take crypto spending from early traction to a reliable, compliant product people use every week.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href={MEETING} className={`${btn} bg-white text-[#1D4ED8] hover:-translate-y-0.5`}>Discuss the round</a>
-            <a href={DECK} className={`${btn} border border-white/40 hover:bg-white/10`}>Request the deck</a>
+            <a href={DECK} target="_blank" rel="noopener noreferrer" className={`${btn} border border-white/40 hover:bg-white/10`}>View the pitch deck</a>
           </div>
         </div>
         <div>

@@ -17,11 +17,13 @@ export function SupportMotion({ children }: { children: ReactNode }) {
 }
 
 export const MEETING = 'mailto:hello@ladyprowess.com?subject=Meeting%20request%20from%20your%20founder%20page'
-export const DECK = 'mailto:hello@ladyprowess.com?subject=KivoraPay%20deck%20request'
+// The KivoraPay pitch deck, published from Google Slides.
+export const DECK = 'https://docs.google.com/presentation/d/e/2PACX-1vSiie8eemgLX8hCgbVUIitTVZhD-eeiUmfjrEHpqBeBccXwahwGazqVv_LxAW6SOw/pub?start=true&loop=true&delayms=3000'
 export const partner = (name: string) => `mailto:hello@ladyprowess.com?subject=${encodeURIComponent(`Partnership with ${name}`)}`
 
-export type Tone = { t: string; a: string }
-export const toneVars = (tone: Tone) => ({ '--t': tone.t, '--a': tone.a }) as CSSProperties
+/** t: brand colour, a: accent, f: the solid background the films play on. */
+export type Tone = { t: string; a: string; f?: string }
+export const toneVars = (tone: Tone) => ({ '--t': tone.t, '--a': tone.a, '--f': tone.f ?? tone.t }) as CSSProperties
 
 export function Reveal({ children, delay = 0, y = 28, className }: { children: ReactNode; delay?: number; y?: number; className?: string }) {
   const reduce = useMotionPreference()
@@ -72,18 +74,18 @@ export function Canvas({ children, className = '' }: { children: ReactNode; clas
   )
 }
 
-/** The tinted stage every scene sits on. */
-export function Stage({ children }: { children: ReactNode }) {
+/** The light, brand-tinted stage the films play on. */
+export function Stage({ children }: { bg?: string; children: ReactNode }) {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-surface">
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 90% at 85% 0%, color-mix(in srgb, var(--t) 16%, transparent), transparent 60%), radial-gradient(90% 80% at 0% 100%, color-mix(in srgb, var(--a) 14%, transparent), transparent 60%)' }} />
+    <div className="absolute inset-0 overflow-hidden bg-surface text-parchment">
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 90% at 85% 0%, color-mix(in srgb, var(--t) 14%, transparent), transparent 60%), radial-gradient(90% 80% at 0% 100%, color-mix(in srgb, var(--a) 12%, transparent), transparent 60%)' }} />
       <div className="absolute inset-0 opacity-[0.5]" style={{ backgroundImage: 'linear-gradient(rgb(var(--border)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--border)) 1px, transparent 1px)', backgroundSize: '36px 36px', maskImage: 'radial-gradient(80% 70% at 50% 50%, black, transparent)' }} />
       {children}
     </div>
   )
 }
 
-export type Scene = { key: string; kicker: string; caption: string; view: () => ReactNode; ms?: number }
+export type Scene = { key: string; kicker: string; caption: string; view: () => ReactNode; ms?: number; bg?: string }
 
 /**
  * A code-built film: scenes play in order with a segmented progress bar,
@@ -110,7 +112,8 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
       last = now
       if (next >= 1) {
         progress.set(0)
-        if (i === scenes.length - 1) { progress.set(1); setPlaying(false); onEnded?.(); return }
+        // Films never stop on their own: roll into the next film, or loop.
+        if (i === scenes.length - 1) { onEnded ? onEnded() : setI(0); return }
         setI(i + 1)
         return
       }
@@ -121,35 +124,27 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
     return () => cancelAnimationFrame(raf)
   }, [run, i, scene, scenes.length, progress, onEnded])
 
-  const go = (n: number) => { progress.set(0); setI(n); setPlaying(false) }
+  const go = (n: number) => { progress.set(0); setI(n); setPlaying(true) }
   const toggle = reduce ? <span className="text-xs text-muted">Manual playback</span> : <PlayToggle on={playing} onClick={() => { if (progress.get() >= 1) { progress.set(0); setI(0) } setPlaying(p => !p) }} />
   const stage = (
     <Canvas>
-      <Stage>
+      <Stage bg={scene.bg}>
         <AnimatePresence mode="wait">
-          <motion.div key={scene.key} className="absolute inset-0" initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.45 }}>
+          <motion.div key={scene.key} className="absolute inset-0" initial={{ opacity: 0, scale: 1.06, filter: 'blur(14px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} exit={{ opacity: 0, scale: 0.97, filter: 'blur(10px)' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
             {scene.view()}
           </motion.div>
         </AnimatePresence>
       </Stage>
     </Canvas>
   )
-  const caption = (
-    <AnimatePresence mode="wait">
-      <motion.div key={scene.key} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.3 }}>
-        <p className="t-ink font-head text-[0.6rem] font-bold uppercase tracking-[0.16em]">{String(i + 1).padStart(2, '0')} / {String(scenes.length).padStart(2, '0')} · {scene.kicker}</p>
-        <p className={`mt-1.5 font-display font-bold leading-snug ${chapters ? 'text-[1.15rem] md:text-[1.35rem]' : 'text-[1.02rem] md:text-[1.2rem]'}`}>{scene.caption}</p>
-      </motion.div>
-    </AnimatePresence>
-  )
 
   // Chapter layout: the film on the left, an ordered list of its scenes on the right.
   if (chapters) return (
     <figure ref={ref} style={toneVars(tone)} className={`grid bg-surface lg:grid-cols-[1.6fr_1fr] ${className}`} aria-label={label}>
-      <div className="relative flex items-center border-b border-ink-border bg-bg lg:border-b-0 lg:border-r"><div className="w-full">{stage}<div className="absolute right-3 top-3">{toggle}</div></div></div>
+      <div className="relative flex items-center border-b border-ink-border bg-bg lg:border-b-0 lg:border-r"><div className="w-full">{stage}</div></div>
       <figcaption className="flex flex-col p-5 md:p-7">
-        <div className="min-h-[5.5rem]">{caption}</div>
-        <ol className="mt-4 space-y-1">
+        <p className="t-ink font-head text-[0.62rem] font-bold uppercase tracking-[0.16em]">Scenes</p>
+        <ol className="mt-3 space-y-1">
           {scenes.map((s, n) => (
             <li key={s.key}>
               <button type="button" aria-pressed={n === i} onClick={() => go(n)} className={`relative flex min-h-11 w-full items-center gap-3 overflow-hidden rounded-xl px-3 py-2 text-left text-sm transition ${n === i ? 't-soft font-bold' : 'text-muted hover:bg-surface-2'}`}>
@@ -182,7 +177,7 @@ export function Film({ scenes, tone, label, onEnded, autoplay = true, chapters =
             </button>
           ))}
         </div>
-        <div className="mt-2 min-h-[4.5rem]">{caption}</div>
+        <p className="t-ink mt-1 font-head text-[0.62rem] font-bold uppercase tracking-[0.16em]">{String(i + 1).padStart(2, '0')} / {String(scenes.length).padStart(2, '0')} · {scene.kicker}</p>
       </figcaption>
     </figure>
   )
@@ -214,7 +209,7 @@ export function Loop({ scene, tone, every = 6000, className = '' }: { scene: Sce
   }, [inView, every, reduce])
   return (
     <div ref={ref} style={toneVars(tone)} className={className}>
-      <Canvas><Stage>{inView && <div key={n} className="absolute inset-0">{scene.view()}</div>}</Stage></Canvas>
+      <Canvas><Stage bg={scene.bg}>{inView && <div key={n} className="absolute inset-0">{scene.view()}</div>}</Stage></Canvas>
     </div>
   )
 }
