@@ -50,6 +50,15 @@ export function apolloToLead(r: Record<string, string>) {
   // In a list with no separate company column, "Name" is the company itself.
   const name = pick(r, 'Full Name', 'Name')
   const [nameFirst, ...nameRest] = company && !first ? name.split(/\s+/) : []
+  // Growth lists mark each address; a known-bad one is not worth importing.
+  if (/^(invalid|bounced?|undeliverable)$/i.test(pick(r, 'Email Status'))) emails.length = 0
+  // Funding news is the best opener for a cold email, so it goes into the notes.
+  const amount = Number(pick(r, 'Funding Amount', 'Funding Amount USD', 'Last Funding Amount').replace(/[^0-9.]/g, ''))
+  const funding = [
+    amount ? `$${amount >= 1e9 ? `${+(amount / 1e9).toFixed(1)}B` : amount >= 1e6 ? `${+(amount / 1e6).toFixed(1)}M` : amount.toLocaleString('en-US')}` : '',
+    pick(r, 'Funding Type', 'Last Funding Type'),
+    pick(r, 'Funding Date', 'Last Funding Date') && `(${pick(r, 'Funding Date', 'Last Funding Date')})`,
+  ].filter(Boolean).join(' ')
   return {
     email: emails[0] || '',
     other_emails: emails.slice(1).join(','),
@@ -61,7 +70,7 @@ export function apolloToLead(r: Record<string, string>) {
     linkedin: pick(r, 'Person Linkedin Url', 'LinkedIn', 'LinkedIn URL', 'Company Linkedin Url'),
     country: pick(r, 'Country', 'Company Country'),
     industry: pick(r, 'Industry', 'Industries'),
-    notes: pick(r, 'Description', 'Notes', 'About'),
+    notes: [pick(r, 'Description', 'Notes', 'About'), funding && `Raised: ${funding}`].filter(Boolean).join('\n'),
     source_id: pick(r, 'Apollo Contact Id'),
   }
 }
