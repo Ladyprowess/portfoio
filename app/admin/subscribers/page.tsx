@@ -9,6 +9,7 @@ import {
   removeTopics,
   type NewsletterSubscriber,
 } from "@/lib/newsletter";
+import { downloadCsv, today } from "@/lib/csv";
 
 const PAGE_SIZE = 10;
 
@@ -63,41 +64,22 @@ function parseCsv(text: string): ImportRow[] | null {
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
-// Quotes every cell, and prefixes values that start with = + - @ so a
-// spreadsheet opening the file does not run them as formulas.
-function csvCell(value: string) {
-  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
-  return `"${safe.replace(/"/g, '""')}"`;
-}
-
 // The unsubscribe token is left out on purpose: anyone holding it can
 // unsubscribe that person.
-function downloadCsv(rows: NewsletterSubscriber[], fileName: string) {
-  const header = ["Email", "Name", "Topics", "Tier", "Status", "Source", "Subscribed"];
-  const lines = rows.map((item) =>
-    [
+function exportSubscribers(rows: NewsletterSubscriber[]) {
+  downloadCsv(
+    ["Email", "Name", "Topics", "Tier", "Status", "Source", "Subscribed"],
+    rows.map((item) => [
       item.email,
-      item.name || "",
+      item.name,
       item.topics.join("; "),
       item.tier,
       item.status,
       item.source,
-      item.created_at ? item.created_at.slice(0, 10) : "",
-    ]
-      .map(csvCell)
-      .join(","),
+      item.created_at?.slice(0, 10),
+    ]),
+    `subscribers-${today()}.csv`,
   );
-  const blob = new Blob(["﻿" + [header.map(csvCell).join(","), ...lines].join("\r\n")], {
-    type: "text/csv;charset=utf-8",
-  });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
 }
 
 export default function SubscribersPage() {
@@ -356,8 +338,7 @@ export default function SubscribersPage() {
       ? filtered.filter((item) => selected.has(item.id))
       : filtered;
     if (!rows.length) return setMessage("There are no subscribers to export.");
-    const date = new Date().toISOString().slice(0, 10);
-    downloadCsv(rows, `subscribers-${date}.csv`);
+    exportSubscribers(rows);
     setMessage(`${plural(rows.length, "subscriber")} exported.`);
   }
 

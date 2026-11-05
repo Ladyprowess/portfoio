@@ -74,3 +74,31 @@ export function apolloToLead(r: Record<string, string>) {
     source_id: pick(r, 'Apollo Contact Id'),
   }
 }
+
+// Quotes every cell, and prefixes values that start with = + - @ so a
+// spreadsheet opening the file does not run them as formulas.
+export function csvCell(value: string | number | null | undefined) {
+  const text = value == null ? "" : String(value);
+  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+  return `"${safe.replace(/"/g, '""')}"`;
+}
+
+/** Builds a CSV in the browser and downloads it. Opens cleanly in Excel and Google Sheets. */
+export function downloadCsv(
+  header: string[],
+  rows: (string | number | null | undefined)[][],
+  fileName: string,
+) {
+  const text = [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+  const blob = new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+export const today = () => new Date().toISOString().slice(0, 10);

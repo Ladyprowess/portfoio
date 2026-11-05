@@ -9,7 +9,8 @@ import Composer, { type Outgoing, type Recipient } from './Composer'
 import ContactPanel from './ContactPanel'
 import EmailPanel from './EmailPanel'
 import { AddContactsPanel, RulesPanel, TemplatesView } from './Library'
-import { ago, Avatar, fullName, PAGE_SIZE, Pager, Progress, sourceLabel, StatusPill, when } from './shared'
+import { ago, Avatar, fullName, PAGE_SIZE, Pager, Progress, sourceLabel, statusLabel, StatusPill, when } from './shared'
+import { downloadCsv, today } from '@/lib/csv'
 import Icon, { type IconName } from './Icon'
 
 // The one place for email: write and send (to contacts or anyone), see who to
@@ -134,7 +135,17 @@ export default function EmailWorkspace() {
   const pageList = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const pageAllChecked = pageList.length > 0 && pageList.every(l => selected.has(l.id))
   const toggle = (id: string) => setSelected(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n })
-  const write = (people: Lead[]) => setComposer({ leads: people, templateId: people.length && people.every(l => l.status !== 'new') ? followUpTemplate : null })
+  // Exports the ticked people, or everyone in the current view and search if nobody is ticked.
+  const exportContacts = () => {
+    const people = selected.size ? leads.filter(l => selected.has(l.id)) : list
+    const day = (iso: string | null) => iso?.slice(0, 10) || ''
+    downloadCsv(
+      ['Email', 'Other emails', 'First name', 'Last name', 'Company', 'Title', 'Website', 'LinkedIn', 'Country', 'Industry', 'Met via', 'Status', 'Follow-ups', 'First emailed', 'Last emailed', 'Replied', 'Notes', 'Added'],
+      people.map(l => [l.email, (l.other_emails || []).join('; '), l.first_name, l.last_name, l.company, l.title, l.website, l.linkedin, l.country, l.industry, sourceLabel(l.source), statusLabel[l.status], l.follow_ups, day(l.first_sent_at), day(l.last_sent_at), day(l.replied_at), l.notes, day(l.created_at)]),
+      `contacts-${view === 'new' ? 'not-contacted' : view.replace('_', '-')}-${today()}.csv`,
+    )
+  }
+  const write = (people: Lead[]) =>setComposer({ leads: people, templateId: people.length && people.every(l => l.status !== 'new') ? followUpTemplate : null })
 
   /** Sends the composer's email to each chosen person, one at a time. */
   async function deliver(o: Outgoing) {
@@ -250,7 +261,10 @@ export default function EmailWorkspace() {
                 </label>
                 {/* Ticking a page never quietly selects people on other pages; this is an explicit choice. */}
                 {pageAllChecked && list.length > PAGE_SIZE && selected.size < list.length && <button onClick={() => setSelected(new Set(list.map(l => l.id)))} className="text-primary hover:underline">Select all {list.length} matching</button>}
-                {selected.size > 0 && <button onClick={() => setSelected(new Set())} className="ml-auto hover:text-parchment">Clear</button>}
+                <span className="ml-auto flex items-center gap-4">
+                  {selected.size > 0 && <button onClick={() => setSelected(new Set())} className="hover:text-parchment">Clear</button>}
+                  <button onClick={exportContacts} className="flex items-center gap-1.5 hover:text-primary"><Icon name="download" />{selected.size ? `Export ${selected.size}` : `Export ${list.length}`}</button>
+                </span>
               </div>
               <ul className="divide-y divide-ink-border">
                 {pageList.map(l => <ContactRow key={l.id} lead={l} checked={selected.has(l.id)} onCheck={() => toggle(l.id)} onOpen={() => setOpenId(l.id)} onWrite={() => write([l])}
@@ -282,6 +296,7 @@ export default function EmailWorkspace() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="pointer-events-auto flex items-center gap-3 rounded-full border border-ink-border bg-surface py-2 pl-5 pr-2 shadow-[0_20px_50px_-15px_rgba(17,24,39,.5)]">
         <span className="text-sm font-semibold">{selected.size} {selected.size === 1 ? 'person' : 'people'} selected</span>
         <button onClick={() => setSelected(new Set())} className="text-xs text-muted hover:text-parchment">Clear</button>
+        <button onClick={exportContacts} className="flex items-center gap-2 rounded-full border border-ink-border px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary"><Icon name="download" />Export</button>
         <button onClick={() => write(leads.filter(l => selected.has(l.id)))} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary hover:bg-primary-dim"><Icon name="pen" />Write email</button>
       </motion.div>
     </div>}</AnimatePresence>
