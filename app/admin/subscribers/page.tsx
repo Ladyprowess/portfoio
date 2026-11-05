@@ -63,6 +63,43 @@ function parseCsv(text: string): ImportRow[] | null {
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
+// Quotes every cell, and prefixes values that start with = + - @ so a
+// spreadsheet opening the file does not run them as formulas.
+function csvCell(value: string) {
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return `"${safe.replace(/"/g, '""')}"`;
+}
+
+// The unsubscribe token is left out on purpose: anyone holding it can
+// unsubscribe that person.
+function downloadCsv(rows: NewsletterSubscriber[], fileName: string) {
+  const header = ["Email", "Name", "Topics", "Tier", "Status", "Source", "Subscribed"];
+  const lines = rows.map((item) =>
+    [
+      item.email,
+      item.name || "",
+      item.topics.join("; "),
+      item.tier,
+      item.status,
+      item.source,
+      item.created_at ? item.created_at.slice(0, 10) : "",
+    ]
+      .map(csvCell)
+      .join(","),
+  );
+  const blob = new Blob(["﻿" + [header.map(csvCell).join(","), ...lines].join("\r\n")], {
+    type: "text/csv;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 export default function SubscribersPage() {
   const [password, setPassword] = useState("");
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
@@ -312,6 +349,18 @@ export default function SubscribersPage() {
     });
   }
 
+  // Exports the selected subscribers if any are ticked, otherwise everyone
+  // matching the current search and filters.
+  function exportCsv() {
+    const rows = selected.size
+      ? filtered.filter((item) => selected.has(item.id))
+      : filtered;
+    if (!rows.length) return setMessage("There are no subscribers to export.");
+    const date = new Date().toISOString().slice(0, 10);
+    downloadCsv(rows, `subscribers-${date}.csv`);
+    setMessage(`${plural(rows.length, "subscriber")} exported.`);
+  }
+
   function toggleOne(id: string) {
     setSelected((current) => {
       const next = new Set(current);
@@ -347,7 +396,19 @@ export default function SubscribersPage() {
               paid status.
             </p>
           </div>
-          <div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={exportCsv}
+              disabled={!filtered.length}
+              className="rounded-full border border-ink-border px-6 py-3 text-sm font-bold disabled:opacity-50"
+            >
+              {selected.size
+                ? `Export ${selected.size} selected`
+                : filtered.length === subscribers.length
+                  ? "Export CSV"
+                  : `Export ${filtered.length} filtered`}
+            </button>
             <button
               onClick={() => setImportOpen(true)}
               className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary"
