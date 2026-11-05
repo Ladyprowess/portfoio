@@ -22,13 +22,21 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_BODY_LENGTH = 20_000
 const DEFAULT_DAILY_LIMIT = 20
 
-function isAuthorized(request: Request): boolean {
-  const expected = process.env.PORTFOLIO_ASSISTANT_API_KEY
-  const received = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? ''
-  if (!expected || expected.length < 32 || !received) return false
+function matchesSecret(expected: string | undefined, received: string, minimumLength = 1): boolean {
+  if (!expected || expected.length < minimumLength || !received) return false
   const a = Buffer.from(expected)
   const b = Buffer.from(received)
   return a.length === b.length && timingSafeEqual(a, b)
+}
+
+function isAuthorized(request: Request): boolean {
+  // Keep bearer-key access for trusted server-to-server callers.
+  // The private portfolio UI uses the existing admin password from its session.
+  const apiKey = process.env.PORTFOLIO_ASSISTANT_API_KEY
+  const bearer = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? ''
+  const adminPassword = process.env.COMPOSE_PASSWORD
+  const adminHeader = request.headers.get('x-admin-password') ?? ''
+  return matchesSecret(apiKey, bearer, 32) || matchesSecret(adminPassword, adminHeader)
 }
 
 function validRequestId(value: unknown): value is string {
