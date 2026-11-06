@@ -82,6 +82,29 @@ async function markSent(lead: Lead, emailId: string, at: string, followUp: boole
   return rows[0] as Lead
 }
 
+/** Hands one email to Resend, with the signature and reply tracking. Scheduled when `at` is given. */
+function resendSend(resend: Resend, m: { to: string[]; subject: string; text: string; bodyHtml: string; at?: Date; attachments?: { filename: string; content: Buffer }[] }) {
+  const tracking = process.env.OUTREACH_REPLY_TRACKING_ADDRESS
+  return resend.emails.send({
+    from: FROM,
+    to: m.to,
+    // Replies reach the normal inbox (iCloud) and, when set, a tracking address
+    // Resend receives, so replies are detected without moving the main domain's mail.
+    replyTo: tracking ? [REPLY_TO, tracking] : REPLY_TO,
+    subject: m.subject,
+    text: `${m.text}${SIGNATURE_TEXT}`,
+    html: `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${m.bodyHtml}</div>${SIGNATURE_HTML}`,
+    ...(m.at ? { scheduledAt: m.at.toISOString() } : {}),
+    ...(m.attachments?.length ? { attachments: m.attachments } : {}),
+  })
+}
+
+/** A send time at least a minute away, or null. */
+function laterTime(v: unknown) {
+  const at = new Date(String(v))
+  return Number.isNaN(at.getTime()) || at.getTime() < Date.now() + 60_000 ? null : at
+}
+
 /** After a scheduled email is cancelled, rebuilds the contact's dates from what is left. */
 async function recompute(leadId: string) {
   const lead = await leadById(leadId)
@@ -211,8 +234,9 @@ export async function POST(request: Request) {
         let at = new Date()
         const scheduled = typeof body.scheduledAt === 'string' && body.scheduledAt
         if (scheduled) {
-          at = new Date(String(body.scheduledAt))
-          if (Number.isNaN(at.getTime()) || at.getTime() < Date.now() + 60_000) return NextResponse.json({ error: 'Pick a time at least a minute from now.' }, { status: 400 })
+          const later = laterTime(body.scheduledAt)
+          if (!later) return NextResponse.json({ error: 'Pick a time at least a minute from now.' }, { status: 400 })
+          at = later
         }
 
         // The daily limit protects the domain from cold-email bursts, so it applies to contacts.
@@ -225,19 +249,7 @@ export async function POST(request: Request) {
         const bodyHtml = textToHtml(text)
         const records = await db('sent_emails', { method: 'POST', body: JSON.stringify({ recipients: to, subject, preview: '', body_html: bodyHtml, lead_id: lead?.id ?? null, kind: lead ? (followUp ? 'outreach_follow_up' : 'outreach') : 'compose' }) })
         const emailId = String(records[0]?.id || '')
-        const tracking = process.env.OUTREACH_REPLY_TRACKING_ADDRESS
-        const { data, error } = await new Resend(apiKey).emails.send({
-          from: FROM,
-          to,
-          // Replies reach the normal inbox (iCloud) and, when set, a tracking address
-          // Resend receives, so replies are detected without moving the main domain's mail.
-          replyTo: tracking ? [REPLY_TO, tracking] : REPLY_TO,
-          subject,
-          text: `${text}${SIGNATURE_TEXT}`,
-          html: `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a;">${bodyHtml}</div>${SIGNATURE_HTML}`,
-          ...(scheduled ? { scheduledAt: at.toISOString() } : {}),
-          ...(attachments.length ? { attachments } : {}),
-        })
+        const { data, error } = await resendSend(new Resend(apiKey), { to, subject, text, bodyHtml, at: scheduled ? at : undefined, attachments })
         if (error) {
           await db(`sent_emails?id=eq.${emailId}`, { method: 'PATCH', body: JSON.stringify({ status: 'failed' }) }).catch(() => null)
           return NextResponse.json({ error: error.message || 'Resend rejected the email.' }, { status: 502 })
@@ -269,6 +281,42 @@ export async function POST(request: Request) {
         }
         await db(`sent_emails?id=eq.${email.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'cancelled' }) })
         return NextResponse.json({ lead: email.lead_id ? await recompute(String(email.lead_id)) : undefined })
+      }
+
+      // Changes a scheduled email's subject, message or time. Resend can only move a
+      // scheduled email, not rewrite it, so the edited version is scheduled first and
+      // the original cancelled after; if either step fails the original still goes out.
+      case 'edit_scheduled': {
+        const apiKey = process.env.RESEND_API_KEY
+        if (!apiKey) return NextResponse.json({ error: 'RESEND_API_KEY is not set on the server.' }, { status: 500 })
+        const email = (await db(`sent_emails?select=id,resend_id,lead_id,status,recipients,sent_at&id=eq.${encodeURIComponent(str(body.emailId))}`))[0]
+        if (!email || email.status !== 'scheduled') return NextResponse.json({ error: 'Only scheduled emails can be edited.' }, { status: 400 })
+        if (new Date(String(email.sent_at)).getTime() < Date.now() + 60_000) return NextResponse.json({ error: 'This email is about to go out, so it can no longer be changed.' }, { status: 400 })
+        const subject = str(body.subject, 300)
+        const text = String(body.body ?? '').trim()
+        if (!subject || !text) return NextResponse.json({ error: 'Add a subject and a message.' }, { status: 400 })
+        const at = laterTime(body.scheduledAt)
+        if (!at) return NextResponse.json({ error: 'Pick a time at least a minute from now.' }, { status: 400 })
+        // Moving a contact email to another day counts against that day's limit.
+        if (email.lead_id && startOfDay(at).getTime() !== startOfDay(new Date(String(email.sent_at))).getTime()) {
+          const settings = await loadSettings()
+          if ((await countForDay(at)) >= settings.daily_limit) return NextResponse.json({ error: `The daily limit of ${settings.daily_limit} is full for that day.` }, { status: 429 })
+        }
+        const resend = new Resend(apiKey)
+        const bodyHtml = textToHtml(text)
+        const { data, error } = await resendSend(resend, { to: email.recipients as string[], subject, text, bodyHtml, at })
+        if (error || !data?.id) return NextResponse.json({ error: `Resend could not schedule the new version: ${error?.message || 'no id returned'}. The original is still scheduled.` }, { status: 502 })
+        if (email.resend_id) {
+          const { error: cancelError } = await resend.emails.cancel(String(email.resend_id))
+          if (cancelError) {
+            await resend.emails.cancel(data.id).catch(() => null)
+            return NextResponse.json({ error: `Resend could not replace it: ${cancelError.message}. The original is still scheduled.` }, { status: 502 })
+          }
+        }
+        // Same row, so the contact's history and the webhook keep pointing at it.
+        const row = (await db(`sent_emails?id=eq.${email.id}`, { method: 'PATCH', body: JSON.stringify({ subject, body_html: bodyHtml, resend_id: data.id, sent_at: at.toISOString() }) }))[0]
+        const lead = email.lead_id ? await recompute(String(email.lead_id)) : undefined
+        return NextResponse.json({ lead, email: { id: row.id, lead_id: row.lead_id, recipients: row.recipients, subject: row.subject, sent_at: row.sent_at, status: row.status, kind: row.kind } })
       }
 
       // An email sent outside the site (Gmail, iCloud, LinkedIn InMail…), logged so

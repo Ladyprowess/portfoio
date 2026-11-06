@@ -324,7 +324,13 @@ export default function EmailWorkspace() {
         onFollowUp={(to, subject) => { setEmailId(null); const l = leads.find(x => leadEmails(x).some(e => e.toLowerCase() === to.toLowerCase())); setComposer({ leads: l ? [l] : [], emails: l ? [] : [to], subject, templateId: null }) }}
         onOpenContact={id => { setEmailId(null); setOpenId(id) }}
         onAddContact={async (id, address) => { const { ok } = await call('link', { emailId: id, lead: { email: address, source: 'other' } }); if (ok) await load() }}
-        onCancel={async id => { const e = emails.find(x => x.id === id); if (e) { await cancel(e); setEmailId(null) } }} />}
+        onCancel={async id => { const e = emails.find(x => x.id === id); if (e) { await cancel(e); setEmailId(null) } }}
+        onEdit={async (id, change) => {
+          const { ok, data } = await call('edit_scheduled', { emailId: id, ...change })
+          if (!ok) return data.error || 'Could not save your changes.'
+          setEmails(es => es.map(x => (x.id === id ? { ...x, ...data.email } : x))); putLead(data.lead)
+          return ''
+        }} />}
       {panel === 'add' && <AddContactsPanel key="add" onClose={() => setPanel(null)}
         onAdd={async (lead, sent) => {
           const { ok, data } = sent ? await call('log', { lead, subject: sent.subject, sentAt: sent.at }) : await call('add_lead', { lead })

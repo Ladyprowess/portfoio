@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { Lead } from '@/lib/outreach'
-import { ago, Avatar, fullName, SidePanel, when } from './shared'
+import { htmlToText, type Lead } from '@/lib/outreach'
+import { ago, Avatar, field, fullName, localInput, SidePanel, when } from './shared'
 import Icon from './Icon'
 
 // One sent email: who it went to, when it was opened and which links were
@@ -24,7 +24,9 @@ function device(ua: string | null) {
   return ''
 }
 
-export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpenContact, onAddContact, onCancel }: {
+export type ScheduledEdit = { subject: string; body: string; scheduledAt: string }
+
+export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpenContact, onAddContact, onCancel, onEdit }: {
   id: string; lead?: Lead
   load: (id: string) => Promise<Detail | null>
   onClose: () => void
@@ -32,12 +34,27 @@ export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpen
   onOpenContact: (leadId: string) => void
   onAddContact: (emailId: string, address: string) => Promise<void>
   onCancel: (emailId: string) => Promise<void>
+  /** Saves a scheduled email's changes; returns an error message, or '' when saved. */
+  onEdit: (emailId: string, change: ScheduledEdit) => Promise<string>
 }) {
   const [detail, setDetail] = useState<Detail | null>(null)
   const [error, setError] = useState('')
   const [adding, setAdding] = useState(false)
+  const [draft, setDraft] = useState<{ subject: string; body: string; at: string } | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => { load(id).then(d => (d ? setDetail(d) : setError('Could not load this email.'))) }, [id, load])
+
+  const startEdit = () => { if (e) { setSaveError(''); setDraft({ subject: e.subject, body: htmlToText(e.body_html), at: localInput(new Date(e.sent_at)) }) } }
+  async function save() {
+    if (!e || !draft) return
+    setSaving(true); setSaveError('')
+    const problem = await onEdit(e.id, { subject: draft.subject, body: draft.body, scheduledAt: new Date(draft.at).toISOString() })
+    if (problem) setSaveError(problem)
+    else { setDraft(null); const d = await load(id); if (d) setDetail(d) }
+    setSaving(false)
+  }
 
   const e = detail?.email
   const opens = detail?.events.filter(x => x.event_type === 'open') ?? []
@@ -48,12 +65,16 @@ export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpen
   const sent = e?.status === 'sent'
 
   return <SidePanel onClose={onClose} title={e?.subject || 'Email'}
-    footer={e && <div className="flex flex-wrap gap-2 text-sm font-semibold">
+    footer={e && (draft ? <div className="flex flex-wrap gap-2 text-sm font-semibold">
+      <button disabled={saving || !draft.subject.trim() || !draft.body.trim() || !draft.at} onClick={save} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim disabled:opacity-50"><Icon name="check" />{saving ? 'Saving…' : 'Save changes'}</button>
+      <button disabled={saving} onClick={() => setDraft(null)} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-primary disabled:opacity-50">Discard changes</button>
+    </div> : <div className="flex flex-wrap gap-2 text-sm font-semibold">
+      {e.status === 'scheduled' && e.body_html && <button onClick={startEdit} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim"><Icon name="pen" />Edit email</button>}
       {e.status !== 'scheduled' && e.status !== 'cancelled' && <button onClick={() => onFollowUp(to, e.subject.startsWith('Re:') ? e.subject : `Re: ${e.subject}`)} className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-on-primary hover:bg-primary-dim"><Icon name="refresh" />Follow up</button>}
       {e.status === 'scheduled' && <button onClick={() => onCancel(e.id)} className="rounded-full border border-[#EF4444]/40 px-4 py-2.5 text-[#DC2626] hover:bg-[#EF4444]/10 dark:text-[#F87171]">Cancel this email</button>}
       {lead ? <button onClick={() => onOpenContact(lead.id)} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-primary">Open contact card</button>
         : to && <button disabled={adding} onClick={async () => { setAdding(true); await onAddContact(e.id, to); setAdding(false) }} className="rounded-full border border-ink-border px-4 py-2.5 hover:border-primary disabled:opacity-50">{adding ? 'Adding…' : '+ Add to contacts'}</button>}
-    </div>}>
+    </div>)}>
     {error && <p className="p-5 text-sm text-[#DC2626]">{error}</p>}
     {!detail && !error && <div className="space-y-3 p-5">{[0, 1, 2].map(i => <div key={i} className="h-16 animate-pulse rounded-2xl bg-surface-2" />)}</div>}
     {e && <div className="space-y-6 p-5">
@@ -101,8 +122,18 @@ export default function EmailPanel({ id, lead, load, onClose, onFollowUp, onOpen
         {opens.length > 0 && <p className="mt-2 rounded-xl bg-surface-2/70 p-3 text-xs leading-5 text-muted">Some email apps (Apple Mail, Gmail) load emails automatically, which can count as an open, so several opens close together may be the app rather than the person. A click is a stronger sign they read it.</p>}
       </div>}
 
-      {/* The email itself, isolated so its styles can't affect the page */}
-      {e.body_html ? <div>
+      {/* Editing a scheduled email */}
+      {draft ? <div className="space-y-3">
+        <p className="text-xs font-semibold text-muted">Edit the email</p>
+        <label className="block text-xs text-muted">Send at<input type="datetime-local" value={draft.at} onChange={x => setDraft({ ...draft, at: x.target.value })} className={`mt-1 ${field}`} /></label>
+        <label className="block text-xs text-muted">Subject<input value={draft.subject} onChange={x => setDraft({ ...draft, subject: x.target.value })} className={`mt-1 ${field}`} /></label>
+        <label className="block text-xs text-muted">Message<textarea value={draft.body} onChange={x => setDraft({ ...draft, body: x.target.value })} rows={16} className={`mt-1 resize-y leading-6 ${field}`} /></label>
+        <p className="text-xs leading-5 text-muted">Your signature is added when it sends. Any attachment on the original is not carried over.</p>
+        {saveError && <p role="alert" className="rounded-xl bg-[#EF4444]/10 px-3 py-2.5 text-sm text-[#DC2626] dark:text-[#F87171]">{saveError}</p>}
+      </div> :
+
+      /* The email itself, isolated so its styles can't affect the page */
+      e.body_html ? <div>
         <p className="text-xs font-semibold text-muted">The email</p>
         <div className="mt-3 overflow-hidden rounded-2xl border border-ink-border bg-white">
           <div className="border-b border-[#E5E7EB] px-4 py-3 text-xs text-[#6B7280]"><span className="font-semibold text-[#111827]">{e.subject}</span><br />From Lady Prowess &lt;hello@ladyprowess.com&gt;</div>

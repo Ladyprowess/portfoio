@@ -135,6 +135,14 @@ export function textToHtml(text: string) {
   }).join('')
 }
 
+/** Reverses textToHtml, so a scheduled email can be edited as the text it was written in. */
+export function htmlToText(html: string) {
+  return html.split(/<\/p>/i)
+    .map(block => block.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').trim())
+    .filter(Boolean).join('\n\n')
+}
+
 /** Midnight in Lagos (UTC+1) for the day containing `at`, so limits follow Ngozi's day. */
 export function startOfDay(at = new Date()) {
   const lagos = new Date(at.getTime() + 60 * 60 * 1000)
