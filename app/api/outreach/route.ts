@@ -105,6 +105,12 @@ function laterTime(v: unknown) {
   return Number.isNaN(at.getTime()) || at.getTime() < Date.now() + 60_000 ? null : at
 }
 
+/** Resend sends scheduled emails on its own and does not tell us, so any scheduled
+    email whose time has passed is marked sent. Run before showing emails. */
+async function settleScheduled() {
+  await db(`sent_emails?status=eq.scheduled&sent_at=lte.${encodeURIComponent(new Date().toISOString())}`, { method: 'PATCH', body: JSON.stringify({ status: 'sent' }) })
+}
+
 /** After a scheduled email is cancelled, rebuilds the contact's dates from what is left. */
 async function recompute(leadId: string) {
   const lead = await leadById(leadId)
@@ -125,6 +131,7 @@ export async function POST(request: Request) {
   try {
     switch (body.action) {
       case 'load': {
+        await settleScheduled()
         const [leads, settings, templates, emails, replies, today] = await Promise.all([
           dbAll('outreach_leads?select=*&order=created_at.desc'),
           loadSettings(),
@@ -263,6 +270,7 @@ export async function POST(request: Request) {
       // One email in full, with every open and click, for the email detail panel.
       case 'email': {
         const id = encodeURIComponent(str(body.id))
+        await settleScheduled()
         const [rows, events] = await Promise.all([
           db(`sent_emails?select=id,lead_id,recipients,cc,bcc,subject,preview,body_html,status,kind,sent_at&id=eq.${id}`),
           db(`email_events?select=event_type,url,occurred_at,user_agent&email_id=eq.${id}&order=occurred_at.asc`),
