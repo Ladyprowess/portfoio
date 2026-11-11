@@ -2,113 +2,152 @@
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { Callout, Code, CodeTabs, Endpoint, Faq, H2, Hotspots, Lifecycle, P, Params, Playground, Steps, Table, Terminal } from './blocks'
+import { Callout, Code, CodeTabs, Endpoint, Faq, H2, Hotspots, Lifecycle, P, Params, Playground, RunCommand, Steps, Table } from './blocks'
 
-export type Ctx = { lang: string; setLang: (l: string) => void; go: (id: string) => void }
+export type Ctx = { lang: string; setLang: (l: string) => void; go: (id: string, anchor?: string) => void; origin: string }
 export type DocPage = { id: string; group: string; title: string; lead: string; keywords?: string; toc: { id: string; label: string }[]; body: (ctx: Ctx) => ReactNode }
 
 const EMAIL = 'mailto:hello@ladyprowess.com?subject=Technical%20writing%20enquiry'
+const KEY = 'sk_test_relay_4eC39HqLyjWD'
 
-/* ── Shared samples ──────────────────────────── */
+const api = (origin: string) => `${origin || 'https://ladyprowess.com'}/api/relay/v1`
 
-const createPayment = {
-  cURL: `curl https://sandbox.relaypay.test/v1/payments \\
+const createPayment = (origin: string) => ({
+  cURL: `curl ${api(origin)}/payments \\
   -H "Authorization: Bearer $RELAY_SECRET_KEY" \\
-  -H "Idempotency-Key: 6f1c2b9e-order-0142" \\
-  -d amount=12500 \\
+  -H "Idempotency-Key: order-0142" \\
+  -d amount=5000 \\
   -d currency=NGN \\
-  -d reference=inv_0142`,
-  JavaScript: `import Relay from "@relaypay/node"
+  -d reference=order_0142`,
+  JavaScript: `const res = await fetch("${api(origin)}/payments", {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${process.env.RELAY_SECRET_KEY}\`,
+    "Content-Type": "application/json",
+    "Idempotency-Key": "order-0142",
+  },
+  body: JSON.stringify({ amount: 5000, currency: "NGN", reference: "order_0142" }),
+})
 
-const relay = new Relay(process.env.RELAY_SECRET_KEY)
-
-const payment = await relay.payments.create(
-  { amount: 12500, currency: "NGN", reference: "inv_0142" },
-  { idempotencyKey: "6f1c2b9e-order-0142" }
-)
-
-console.log(payment.id, payment.status) // pay_8Qw2LmT4 pending`,
+const payment = await res.json()
+console.log(payment.id, payment.status) // pay_... pending`,
   Python: `import os
-from relaypay import Relay
+import requests
 
-relay = Relay(os.environ["RELAY_SECRET_KEY"])
-
-payment = relay.payments.create(
-    amount=12500,
-    currency="NGN",
-    reference="inv_0142",
-    idempotency_key="6f1c2b9e-order-0142",
+res = requests.post(
+    "${api(origin)}/payments",
+    headers={
+        "Authorization": f"Bearer {os.environ['RELAY_SECRET_KEY']}",
+        "Idempotency-Key": "order-0142",
+    },
+    json={"amount": 5000, "currency": "NGN", "reference": "order_0142"},
 )
 
-print(payment.id, payment.status)  # pay_8Qw2LmT4 pending`,
-}
+payment = res.json()
+print(payment["id"], payment["status"])  # pay_... pending`,
+})
 
-const SampleNote = () => (
-  <Callout kind="note" title="About this sample">
-    Relay is a fictional payments product. I wrote this page for my portfolio to show how I document an API end to end: the structure, the code, the errors and the edge cases. Client documentation I wrote is listed under <b>Projects</b>.
-  </Callout>
+const retrievePayment = (origin: string) => ({
+  cURL: `curl ${api(origin)}/payments/$PAYMENT_ID \\
+  -H "Authorization: Bearer $RELAY_SECRET_KEY"`,
+  JavaScript: `const res = await fetch(\`${api(origin)}/payments/\${paymentId}\`, {
+  headers: { Authorization: \`Bearer \${process.env.RELAY_SECRET_KEY}\` },
+})
+const payment = await res.json()
+console.log(payment.status) // pending, confirmed or settled`,
+  Python: `res = requests.get(
+    f"${api(origin)}/payments/{payment_id}",
+    headers={"Authorization": f"Bearer {os.environ['RELAY_SECRET_KEY']}"},
 )
+print(res.json()["status"])  # pending, confirmed or settled`,
+})
 
-/* ── Pages ───────────────────────────────────── */
+const refundPayment = (origin: string) => ({
+  cURL: `curl ${api(origin)}/payments/$PAYMENT_ID/refund \\
+  -X POST \\
+  -H "Authorization: Bearer $RELAY_SECRET_KEY"`,
+  JavaScript: `const res = await fetch(\`${api(origin)}/payments/\${paymentId}/refund\`, {
+  method: "POST",
+  headers: { Authorization: \`Bearer \${process.env.RELAY_SECRET_KEY}\` },
+})
+const refund = await res.json()`,
+  Python: `res = requests.post(
+    f"${api(origin)}/payments/{payment_id}/refund",
+    headers={"Authorization": f"Bearer {os.environ['RELAY_SECRET_KEY']}"},
+)
+refund = res.json()`,
+})
+
+const Json = ({ title, body }: { title: string; body: string }) => <CodeTabs title={title} samples={{ JSON: body }} />
+
+const Try = ({ children }: { children: ReactNode }) => <div className="mt-5 flex flex-wrap gap-2">{children}</div>
 
 export const pages: DocPage[] = [
   {
     id: 'overview',
     group: 'Start here',
     title: 'Technical writing and documentation',
-    lead: 'I make complex products easy to understand. For over nine years I have written API references, developer guides, technical manuals and product documentation for software and Web3 teams.',
-    toc: [{ id: 'at-a-glance', label: 'At a glance' }, { id: 'what-i-write', label: 'What I write' }, { id: 'where-to-start', label: 'Where to start' }],
-    body: ({ go }) => (
+    lead: 'I am Ngozi Peace Okafor, a technical writer with over nine years of experience documenting APIs, developer platforms and software products.',
+    keywords: 'about ngozi technical writer',
+    toc: [{ id: 'first-request', label: 'Make your first request' }, { id: 'what-i-write', label: 'What I write' }, { id: 'experience', label: 'Experience' }],
+    body: ({ go, origin }) => (
       <>
-        <H2 id="at-a-glance">At a glance</H2>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          {[['9+ years', 'writing technical content'], ['Rootstock, ZKsync, Magnopus', 'documentation projects'], ['Jenkins', 'open-source contributor']].map(([v, l]) => (
-            <div key={l} className="rounded-xl border border-ink-border bg-surface p-4"><p className="font-display text-[1.05rem] font-extrabold">{v}</p><p className="mt-1 text-xs text-muted">{l}</p></div>
-          ))}
-        </div>
-        <P>This page is built the way good documentation is built: a clear structure, search, working code samples, a request you can run, and pages that link to each other. Everything on it is interactive, so you can judge the work by using it.</P>
+        <H2 id="first-request">Make your first request</H2>
+        <P>The Relay API in these docs is live. Create a payment, follow it until it settles, then refund it. Each command runs in the terminal at the bottom of the page.</P>
+        <Try>
+          <RunCommand cmd="relay pay 5000 NGN" />
+          <RunCommand cmd="relay status $LAST --watch" />
+          <RunCommand cmd="relay refund $LAST" />
+        </Try>
+        <P>The same API answers from your own machine. Paste this into any terminal:</P>
+        <CodeTabs samples={{ Shell: `curl ${api(origin)}/payments \\
+  -H "Authorization: Bearer ${KEY}" \\
+  -d amount=5000 \\
+  -d currency=NGN` }} />
 
         <H2 id="what-i-write">What I write</H2>
-        <Table head={['Type', 'What it does for the reader']} rows={[
-          ['API references', 'Every endpoint, parameter, response and error, accurate enough to build against.'],
-          ['Quickstarts and integration guides', 'The shortest route from zero to a working result.'],
-          ['Developer documentation', 'Concepts, architecture and tutorials for engineers adopting a platform.'],
-          ['Technical manuals and user guides', 'Step-by-step help for people using a product, with troubleshooting.'],
-          ['Release notes', 'What changed, who it affects and what to do about it.'],
-        ]} />
-
-        <H2 id="where-to-start">Where to start</H2>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {[['projects', 'Projects', 'Rootstock, Magnopus, ZKsync and Jenkins.'], ['quickstart', 'Live samples', 'A quickstart, API reference, user guide and more.'], ['process', 'How I work', 'From research to a published, maintained page.'], ['skills', 'Skills and tools', 'Docs-as-code, Git, CI and the web stack.']].map(([id, t, b]) => (
+          {[
+            ['create-payment', 'API references', 'Endpoints, parameters, responses and errors you can build against.'],
+            ['quickstart', 'Quickstarts', 'The shortest route from an API key to a working result.'],
+            ['web3-deploy', 'Tutorials', 'Hands-on guides for developers, like deploying a smart contract.'],
+            ['user-guide', 'User guides', 'Step-by-step help for the people using the product.'],
+            ['errors', 'Error references', 'Every error, what causes it and how to fix it.'],
+            ['changelog', 'Release notes', 'What changed, who it affects and what to do next.'],
+          ].map(([id, t, b]) => (
             <button key={id} type="button" onClick={() => go(id)} className="group rounded-xl border border-ink-border bg-surface p-5 text-left transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg">
               <p className="font-display font-extrabold">{t} <span className="inline-block text-primary transition group-hover:translate-x-1">→</span></p>
-              <p className="mt-1 text-sm text-muted">{b}</p>
+              <p className="mt-1 text-sm leading-6 text-muted">{b}</p>
             </button>
           ))}
         </div>
+
+        <H2 id="experience">Experience</H2>
+        <P>I have written API documentation, developer guides and technical manuals for Rootstock, Magnopus and ZKsync, and contributed to Jenkins as an open-source contributor.</P>
+        <Try>{['Rootstock', 'Magnopus', 'ZKsync', 'Jenkins'].map(n => <button key={n} type="button" onClick={() => go('projects', n.toLowerCase())} className="rounded-full border border-ink-border bg-surface px-4 py-2 text-sm font-semibold transition hover:border-primary/50 hover:text-primary">{n} →</button>)}</Try>
       </>
     ),
   },
   {
     id: 'process',
-    keywords: 'docs as code github actions ci review',
     group: 'Start here',
     title: 'How I work',
-    lead: 'Documentation is a product. I research it, structure it, test it and keep it current like one.',
-    toc: [{ id: 'workflow', label: 'Workflow' }, { id: 'docs-as-code', label: 'Docs as code' }, { id: 'standards', label: 'Standards I hold' }],
+    lead: 'I treat documentation like a product: researched, structured, tested and kept up to date.',
+    keywords: 'docs as code github actions ci review process',
+    toc: [{ id: 'workflow', label: 'Workflow' }, { id: 'docs-as-code', label: 'Docs as code' }],
     body: () => (
       <>
         <H2 id="workflow">Workflow</H2>
         <Steps items={[
-          { title: 'Understand the reader', body: 'Who is arriving, what they already know, and what they need to get done.' },
+          { title: 'Understand the reader', body: 'Who arrives at the page, what they already know and what they need to finish.' },
           { title: 'Learn the product hands-on', body: 'I use it, run the code, read the source and interview the engineers who built it.' },
-          { title: 'Design the information architecture', body: 'Concepts, tasks and reference each get their own place, so readers know where to look.' },
-          { title: 'Write and test every step', body: 'Each command and code sample is run before it is published.' },
-          { title: 'Review with engineers', body: 'Technical accuracy is checked by the people closest to the code.' },
-          { title: 'Publish and maintain', body: 'Docs ship with the release, and stale pages are found and fixed.' },
+          { title: 'Structure the information', body: 'Concepts, tasks and reference each get their own place, so readers know where to look.' },
+          { title: 'Write, then test every step', body: 'Every command and code block is run before it is published.' },
+          { title: 'Review with engineers', body: 'The people closest to the code check it for accuracy.' },
+          { title: 'Publish and maintain', body: 'Docs ship with the release, and outdated pages are found and fixed.' },
         ]} />
         <H2 id="docs-as-code">Docs as code</H2>
-        <P>Documentation lives next to the code, goes through pull requests and is checked automatically before it ships.</P>
+        <P>Docs live next to the code, go through pull requests and are checked automatically before they ship.</P>
         <CodeTabs title=".github/workflows/docs.yml" samples={{ YAML: `name: docs
 on: [pull_request]
 jobs:
@@ -119,31 +158,23 @@ jobs:
       - run: npm ci
       - run: npm run lint:docs    # style and broken links
       - run: npm run build:docs   # fails on invalid pages` }} />
-        <H2 id="standards">Standards I hold</H2>
-        <Table head={['Standard', 'In practice']} rows={[
-          ['Accurate', 'Every code sample runs. Every parameter matches the API.'],
-          ['Task first', 'Pages start with what the reader is trying to do.'],
-          ['Plain language', 'Short sentences, defined terms, no unexplained jargon.'],
-          ['Findable', 'Clear titles, consistent structure and search that works.'],
-          ['Maintained', 'Owned, versioned and reviewed with each release.'],
-        ]} />
       </>
     ),
   },
   {
     id: 'projects',
-    keywords: 'rootstock zksync magnopus jenkins she code africa txfusion zaycodes writetech hub open source',
     group: 'Projects',
     title: 'Selected projects',
     lead: 'Documentation and developer resources I have written for software and Web3 teams.',
+    keywords: 'rootstock zksync magnopus jenkins she code africa txfusion zaycodes writetech hub open source',
     toc: [{ id: 'rootstock', label: 'Rootstock' }, { id: 'magnopus', label: 'Magnopus' }, { id: 'zksync', label: 'ZKsync' }, { id: 'jenkins', label: 'Jenkins' }, { id: 'more-work', label: 'More work' }],
     body: () => (
       <>
         {[
           { id: 'rootstock', name: 'Rootstock', org: 'Zaycodes / WriteTech Hub', body: 'Technical documentation and developer resources for the Rootstock ecosystem.', areas: ['API documentation', 'Developer guides', 'Technical documentation'], href: 'https://dev.rootstock.io', site: 'dev.rootstock.io' },
           { id: 'magnopus', name: 'Magnopus', org: 'Zaycodes / WriteTech Hub', body: 'Technical writing and documentation for Magnopus projects.', areas: ['Technical manuals', 'Product documentation', 'Technical guides'], href: 'https://www.magnopus.com', site: 'magnopus.com' },
-          { id: 'zksync', name: 'ZKsync', org: 'txFusion', body: 'Technical writing work involving the ZKsync ecosystem.', areas: ['API documentation', 'Developer resources', 'Technical documentation'], href: 'https://docs.zksync.io', site: 'docs.zksync.io' },
-          { id: 'jenkins', name: 'Jenkins', org: 'Open-source contributor', body: 'Contributed to the Jenkins open-source project through a programme sponsored by She Code Africa.', areas: ['Open-source contribution', 'Documentation', 'Community'], href: 'https://www.jenkins.io', site: 'jenkins.io' },
+          { id: 'zksync', name: 'ZKsync', org: 'txFusion', body: 'Technical writing for the ZKsync ecosystem.', areas: ['API documentation', 'Developer resources', 'Technical documentation'], href: 'https://docs.zksync.io', site: 'docs.zksync.io' },
+          { id: 'jenkins', name: 'Jenkins', org: 'Open-source contributor', body: 'Contributed to the Jenkins open-source project through a programme sponsored by She Code Africa.', areas: ['Open-source contribution', 'Documentation'], href: 'https://www.jenkins.io', site: 'jenkins.io' },
         ].map(p => (
           <section key={p.id}>
             <H2 id={p.id}>{p.name}</H2>
@@ -152,115 +183,246 @@ jobs:
               <p className="mt-2 text-[0.98rem] leading-7">{p.body}</p>
               <div className="mt-4 flex flex-wrap gap-2">{p.areas.map(a => <span key={a} className="rounded-full bg-primary/[0.08] px-3 py-1 text-xs font-semibold text-primary">{a}</span>)}</div>
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-ink-border pt-4 text-sm">
-                <a href={p.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">Project site: {p.site} ↗</a>
-                <a href={EMAIL} className="text-muted hover:text-parchment">Ask for links to my pages →</a>
+                <a href={p.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">{p.site} ↗</a>
+                <a href={EMAIL} className="text-muted hover:text-parchment">Ask me about this work →</a>
               </div>
             </div>
           </section>
         ))}
         <H2 id="more-work">More work</H2>
-        <P>Additional experience includes API references, integration guides, technical manuals and developer-focused documentation across software and digital product projects.</P>
-        <Callout kind="note" title="Confidential work">Some documentation was written for clients and cannot be shared publicly. I am happy to walk through my contributions, process and responsibilities in an interview, within my confidentiality obligations.</Callout>
+        <P>API references, integration guides, technical manuals and developer documentation across software and digital product projects. Some of it was written for clients under confidentiality, so I walk through it in interviews rather than publishing it.</P>
       </>
     ),
   },
   {
     id: 'quickstart',
-    keywords: 'webhook sdk install api key javascript python curl',
-    group: 'Live samples',
-    title: 'Quickstart: accept your first payment',
-    lead: 'Create a payment in the Relay sandbox and confirm it with a webhook. This takes about five minutes.',
+    group: 'Relay API',
+    title: 'Quickstart',
+    lead: 'Create a payment, watch it settle and refund it. It takes about five minutes.',
+    keywords: 'getting started first payment curl javascript python',
     toc: [{ id: 'before-you-begin', label: 'Before you begin' }, { id: 'steps', label: 'Steps' }, { id: 'next-steps', label: 'Next steps' }],
-    body: ({ lang, setLang, go }) => (
+    body: ({ lang, setLang, go, origin }) => (
       <>
-        <SampleNote />
         <H2 id="before-you-begin">Before you begin</H2>
-        <P>You need a Relay sandbox account and Node.js 18 or later, or Python 3.9 or later. Sandbox keys start with <Code>sk_test_</Code> and never move real money.</P>
+        <P>You need a terminal, or Node.js 18+ or Python 3.9+. Use this test key. Test keys only work in the sandbox, so no real money moves.</P>
+        <CodeTabs samples={{ Shell: `export RELAY_SECRET_KEY=${KEY}` }} />
         <H2 id="steps">Steps</H2>
-        <P>Tick each step as you finish it.</P>
         <Steps items={[
-          { title: 'Store your secret key', body: <>Copy your sandbox secret key from <b>Developers → API keys</b> and keep it in an environment variable, never in your code.<CodeTabs samples={{ Shell: 'export RELAY_SECRET_KEY="sk_test_4eC39HqLyjWD"' }} /></> },
-          { title: 'Install the library', body: <CodeTabs lang={lang} onLang={setLang} samples={{ cURL: '# No install needed: cURL ships with macOS and most Linux distributions.', JavaScript: 'npm install @relaypay/node', Python: 'pip install relaypay' }} /> },
-          { title: 'Create a payment', body: <>Amounts are in the smallest currency unit, so <Code>12500</Code> NGN is ₦125.00.<CodeTabs lang={lang} onLang={setLang} samples={createPayment} /></> },
-          { title: 'Confirm it with a webhook', body: <>Relay sends <Code>payment.settled</Code> when the money arrives. Return a <Code>2xx</Code> within 10 seconds or the event is retried.<CodeTabs lang={lang} onLang={setLang} samples={{ cURL: '# Webhooks are received by your server. See the JavaScript or Python tab.', JavaScript: `app.post("/webhooks/relay", express.raw({ type: "application/json" }), (req, res) => {
-  const event = relay.webhooks.verify(req.body, req.headers["relay-signature"])
-  if (event.type === "payment.settled") {
-    markOrderPaid(event.data.reference)
-  }
-  res.sendStatus(200)
-})`, Python: `@app.post("/webhooks/relay")
-def relay_webhook():
-    event = relay.webhooks.verify(request.data, request.headers["Relay-Signature"])
-    if event.type == "payment.settled":
-        mark_order_paid(event.data.reference)
-    return "", 200` }} /></> },
+          { title: 'Create a payment', body: <>Amounts are in the smallest currency unit, so <Code>5000</Code> NGN is ₦50.00. The response includes the payment&apos;s <Code>id</Code>; keep it for the next steps.<CodeTabs lang={lang} onLang={setLang} samples={createPayment(origin)} /></> },
+          { title: 'Check its status', body: <>A new payment is <Code>pending</Code>. It becomes <Code>confirmed</Code> after about 8 seconds and <Code>settled</Code> after about 16. Replace <Code>$PAYMENT_ID</Code> with your id; the docs terminal fills it in for you.<CodeTabs lang={lang} onLang={setLang} samples={retrievePayment(origin)} /><Try><RunCommand cmd="relay status $LAST --watch" label="Watch it settle" /></Try></> },
+          { title: 'Refund it', body: <>Refunds work once a payment is settled. Call this too early and you get a <Code>409</Code> that tells you the current status.<CodeTabs lang={lang} onLang={setLang} samples={refundPayment(origin)} /></> },
         ]} />
-        <Callout kind="warning">Always verify the signature before trusting a webhook. Anyone can send a request to a public URL.</Callout>
         <H2 id="next-steps">Next steps</H2>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-[0.95rem]">
-          <li><button type="button" onClick={() => go('api-payments')} className="font-semibold text-primary hover:underline">Read the Create a payment reference</button> and send a request from the page.</li>
-          <li><button type="button" onClick={() => go('concepts')} className="font-semibold text-primary hover:underline">Learn the payment lifecycle</button> before you go live.</li>
+          <li><button type="button" onClick={() => go('lifecycle')} className="font-semibold text-primary hover:underline">Learn the payment lifecycle</button> to know when it is safe to deliver an order.</li>
+          <li><button type="button" onClick={() => go('errors')} className="font-semibold text-primary hover:underline">Handle errors</button> so a failed request never charges twice.</li>
         </ul>
       </>
     ),
   },
   {
-    id: 'api-payments',
-    keywords: 'endpoint reference idempotency errors 401 409 422 429 rate limit try it',
-    group: 'Live samples',
-    title: 'Create a payment',
-    lead: 'Creates a payment and returns it in the pending state. Use an idempotency key so a retried request never charges twice.',
-    toc: [{ id: 'request', label: 'Request' }, { id: 'try-it', label: 'Try it' }, { id: 'response', label: 'Response' }, { id: 'errors', label: 'Errors' }],
-    body: ({ lang, setLang }) => (
+    id: 'authentication',
+    group: 'Relay API',
+    title: 'Authentication',
+    lead: 'Every request is authenticated with a secret key, sent as a bearer token.',
+    keywords: 'api key secret bearer token 401 authorization header',
+    toc: [{ id: 'keys', label: 'API keys' }, { id: 'sending-the-key', label: 'Sending the key' }, { id: 'failed-authentication', label: 'Failed authentication' }],
+    body: ({ origin }) => (
       <>
-        <SampleNote />
+        <H2 id="keys">API keys</H2>
+        <Table head={['Key', 'Use it for']} rows={[[<Code key="t">sk_test_…</Code>, 'The sandbox. Payments behave like real ones, but no money moves.'], [<Code key="l">sk_live_…</Code>, 'Real payments. Keep it on your server only.']]} />
+        <Callout kind="warning">Never put a secret key in a browser, a mobile app or a public repository. Anyone who has it can create and refund payments.</Callout>
+        <H2 id="sending-the-key">Sending the key</H2>
+        <P>Send the key in the <Code>Authorization</Code> header of every request.</P>
+        <CodeTabs samples={{ cURL: `curl ${api(origin)}/payments/$PAYMENT_ID \\
+  -H "Authorization: Bearer $RELAY_SECRET_KEY"` }} />
+        <H2 id="failed-authentication">Failed authentication</H2>
+        <P>A missing or wrong key returns <Code>401</Code>. Run both to see the difference:</P>
+        <Try>
+          <RunCommand cmd={`curl ${api(origin)}/payments -d amount=5000 -d currency=NGN`} label="No key" />
+          <RunCommand cmd={`curl ${api(origin)}/payments -H "Authorization: Bearer sk_test_wrong" -d amount=5000 -d currency=NGN`} label="Wrong key" />
+        </Try>
+      </>
+    ),
+  },
+  {
+    id: 'create-payment',
+    group: 'Relay API',
+    title: 'Create a payment',
+    lead: 'Creates a payment in the pending state. Send an idempotency key so a retried request never creates a second payment.',
+    keywords: 'post payments endpoint reference idempotency parameters try it',
+    toc: [{ id: 'request', label: 'Request' }, { id: 'try-it', label: 'Try it' }, { id: 'response', label: 'Response' }],
+    body: ({ lang, setLang, origin }) => (
+      <>
         <Endpoint method="POST" path="/v1/payments" />
         <H2 id="request">Request</H2>
         <Params title="Headers" items={[
           { name: 'Authorization', type: 'string', required: true, body: 'Bearer followed by your secret key.' },
-          { name: 'Idempotency-Key', type: 'string', body: 'A unique value per payment. Repeating it within 24 hours returns the original result instead of creating a second payment.' },
+          { name: 'Idempotency-Key', type: 'string', body: 'A unique value per payment. Repeating it returns the first payment instead of creating another.' },
         ]} />
         <Params items={[
-          { name: 'amount', type: 'integer', required: true, body: 'A positive whole number in the smallest currency unit. 12500 NGN is ₦125.00.' },
-          { name: 'currency', type: 'string', required: true, body: 'Three-letter ISO code. One of NGN, USD, GHS or KES.' },
-          { name: 'reference', type: 'string', body: 'Your own identifier, up to 64 characters. Returned in every event for this payment.' },
+          { name: 'amount', type: 'integer', required: true, body: 'A positive whole number in the smallest currency unit. 5000 NGN is ₦50.00. Maximum 100000000.' },
+          { name: 'currency', type: 'string', required: true, body: 'Three-letter code: NGN, USD, GHS or KES.' },
+          { name: 'reference', type: 'string', body: 'Your own identifier, up to 64 characters, without full stops. Returned with the payment.' },
         ]} />
-        <CodeTabs lang={lang} onLang={setLang} samples={createPayment} />
+        <CodeTabs lang={lang} onLang={setLang} samples={createPayment(origin)} />
         <H2 id="try-it">Try it</H2>
-        <P>Send a request to the simulated sandbox. Change the values to see how validation works.</P>
+        <P>Change the values and send. Try a negative amount or EUR to see the errors.</P>
         <Playground />
         <H2 id="response">Response</H2>
-        <P>Returns <Code>201 Created</Code> with the payment object.</P>
-        <CodeTabs title="201 Created" samples={{ JSON: `{
-  "id": "pay_8Qw2LmT4",
+        <P>Returns <Code>201</Code> with the payment, or <Code>200</Code> with the original payment when the idempotency key was used before.</P>
+        <Json title="201 Created" body={`{
+  "id": "pay_MTc5NDQwMDE0NDk3NS41MDAwLk5HTi5vcmRlcl8wMTQy",
   "object": "payment",
-  "amount": 12500,
+  "amount": 5000,
   "currency": "NGN",
   "status": "pending",
-  "reference": "inv_0142",
-  "created_at": "2026-11-11T09:24:03Z"
-}` }} />
-        <H2 id="errors">Errors</H2>
-        <Table head={['Status', 'Code', 'What to do']} rows={[
-          [<Code key="a">401</Code>, 'unauthenticated', 'Check the key is set and starts with sk_test_ or sk_live_.'],
-          [<Code key="b">409</Code>, 'idempotency_conflict', 'The key was reused with different values. Use a new key.'],
-          [<Code key="c">422</Code>, 'invalid_amount', 'Send a positive whole number in the smallest unit.'],
-          [<Code key="d">422</Code>, 'unsupported_currency', 'Use NGN, USD, GHS or KES.'],
-          [<Code key="e">429</Code>, 'rate_limited', 'Wait for the time in the Retry-After header, then retry.'],
+  "reference": "order_0142",
+  "created_at": "2026-11-11T12:29:04.975Z",
+  "settled_at": null
+}`} />
+      </>
+    ),
+  },
+  {
+    id: 'retrieve-payment',
+    group: 'Relay API',
+    title: 'Retrieve a payment',
+    lead: 'Returns a payment with its current status.',
+    keywords: 'get payment status endpoint',
+    toc: [{ id: 'request', label: 'Request' }, { id: 'response', label: 'Response' }],
+    body: ({ lang, setLang, origin }) => (
+      <>
+        <Endpoint method="GET" path="/v1/payments/{id}" />
+        <H2 id="request">Request</H2>
+        <Params title="Path parameters" items={[{ name: 'id', type: 'string', required: true, body: 'The id returned when the payment was created. It starts with pay_.' }]} />
+        <CodeTabs lang={lang} onLang={setLang} samples={retrievePayment(origin)} />
+        <Try><RunCommand cmd="relay pay 2500 GHS && relay status $LAST" label="Create one, then retrieve it" /></Try>
+        <H2 id="response">Response</H2>
+        <Table head={['Field', 'Description']} rows={[
+          [<Code key="s">status</Code>, 'pending, confirmed or settled.'],
+          [<Code key="c">created_at</Code>, 'When the payment was created, in UTC.'],
+          [<Code key="t">settled_at</Code>, 'When the money reached your balance. null until then.'],
+        ]} />
+        <P>An unknown id returns <Code>404 resource_missing</Code>.</P>
+      </>
+    ),
+  },
+  {
+    id: 'refund-payment',
+    group: 'Relay API',
+    title: 'Refund a payment',
+    lead: 'Returns all or part of a settled payment to the customer.',
+    keywords: 'refund post 409 partial',
+    toc: [{ id: 'request', label: 'Request' }, { id: 'rules', label: 'Rules' }],
+    body: ({ lang, setLang, origin }) => (
+      <>
+        <Endpoint method="POST" path="/v1/payments/{id}/refund" />
+        <H2 id="request">Request</H2>
+        <Params items={[{ name: 'amount', type: 'integer', body: 'How much to refund, in the smallest unit. Leave it out to refund the full payment.' }]} />
+        <CodeTabs lang={lang} onLang={setLang} samples={refundPayment(origin)} />
+        <H2 id="rules">Rules</H2>
+        <Table head={['Payment status', 'Result']} rows={[
+          ['pending or confirmed', <><Code key="a">409 payment_not_settled</Code>. Wait for settlement, then try again.</>],
+          ['settled', <><Code key="b">201</Code> with the refund.</>],
+        ]} />
+        <Try>
+          <RunCommand cmd="relay pay 3000 NGN && relay refund $LAST" label="Refund too early" />
+          <RunCommand cmd="relay pay 3000 NGN && relay status $LAST --watch && relay refund $LAST --amount 1000" label="Wait, then refund part" />
+        </Try>
+      </>
+    ),
+  },
+  {
+    id: 'lifecycle',
+    group: 'Relay API',
+    title: 'Payment lifecycle',
+    lead: 'Every payment moves through three states. Knowing them tells you when it is safe to deliver an order.',
+    keywords: 'states pending confirmed settled idempotency fulfil webhook',
+    toc: [{ id: 'states', label: 'States' }, { id: 'when-to-fulfil', label: 'When to fulfil an order' }, { id: 'idempotency', label: 'Retrying safely' }],
+    body: ({ origin }) => (
+      <>
+        <H2 id="states">States</H2>
+        <Lifecycle />
+        <Try><RunCommand cmd="relay pay 5000 NGN && relay status $LAST --watch" label="Follow a real payment" /></Try>
+        <H2 id="when-to-fulfil">When to fulfil an order</H2>
+        <Table head={['Status', 'Deliver the order?']} rows={[
+          ['pending', 'No. The money has not arrived.'],
+          ['confirmed', 'Only for low-value digital goods.'],
+          ['settled', 'Yes. The money is in your balance.'],
+        ]} />
+        <H2 id="idempotency">Retrying safely</H2>
+        <P>If a request times out, you cannot tell whether the payment was created. Send it again with the same <Code>Idempotency-Key</Code> and Relay returns the first payment instead of creating a second one. Run the same request twice and compare the ids:</P>
+        <Try><RunCommand cmd={`curl ${api(origin)}/payments -H "Authorization: Bearer $RELAY_SECRET_KEY" -H "Idempotency-Key: order-77" -d amount=900 -d currency=USD && curl ${api(origin)}/payments -H "Authorization: Bearer $RELAY_SECRET_KEY" -H "Idempotency-Key: order-77" -d amount=900 -d currency=USD`} label="Send the same request twice" /></Try>
+        <Callout kind="tip">Build the key from something you already store, such as your order ID, so a retry after a crash sends the same key.</Callout>
+      </>
+    ),
+  },
+  {
+    id: 'errors',
+    group: 'Relay API',
+    title: 'Errors',
+    lead: 'Errors return a 4xx status and a JSON body that says what went wrong and which parameter caused it.',
+    keywords: '401 404 409 422 error codes troubleshooting',
+    toc: [{ id: 'format', label: 'Format' }, { id: 'codes', label: 'Error codes' }],
+    body: ({ origin }) => (
+      <>
+        <H2 id="format">Format</H2>
+        <Json title="422 Unprocessable Entity" body={`{
+  "error": {
+    "type": "invalid_request_error",
+    "code": "unsupported_currency",
+    "message": "EUR is not supported. Use one of NGN, USD, GHS, KES.",
+    "param": "currency"
+  }
+}`} />
+        <H2 id="codes">Error codes</H2>
+        <P>Run any of these to see the real response.</P>
+        <Table head={['Status', 'Code', 'Fix', '']} rows={[
+          ['401', <Code key="1">missing_api_key</Code>, 'Send the Authorization header.', <RunCommand key="r1" cmd={`curl ${api(origin)}/payments -d amount=5000 -d currency=NGN`} label="Run" />],
+          ['401', <Code key="2">invalid_api_key</Code>, 'Check the key is complete and current.', <RunCommand key="r2" cmd={`curl ${api(origin)}/payments -H "Authorization: Bearer sk_test_old" -d amount=5000 -d currency=NGN`} label="Run" />],
+          ['404', <Code key="3">resource_missing</Code>, 'Check the payment id.', <RunCommand key="r3" cmd="relay status pay_doesnotexist" label="Run" />],
+          ['409', <Code key="4">payment_not_settled</Code>, 'Wait until the payment is settled.', <RunCommand key="r4" cmd="relay pay 5000 NGN && relay refund $LAST" label="Run" />],
+          ['422', <Code key="5">invalid_amount</Code>, 'Send a positive whole number.', <RunCommand key="r5" cmd="relay pay -50 NGN" label="Run" />],
+          ['422', <Code key="6">unsupported_currency</Code>, 'Use NGN, USD, GHS or KES.', <RunCommand key="r6" cmd="relay pay 5000 EUR" label="Run" />],
         ]} />
       </>
     ),
   },
   {
+    id: 'changelog',
+    group: 'Relay API',
+    title: 'Changelog',
+    lead: 'Changes to the Relay API, newest first.',
+    keywords: 'release notes version deprecated',
+    toc: [{ id: 'v1-2', label: '1.2.0' }, { id: 'v1-1', label: '1.1.0' }, { id: 'v1-0', label: '1.0.0' }],
+    body: ({ go }) => {
+      const tag = (kind: 'Added' | 'Changed', cls: string) => <span className={`mr-2 rounded px-1.5 py-0.5 text-[0.7rem] font-bold ${cls}`}>{kind}</span>
+      return (
+        <>
+          <H2 id="v1-2">1.2.0 · November 2026</H2>
+          <ul className="mt-4 space-y-3 text-[0.95rem] leading-7">
+            <li>{tag('Added', 'bg-success/15 text-success')}Partial refunds. Pass <Code>amount</Code> to <button type="button" onClick={() => go('refund-payment')} className="font-semibold text-primary hover:underline">Refund a payment</button>.</li>
+            <li>{tag('Changed', 'bg-primary/15 text-primary')}Refunding a payment that is not settled now returns <Code>409 payment_not_settled</Code> instead of <Code>400</Code>.</li>
+          </ul>
+          <Callout kind="tip" title="Upgrading">If you check for status 400 after a refund, check for 409 as well.</Callout>
+          <H2 id="v1-1">1.1.0 · October 2026</H2>
+          <ul className="mt-4 space-y-3 text-[0.95rem] leading-7"><li>{tag('Added', 'bg-success/15 text-success')}KES is a supported currency.</li></ul>
+          <H2 id="v1-0">1.0.0 · September 2026</H2>
+          <ul className="mt-4 space-y-3 text-[0.95rem] leading-7"><li>{tag('Added', 'bg-success/15 text-success')}Create and retrieve payments in NGN, USD and GHS.</li></ul>
+        </>
+      )
+    },
+  },
+  {
     id: 'user-guide',
-    keywords: 'manual electricity meter token troubleshooting faq',
-    group: 'Live samples',
-    title: 'User guide: pay a bill',
-    lead: 'For people using the Relay app. Find your way around the home screen, then pay an electricity bill.',
+    group: 'Guides',
+    title: 'Pay a bill in the Relay app',
+    lead: 'Find your way around the home screen, then pay an electricity bill.',
+    keywords: 'user guide manual electricity meter token troubleshooting faq',
     toc: [{ id: 'home-screen', label: 'The home screen' }, { id: 'pay-electricity', label: 'Pay an electricity bill' }, { id: 'troubleshooting', label: 'Troubleshooting' }],
     body: () => (
       <>
-        <SampleNote />
         <H2 id="home-screen">The home screen</H2>
         <P>Select a number to see what each part of the screen does.</P>
         <Hotspots />
@@ -268,56 +430,29 @@ def relay_webhook():
         <Steps items={[
           { title: 'Select Pay a bill, then Electricity', body: 'Choose your distribution company from the list.' },
           { title: 'Enter your meter number', body: 'Relay checks the meter and shows the name on the account. Stop if the name is not yours.' },
-          { title: 'Enter the amount and confirm', body: 'Review the amount and fee, then select Pay.' },
-          { title: 'Save your token', body: 'Prepaid meters receive a 20-digit token on screen and by email. Enter it on your meter.' },
+          { title: 'Enter the amount and confirm', body: 'Check the amount and fee, then select Pay.' },
+          { title: 'Save your token', body: 'Prepaid meters get a 20-digit token on screen and by email. Enter it on your meter.' },
         ]} />
         <H2 id="troubleshooting">Troubleshooting</H2>
         <Faq items={[
-          { q: 'I paid but did not get a token', a: 'Tokens usually arrive within a minute. Open Activity, select the payment and choose Resend token. If the status is failed, the money returns to your balance automatically.' },
-          { q: 'The meter name is wrong', a: 'Do not continue. Check the meter number on your meter or last receipt and enter it again.' },
-          { q: 'The token was rejected by my meter', a: 'Enter it again slowly, digit by digit. If it is still rejected, contact your distribution company with the receipt from Activity.' },
-        ]} />
-      </>
-    ),
-  },
-  {
-    id: 'concepts',
-    keywords: 'webhook settled pending idempotency lifecycle',
-    group: 'Live samples',
-    title: 'Concepts: the payment lifecycle',
-    lead: 'Every payment moves through a small set of states. Knowing them tells you when it is safe to deliver an order.',
-    toc: [{ id: 'states', label: 'States' }, { id: 'idempotency', label: 'Idempotency' }, { id: 'when-to-fulfil', label: 'When to fulfil an order' }],
-    body: () => (
-      <>
-        <SampleNote />
-        <H2 id="states">States</H2>
-        <P>Select a state to read what it means.</P>
-        <Lifecycle />
-        <H2 id="idempotency">Idempotency</H2>
-        <P>Networks fail. If a request times out you cannot tell whether the payment was created. Send the same <Code>Idempotency-Key</Code> again and Relay returns the first result instead of creating a duplicate.</P>
-        <Callout kind="tip">Derive the key from something you already store, such as your order ID, so a retry after a crash still sends the same key.</Callout>
-        <H2 id="when-to-fulfil">When to fulfil an order</H2>
-        <Table head={['Status', 'Safe to deliver?']} rows={[
-          ['pending', 'No. Funds have not arrived.'],
-          ['confirmed', 'Usually. Low-value digital goods can ship here.'],
-          ['settled', 'Yes. The money is in your balance.'],
-          ['failed', 'No. Ask the customer to pay again.'],
+          { q: 'I paid but did not get a token', a: 'Tokens usually arrive within a minute. Open Activity, select the payment and choose Resend token. If the payment failed, the money returns to your balance automatically.' },
+          { q: 'The name on the meter is wrong', a: 'Do not continue. Check the meter number on your meter or your last receipt and enter it again.' },
+          { q: 'My meter rejected the token', a: 'Enter it again slowly. If it is still rejected, contact your distribution company with the receipt from Activity.' },
         ]} />
       </>
     ),
   },
   {
     id: 'web3-deploy',
-    keywords: 'solidity hardhat evm smart contract blockchain rootstock zksync testnet',
-    group: 'Live samples',
-    title: 'Tutorial: deploy a smart contract',
-    lead: 'Compile and deploy a Solidity contract to an EVM testnet with Hardhat, then call it.',
-    toc: [{ id: 'the-contract', label: 'The contract' }, { id: 'configure', label: 'Configure the network' }, { id: 'deploy', label: 'Deploy' }],
+    group: 'Guides',
+    title: 'Deploy a smart contract',
+    lead: 'Write, test and deploy a Solidity contract to an EVM testnet with Hardhat.',
+    keywords: 'solidity hardhat evm smart contract blockchain rootstock zksync testnet web3',
+    toc: [{ id: 'the-contract', label: 'The contract' }, { id: 'test-it', label: 'Test it' }, { id: 'configure', label: 'Configure the network' }, { id: 'deploy', label: 'Deploy' }],
     body: () => (
       <>
-        <Callout kind="note" title="About this sample">I wrote this tutorial for my portfolio. It follows the same pattern as developer guides for EVM chains such as Rootstock and ZKsync, with the network details left generic.</Callout>
         <H2 id="the-contract">The contract</H2>
-        <P>A counter that anyone can increase. Small enough to read in one go, real enough to deploy.</P>
+        <P>A counter anyone can increase. It emits an event each time, so apps can react without polling.</P>
         <CodeTabs title="contracts/Counter.sol" samples={{ Solidity: `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
@@ -331,8 +466,19 @@ contract Counter {
         emit Increased(count);
     }
 }` }} />
+        <H2 id="test-it">Test it</H2>
+        <CodeTabs title="test/Counter.js" samples={{ JavaScript: `const { expect } = require("chai")
+
+describe("Counter", () => {
+  it("increases by one", async () => {
+    const counter = await ethers.deployContract("Counter")
+    await counter.increase()
+    expect(await counter.count()).to.equal(1n)
+  })
+})` }} />
+        <Try><RunCommand cmd="npx hardhat compile && npx hardhat test" /></Try>
         <H2 id="configure">Configure the network</H2>
-        <P>Read the RPC URL and deployer key from environment variables.</P>
+        <P>Read the RPC URL and the deployer key from environment variables, never from the file itself.</P>
         <CodeTabs title="hardhat.config.js" samples={{ JavaScript: `require("@nomicfoundation/hardhat-toolbox")
 
 module.exports = {
@@ -344,69 +490,51 @@ module.exports = {
     },
   },
 }` }} />
-        <Callout kind="warning">Never commit a private key. Use a wallet that holds only testnet funds.</Callout>
+        <Callout kind="warning">Never commit a private key. Deploy from a wallet that only holds testnet funds.</Callout>
         <H2 id="deploy">Deploy</H2>
-        <P>Compile, deploy and check the result. The terminal below plays the run.</P>
-        <Terminal lines={[
-          { cmd: 'npx hardhat compile', out: 'Compiled 1 Solidity file successfully (evm target: paris).' },
-          { cmd: 'npx hardhat run scripts/deploy.js --network testnet', out: 'Counter deployed to 0x5FbDB2315678afecb367f032d93F642f64180aa3' },
-          { cmd: 'npx hardhat console --network testnet', out: '> await counter.increase()\n> await counter.count()\n1n' },
-        ]} />
-      </>
-    ),
-  },
-  {
-    id: 'changelog',
-    keywords: 'release notes deprecated version',
-    group: 'Live samples',
-    title: 'Changelog',
-    lead: 'What changed in the Relay API, who it affects and what to do.',
-    toc: [{ id: 'v2-4', label: '2.4.0' }, { id: 'v2-3', label: '2.3.0' }],
-    body: () => (
-      <>
-        <SampleNote />
-        <H2 id="v2-4">2.4.0 · November 2026</H2>
-        <ul className="mt-4 space-y-3 text-[0.95rem] leading-7">
-          <li><span className="mr-2 rounded bg-success/15 px-1.5 py-0.5 text-[0.7rem] font-bold text-success">Added</span>KES is now a supported currency for payments.</li>
-          <li><span className="mr-2 rounded bg-primary/15 px-1.5 py-0.5 text-[0.7rem] font-bold text-primary">Changed</span>Idempotency keys are kept for 24 hours, up from 12.</li>
-        </ul>
-        <H2 id="v2-3">2.3.0 · September 2026</H2>
-        <ul className="mt-4 space-y-3 text-[0.95rem] leading-7">
-          <li><span className="mr-2 rounded bg-[#D97706]/15 px-1.5 py-0.5 text-[0.7rem] font-bold text-[#B45309] dark:text-[#FBBF24]">Deprecated</span><Code>payment.completed</Code> is replaced by <Code>payment.settled</Code>. Listen for both until 1 March 2027.</li>
-        </ul>
-        <Callout kind="tip" title="Upgrading">Search your webhook handlers for <Code>payment.completed</Code> and add a matching branch for <Code>payment.settled</Code>.</Callout>
+        <CodeTabs title="scripts/deploy.js" samples={{ JavaScript: `async function main() {
+  const counter = await ethers.deployContract("Counter")
+  await counter.waitForDeployment()
+  console.log("Counter deployed to", await counter.getAddress())
+}
+
+main()` }} />
+        <Try>
+          <RunCommand cmd="npx hardhat run scripts/deploy.js --network testnet" />
+          <RunCommand cmd="npx hardhat run scripts/deploy.js" label="Forget the network" />
+        </Try>
       </>
     ),
   },
   {
     id: 'skills',
-    keywords: 'git github jenkins github actions html css javascript php markdown',
     group: 'Reference',
     title: 'Skills and tools',
     lead: 'What I bring to a documentation team.',
+    keywords: 'git github jenkins github actions html css javascript php markdown',
     toc: [{ id: 'writing', label: 'Writing' }, { id: 'technical', label: 'Technical' }],
     body: () => (
       <>
         <H2 id="writing">Writing</H2>
         <Table head={['Skill', 'Includes']} rows={[
-          ['API documentation', 'Endpoint references, authentication, errors, rate limits and SDK guides.'],
+          ['API documentation', 'References, authentication, errors, rate limits and SDK guides.'],
           ['Developer documentation', 'Quickstarts, tutorials, concepts and integration guides.'],
           ['Technical manuals and user guides', 'Task-based instructions, troubleshooting and onboarding.'],
           ['Research and information architecture', 'Interviewing engineers, testing products and structuring large doc sets.'],
         ]} />
         <H2 id="technical">Technical</H2>
         <div className="mt-5 flex flex-wrap gap-2">
-          {['HTML', 'CSS', 'JavaScript', 'PHP', 'Git', 'GitHub', 'Jenkins', 'GitHub Actions', 'Markdown', 'REST APIs', 'Solidity basics'].map(t => <span key={t} className="rounded-lg border border-ink-border bg-surface px-3 py-1.5 font-head text-[0.8rem]">{t}</span>)}
+          {['HTML', 'CSS', 'JavaScript', 'PHP', 'Git', 'GitHub', 'Jenkins', 'GitHub Actions', 'Markdown', 'REST APIs', 'Solidity'].map(t => <span key={t} className="rounded-lg border border-ink-border bg-surface px-3 py-1.5 font-head text-[0.8rem]">{t}</span>)}
         </div>
       </>
     ),
   },
   {
     id: 'contact',
-    keywords: 'email hire cv recruiter',
     group: 'Reference',
     title: 'Work with me',
-    lead: 'Need documentation that developers and customers can actually use? Let’s talk.',
+    lead: 'Need documentation that developers and customers can use? Let’s talk.',
+    keywords: 'email hire cv recruiter contact',
     toc: [{ id: 'get-in-touch', label: 'Get in touch' }],
     body: () => (
       <>

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import { pages, type DocPage } from './content'
+import { ShellProvider } from './Shell'
 
 const groups = Array.from(new Set(pages.map(p => p.group)))
 
@@ -21,6 +22,8 @@ export default function DocsView() {
   const [lang, setLang] = useState('cURL')
   const [menu, setMenu] = useState(false)
   const [search, setSearch] = useState(false)
+  const [origin, setOrigin] = useState('')
+  useEffect(() => setOrigin(window.location.origin), [])
   const page = pages.find(p => p.id === id) ?? pages[0]
   const index = pages.indexOf(page)
 
@@ -58,7 +61,7 @@ export default function DocsView() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-bg text-parchment">
+    <ShellProvider go={go} pages={pages}><main className="min-h-screen bg-bg pb-20 text-parchment">
       <Nav />
       <div className="border-b border-ink-border bg-surface pt-[var(--nav-h)]">
         <div className="mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
@@ -85,8 +88,7 @@ export default function DocsView() {
               <p className="text-xs font-semibold text-muted">{page.group} <span className="mx-1">›</span> <span className="text-parchment">{page.title}</span></p>
               <h1 className="mt-3 font-display text-[clamp(2rem,4vw,2.9rem)] font-extrabold leading-[1.08] tracking-[-0.02em]">{page.title}</h1>
               <p className="mt-4 text-[1.08rem] leading-8 text-muted">{page.lead}</p>
-              {page.id === 'overview' && <LiveBanner onSearch={() => setSearch(true)} go={go} />}
-              <div className="mt-10">{page.body({ lang, setLang, go })}</div>
+              <div className="mt-10">{page.body({ lang, setLang, go, origin })}</div>
               <Feedback key={`fb-${page.id}`} />
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {index > 0 ? <PageLink p={pages[index - 1]} dir="Previous" go={go} /> : <span />}
@@ -113,7 +115,7 @@ export default function DocsView() {
       </AnimatePresence>
       <AnimatePresence>{search && <Search onClose={() => setSearch(false)} go={go} />}</AnimatePresence>
       <Footer />
-    </main>
+    </main></ShellProvider>
   )
 }
 
@@ -147,7 +149,7 @@ function Toc({ page }: { page: DocPage }) {
     const io = new IntersectionObserver(entries => {
       const top = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]
       if (top) setOn(top.target.id)
-    }, { rootMargin: '-20% 0px -65% 0px' })
+    }, { rootMargin: '-12% 0px -60% 0px' })
     const t = setTimeout(() => els.forEach(el => io.observe(el)), 400)
     return () => { clearTimeout(t); io.disconnect() }
   }, [page])
@@ -162,26 +164,6 @@ function Toc({ page }: { page: DocPage }) {
         ))}
       </ul>
     </nav>
-  )
-}
-
-function LiveBanner({ onSearch, go }: { onSearch: () => void; go: (id: string, anchor?: string) => void }) {
-  const tries = [
-    { label: 'Search these docs', hint: '⌘K', act: onSearch },
-    { label: 'Send an API request', hint: 'Try it', act: () => go('api-payments', 'try-it') },
-    { label: 'Watch a contract deploy', hint: 'Terminal', act: () => go('web3-deploy', 'deploy') },
-  ]
-  return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-primary/25 bg-primary/[0.05] p-5">
-      <p className="text-sm font-bold">These docs are live. Use them.</p>
-      <div className="mt-3 grid gap-2 sm:grid-cols-3">
-        {tries.map((t, n) => (
-          <motion.button key={t.label} type="button" onClick={t.act} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + n * 0.1 }} className="flex items-center justify-between gap-2 rounded-xl border border-ink-border bg-surface px-3.5 py-3 text-left text-[0.85rem] font-semibold transition hover:-translate-y-0.5 hover:border-primary/50">
-            {t.label}<span className="shrink-0 rounded bg-primary/10 px-1.5 py-0.5 font-head text-[0.65rem] text-primary">{t.hint}</span>
-          </motion.button>
-        ))}
-      </div>
-    </div>
   )
 }
 

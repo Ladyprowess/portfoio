@@ -1,7 +1,11 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { highlight } from './highlight'
+import { useShell } from './Shell'
+
+const RELAY_KEY = 'sk_test_relay_4eC39HqLyjWD'
 
 /* Building blocks of the documentation view: the same pieces a real docs
    site is made of, so the page demonstrates the craft while it describes it. */
@@ -41,42 +45,6 @@ export function Callout({ kind = 'note', title, children }: { kind?: keyof typeo
   )
 }
 
-/* ── Syntax colouring ─────────────────────────
-   A small tokenizer is enough for the languages on this page. */
-
-const tokenRules: [RegExp, string][] = [
-  [/^(\/\/[^\n]*|#[^\n]*)/, 'text-[#7C8BA1] italic'],
-  [/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/, 'text-[#A5D6A7]'],
-  [/^\b(const|let|await|async|import|from|export|return|if|else|new|function|def|print|true|false|null|None|True|False)\b/, 'text-[#C792EA]'],
-  [/^\b\d+(\.\d+)?\b/, 'text-[#F78C6C]'],
-  [/^(curl|npx|npm|pip|python|node|git)\b/, 'text-[#82AAFF]'],
-  [/^(-{1,2}[a-zA-Z][\w-]*)/, 'text-[#FFCB6B]'],
-]
-
-function highlight(code: string) {
-  const out: ReactNode[] = []
-  let rest = code
-  let plain = ''
-  let k = 0
-  let prev = ''
-  while (rest.length) {
-    // Comments only start a token at the line start or after whitespace, so URLs stay intact.
-    const hit = tokenRules.map(([re, cls], i) => { if (i === 0 && prev && !/\s/.test(prev)) return null; const m = rest.match(re); return m ? { text: m[0], cls } : null }).find(Boolean)
-    if (hit) {
-      if (plain) { out.push(plain); plain = '' }
-      out.push(<span key={k++} className={hit.cls}>{hit.text}</span>)
-      prev = hit.text[hit.text.length - 1]
-      rest = rest.slice(hit.text.length)
-    } else {
-      plain += rest[0]
-      prev = rest[0]
-      rest = rest.slice(1)
-    }
-  }
-  if (plain) out.push(plain)
-  return out
-}
-
 function CopyButton({ text }: { text: string }) {
   const [done, setDone] = useState(false)
   return (
@@ -87,8 +55,17 @@ function CopyButton({ text }: { text: string }) {
   )
 }
 
+/** Shell snippets can run in the docs terminal; comment-only snippets cannot. */
+function runnable(lang: string, code: string) {
+  if (!['cURL', 'Shell', 'Terminal'].includes(lang)) return null
+  const cmd = code.split('\n').filter(l => !l.trim().startsWith('#')).join('\n').trim()
+  return cmd || null
+}
+
 /** Code sample with one tab per language; the chosen language is shared across the page. */
 export function CodeTabs({ samples, title, lang, onLang }: { samples: Record<string, string>; title?: string; lang?: string; onLang?: (l: string) => void }) {
+  const shell = useShell()
+  const uid = useId()
   const names = Object.keys(samples)
   const [own, setOwn] = useState(names[0])
   const active = lang && names.includes(lang) ? lang : own
@@ -101,11 +78,14 @@ export function CodeTabs({ samples, title, lang, onLang }: { samples: Record<str
           {names.length > 1 && names.map(n => (
             <button key={n} type="button" onClick={() => pick(n)} className={`relative px-3 py-2.5 text-[0.75rem] font-semibold transition ${n === active ? 'text-white' : 'text-white/45 hover:text-white/80'}`}>
               {n}
-              {n === active && <motion.span layoutId={`tab-${names.join('-')}`} className="absolute inset-x-2 bottom-0 h-[2px] bg-[#60A5FA]" />}
+              {n === active && <motion.span layoutId={`tab-${uid}`} className="absolute inset-x-2 bottom-0 h-[2px] bg-[#60A5FA]" />}
             </button>
           ))}
         </div>
-        <CopyButton text={samples[active]} />
+        <div className="flex items-center gap-2">
+          {runnable(active, samples[active]) && <button type="button" onClick={() => shell.run(runnable(active, samples[active])!)} className="rounded-md bg-[#4ADE80]/15 px-2.5 py-1 text-[0.7rem] font-bold text-[#4ADE80] transition hover:bg-[#4ADE80]/25">Run ▸</button>}
+          <CopyButton text={samples[active]} />
+        </div>
       </div>
       <pre className="overflow-x-auto px-5 py-4 font-head text-[0.8rem] leading-6"><code>{highlight(samples[active])}</code></pre>
     </div>
@@ -170,53 +150,49 @@ export function Endpoint({ method, path }: { method: string; path: string }) {
   )
 }
 
-/**
- * "Try it": edit the request and send it to a simulated sandbox. Validation
- * follows the reference above it, so the errors teach the same rules.
- */
+/** "Try it": sends a real request to the Relay sandbox and shows the response. */
 export function Playground() {
+  const shell = useShell()
   const [amount, setAmount] = useState('12500')
   const [currency, setCurrency] = useState('NGN')
   const [reference, setReference] = useState('inv_0142')
-  const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle')
-  const [res, setRes] = useState<{ status: number; body: string } | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [res, setRes] = useState<{ status: number; body: string; ms: number } | null>(null)
+  const [origin, setOrigin] = useState('')
+  useEffect(() => setOrigin(window.location.origin), [])
 
-  const send = () => {
-    setState('sending')
-    setRes(null)
-    setTimeout(() => {
-      const n = Number(amount)
-      let out: { status: number; body: object }
-      if (!amount || !Number.isInteger(n) || n <= 0) out = { status: 422, body: { error: { code: 'invalid_amount', message: 'amount must be a positive whole number in the smallest currency unit.', param: 'amount' } } }
-      else if (!['NGN', 'USD', 'GHS', 'KES'].includes(currency)) out = { status: 422, body: { error: { code: 'unsupported_currency', message: `${currency} is not supported. Use NGN, USD, GHS or KES.`, param: 'currency' } } }
-      else out = { status: 201, body: { id: 'pay_8Qw2LmT4', object: 'payment', amount: n, currency, status: 'pending', reference: reference || null, created_at: '2026-11-11T09:24:03Z' } }
-      setRes({ status: out.status, body: JSON.stringify(out.body, null, 2) })
-      setState('done')
-    }, 900)
+  const send = async () => {
+    setBusy(true)
+    const started = performance.now()
+    const r = await fetch('/api/relay/v1/payments', { method: 'POST', headers: { Authorization: `Bearer ${RELAY_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: amount === '' ? undefined : Number(amount), currency, reference }) })
+    setRes({ status: r.status, body: JSON.stringify(await r.json(), null, 2), ms: Math.round(performance.now() - started) })
+    setBusy(false)
   }
 
+  const curl = `curl ${origin}/api/relay/v1/payments \\\n  -H "Authorization: Bearer $RELAY_SECRET_KEY" \\\n  -d amount=${amount} \\\n  -d currency=${currency}${reference ? ` \\\n  -d reference=${reference}` : ''}`
   const field = 'mt-1.5 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-head text-[0.82rem] text-white outline-none transition focus:border-[#60A5FA]'
   return (
     <div className="mt-6 overflow-hidden rounded-xl border border-[rgb(var(--code-border))] bg-[rgb(var(--code-bg))] text-[rgb(var(--code-ink))]">
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
-        <span className="text-[0.75rem] font-semibold text-white/70">Try it · sandbox</span>
-        <span className="flex items-center gap-1.5 text-[0.7rem] text-white/50"><span className="h-1.5 w-1.5 rounded-full bg-[#4ADE80]" />No real money moves</span>
+        <span className="flex items-center gap-2 text-[0.75rem] font-semibold text-white/70"><span className="rounded bg-[#60A5FA]/15 px-1.5 py-0.5 font-head text-[0.68rem] text-[#60A5FA]">POST</span>/v1/payments</span>
+        <span className="flex items-center gap-1.5 text-[0.7rem] text-white/50"><span className="h-1.5 w-1.5 rounded-full bg-[#4ADE80]" />Sandbox</span>
       </div>
       <div className="grid gap-4 p-4 sm:grid-cols-3">
-        <label className="text-[0.72rem] font-semibold text-white/60">amount<input value={amount} onChange={e => setAmount(e.target.value)} inputMode="numeric" className={field} /></label>
+        <label className="text-[0.72rem] font-semibold text-white/60">amount<input value={amount} onChange={e => setAmount(e.target.value)} className={field} /></label>
         <label className="text-[0.72rem] font-semibold text-white/60">currency<select value={currency} onChange={e => setCurrency(e.target.value)} className={field}>{['NGN', 'USD', 'GHS', 'KES', 'EUR'].map(c => <option key={c} className="bg-[#121820]">{c}</option>)}</select></label>
         <label className="text-[0.72rem] font-semibold text-white/60">reference<input value={reference} onChange={e => setReference(e.target.value)} className={field} /></label>
       </div>
-      <div className="flex items-center gap-3 border-t border-white/10 px-4 py-3">
-        <button type="button" onClick={send} disabled={state === 'sending'} className="rounded-lg bg-[#2563EB] px-4 py-2 text-[0.8rem] font-bold text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">{state === 'sending' ? 'Sending…' : 'Send request'}</button>
-        <span className="text-[0.72rem] text-white/45">Try a negative amount or EUR to see an error.</span>
+      <pre className="overflow-x-auto border-t border-white/10 px-5 py-3 font-head text-[0.76rem] leading-6 text-white/70"><code>{highlight(curl)}</code></pre>
+      <div className="flex flex-wrap items-center gap-3 border-t border-white/10 px-4 py-3">
+        <button type="button" onClick={send} disabled={busy} className="rounded-lg bg-[#2563EB] px-4 py-2 text-[0.8rem] font-bold text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">{busy ? 'Sending…' : 'Send request'}</button>
+        <button type="button" onClick={() => shell.run(curl)} className="rounded-lg border border-white/15 px-4 py-2 text-[0.8rem] font-bold text-white/80 transition hover:border-white/40 hover:text-white">Run in terminal</button>
       </div>
       <AnimatePresence>
         {res && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="overflow-hidden border-t border-white/10">
+          <motion.div key={res.body} initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="overflow-hidden border-t border-white/10">
             <div className="flex items-center gap-2 px-4 pt-3 text-[0.72rem] font-bold">
               <span className={`rounded px-1.5 py-0.5 ${res.status < 300 ? 'bg-[#4ADE80]/15 text-[#4ADE80]' : 'bg-[#F87171]/15 text-[#F87171]'}`}>{res.status}</span>
-              <span className="text-white/50">{res.status < 300 ? 'Created' : 'Unprocessable entity'}</span>
+              <span className="text-white/50">{res.ms} ms</span>
             </div>
             <pre className="overflow-x-auto px-5 py-3 font-head text-[0.8rem] leading-6"><code>{highlight(res.body)}</code></pre>
           </motion.div>
@@ -226,49 +202,14 @@ export function Playground() {
   )
 }
 
-type Line = { cmd?: string; out?: string }
-
-/** A terminal that types its commands and prints output when scrolled into view. */
-export function Terminal({ lines }: { lines: Line[] }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [done, setDone] = useState<Line[]>([])
-  const [typing, setTyping] = useState<string | null>(null)
-  const [run, setRun] = useState(0)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    let cancelled = false
-    const wait = (ms: number) => new Promise(r => setTimeout(r, ms))
-    const play = async () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setDone(lines); return }
-      setDone([])
-      for (const l of lines) {
-        if (l.cmd) {
-          for (let i = 1; i <= l.cmd.length; i++) { if (cancelled) return; setTyping(l.cmd.slice(0, i)); await wait(26) }
-          await wait(300)
-          if (cancelled) return
-          setTyping(null)
-          setDone(d => [...d, { cmd: l.cmd }])
-        }
-        if (l.out) { await wait(250); if (cancelled) return; setDone(d => [...d, { out: l.out }]); await wait(450) }
-      }
-    }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); play() } }, { threshold: 0.4 })
-    io.observe(el)
-    return () => { cancelled = true; io.disconnect() }
-  }, [lines, run])
+/** A button that runs a command in the docs terminal. */
+export function RunCommand({ cmd, label }: { cmd: string; label?: string }) {
+  const shell = useShell()
+  if (label === 'Run') return <button type="button" onClick={() => shell.run(cmd)} title={cmd} className="whitespace-nowrap rounded-lg bg-[rgb(var(--code-bg))] px-3 py-1.5 font-head text-[0.72rem] font-bold text-[#4ADE80] transition hover:ring-2 hover:ring-[#4ADE80]/50">Run ▸</button>
   return (
-    <div ref={ref} className="mt-6 overflow-hidden rounded-xl border border-[rgb(var(--code-border))] bg-[#0B0F14] text-[#E7EDF6]">
-      <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5">
-        {['#FF5F57', '#FEBC2E', '#28C840'].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />)}
-        <span className="ml-3 text-[0.72rem] text-white/45">terminal</span>
-        <button type="button" onClick={() => { setTyping(null); setRun(r => r + 1) }} className="ml-auto text-[0.7rem] font-semibold text-white/50 hover:text-white">Replay</button>
-      </div>
-      <pre className="min-h-[220px] overflow-x-auto px-5 py-4 font-head text-[0.8rem] leading-6">
-        {done.map((l, n) => l.cmd !== undefined ? <div key={n}><span className="text-[#4ADE80]">$ </span>{l.cmd}</div> : <div key={n} className="whitespace-pre-wrap text-white/60">{l.out}</div>)}
-        <div><span className="text-[#4ADE80]">$ </span>{typing}<motion.span className="inline-block h-4 w-2 translate-y-0.5 bg-white/70" animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 1 }} /></div>
-      </pre>
-    </div>
+    <button type="button" onClick={() => shell.run(cmd)} className="group inline-flex max-w-full items-center gap-2 rounded-lg bg-[rgb(var(--code-bg))] px-3 py-2 text-left font-head text-[0.78rem] text-[rgb(var(--code-ink))] transition hover:ring-2 hover:ring-[#4ADE80]/50">
+      <span className="text-[#4ADE80]">$</span><span className="truncate">{label ?? cmd}</span><span className="ml-1 shrink-0 text-[0.68rem] font-bold text-[#4ADE80] opacity-70 group-hover:opacity-100">Run ▸</span>
+    </button>
   )
 }
 
@@ -294,9 +235,9 @@ export function Faq({ items }: { items: { q: string; a: ReactNode }[] }) {
 /** Payment lifecycle: each state lights up in turn; click a state to read it. */
 export function Lifecycle() {
   const states = [
-    { key: 'pending', label: 'pending', body: 'The payment exists and is waiting for funds. Nothing has moved yet.' },
-    { key: 'confirmed', label: 'confirmed', body: 'Funds have arrived and passed checks. The payment can no longer be edited.' },
-    { key: 'settled', label: 'settled', body: 'The money is in the merchant balance. A payment.settled event is sent.' },
+    { key: 'pending', label: 'pending', body: 'The payment exists and is waiting for funds. Lasts about 8 seconds in the sandbox.' },
+    { key: 'confirmed', label: 'confirmed', body: 'The funds have arrived and passed checks. Settles about 8 seconds later.' },
+    { key: 'settled', label: 'settled', body: 'The money is in your balance. The payment can now be refunded.' },
   ]
   const [i, setI] = useState(0)
   const [auto, setAuto] = useState(true)
@@ -321,7 +262,6 @@ export function Lifecycle() {
       <AnimatePresence mode="wait">
         <motion.p key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-5 text-[0.92rem] leading-7"><code className="font-head font-bold text-primary">{states[i].label}</code> · {states[i].body}</motion.p>
       </AnimatePresence>
-      <p className="mt-3 text-xs text-muted">A payment can also end as <code className="font-head">failed</code> from pending, or <code className="font-head">reversed</code> after settlement.</p>
     </div>
   )
 }

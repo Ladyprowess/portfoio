@@ -204,7 +204,7 @@ export function Theatre() {
               {[['Who it serves', investmentStories[order[i]].customer], ['Business model', investmentStories[order[i]].revenue], ['Where you fit', investmentStories[order[i]].support]].map(([title, text]) => <div key={title}><dt className="text-xs font-bold uppercase tracking-widest text-muted">{title}</dt><dd className="mt-2 text-sm font-semibold leading-6">{text}</dd></div>)}
             </dl>
             <div className="flex items-center justify-between gap-4 border-t border-ink-border bg-bg/60 px-5 py-4 md:px-7">
-              <p className="hidden text-xs text-muted sm:block">Product illustration </p>
+              <span />
               <Link href={`/support/${order[i]}`} className="t-ink text-sm font-bold hover:underline">Read the {film.short} investment story →</Link>
             </div>
           </div>
@@ -272,7 +272,7 @@ function VentureCard({ v, n }: { v: Venture; n: number }) {
       <div className="relative order-1 flex items-center p-3 pb-0 md:p-8 lg:order-2 lg:pl-0">
         <div className="w-full overflow-hidden rounded-[1.3rem] border border-ink-border shadow-[0_24px_60px_-30px_rgba(15,23,42,0.5)]">
           <Loop scene={f.scenes[loopScene[v.slug]]} tone={f.tone} every={6500} />
-          <p className="hidden border-t border-ink-border bg-surface px-4 py-3 text-xs font-semibold text-muted md:block"><span className="t-ink">Product illustration</span> · {f.scenes[loopScene[v.slug]].caption}</p>
+          <p className="hidden border-t border-ink-border bg-surface px-4 py-3 text-xs font-semibold text-muted md:block">{f.scenes[loopScene[v.slug]].caption}</p>
         </div>
       </div>
     </article>
