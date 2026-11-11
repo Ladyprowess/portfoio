@@ -54,6 +54,12 @@ export default function Welcome() {
     posthog.capture('recruiter_view_opened', { from: 'welcome' })
   }
 
+  // The technical writing view works the same way.
+  const toDocs = () => {
+    try { sessionStorage.setItem(WELCOME_KEY, '1') } catch { /* storage blocked */ }
+    posthog.capture('docs_view_opened', { from: 'welcome' })
+  }
+
   useEffect(() => {
     if (document.documentElement.dataset.welcome === 'skip') { setOpen(false); return }
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setLines(FINAL); setDone(true); return }
@@ -116,6 +122,7 @@ export default function Welcome() {
         <span className="font-head text-[10px] uppercase tracking-[.3em] text-white/50">Lady Prowess</span>
         <div className="flex items-center gap-2">
           {/* Available from the first second, so a busy recruiter never waits for the typing */}
+          <a href="/docs" onClick={toDocs} className="hidden rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20 sm:inline-block">Technical writing</a>
           <a href="/recruiter" onClick={toRecruiter} className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20">Recruiter view</a>
           <button type="button" onClick={close} className="flex items-center gap-2 rounded-full border border-white/15 px-3.5 py-1.5 text-xs text-white/70 transition hover:border-white/40 hover:text-white">
             Skip <kbd className="hidden font-head text-[9px] text-white/40 sm:inline">Esc</kbd>
@@ -147,6 +154,9 @@ export default function Welcome() {
               </button>
               <a href="/recruiter" onClick={toRecruiter} className="group flex items-center gap-2 rounded-full border border-white/20 px-6 py-4 text-sm font-semibold text-white transition hover:border-white/50 hover:bg-white/5">
                 Hiring? See the 60-second version <span className="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+              <a href="/docs" onClick={toDocs} className="group flex items-center gap-2 rounded-full border border-white/20 px-6 py-4 text-sm font-semibold text-white transition hover:border-white/50 hover:bg-white/5">
+                Technical writing view <span className="transition-transform group-hover:translate-x-1">→</span>
               </a>
             </motion.div>}
           </AnimatePresence>
