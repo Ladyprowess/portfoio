@@ -12,7 +12,7 @@ export const SITE_URL = (
 
 /** The CV, linked from the hero, about page, contact block and footer. */
 export const CV_URL =
-  "https://drive.google.com/file/d/1q9eMimHYpSPj757teel8ZCfsD91KT9KL/view?usp=sharing";
+  "https://drive.google.com/file/d/1A37Dwek_EYwYAMnsRuKzLLHaG4GdokYH/view?usp=sharing";
 
 /** The recommendation letter, linked from the contact block. */
 export const RECOMMENDATION_URL =

@@ -6,7 +6,7 @@ import posthog from 'posthog-js'
 import { useState, type ReactNode } from 'react'
 import Nav from '@/components/Nav'
 import { CV_URL, RECOMMENDATION_URL } from '@/lib/site'
-import { certifications, education, experience, glance, headline, LINKEDIN_URL, openTo, pitch, proof, quote, skills } from '@/lib/recruiter-content'
+import { awards, certifications, education, experience, glance, headline, LINKEDIN_URL, openTo, pitch, proof, quote, skills, workTypes } from '@/lib/recruiter-content'
 
 // The recruiter view: one scannable page with everything a hiring manager
 // needs, and the main actions (CV, email, LinkedIn) never more than a glance away.
@@ -40,11 +40,12 @@ export default function RecruiterView() {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.6rem]">Ngozi Peace Okafor</h1>
-              <span className="flex items-center gap-1.5 rounded-full bg-[#84CC16]/15 px-3 py-1 text-xs font-semibold text-[#3F6212] dark:text-[#BEF264]"><span className="h-1.5 w-1.5 rounded-full bg-[#84CC16]" />Open to work · Remote</span>
+              <span className="flex items-center gap-1.5 rounded-full bg-[#84CC16]/15 px-3 py-1 text-xs font-semibold text-[#3F6212] dark:text-[#BEF264]"><span className="h-1.5 w-1.5 rounded-full bg-[#84CC16]" />Open to work · Remote or hybrid</span>
             </div>
             <p className="mt-1 text-base font-semibold text-parchment/80">{headline}</p>
             <p className="mt-4 max-w-2xl text-[15px] leading-7 md:text-base">{pitch}</p>
             <div className="mt-4 flex flex-wrap gap-1.5">{openTo.map(r => <span key={r} className="rounded-full border border-primary/30 bg-primary/[0.06] px-3 py-1 text-xs font-semibold text-primary">{r}</span>)}</div>
+            <p className="mt-2 text-xs text-muted">{workTypes}</p>
           </div>
         </div>
         {/* The main actions */}
@@ -83,6 +84,11 @@ export default function RecruiterView() {
               <p className="text-xs font-semibold text-muted">{s.group}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">{s.items.map(item => <span key={item} className="rounded-full border border-ink-border bg-bg px-2.5 py-1 text-xs">{item}</span>)}</div>
             </div>)}</div>
+          </Card>
+          <Card title="Awards" i={5} rise={rise}>
+            <ul className="space-y-3 text-sm">
+              {awards.map((a, i) => <li key={a.title} className={i ? 'border-t border-ink-border pt-3' : ''}><p className="font-semibold">{a.title}</p><p className="text-muted">{a.org}</p></li>)}
+            </ul>
           </Card>
           <Card title="Education & certifications" i={5} rise={rise}>
             <ul className="space-y-3 text-sm">
