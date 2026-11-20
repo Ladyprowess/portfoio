@@ -31,7 +31,7 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
     {/* Three blocks. Desktop: intro and question on the left, editor on the right.
         Phones: intro, then the editor, then the question, so the first screen is not all text. */}
     {/* grid-cols-1 (minmax(0,1fr)) stops the swipeable answer row from widening the page on phones */}
-    <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 items-start gap-9 px-5 md:px-8 lg:grid-cols-[1fr_1fr] lg:grid-rows-[auto_1fr] lg:gap-x-12 lg:gap-y-9">
+    <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 items-start gap-9 px-5 md:px-8 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-x-12">
 
       <div className="lg:col-start-1 lg:row-start-1">
         {/* Kept short on purpose: the editor beside it shows the crafts, so the words only need to name her and caption it. */}
@@ -42,42 +42,24 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
         <TypedHeadline className="mt-4 font-display text-[clamp(2.1rem,3.7vw,3.35rem)] font-semibold leading-[1.08] tracking-[-0.04em] md:mt-5" />
         {/* What she does, in one line, so the first screen answers it. */}
         <p className="mt-4 max-w-[34rem] text-[15px] leading-7 text-muted md:text-base">I help businesses adopt AI, build digital products and write the documentation that makes them easy to use.</p>
+        {/* Two next steps only: meet her, or see the work. */}
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+        <a href="/work" className="rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-on-primary shadow-[0_12px_30px_-12px_rgb(var(--primary)/.7)] transition hover:bg-primary-dim">See my work →</a>
         {/* Reopens the video introduction (components/home/IntroVideo.tsx) */}
         <button type="button" onClick={openIntro}
-          className="group mt-6 flex items-center gap-3 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-5 text-left shadow-[0_12px_30px_-18px_rgba(17,24,39,.35)] transition hover:border-primary/50">
+          className="group flex items-center gap-3 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-5 text-left shadow-[0_12px_30px_-18px_rgba(17,24,39,.35)] transition hover:border-primary/50">
           <span className="relative h-10 w-14 shrink-0 overflow-hidden rounded-full">
             <Image src="/personal photo/headshot3.png" alt="" fill sizes="56px" className="object-cover object-[50%_22%]" />
             <span className="absolute inset-0 flex items-center justify-center bg-black/25"><svg viewBox="0 0 24 24" className="ml-0.5 h-4 w-4 text-white" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span>
           </span>
           <span className="text-sm"><span className="block font-semibold">Watch my intro</span><span className="block text-xs text-muted">57 seconds</span></span>
         </button>
-      </div>
-
-        {/* What brings you here? Ngozi answers, and the page follows. */}
-        <div className="max-w-xl rounded-3xl border border-ink-border bg-surface/80 p-5 shadow-[0_24px_60px_-30px_rgba(17,24,39,.3)] backdrop-blur md:p-6 lg:col-start-1 lg:row-start-2">
-          <p className="text-sm font-semibold">What brings you here?</p>
-          {/* Phones: one swipeable row of answers instead of a tall stack */}
-          <div className="-mx-5 mt-3.5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0">
-            {intents.map(i => <button key={i.key} type="button" onClick={() => { onIntent(i.key); posthog.capture('home_intent_chosen', { intent: i.key }) }} aria-pressed={intent === i.key}
-              className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-2 text-left text-[13px] transition md:shrink md:whitespace-normal ${intent === i.key ? 'border-primary bg-primary text-on-primary' : 'border-ink-border bg-bg text-parchment/80 hover:border-primary/50 hover:text-parchment'}`}>{i.label}</button>)}
-          </div>
-          <AnimatePresence mode="wait">
-            {chosen && <motion.div key={chosen.key} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.3 }} className="mt-5 border-t border-ink-border pt-5" aria-live="polite">
-              <div className="flex gap-3">
-                <span className="relative mt-0.5 h-8 w-8 shrink-0 overflow-hidden rounded-full"><Image src="/hero/mine.jpeg" alt="" fill sizes="32px" className="object-cover object-top" /></span>
-                <p className="rounded-2xl rounded-tl-sm bg-primary/[0.08] px-4 py-3 text-[15px] leading-6">{chosen.reply}</p>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2 pl-11">
-                <button type="button" onClick={() => onExplore(chosen.facet)} className="rounded-full bg-parchment px-4 py-2 text-xs font-semibold text-bg hover:opacity-90">See my {facetLabel} work ↓</button>
-                <a href="#contact" className="rounded-full border border-ink-border px-4 py-2 text-xs font-semibold hover:border-muted">Tell me about it →</a>
-              </div>
-            </motion.div>}
-          </AnimatePresence>
         </div>
+      </div>
 
       {/* The live editor: every craft, being done in real time */}
       {/* min-w-0 lets the column shrink on phones so the tab row scrolls instead of widening the page */}
-      <div className="relative mx-auto w-full min-w-0 max-w-[600px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-4">
+      <div className="relative mx-auto w-full min-w-0 max-w-[600px] lg:col-start-2 lg:row-start-1 lg:mt-4">
         {/* The logo's arc, sweeping over the editor and ending in the pen nib */}
         <svg aria-hidden="true" viewBox="0 0 600 120" className="absolute -top-16 left-0 hidden w-full overflow-visible md:block">
           <motion.path d="M30 118 C 120 -20, 470 -30, 560 70" fill="none" stroke="rgb(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeOpacity=".7"

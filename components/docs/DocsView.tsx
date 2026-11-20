@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Nav from '@/components/Nav'
-import Footer from '@/components/Footer'
+import Image from 'next/image'
 import { pages, type DocPage } from './content'
 import { ShellProvider } from './Shell'
 
@@ -62,22 +61,25 @@ export default function DocsView() {
 
   return (
     <ShellProvider go={go} pages={pages}><main className="min-h-screen bg-bg pb-20 text-parchment">
-      <Nav />
-      <div className="border-b border-ink-border bg-surface pt-[var(--nav-h)]">
-        <div className="mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      {/* One header for the docs: like a real documentation site, it replaces the portfolio menu. */}
+      <header className="sticky top-0 z-50 border-b border-ink-border bg-surface/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <a href="/" aria-label="Lady Prowess home" className="hidden shrink-0 sm:block"><Image src="/Logo-blue.png" alt="Lady Prowess" width={130} height={34} className="site-logo h-7 w-auto" /></a>
+          <span aria-hidden="true" className="hidden h-6 w-px bg-ink-border sm:block" />
           <button type="button" onClick={() => setMenu(true)} className="flex h-10 items-center gap-2 rounded-lg border border-ink-border px-3 text-sm font-semibold lg:hidden" aria-label="Open documentation menu">☰ <span className="max-w-[40vw] truncate">{page.title}</span></button>
-          <p className="hidden items-center gap-2 text-sm font-bold lg:flex"><span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary font-head text-xs text-on-primary">NP</span>Ngozi Peace Unegbu <span className="font-normal text-muted">/ Documentation</span></p>
+          <p className="hidden text-sm font-semibold lg:block">Documentation</p>
           <span className="hidden items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[0.7rem] font-bold text-success sm:flex"><span className="relative flex h-1.5 w-1.5"><span className="absolute inset-0 animate-ping rounded-full bg-success" /><span className="h-1.5 w-1.5 rounded-full bg-success" /></span>Live</span>
           <button type="button" onClick={() => setSearch(true)} className="ml-auto flex h-10 w-full max-w-[280px] items-center gap-2 rounded-lg border border-ink-border bg-bg px-3 text-sm text-muted transition hover:border-primary/40">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
             Search docs<kbd className="ml-auto hidden rounded border border-ink-border px-1.5 font-head text-[0.65rem] sm:inline">⌘K</kbd>
           </button>
+          <a href="/work" className="hidden shrink-0 text-sm font-semibold text-muted transition hover:text-parchment md:block">← Back to portfolio</a>
         </div>
-      </div>
+      </header>
 
       <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:px-8 xl:grid-cols-[250px_minmax(0,1fr)_210px]">
         <aside className="hidden lg:block">
-          <div className="sticky top-[calc(var(--nav-h)+1.5rem)] max-h-[calc(100vh-var(--nav-h)-3rem)] overflow-y-auto py-8 pr-2">
+          <div className="sticky top-[5.5rem] max-h-[calc(100vh-7rem)] overflow-y-auto py-8 pr-2">
             <Sidebar active={page.id} go={go} />
           </div>
         </aside>
@@ -99,7 +101,7 @@ export default function DocsView() {
         </article>
 
         <aside className="hidden xl:block">
-          <div className="sticky top-[calc(var(--nav-h)+1.5rem)] py-8"><Toc key={page.id} page={page} /></div>
+          <div className="sticky top-[5.5rem] py-8"><Toc key={page.id} page={page} /></div>
         </aside>
       </div>
 
@@ -114,7 +116,6 @@ export default function DocsView() {
         )}
       </AnimatePresence>
       <AnimatePresence>{search && <Search onClose={() => setSearch(false)} go={go} />}</AnimatePresence>
-      <Footer />
     </main></ShellProvider>
   )
 }

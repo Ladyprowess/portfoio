@@ -143,7 +143,7 @@ export default function IntroVideo() {
               className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-[#0A0C0D]/85 px-6 text-center text-white">
               <p className="font-display text-2xl font-semibold tracking-[-.02em] md:text-3xl">Have a problem worth solving?</p>
               <div className="flex flex-wrap justify-center gap-3">
-                <button type="button" onClick={() => goTo('#contact')} className="rounded-full bg-[#2563EB] px-6 py-3 text-sm font-semibold text-white hover:bg-[#1D4ED8]">Let’s talk</button>
+                <button type="button" onClick={() => { close(); window.location.href = '/services#contact' }} className="rounded-full bg-[#2563EB] px-6 py-3 text-sm font-semibold text-white hover:bg-[#1D4ED8]">Let’s talk</button>
                 <a href="/work" className="rounded-full border border-white/25 px-6 py-3 text-sm font-semibold hover:border-white/60">See what I’ve built</a>
                 <button type="button" onClick={play} className="rounded-full px-5 py-3 text-sm font-semibold text-white/70 hover:text-white">↻ Replay</button>
               </div>

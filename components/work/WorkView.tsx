@@ -14,9 +14,9 @@ import { learning, websites, writing } from '@/lib/work-content'
 const wrap = 'mx-auto max-w-[1200px] px-5 md:px-8'
 const kivora = products.find(p => p.id === 'kivorapay')!
 // Chidexun is a client website, so it lives under Websites, not Products.
-const otherProducts = products.filter(p => p.id !== 'kivorapay' && p.id !== 'chidexun')
-// Prowess Digital Solutions is shown once, under Products.
-const sites = websites.filter(w => w.title !== 'Prowess Digital Solutions')
+const otherProducts = products.filter(p => !['kivorapay', 'chidexun', 'portfolio'].includes(p.id))
+// Prowess Digital Solutions and Dritchwear are shown once, under Products.
+const sites = websites.filter(w => w.title !== 'Prowess Digital Solutions' && w.title !== 'Dritchwear')
 
 const sections = [
   { id: 'products', label: 'Products' },
@@ -55,9 +55,9 @@ export default function WorkView() {
           <div className="relative min-h-[320px]"><KivoraMock /></div>
         </a>
       </Reveal>
-      <Grid>
-        {otherProducts.map(p => <Card key={p.id} href={p.href} image={p.image} title={p.name} tag={p.status} text={p.summary} />)}
-      </Grid>
+      <div className="mt-16 space-y-16 md:space-y-24">
+        {otherProducts.map((p, i) => <Reveal key={p.id}><Row flip={i % 2 === 1} href={p.href} image={p.image} title={p.name} tag={p.status} kind={p.kind} text={p.summary} /></Reveal>)}
+      </div>
     </Section>
 
     {/* ── Technical writing ────────────────────────────── */}
@@ -73,9 +73,14 @@ export default function WorkView() {
         </a>
       </Reveal>
       <p className="mt-12 font-head text-[11px] uppercase tracking-[.16em] text-muted">Published on</p>
-      <Grid cols4>
-        {writing.map(w => <Card key={w.title} href={w.href} image={w.image} title={w.title} text={w.description} small />)}
-      </Grid>
+      <ul className="mt-4 grid border-t border-ink-border sm:grid-cols-2">
+        {writing.map(w => <li key={w.title} className="border-b border-ink-border sm:odd:border-r sm:odd:pr-8 sm:even:pl-8">
+          <a href={w.href} target="_blank" rel="noopener noreferrer" className="group flex items-baseline justify-between gap-4 py-4">
+            <span><span className="font-display text-lg font-semibold tracking-[-.01em] group-hover:text-primary">{w.title}</span><span className="mt-0.5 block text-sm text-muted">{w.description}</span></span>
+            <span className="shrink-0 text-primary">↗</span>
+          </a>
+        </li>)}
+      </ul>
     </Section>
 
     {/* ── Websites ─────────────────────────────────────── */}
@@ -87,22 +92,25 @@ export default function WorkView() {
 
     {/* ── Teaching ─────────────────────────────────────── */}
     <Section id="teaching" label="Teaching" title="Courses and resources" tint>
-      <Grid>
-        {learning.map(l => <Card key={l.title} href={l.href} image={l.image} title={l.title} text={l.description} />)}
-      </Grid>
+      <ul className="border-t border-ink-border">
+        {learning.map(l => <li key={l.title} className="border-b border-ink-border">
+          <a href={l.href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-5 py-5">
+            <span className="relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-surface-2 sm:block"><Image src={l.image} alt="" fill sizes="96px" className="object-cover" /></span>
+            <span className="flex-1"><span className="font-display text-lg font-semibold tracking-[-.01em] group-hover:text-primary">{l.title}</span><span className="mt-0.5 block text-sm text-muted">{l.description}</span></span>
+            <span className="shrink-0 text-primary">↗</span>
+          </a>
+        </li>)}
+      </ul>
     </Section>
 
     {/* ── Python ───────────────────────────────────────── */}
-    <Section id="python" label="Python" title="Small tools that remove manual work">
-      <div className="grid gap-4 md:grid-cols-3">
-        {python.map(t => <div key={t.id} className="overflow-hidden rounded-3xl border border-ink-border bg-surface">
-          <p className="truncate bg-[#0B0F14] px-5 py-3.5 font-head text-[12.5px] text-[#E7EDF6]"><span className="text-[#28C840]">$</span> {t.cmd}</p>
-          <div className="p-5">
-            <h3 className="font-display text-lg font-semibold tracking-[-.01em]">{t.name}</h3>
-            <p className="mt-1.5 text-sm leading-6 text-muted">{t.summary}</p>
-          </div>
-        </div>)}
-      </div>
+    <Section id="python" label="Python" title="Tools that remove manual work">
+      <ul className="overflow-hidden rounded-3xl bg-[#0B0F14] text-[#E7EDF6]">
+        {python.map(t => <li key={t.id} className="grid gap-1 border-b border-white/10 px-6 py-5 last:border-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] md:gap-8 md:px-8">
+          <p className="truncate font-head text-[13px]"><span className="text-[#28C840]">$</span> {t.cmd}</p>
+          <p className="text-sm leading-6 text-white/70"><span className="font-semibold text-white">{t.name}.</span> {t.summary}</p>
+        </li>)}
+      </ul>
       <p className="mt-8 max-w-2xl text-sm leading-6 text-muted">
         <span className="font-semibold text-parchment">How I build: </span>
         I direct AI coding agents (Claude Code) and write the rules they work by, then test every state before anything ships.
@@ -135,6 +143,23 @@ function Section({ id, label, title, tint = false, children }: { id: string; lab
       {children}
     </div>
   </section>
+}
+
+/** A product shown big: picture on one side, a few words on the other. */
+function Row({ flip, href, image, title, tag, kind, text }: { flip: boolean; href?: string; image?: string; title: string; tag?: string; kind: string; text: string }) {
+  const external = href?.startsWith('http')
+  return <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} className="group grid items-center gap-8 md:grid-cols-2 md:gap-14">
+    <div className={`relative aspect-[16/10] overflow-hidden rounded-[1.75rem] border border-ink-border bg-surface-2 shadow-[0_30px_70px_-40px_rgba(17,24,39,.4)] ${flip ? 'md:order-2' : ''}`}>
+      {image && <Image src={image} alt={`${title} screenshot`} fill sizes="(max-width: 768px) 100vw, 560px" className="object-cover object-top transition duration-700 group-hover:scale-[1.02]" />}
+    </div>
+    <div>
+      {tag && <span className={`text-xs font-semibold ${tag === 'Live' ? 'text-success' : 'text-muted'}`}>● {tag}</span>}
+      <h3 className="mt-2 font-display text-3xl font-semibold tracking-[-.03em]">{title}</h3>
+      <p className="mt-1 text-sm text-muted">{kind}</p>
+      <p className="mt-4 max-w-md text-[15px] leading-7 text-parchment/85">{text}</p>
+      <span className="mt-5 inline-block text-sm font-semibold text-primary">{external ? 'Visit ↗' : 'Open →'}</span>
+    </div>
+  </a>
 }
 
 function Grid({ cols4 = false, children }: { cols4?: boolean; children: ReactNode }) {

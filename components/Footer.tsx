@@ -7,10 +7,11 @@ const columns = [
     links: [
       { label: 'Home', href: '/' },
       { label: 'Work', href: '/work' },
+      { label: 'Docs', href: '/docs' },
       { label: 'Services', href: '/services' },
       { label: 'About', href: '/about' },
       { label: 'CV', href: '/recruiter' },
-      { label: 'Contact', href: '/#contact' },
+      { label: 'Contact', href: '/services#contact' },
     ],
   },
   {

@@ -97,6 +97,15 @@ export const products: Build[] = [
     href: '/',
     linkLabel: 'Home',
   },
+  {
+    id: 'dritchwear', status: 'Live', image: '/service-proof/dritchwear.png', name: 'Dritchwear',
+    kind: 'Streetwear & merchandise · Founder',
+    summary: 'My streetwear and branded merchandise label: custom apparel, corporate gifts and event kits, with an online store to order them.',
+    did: [],
+    stack: 'Next.js, e-commerce',
+    href: 'https://dritchwear.com/shop',
+    linkLabel: 'Visit Dritchwear',
+  },
 ]
 
 export const python: Build[] = [
