@@ -7,6 +7,7 @@ import { facets, intents, type EditorKey } from '@/lib/home-content'
 import PenNib from './PenNib'
 import CraftEditor from './CraftEditor'
 import TypedHeadline from './TypedHeadline'
+import { openIntro } from './IntroVideo'
 
 type Props = {
   intent: string | null
@@ -39,6 +40,15 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
           Ngozi Peace Unegbu · available for projects
         </p>
         <TypedHeadline className="mt-4 font-display text-[clamp(2.1rem,3.7vw,3.35rem)] font-semibold leading-[1.08] tracking-[-0.04em] md:mt-5" />
+        {/* Reopens the video introduction (components/home/IntroVideo.tsx) */}
+        <button type="button" onClick={openIntro}
+          className="group mt-6 flex items-center gap-3 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-5 text-left shadow-[0_12px_30px_-18px_rgba(17,24,39,.35)] transition hover:border-primary/50">
+          <span className="relative h-10 w-14 shrink-0 overflow-hidden rounded-full">
+            <Image src="/personal photo/headshot3.png" alt="" fill sizes="56px" className="object-cover object-[50%_22%]" />
+            <span className="absolute inset-0 flex items-center justify-center bg-black/25"><svg viewBox="0 0 24 24" className="ml-0.5 h-4 w-4 text-white" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span>
+          </span>
+          <span className="text-sm"><span className="block font-semibold">Watch my intro</span><span className="block text-xs text-muted">57 seconds</span></span>
+        </button>
       </div>
 
         {/* What brings you here? Ngozi answers, and the page follows. */}

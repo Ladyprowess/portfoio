@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import DocsView from '@/components/docs/DocsView'
+import IntroVideo from '@/components/home/IntroVideo'
 
 const description = 'Technical writing and documentation by Ngozi Peace Unegbu: API references, developer guides and technical manuals, with live, interactive samples.'
 
@@ -11,5 +12,8 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <DocsView />
+  return <>
+    <DocsView />
+    <IntroVideo />
+  </>
 }

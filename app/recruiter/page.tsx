@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import RecruiterView from '@/components/recruiter/RecruiterView'
+import IntroVideo from '@/components/home/IntroVideo'
 
 export const metadata: Metadata = {
   title: 'CV',
@@ -9,5 +10,8 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <RecruiterView />
+  return <>
+    <RecruiterView />
+    <IntroVideo />
+  </>
 }
