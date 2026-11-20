@@ -27,7 +27,7 @@ export default function RecruiterPill() {
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="pointer-events-auto flex items-center gap-2.5 whitespace-nowrap rounded-full border border-ink-border bg-surface/95 py-2 pl-2 pr-4 text-sm font-semibold shadow-[0_20px_50px_-15px_rgba(17,24,39,.45)] backdrop-blur-xl transition-colors hover:border-primary/50">
         <span className="flex h-7 items-center rounded-full bg-primary px-2.5 text-[11px] text-on-primary">Hiring?</span>
-        Recruiter view · 60 sec <span aria-hidden="true">→</span>
+        View my CV <span aria-hidden="true">→</span>
       </motion.a>}
     </AnimatePresence>
   </div>

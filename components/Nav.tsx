@@ -6,12 +6,11 @@ import Image from 'next/image'
 import ThemeToggle from '@/components/ThemeToggle'
 
 const links = [
-  { href: '/',             label: 'Home' },
+  { href: '/work',         label: 'Work' },
+  { href: '/services',     label: 'Services' },
   { href: '/about',        label: 'About' },
-  { href: '/services',     label: 'Work' },
-  { href: '/builds',       label: 'Builds' },
-  { href: '/blog',          label: 'Blog' },
-  { href: '/#contact',     label: 'Contact' },
+  { href: '/recruiter',    label: 'CV' },
+  { href: '/blog',         label: 'Blog' },
 ]
 
 export default function Nav() {

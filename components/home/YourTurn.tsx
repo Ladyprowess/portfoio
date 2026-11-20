@@ -49,7 +49,7 @@ export default function YourTurn({ intent }: { intent: string | null }) {
       <div>
         <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">Your turn</p>
         <TypeHeading className="mt-3 max-w-md font-display text-3xl font-semibold tracking-[-.04em] md:text-[2.9rem] md:leading-[1.05]" text="I typed first. Now it’s your turn." />
-        <p className="mt-5 max-w-md leading-7 text-muted">Tell me what you are building and where it is stuck. A rough message is fine; making things clear is my job.</p>
+        <p className="mt-5 max-w-md leading-7 text-muted">Tell me what you’re building and where it’s stuck.</p>
         <div className="mt-7 flex flex-wrap gap-3 text-sm">
           <a href="mailto:hello@ladyprowess.com" className="font-semibold text-primary hover:underline">hello@ladyprowess.com</a>
           <span className="text-muted">·</span>

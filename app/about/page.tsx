@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Nav from '@/components/Nav'
 import AboutHero from '@/components/AboutHero'
 import AboutStory from '@/components/AboutStory'
-import AboutCredentials from '@/components/AboutCredentials'
-import Contact from '@/components/Contact'
+import Doors from '@/components/home/Doors'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
@@ -20,8 +19,8 @@ export default function AboutPage() {
       <Nav />
       <AboutHero />
       <AboutStory />
-      <AboutCredentials />
-      <Contact />
+      {/* Same next steps as the homepage: CV, Work, Services. */}
+      <div className="bg-bg pt-16 md:pt-24"><Doors /></div>
       <Footer />
     </main>
   )

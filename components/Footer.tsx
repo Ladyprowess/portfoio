@@ -6,8 +6,10 @@ const columns = [
     title: 'Quick Links',
     links: [
       { label: 'Home', href: '/' },
+      { label: 'Work', href: '/work' },
+      { label: 'Services', href: '/services' },
       { label: 'About', href: '/about' },
-      { label: 'Work', href: '/services' },
+      { label: 'CV', href: '/recruiter' },
       { label: 'Contact', href: '/#contact' },
     ],
   },
@@ -25,7 +27,7 @@ const columns = [
       { label: 'Media', href: '/media' },
       { label: 'Awards', href: '/awards' },
       {
-        label: 'CV',
+        label: 'CV (PDF)',
         href: CV_URL,
       },
     ],

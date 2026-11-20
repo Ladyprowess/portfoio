@@ -37,9 +37,11 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
         {/* Kept short on purpose: the editor beside it shows the crafts, so the words only need to name her and caption it. */}
         <p className="flex items-center gap-2 text-sm text-muted">
           <span className="relative flex h-2 w-2"><span className="absolute inset-0 animate-ping rounded-full bg-[#84CC16]/60 motion-reduce:hidden" /><span className="relative h-2 w-2 rounded-full bg-[#84CC16]" /></span>
-          Ngozi Peace Unegbu · available for projects
+          Ngozi Peace Unegbu · AI Strategy & Digital Product Specialist
         </p>
         <TypedHeadline className="mt-4 font-display text-[clamp(2.1rem,3.7vw,3.35rem)] font-semibold leading-[1.08] tracking-[-0.04em] md:mt-5" />
+        {/* What she does, in one line, so the first screen answers it. */}
+        <p className="mt-4 max-w-[34rem] text-[15px] leading-7 text-muted md:text-base">I help businesses adopt AI, build digital products and write the documentation that makes them easy to use.</p>
         {/* Reopens the video introduction (components/home/IntroVideo.tsx) */}
         <button type="button" onClick={openIntro}
           className="group mt-6 flex items-center gap-3 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-5 text-left shadow-[0_12px_30px_-18px_rgba(17,24,39,.35)] transition hover:border-primary/50">

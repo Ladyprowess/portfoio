@@ -96,7 +96,7 @@ export default function RecruiterView() {
             <p className="mt-0.5 text-[15px] leading-6 text-muted">{p.text}</p>
           </li>)}
         </ul>
-        <a href="/builds" className="mt-5 inline-block text-sm font-semibold text-primary hover:underline print:hidden">See everything I have built →</a>
+        <a href="/work" className="mt-5 inline-block text-sm font-semibold text-primary hover:underline print:hidden">See my work →</a>
       </Section>
 
       <Section title="Education">
