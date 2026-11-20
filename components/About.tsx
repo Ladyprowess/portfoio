@@ -40,7 +40,7 @@ export default function About() {
             <div className="relative w-full overflow-hidden border border-ink-border" style={{ aspectRatio: '4/5' }}>
               <Image
                 src="/personal%20photo/headshot2.png"
-                alt="Ngozi Peace Okafor"
+                alt="Ngozi Peace Unegbu"
                 fill
                 className="object-cover object-top"
                 sizes="(max-width: 1024px) 100vw, 560px"

@@ -36,7 +36,7 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
         {/* Kept short on purpose: the editor beside it shows the crafts, so the words only need to name her and caption it. */}
         <p className="flex items-center gap-2 text-sm text-muted">
           <span className="relative flex h-2 w-2"><span className="absolute inset-0 animate-ping rounded-full bg-[#84CC16]/60 motion-reduce:hidden" /><span className="relative h-2 w-2 rounded-full bg-[#84CC16]" /></span>
-          Ngozi Peace Okafor · available for projects
+          Ngozi Peace Unegbu · available for projects
         </p>
         <TypedHeadline className="mt-4 font-display text-[clamp(2.1rem,3.7vw,3.35rem)] font-semibold leading-[1.08] tracking-[-0.04em] md:mt-5" />
       </div>

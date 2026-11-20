@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import DocsView from '@/components/docs/DocsView'
 
-const description = 'Technical writing and documentation by Ngozi Peace Okafor: API references, developer guides and technical manuals, with live, interactive samples.'
+const description = 'Technical writing and documentation by Ngozi Peace Unegbu: API references, developer guides and technical manuals, with live, interactive samples.'
 
 export const metadata: Metadata = {
   title: 'Technical Writing and Documentation',

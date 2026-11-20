@@ -80,7 +80,7 @@ export default function Footer() {
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <span className="font-body text-[0.72rem] tracking-[0.04em] text-muted">
-            © 2026 Ngozi Peace Okafor. All rights reserved.
+            © 2026 Ngozi Peace Unegbu. All rights reserved.
           </span>
           <span className="font-body text-[0.72rem] tracking-[0.04em] text-muted">
             Digital Headquarters

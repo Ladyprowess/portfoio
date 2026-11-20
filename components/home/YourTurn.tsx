@@ -61,7 +61,7 @@ export default function YourTurn({ intent }: { intent: string | null }) {
       <div ref={box} className="overflow-hidden rounded-[2rem] border border-ink-border bg-surface shadow-[0_40px_100px_-40px_rgba(17,24,39,.4)]">
         <div className="flex items-center gap-3 border-b border-ink-border px-5 py-4">
           <span className="relative h-10 w-10 overflow-hidden rounded-full"><Image src="/hero/mine.jpeg" alt="" fill sizes="40px" className="object-cover object-top" /></span>
-          <div><p className="text-sm font-semibold">Ngozi Peace Okafor</p><p className="flex items-center gap-1.5 text-xs text-muted"><span className="h-1.5 w-1.5 rounded-full bg-[#84CC16]" />Available for selected projects</p></div>
+          <div><p className="text-sm font-semibold">Ngozi Peace Unegbu</p><p className="flex items-center gap-1.5 text-xs text-muted"><span className="h-1.5 w-1.5 rounded-full bg-[#84CC16]" />Available for selected projects</p></div>
         </div>
 
         <div className="min-h-[190px] space-y-3 bg-bg/60 p-5 md:p-6">

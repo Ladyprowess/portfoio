@@ -13,9 +13,9 @@ const awardGroups: AwardGroup[] = [
     initials: 'WTH',
     description: 'Recognition for problem solving, communication, and the energy I brought to the team.',
     awards: [
-      { title: 'Most Problem Solver', year: '2024', src: '/Award/problem%20solver.jpg', alt: 'WriteTech Hub Award of Appreciation recognising Ngozi Peace Okafor as Most Problem Solver in 2024.' },
-      { title: 'Most Likely to Say, This Could Be an Email', year: '2024', src: '/Award/email.jpg', alt: 'WriteTech Hub Award of Appreciation recognising Ngozi Peace Okafor for practical communication in 2024.' },
-      { title: 'Mood Booster', year: '2024', src: '/Award/mood%20boaster.jpg', alt: 'WriteTech Hub Award of Appreciation recognising Ngozi Peace Okafor as Mood Booster in 2024.' },
+      { title: 'Most Problem Solver', year: '2024', src: '/Award/problem%20solver.jpg', alt: 'WriteTech Hub Award of Appreciation recognising Ngozi Peace Unegbu as Most Problem Solver in 2024.' },
+      { title: 'Most Likely to Say, This Could Be an Email', year: '2024', src: '/Award/email.jpg', alt: 'WriteTech Hub Award of Appreciation recognising Ngozi Peace Unegbu for practical communication in 2024.' },
+      { title: 'Mood Booster', year: '2024', src: '/Award/mood%20boaster.jpg', alt: 'WriteTech Hub Award of Appreciation recognising Ngozi Peace Unegbu as Mood Booster in 2024.' },
     ],
   },
 ]

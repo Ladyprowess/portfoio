@@ -27,7 +27,7 @@ export const SIGNATURE_HTML = `
       </a>
     </td>
     <td style="border-left:2px solid #2563EB;padding-left:16px;vertical-align:top;">
-      <div style="font-size:16px;font-weight:bold;color:#131718;">Ngozi Peace Okafor</div>
+      <div style="font-size:16px;font-weight:bold;color:#131718;">Ngozi Peace Unegbu</div>
       <div style="color:#2563EB;font-weight:bold;">Lady Prowess</div>
       <div style="color:#5B6466;font-style:italic;padding-bottom:8px;">${TAGLINE}</div>
       <div>
@@ -47,7 +47,7 @@ export const SIGNATURE_HTML = `
 export const SIGNATURE_TEXT = `
 
 -
-Ngozi Peace Okafor
+Ngozi Peace Unegbu
 Lady Prowess
 ${TAGLINE}
 hello@ladyprowess.com · ladyprowess.com

@@ -34,7 +34,7 @@ export default function ServicesHero() {
     <div className="relative mx-auto max-w-[1100px] px-5 md:px-8">
       <div className="flex items-center gap-3">
         <span className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-primary/30"><Image src="/personal photo/headshot6.jpg" alt="" fill sizes="44px" priority className="object-cover object-[50%_18%]" /></span>
-        <div className="text-sm"><p className="font-semibold">Ngozi Peace Okafor</p>
+        <div className="text-sm"><p className="font-semibold">Ngozi Peace Unegbu</p>
           <p className="flex items-center gap-1.5 text-xs text-muted">{typingDots ? <>typing<span className="flex gap-0.5">{[0, 1, 2].map(d => <motion.span key={d} className="h-1 w-1 rounded-full bg-muted" animate={{ y: [0, -3, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: d * 0.15 }} />)}</span></> : <><span className="h-1.5 w-1.5 rounded-full bg-[#84CC16]" />online</>}</p>
         </div>
       </div>

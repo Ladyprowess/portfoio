@@ -5,9 +5,9 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Awards',
-  description: 'Awards and recognition received by Ngozi Peace Okafor.',
+  description: 'Awards and recognition received by Ngozi Peace Unegbu.',
   alternates: { canonical: '/awards' },
-  openGraph: { title: 'Awards | Lady Prowess', description: 'Awards and recognition received by Ngozi Peace Okafor.', url: '/awards', images: ['/opengraph-image'] },
+  openGraph: { title: 'Awards | Lady Prowess', description: 'Awards and recognition received by Ngozi Peace Unegbu.', url: '/awards', images: ['/opengraph-image'] },
 }
 
 export default function AwardsPage() {

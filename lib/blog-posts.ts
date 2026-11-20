@@ -28,7 +28,7 @@ export const blogPosts: BlogPost[] = [
     slug: 'from-a-phone-screen-to-a-movement',
     title: 'From a Phone Screen to a Movement: The Story of Lady Prowess',
     excerpt:
-      'The story of Ngozi Peace Okafor, known as Lady Prowess, and the writing journey that grew from a phone screen into strategy, business, and technology.',
+      'The story of Ngozi Peace Unegbu, known as Lady Prowess, and the writing journey that grew from a phone screen into strategy, business, and technology.',
     category: 'Personal Story',
     newsletterTopic: 'All',
     date: 'May 2026',
@@ -41,7 +41,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         type: 'paragraph',
-        text: `There are people who find their calling late in life, after years of searching, after failed attempts and long detours. And then there are people who were always it. They just had to survive long enough to become it fully. Ngozi Peace Okafor, known across digital spaces as Lady Prowess, is the second kind of person.`,
+        text: `There are people who find their calling late in life, after years of searching, after failed attempts and long detours. And then there are people who were always it. They just had to survive long enough to become it fully. Ngozi Peace Unegbu, known across digital spaces as Lady Prowess, is the second kind of person.`,
       },
       {
         type: 'paragraph',

@@ -87,7 +87,7 @@ For a quick overview, my one-page summary is at ladyprowess.com/recruiter.
 
 Thank you for your time. I'd love to help {company} look after its customers.
 
-Ngozi Peace Okafor`,
+Ngozi Peace Unegbu`,
   },
   {
     name: 'LinkedIn connection',

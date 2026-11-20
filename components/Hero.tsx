@@ -8,7 +8,7 @@ import { CV_URL } from '@/lib/site'
 
 // Add future hero photos here after placing their files in public/hero.
 const heroPhotos = [
-  { src: '/hero/mine.jpeg', alt: 'Ngozi Peace Okafor' },
+  { src: '/hero/mine.jpeg', alt: 'Ngozi Peace Unegbu' },
 ]
 
 const proofPoints = [
@@ -71,7 +71,7 @@ export default function Hero() {
               transition={enter}
               className="mb-6 font-head text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary"
             >
-              Ngozi Peace Okafor / Lady Prowess
+              Ngozi Peace Unegbu / Lady Prowess
             </motion.p>
 
             <motion.h1

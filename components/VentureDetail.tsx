@@ -57,7 +57,7 @@ export default function VentureDetail({ venture: v }: { venture: Venture }) {
         <div className="mx-auto grid max-w-[1180px] gap-10 lg:grid-cols-[0.35fr_1fr]">
           <Reveal>
             <p className={`${label} t-ink`}>Why I built it</p>
-            <div className="mt-6 flex items-center gap-3"><span className="relative h-12 w-12 overflow-hidden rounded-full bg-surface-2"><Image src="/personal%20photo/headshot2.png" alt="" fill sizes="48px" className="object-cover object-top" /></span><span className="text-sm"><b className="block">Ngozi Peace Okafor</b><span className="text-muted">Founder</span></span></div>
+            <div className="mt-6 flex items-center gap-3"><span className="relative h-12 w-12 overflow-hidden rounded-full bg-surface-2"><Image src="/personal%20photo/headshot2.png" alt="" fill sizes="48px" className="object-cover object-top" /></span><span className="text-sm"><b className="block">Ngozi Peace Unegbu</b><span className="text-muted">Founder</span></span></div>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="font-display text-[clamp(1.5rem,2.6vw,2.2rem)] font-bold leading-[1.3] tracking-[-0.01em]"><span className="t-ink">“</span>{v.story[0]}</p>

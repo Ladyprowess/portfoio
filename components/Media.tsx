@@ -4,11 +4,11 @@ import Image from 'next/image'
 import posthog from 'posthog-js'
 
 const photos = [
-  { src: '/personal%20photo/headshot1.png', file: '/personal photo/headshot1.png', alt: 'Ngozi Peace Okafor wearing a tan blazer in a professional portrait', label: 'Tan blazer portrait' },
-  { src: '/personal%20photo/headshot2.png', file: '/personal photo/headshot2.png', alt: 'Ngozi Peace Okafor wearing an olive blouse in a professional portrait', label: 'Olive portrait' },
-  { src: '/personal%20photo/headshot3.png', file: '/personal photo/headshot3.png', alt: 'Ngozi Peace Okafor seated in a light blazer for a professional portrait', label: 'Seated portrait' },
-  { src: '/personal%20photo/headshot4.png', file: '/personal photo/headshot4.png', alt: 'Close professional headshot of Ngozi Peace Okafor in a black blazer', label: 'Close portrait' },
-  { src: '/personal%20photo/headshot5.png', file: '/personal photo/headshot5.png', alt: 'Front facing professional headshot of Ngozi Peace Okafor', label: 'Profile portrait' },
+  { src: '/personal%20photo/headshot1.png', file: '/personal photo/headshot1.png', alt: 'Ngozi Peace Unegbu wearing a tan blazer in a professional portrait', label: 'Tan blazer portrait' },
+  { src: '/personal%20photo/headshot2.png', file: '/personal photo/headshot2.png', alt: 'Ngozi Peace Unegbu wearing an olive blouse in a professional portrait', label: 'Olive portrait' },
+  { src: '/personal%20photo/headshot3.png', file: '/personal photo/headshot3.png', alt: 'Ngozi Peace Unegbu seated in a light blazer for a professional portrait', label: 'Seated portrait' },
+  { src: '/personal%20photo/headshot4.png', file: '/personal photo/headshot4.png', alt: 'Close professional headshot of Ngozi Peace Unegbu in a black blazer', label: 'Close portrait' },
+  { src: '/personal%20photo/headshot5.png', file: '/personal photo/headshot5.png', alt: 'Front facing professional headshot of Ngozi Peace Unegbu', label: 'Profile portrait' },
   { src: '/personal%20photo/headshot6.jpg', file: '/personal photo/headshot6.jpg', alt: 'Professional studio portrait from the Lady Prowess media collection', label: 'Studio portrait' },
 ]
 
@@ -27,7 +27,7 @@ export default function Media() {
         </div>
         <div className="relative mx-auto w-full max-w-[540px] overflow-hidden rounded-[2rem] bg-surface-2">
           <div className="relative aspect-[4/5]"><Image src={photos[0].src} alt={photos[0].alt} fill priority className="object-cover object-top" sizes="(max-width: 1024px) 100vw, 540px" /></div>
-          <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-surface/95 px-5 py-4 backdrop-blur"><p className="font-head text-sm font-bold">Ngozi Peace Okafor</p><p className="mt-1 text-sm text-muted">Lady Prowess</p></div>
+          <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-surface/95 px-5 py-4 backdrop-blur"><p className="font-head text-sm font-bold">Ngozi Peace Unegbu</p><p className="mt-1 text-sm text-muted">Lady Prowess</p></div>
         </div>
       </div>
     </section>
@@ -35,7 +35,7 @@ export default function Media() {
     <section className="border-b border-ink-border bg-surface px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto grid max-w-[1240px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:gap-16">
         <div><p className="font-head text-xs font-bold uppercase tracking-[0.18em] text-primary">About</p><h2 className="mt-4 font-display text-2xl font-extrabold">Biography</h2></div>
-        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Okafor is a Digital Product and Content Specialist with experience across technical writing, WordPress design, Web3, fintech, product communication, and content strategy. She has also founded multiple products, where she works with businesses and individuals on digital strategy, content, and technology.</p>
+        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Unegbu is a Digital Product and Content Specialist with experience across technical writing, WordPress design, Web3, fintech, product communication, and content strategy. She has also founded multiple products, where she works with businesses and individuals on digital strategy, content, and technology.</p>
       </div>
     </section>
 

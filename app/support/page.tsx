@@ -6,7 +6,7 @@ import { Conversation, Credibility, Opportunity, Theatre, VentureStack } from '@
 import { SupportMotion } from '@/components/support/kit'
 import { InvestorIntro, SupportImpact } from '@/components/support/InvestorIntro'
 
-const description = 'Ngozi Peace Okafor builds businesses from problems she has lived: KivoraPay, Prowess Digital Solutions and Dritchwear. See the ventures, the track record and the KivoraPay seed round.'
+const description = 'Ngozi Peace Unegbu builds businesses from problems she has lived: KivoraPay, Prowess Digital Solutions and Dritchwear. See the ventures, the track record and the KivoraPay seed round.'
 
 export const metadata: Metadata = {
   title: 'Founder Portfolio and Investment',

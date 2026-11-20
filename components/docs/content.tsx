@@ -87,7 +87,7 @@ export const pages: DocPage[] = [
     id: 'overview',
     group: 'Start here',
     title: 'Technical writing and documentation',
-    lead: 'I am Ngozi Peace Okafor, a technical writer with over nine years of experience documenting APIs, developer platforms and software products.',
+    lead: 'I am Ngozi Peace Unegbu, a technical writer with over nine years of experience documenting APIs, developer platforms and software products.',
     keywords: 'about ngozi technical writer',
     toc: [{ id: 'first-request', label: 'Make your first request' }, { id: 'what-i-write', label: 'What I write' }, { id: 'experience', label: 'Experience' }],
     body: ({ go, origin }) => (

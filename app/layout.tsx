@@ -41,18 +41,18 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Lady Prowess | Ngozi Peace Okafor',
+    default: 'Lady Prowess | Ngozi Peace Unegbu',
     template: '%s | Lady Prowess',
   },
   description:
-    'Ngozi Peace Okafor is a product marketer, technical writer, website designer, Web3 educator, and founder of Prowess Digital Solutions.',
+    'Ngozi Peace Unegbu is a product marketer, technical writer, website designer, Web3 educator, and founder of Prowess Digital Solutions.',
   applicationName: 'Lady Prowess',
-  authors: [{ name: 'Ngozi Peace Okafor', url: `${SITE_URL}/about` }],
-  creator: 'Ngozi Peace Okafor',
+  authors: [{ name: 'Ngozi Peace Unegbu', url: `${SITE_URL}/about` }],
+  creator: 'Ngozi Peace Unegbu',
   publisher: 'Lady Prowess',
-  keywords: ['Lady Prowess', 'Ngozi Peace Okafor', 'product marketing', 'technical writing', 'website design', 'Web3 education', 'business strategy'],
+  keywords: ['Lady Prowess', 'Ngozi Peace Unegbu', 'Ngozi Peace Okafor', 'product marketing', 'technical writing', 'website design', 'Web3 education', 'business strategy'],
   openGraph: {
-    title: 'Lady Prowess | Ngozi Peace Okafor',
+    title: 'Lady Prowess | Ngozi Peace Unegbu',
     description: 'Product marketing, technical writing, website design, Web3 education, and practical business strategy.',
     type: 'website',
     url: '/',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     locale: 'en_NG',
     images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Lady Prowess portfolio' }],
   },
-  twitter: { card: 'summary_large_image', title: 'Lady Prowess | Ngozi Peace Okafor', description: 'Product marketing, technical writing, website design, Web3 education, and practical business strategy.', images: ['/opengraph-image'] },
+  twitter: { card: 'summary_large_image', title: 'Lady Prowess | Ngozi Peace Unegbu', description: 'Product marketing, technical writing, website design, Web3 education, and practical business strategy.', images: ['/opengraph-image'] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
 }
 
@@ -80,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: 'Ngozi Peace Okafor', alternateName: 'Lady Prowess', url: SITE_URL, jobTitle: ['Product Marketer', 'Technical Writer', 'Website Designer', 'Web3 Educator'], worksFor: { '@type': 'Organization', name: 'Prowess Digital Solutions' } }).replace(/</g, '\\u003c') }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Person', name: 'Ngozi Peace Unegbu', alternateName: ['Lady Prowess', 'Ngozi Peace Okafor'], url: SITE_URL, jobTitle: ['Product Marketer', 'Technical Writer', 'Website Designer', 'Web3 Educator'], worksFor: { '@type': 'Organization', name: 'Prowess Digital Solutions' } }).replace(/</g, '\\u003c') }}
         />
         <PostHogProvider>{children}</PostHogProvider>
       </body>

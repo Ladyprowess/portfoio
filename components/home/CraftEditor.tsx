@@ -110,7 +110,7 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
     <div className="absolute -bottom-7 -right-1.5 w-[104px] rotate-[4deg] rounded-2xl border border-ink-border bg-surface p-1.5 shadow-[0_24px_50px_-20px_rgba(17,24,39,.45)] transition-transform duration-500 hover:rotate-0 md:-bottom-12 md:-right-5 md:w-[132px] md:p-2">
       {/* All portraits stay mounted and crossfade, so switching never flashes empty */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-2">
-        {photos.map((src, i) => <Image key={src} src={src} alt={i === photo ? 'Ngozi Peace Okafor' : ''} aria-hidden={i !== photo} fill sizes="132px"
+        {photos.map((src, i) => <Image key={src} src={src} alt={i === photo ? 'Ngozi Peace Unegbu' : ''} aria-hidden={i !== photo} fill sizes="132px"
           className={`object-cover object-[50%_18%] transition-[opacity,transform] duration-700 ${i === photo ? 'scale-100 opacity-100' : 'scale-105 opacity-0'}`} />)}
       </div>
       <p className="mt-1.5 flex items-center gap-1.5 whitespace-nowrap px-0.5 text-[9.5px] font-semibold md:mt-2 md:text-[11px]"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#84CC16] motion-safe:animate-pulse" />Ngozi is editing</p>

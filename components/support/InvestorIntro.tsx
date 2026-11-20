@@ -21,7 +21,7 @@ export function InvestorIntro() {
     <section className="border-b border-ink-border bg-surface px-6 pb-12 pt-32 sm:px-8 md:px-16 md:pt-40">
       <div className="mx-auto max-w-[1240px]">
         <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-ink-border pb-5 text-xs">
-          <p className="font-head font-bold uppercase tracking-[0.18em]">The venture portfolio <span className="mx-3 text-muted">/</span> Ngozi Peace Okafor</p>
+          <p className="font-head font-bold uppercase tracking-[0.18em]">The venture portfolio <span className="mx-3 text-muted">/</span> Ngozi Peace Unegbu</p>
           <a href="#invest" className="flex min-h-10 items-center gap-2 font-semibold text-primary"><span className="h-2 w-2 rounded-full bg-primary" />KivoraPay · Seed round open ↗</a>
         </div>
         <div className="grid gap-12 pb-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-16">
@@ -30,7 +30,7 @@ export function InvestorIntro() {
             <h1 className="mt-6 font-display text-[clamp(3rem,6.4vw,5.5rem)] font-extrabold leading-[1.02] tracking-[-0.045em]">Built from life.<br /><span className="text-primary">Ready for<br className="hidden lg:block" /> what’s next.</span></h1>
             <p className="mt-7 max-w-lg text-base leading-8 text-muted">Making crypto useful. Helping people build businesses and careers. Bringing brands into the real world. Explore what I’m building-and where your support can make a difference.</p>
             <div className="mt-8 flex flex-wrap gap-3"><a href="#films" className={`${button} bg-primary text-on-primary hover:bg-primary-dim`}>See the ventures <span aria-hidden>↓</span></a><a href={MEETING} className={`${button} border border-ink-border hover:bg-bg`}>Let’s talk <span aria-hidden>↗</span></a></div>
-            <div className="mt-10 flex items-center gap-4 border-t border-ink-border pt-6"><Image src="/personal%20photo/headshot2.png" alt="Ngozi Peace Okafor" width={52} height={52} className="h-14 w-14 rounded-full object-cover object-top" /><p className="text-sm"><b className="block">Ngozi Peace Okafor</b><span className="mt-1 block text-muted">Founder · 9+ years writing, marketing and building</span></p></div>
+            <div className="mt-10 flex items-center gap-4 border-t border-ink-border pt-6"><Image src="/personal%20photo/headshot2.png" alt="Ngozi Peace Unegbu" width={52} height={52} className="h-14 w-14 rounded-full object-cover object-top" /><p className="text-sm"><b className="block">Ngozi Peace Unegbu</b><span className="mt-1 block text-muted">Founder · 9+ years writing, marketing and building</span></p></div>
           </Reveal>
           <Reveal delay={0.15}>
             <div className="rounded-3xl border border-ink-border bg-bg p-5 sm:p-7">

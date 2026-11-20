@@ -44,7 +44,7 @@ export function FounderHero() {
               </span>
             ))}
           </h1>
-          <Reveal delay={0.45}><p className="mt-7 max-w-[34rem] text-[1.04rem] leading-[1.8] text-muted md:text-[1.1rem]">I&apos;m Ngozi Peace Okafor. For nine years I&apos;ve written, marketed and shaped products for fintech and Web3 teams. Now I&apos;m building three companies of my own, each born from a problem I hit first.</p></Reveal>
+          <Reveal delay={0.45}><p className="mt-7 max-w-[34rem] text-[1.04rem] leading-[1.8] text-muted md:text-[1.1rem]">I&apos;m Ngozi Peace Unegbu. For nine years I&apos;ve written, marketed and shaped products for fintech and Web3 teams. Now I&apos;m building three companies of my own, each born from a problem I hit first.</p></Reveal>
           <Reveal delay={0.6}>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a href={MEETING} className={`${btn} bg-primary text-on-primary shadow-[0_14px_30px_-12px_rgba(37,99,235,0.7)] hover:-translate-y-0.5 hover:bg-primary-dim`}>Arrange a conversation</a>
@@ -80,9 +80,9 @@ function Portrait() {
     <div className="relative mx-auto w-full max-w-[440px] pb-12">
       <div aria-hidden className="absolute -inset-10 top-10 rounded-full bg-[radial-gradient(closest-side,rgba(37,99,235,0.18),transparent)] blur-2xl" />
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] bg-surface-2 shadow-[0_40px_90px_-40px_rgba(15,23,42,0.55)] ring-[6px] ring-surface">
-        <Image src="/personal%20photo/headshot2.png" alt="Ngozi Peace Okafor" fill priority sizes="(max-width: 1024px) 90vw, 440px" className="object-cover object-top" />
+        <Image src="/personal%20photo/headshot2.png" alt="Ngozi Peace Unegbu" fill priority sizes="(max-width: 1024px) 90vw, 440px" className="object-cover object-top" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
-        <span className="absolute left-4 top-4 rounded-full bg-surface/90 px-3.5 py-1.5 text-xs font-bold shadow backdrop-blur">Ngozi Peace Okafor · Founder</span>
+        <span className="absolute left-4 top-4 rounded-full bg-surface/90 px-3.5 py-1.5 text-xs font-bold shadow backdrop-blur">Ngozi Peace Unegbu · Founder</span>
       </motion.div>
       <div className="absolute inset-x-[-6%] bottom-0 grid grid-cols-3 gap-2 sm:inset-x-[-10%]">
         {rail.map((r, n) => (

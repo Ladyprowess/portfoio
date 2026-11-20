@@ -185,7 +185,7 @@ export function OgCard({
             }}
           >
             <div style={{ ...mono, display: 'flex', fontSize: 18, color: INK }}>
-              Ngozi Peace Okafor
+              Ngozi Peace Unegbu
             </div>
             <div style={{ ...mono, display: 'flex', fontSize: 18, color: INK_MUTED }}>
               {meta || 'ladyprowess.com'}

@@ -55,7 +55,7 @@ export default function ArticleOpening({
         <div className="mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-ink-border pt-6 md:mt-10">
           <Link href="/about" className="group inline-flex min-h-11 items-center gap-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-bg">
             <span aria-hidden="true" className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 font-serif text-xl text-primary">NP</span>
-            <span className="text-sm font-medium text-parchment transition-colors group-hover:text-primary">Ngozi Peace Okafor</span>
+            <span className="text-sm font-medium text-parchment transition-colors group-hover:text-primary">Ngozi Peace Unegbu</span>
           </Link>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
             {date && <span>{date}</span>}

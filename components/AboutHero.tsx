@@ -38,7 +38,7 @@ export default function AboutHero() {
               I build, explain, and grow digital ideas.
             </h1>
             <p className="mt-6 max-w-2xl text-[1rem] leading-[1.85] text-muted md:text-[1.06rem]">
-              I am Ngozi Peace Okafor, also known as Lady Prowess. I work across product marketing,
+              I am Ngozi Peace Unegbu, also known as Lady Prowess. I work across product marketing,
               WordPress design, technical writing, copywriting, business education, and practical AI.
               My role changes with the problem, but the goal stays the same: make useful ideas clear,
               credible, and ready to work.
@@ -83,7 +83,7 @@ export default function AboutHero() {
               <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-2 sm:aspect-[5/4]">
                 <Image
                   src="/personal%20photo/headshot3.png"
-                  alt="Ngozi Peace Okafor"
+                  alt="Ngozi Peace Unegbu"
                   fill
                   className="object-cover object-[center_18%]"
                   sizes="(max-width: 1024px) 100vw, 520px"
@@ -91,7 +91,7 @@ export default function AboutHero() {
                 />
               </div>
               <div className="flex items-center justify-between gap-4 pt-4">
-                <div><p className="font-display text-sm font-bold text-parchment">Ngozi Peace Okafor</p><p className="mt-1 text-xs text-muted">Founder and multidisciplinary digital professional</p></div>
+                <div><p className="font-display text-sm font-bold text-parchment">Ngozi Peace Unegbu</p><p className="mt-1 text-xs text-muted">Founder and multidisciplinary digital professional</p></div>
                 <span className="hidden rounded-full bg-primary/[0.07] px-3 py-1.5 text-[0.65rem] font-semibold text-primary sm:block">Lagos, Nigeria</span>
               </div>
               </div>
