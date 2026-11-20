@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Media Kit and Press Photos',
-  description: 'Official media kit, biography, and approved press photos for Ngozi Peace Unegbu, a Digital Product and Content Specialist also known as Lady Prowess.',
+  description: 'Official media kit, biography, and approved press photos for Ngozi Peace Unegbu, an AI Strategy and Digital Product Specialist and technical writer also known as Lady Prowess.',
   alternates: { canonical: '/media' },
   keywords: ['Ngozi Peace Unegbu photos', 'Lady Prowess media kit', 'Lady Prowess press photos', 'Ngozi Peace Unegbu speaker'],
   openGraph: { title: 'Media Kit and Press Photos | Lady Prowess', description: 'Official biography and approved photos of Ngozi Peace Unegbu for interviews, articles, events, and speaker profiles.', url: '/media', type: 'profile', images: ['/opengraph-image'] },
@@ -16,7 +16,7 @@ export default function MediaPage() {
   return (
     <main className="min-h-screen bg-bg">
       <Nav />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'ProfilePage', name: 'Lady Prowess Media Kit', description: 'Official biography and media resources for Ngozi Peace Unegbu.', url: 'https://ladyprowess.com/media', mainEntity: { '@type': 'Person', name: 'Ngozi Peace Unegbu', alternateName: 'Lady Prowess', url: 'https://www.ladyprowess.com/about', jobTitle: 'Digital Product and Content Specialist', knowsAbout: ['Technical writing', 'WordPress design', 'Web3', 'Fintech', 'Product communication', 'Content strategy', 'SEO'] } }).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'ProfilePage', name: 'Lady Prowess Media Kit', description: 'Official biography and media resources for Ngozi Peace Unegbu.', url: 'https://ladyprowess.com/media', mainEntity: { '@type': 'Person', name: 'Ngozi Peace Unegbu', alternateName: 'Lady Prowess', url: 'https://www.ladyprowess.com/about', jobTitle: 'AI Strategy & Digital Product Specialist', knowsAbout: ['AI strategy', 'AI adoption', 'Digital product development', 'Technical writing', 'API documentation', 'Web3', 'Fintech', 'Content strategy'] } }).replace(/</g, '\\u003c') }} />
       <Media />
       <Footer />
     </main>

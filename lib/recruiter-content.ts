@@ -1,12 +1,12 @@
 // The CV page (/recruiter). Source of truth is Ngozi's CV — the same file
 // CV_URL points to — so the page and the download always tell the same story.
 
-export const headline = 'Digital Product & Content Specialist · Technical Writer · Product Builder'
+export const headline = 'AI Strategy & Digital Product Specialist · Technical Writer · Product Builder'
 
 /** How she is open to working, shown under the contact line. */
 export const workTypes = 'Open to remote or hybrid roles: full-time, part-time or contract'
 
-export const pitch = 'Multidisciplinary digital professional with experience across technical writing, developer documentation, fintech, Web3, digital products, product operations, content strategy and digital-skills education. I combine technical communication with practical product delivery: I took KivoraPay from concept through planning, build coordination, testing and ongoing monitoring, built WordPress websites and digital workflows, and have worked with engineering, product and marketing teams across remote, international environments.'
+export const pitch = 'AI Strategy and Digital Product Specialist helping businesses adopt AI, build useful digital products and improve the way they work, with experience across technical writing, developer documentation, fintech, Web3, digital products, product operations, content strategy and digital-skills education. I combine technical communication with practical product delivery: I took KivoraPay from concept through planning, build coordination, testing and ongoing monitoring, built WordPress websites and digital workflows, and have worked with engineering, product and marketing teams across remote, international environments.'
 
 export type Role = { role: string; org: string; when: string; where: string; points: string[] }
 

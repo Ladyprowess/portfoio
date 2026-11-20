@@ -9,9 +9,9 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Meet Ngozi Peace Unegbu, a Digital Product and Content Specialist working across technical writing, WordPress design, Web3, fintech, product communication, and content strategy.',
+    'Meet Ngozi Peace Unegbu, an AI Strategy and Digital Product Specialist and technical writer working across AI adoption, digital products, developer documentation, fintech and Web3.',
   alternates: { canonical: '/about' },
-  openGraph: { title: 'About Lady Prowess', description: 'Meet Ngozi Peace Unegbu, a Digital Product and Content Specialist working across technology, content, and digital products.', url: '/about', images: ['/opengraph-image'] },
+  openGraph: { title: 'About Lady Prowess', description: 'Meet Ngozi Peace Unegbu, an AI Strategy and Digital Product Specialist helping businesses turn technology into practical solutions.', url: '/about', images: ['/opengraph-image'] },
 }
 
 export default function AboutPage() {

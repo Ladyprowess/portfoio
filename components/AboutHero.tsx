@@ -38,10 +38,10 @@ export default function AboutHero() {
               I build, explain, and grow digital ideas.
             </h1>
             <p className="mt-6 max-w-2xl text-[1rem] leading-[1.85] text-muted md:text-[1.06rem]">
-              I am Ngozi Peace Unegbu, also known as Lady Prowess. I work across product marketing,
-              WordPress design, technical writing, copywriting, business education, and practical AI.
-              My role changes with the problem, but the goal stays the same: make useful ideas clear,
-              credible, and ready to work.
+              I am Ngozi Peace Unegbu, also known as Lady Prowess, an AI Strategy and Digital Product
+              Specialist and technical writer at heart. I help businesses find where AI and technology
+              can solve real problems, then build, document and implement the solution. My role changes
+              with the problem, but the goal stays the same: make useful ideas clear, credible, and ready to work.
             </p>
 
             <div className="mt-8 grid max-w-2xl grid-cols-3 border-y border-ink-border py-5">
@@ -91,7 +91,7 @@ export default function AboutHero() {
                 />
               </div>
               <div className="flex items-center justify-between gap-4 pt-4">
-                <div><p className="font-display text-sm font-bold text-parchment">Ngozi Peace Unegbu</p><p className="mt-1 text-xs text-muted">Founder and multidisciplinary digital professional</p></div>
+                <div><p className="font-display text-sm font-bold text-parchment">Ngozi Peace Unegbu</p><p className="mt-1 text-xs text-muted">AI Strategy & Digital Product Specialist</p></div>
                 <span className="hidden rounded-full bg-primary/[0.07] px-3 py-1.5 text-[0.65rem] font-semibold text-primary sm:block">Lagos, Nigeria</span>
               </div>
               </div>

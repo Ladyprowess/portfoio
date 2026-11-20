@@ -85,7 +85,7 @@ export const journey = [
   { year: '2020', title: 'Fixing problems at the source', body: 'COVID shut everything down, but I kept going. At Soofluffy I cut recurring customer issues by 45% before moving on in November.' },
   { year: '2021', title: 'The door finally opened', body: 'Payment walls that had blocked me for years came down. I went back to freelancing properly and built a reputation piece by piece.' },
   { year: '2022', title: 'Technical Writer', body: 'My first full-time role, at WriteTech Hub. Proof that none of the hard years had been wasted.' },
-  { year: 'Now', title: 'Founder and strategist', body: 'I run Prowess Digital Solutions, built KivoraPay and founded Dritchwear, and I work with teams across fintech and Web3.' },
+  { year: 'Now', title: 'AI strategist and builder', body: 'I help businesses adopt AI and build useful products. I run Prowess Digital Solutions, built KivoraPay and founded Dritchwear, and work with teams across fintech and Web3.' },
 ]
 
 export const ventures = [

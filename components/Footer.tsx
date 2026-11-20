@@ -50,8 +50,8 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-1">
             <Image src="/Logo-blue.png" alt="Lady Prowess" width={170} height={44} className="site-logo h-8 w-auto" />
             <p className="mt-5 max-w-xs text-[0.88rem] leading-[1.8] text-muted">
-              Founder, builder, and technical writer working at the intersection of technology,
-              business, and people.
+              AI strategist, product builder, and technical writer working at the intersection of
+              AI, technology, and business.
             </p>
           </div>
 

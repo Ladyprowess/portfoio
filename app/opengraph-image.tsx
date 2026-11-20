@@ -10,9 +10,9 @@ export default async function Image() {
   return new ImageResponse(
     (
       <OgCard
-        category="Digital Product & Content"
-        title="Ideas made clear. Products made useful."
-        excerpt="Product marketing, technical writing, Web3 education, and practical digital execution."
+        category="AI Strategy & Digital Products"
+        title="I help businesses turn technology into practical solutions."
+        excerpt="AI strategy, digital product development and technical writing."
         meta="ladyprowess.com"
       />
     ),

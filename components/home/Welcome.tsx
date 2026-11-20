@@ -21,13 +21,13 @@ const LINES = 3
 const script: Step[] = [
   { line: 0, type: 'Hi there.', pause: 700 },
   { line: 1, type: 'You took time out of your day to come here. Thank you.', pause: 800 },
-  { line: 2, type: 'I’m Ngozi, a multifaceted creative who makes complicated products ', pause: 150 },
+  { line: 2, type: 'I’m Ngozi, an AI strategist and technical writer who makes complicated products ', pause: 150 },
   { line: 2, type: 'synergistically consumable.', pause: 650 },
   { line: 2, mark: true, pause: 700 },
   { line: 2, erase: 'synergistically consumable.'.length, pause: 250 },
   { line: 2, type: 'easy to understand.', pause: 500 },
 ]
-const FINAL = ['Hi there.', 'You took time out of your day to come here. Thank you.', 'I’m Ngozi, a multifaceted creative who makes complicated products easy to understand.']
+const FINAL = ['Hi there.', 'You took time out of your day to come here. Thank you.', 'I’m Ngozi, an AI strategist and technical writer who makes complicated products easy to understand.']
 const JARGON = 'synergistically consumable.'
 
 export default function Welcome() {

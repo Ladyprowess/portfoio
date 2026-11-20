@@ -35,7 +35,7 @@ export default function Media() {
     <section className="border-b border-ink-border bg-surface px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto grid max-w-[1240px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:gap-16">
         <div><p className="font-head text-xs font-bold uppercase tracking-[0.18em] text-primary">About</p><h2 className="mt-4 font-display text-2xl font-extrabold">Biography</h2></div>
-        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Unegbu is a Digital Product and Content Specialist with experience across technical writing, WordPress design, Web3, fintech, product communication, and content strategy. She has also founded multiple products, where she works with businesses and individuals on digital strategy, content, and technology.</p>
+        <p className="max-w-3xl text-base leading-8 text-muted">Ngozi Peace Unegbu is an AI Strategy and Digital Product Specialist and technical writer. She helps businesses adopt AI in practical ways, build useful digital products and make complex technology easy to understand, drawing on experience across technical writing, developer documentation, fintech, Web3, product development and content strategy. She has also founded multiple products, where she works with businesses and individuals on digital strategy, content, and technology.</p>
       </div>
     </section>
 

@@ -48,7 +48,7 @@ export default function Ventures() {
 
 /** KivoraPay has no current screenshot, so it gets a drawn app window in the
     new brand: white surfaces, a navy balance panel, one blue accent. */
-function KivoraMock() {
+export function KivoraMock() {
   return <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_60%_40%,rgba(21,89,179,.45),transparent_65%)] p-6">
     <div className="w-full max-w-[340px] shrink-0 scale-[.68] overflow-hidden rounded-xl border sm:scale-90 md:scale-100 border-[#dce2eb] bg-white text-[#101e32] shadow-[0_24px_60px_-20px_rgba(0,0,0,.6)]">
       <div className="flex items-center gap-2 border-b border-[#e6ebf2] px-4 py-3">
