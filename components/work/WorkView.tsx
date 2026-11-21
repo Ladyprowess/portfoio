@@ -9,6 +9,9 @@ import { learning, websites, writing } from '@/lib/work-content'
 import WorkNav from './WorkNav'
 import LazyLoopVideo from './LazyLoopVideo'
 import VideoShowcase from './VideoShowcase'
+import WebsiteMarquee from './WebsiteMarquee'
+import TypingTerminal from './TypingTerminal'
+import ProductSwitcher from './ProductSwitcher'
 
 // The Work page: the one place for proof. Every project appears here once,
 // as a picture and one line. Services (what she can do for you), About (her
@@ -85,7 +88,8 @@ export default function WorkView() {
           <div className="relative min-h-[250px] md:min-h-[320px]"><KivoraMock /></div>
         </a>
       </Reveal>
-      <div className="mt-16 space-y-16 md:space-y-24">
+      <div className="mt-8 md:hidden"><ProductSwitcher products={otherProducts} /></div>
+      <div className="mt-16 hidden space-y-24 md:block">
         {otherProducts.map((p, i) => <Reveal key={p.id}><Row flip={i % 2 === 1} href={p.href} image={p.image} title={p.name} tag={p.status} kind={p.kind} text={p.summary} /></Reveal>)}
       </div>
     </Section>
@@ -103,7 +107,10 @@ export default function WorkView() {
         </a>
       </Reveal>
       <p className="mt-12 font-head text-[11px] uppercase tracking-[.16em] text-muted">Published on</p>
-      <ul className="mt-4 grid border-t border-ink-border sm:grid-cols-2">
+      <div className="mt-4 flex flex-wrap gap-2 sm:hidden">
+        {writing.map(w => <a key={w.title} href={w.href} target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border bg-surface px-4 py-2 text-sm font-semibold transition active:scale-95 hover:border-primary hover:text-primary">{w.title} <span className="text-primary">↗</span></a>)}
+      </div>
+      <ul className="mt-4 hidden border-t border-ink-border sm:grid sm:grid-cols-2">
         {writing.map(w => <li key={w.title} className="border-b border-ink-border sm:odd:border-r sm:odd:pr-8 sm:even:pl-8">
           <a href={w.href} target="_blank" rel="noopener noreferrer" className="group flex items-baseline justify-between gap-4 py-4">
             <span><span className="font-display text-lg font-semibold tracking-[-.01em] group-hover:text-primary">{w.title}</span><span className="mt-0.5 block text-sm text-muted">{w.description}</span></span>
@@ -115,18 +122,19 @@ export default function WorkView() {
 
     {/* ── Websites ─────────────────────────────────────── */}
     <Section id="websites" label="Websites" title="Websites I designed and built">
-      <Grid>
+      <div className="sm:hidden"><WebsiteMarquee sites={sites} /></div>
+      <div className="hidden sm:block"><Grid>
         {sites.map(w => <Card key={w.title} href={w.href} image={w.image} title={w.title} text={w.description} />)}
-      </Grid>
+      </Grid></div>
     </Section>
 
     {/* ── Videos ───────────────────────────────────────── */}
     <Section id="videos" label="Videos" title="Videos made with AI" tint>
       <p className="-mt-4 mb-8 max-w-xl text-[15px] leading-7 text-muted">Short explainer videos produced with AI video tools.</p>
-      <VideoShowcase videos={aiVideos} />
+      <VideoShowcase videos={aiVideos} loops={['/videos/cc-1.mp4', '/videos/cc-2.mp4', '/videos/cc-3.mp4']} />
 
-      <p className="mt-12 font-head text-[11px] uppercase tracking-[.16em] text-muted">Animated explainers</p>
-      <div className="mt-4 grid max-w-[640px] grid-cols-3 gap-3">
+      <p className="mt-12 hidden font-head text-[11px] uppercase tracking-[.16em] text-muted lg:block">Animated explainers</p>
+      <div className="mt-4 hidden max-w-[640px] grid-cols-3 gap-3 lg:grid">
         {['/videos/cc-1.mp4', '/videos/cc-2.mp4', '/videos/cc-3.mp4'].map(src => <LazyLoopVideo key={src} src={src}
           className="block aspect-[4/5] w-full rounded-2xl border border-ink-border bg-black object-cover" />)}
       </div>
@@ -134,12 +142,12 @@ export default function WorkView() {
 
     {/* ── Teaching ─────────────────────────────────────── */}
     <Section id="teaching" label="Teaching" title="Courses and resources">
-      <ul className="border-t border-ink-border">
-        {learning.map(l => <li key={l.title} className="border-b border-ink-border">
-          <a href={l.href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-5 py-5">
-            <span className="relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-surface-2 sm:block"><Image src={l.image} alt="" fill sizes="96px" className="object-cover" /></span>
-            <span className="flex-1"><span className="font-display text-lg font-semibold tracking-[-.01em] group-hover:text-primary">{l.title}</span><span className="mt-0.5 block text-sm text-muted">{l.description}</span></span>
-            <span className="shrink-0 text-primary">↗</span>
+      <ul className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:block sm:overflow-visible sm:border-t sm:border-ink-border sm:px-0 sm:pb-0">
+        {learning.map(l => <li key={l.title} className="w-[75%] shrink-0 snap-start overflow-hidden rounded-2xl border border-ink-border bg-surface sm:w-auto sm:rounded-none sm:border-0 sm:border-b sm:bg-transparent">
+          <a href={l.href} target="_blank" rel="noopener noreferrer" className="group flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5 sm:py-5">
+            <span className="relative block aspect-[16/10] w-full shrink-0 overflow-hidden bg-surface-2 sm:aspect-auto sm:h-16 sm:w-24 sm:rounded-xl"><Image src={l.image} alt="" fill sizes="(max-width: 640px) 75vw, 96px" className="object-cover" /></span>
+            <span className="flex-1 px-4 pb-4 sm:p-0"><span className="font-display text-lg font-semibold tracking-[-.01em] group-hover:text-primary">{l.title}</span><span className="mt-0.5 block text-sm text-muted">{l.description}</span></span>
+            <span className="hidden shrink-0 text-primary sm:inline">↗</span>
           </a>
         </li>)}
       </ul>
@@ -147,8 +155,9 @@ export default function WorkView() {
 
     {/* ── Coding ───────────────────────────────────────── */}
     <Section id="coding" label="Coding" title="Tools that remove manual work">
-      <ul className="overflow-hidden rounded-3xl bg-[#0B0F14] text-[#E7EDF6]">
-        {python.map(t => <li key={t.id} className="grid gap-1 border-b border-white/10 px-6 py-5 last:border-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] md:gap-8 md:px-8">
+      <div className="md:hidden"><TypingTerminal tools={python} /></div>
+      <ul className="hidden overflow-hidden rounded-3xl bg-[#0B0F14] md:block">
+        {python.map(t => <li key={t.id} className="grid w-[85%] shrink-0 snap-start content-start gap-2 rounded-2xl bg-[#0B0F14] px-5 py-5 text-[#E7EDF6] md:w-auto md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] md:gap-8 md:rounded-none md:border-b md:border-white/10 md:px-8 md:last:border-0">
           <p className="truncate font-head text-[13px]"><span className="text-[#28C840]">$</span> {t.cmd}</p>
           <p className="text-sm leading-6 text-white/70"><span className="font-semibold text-white">{t.name}.</span> {t.summary}</p>
         </li>)}
@@ -161,14 +170,14 @@ export default function WorkView() {
 
     {/* ── Next step ────────────────────────────────────── */}
     <section className={`${wrap} pb-24`}>
-      <div className="grid gap-4 md:grid-cols-2">
-        <a href="/recruiter" className="group rounded-[2rem] bg-panel p-8 text-on-panel transition hover:opacity-95 md:p-10">
+      <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <a href="/recruiter" className="group rounded-[1.5rem] bg-panel p-5 text-on-panel transition hover:opacity-95 md:rounded-[2rem] md:p-10">
           <p className="font-head text-[11px] uppercase tracking-[.16em] text-accent-invert">Hiring?</p>
-          <p className="mt-3 font-display text-2xl font-semibold tracking-[-.02em]">See my CV →</p>
+          <p className="mt-2 font-display text-lg font-semibold tracking-[-.02em] md:mt-3 md:text-2xl">See my CV →</p>
         </a>
-        <a href="/services" className="group rounded-[2rem] bg-primary p-8 text-on-primary transition hover:bg-primary-dim md:p-10">
-          <p className="font-head text-[11px] uppercase tracking-[.16em] text-on-primary/70">Need help with a project?</p>
-          <p className="mt-3 font-display text-2xl font-semibold tracking-[-.02em]">See how I can help →</p>
+        <a href="/services" className="group rounded-[1.5rem] bg-primary p-5 text-on-primary transition hover:bg-primary-dim md:rounded-[2rem] md:p-10">
+          <p className="font-head text-[11px] uppercase tracking-[.16em] text-on-primary/70">Need help?</p>
+          <p className="mt-2 font-display text-lg font-semibold tracking-[-.02em] md:mt-3 md:text-2xl">See how I can help →</p>
         </a>
       </div>
     </section>
@@ -205,13 +214,14 @@ function Row({ flip, href, image, title, tag, kind, text }: { flip: boolean; hre
 }
 
 function Grid({ cols4 = false, children }: { cols4?: boolean; children: ReactNode }) {
-  return <div className={`mt-6 grid gap-5 sm:grid-cols-2 ${cols4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>{children}</div>
+  // Phones: a swipeable row (the next card peeks in). Larger screens: a grid.
+  return <div className={`-mx-5 mt-6 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 ${cols4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>{children}</div>
 }
 
 /** The one card style used for every project: picture, name, one line, link. */
 function Card({ href, image, title, text, tag, small = false }: { href?: string; image?: string; title: string; text: string; tag?: string; small?: boolean }) {
   const external = href?.startsWith('http')
-  return <Reveal className="h-full">
+  return <Reveal className="h-full w-[80%] shrink-0 snap-start sm:w-auto">
     <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}
       className="group flex h-full flex-col overflow-hidden rounded-3xl border border-ink-border bg-surface transition hover:-translate-y-0.5 hover:border-primary/40">
       <div className={`relative overflow-hidden border-b border-ink-border bg-surface-2 ${small ? 'aspect-[16/10]' : 'aspect-[16/10]'}`}>

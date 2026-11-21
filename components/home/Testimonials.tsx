@@ -82,7 +82,6 @@ export default function Testimonials() {
         {i === index && <motion.span key={`${index}-${paused}-${inView}`} className="absolute inset-y-0 left-0 bg-primary"
           initial={{ width: paused || !inView || reduce ? '100%' : '0%' }} animate={{ width: '100%' }} transition={{ duration: paused || !inView || reduce ? 0 : AUTO_MS / 1000, ease: 'linear' }} />}
       </button>)}
-      <span className="ml-2 font-head text-[10px] text-muted">{String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}</span>
     </div>
   </div>
 }

@@ -2,13 +2,14 @@
 
 import Image from 'next/image'
 import { useRef, useState } from 'react'
+import VideoStories from './VideoStories'
 
 type Video = { src: string; poster: string; title: string; text: string }
 
-// One big player and a playlist beside it (phones: a swipeable row of
-// thumbnails under the player). Picking a video loads it into the player and
-// plays it. Nothing downloads until someone presses play or picks a video.
-export default function VideoShowcase({ videos }: { videos: Video[] }) {
+// Desktop: one big player with a playlist beside it; picking a video loads it
+// into the player. Phones: Stories (components/work/VideoStories.tsx).
+// Nothing downloads until someone presses play.
+export default function VideoShowcase({ videos, loops = [] }: { videos: Video[]; loops?: string[] }) {
   const [active, setActive] = useState(0)
   const [autoplay, setAutoplay] = useState(false)
   const player = useRef<HTMLDivElement>(null)
@@ -20,8 +21,13 @@ export default function VideoShowcase({ videos }: { videos: Video[] }) {
     if (window.matchMedia('(max-width: 1023px)').matches) player.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
-  return <div className="grid gap-5 lg:grid-cols-[1.45fr_1fr] lg:gap-6">
-    <div ref={player} className="scroll-mt-32">
+  // Phones: Stories (one at a time, tap to move on), with the looping explainers at the end.
+  const mobile = <div className="lg:hidden">
+    <VideoStories stories={[...videos, ...loops.map(src => ({ src, title: 'Animated explainer', loop: true }))]} />
+  </div>
+
+  return <>{mobile}<div className="hidden gap-6 lg:grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+    <div ref={player} className="min-w-0 scroll-mt-32">
       <div className="overflow-hidden rounded-[1.75rem] border border-ink-border bg-black shadow-[0_40px_90px_-45px_rgba(17,24,39,.6)]">
         <video key={v.src} src={v.src} poster={v.poster} controls playsInline preload="none" autoPlay={autoplay}
           className="block aspect-square max-h-[620px] w-full bg-black object-contain" />
@@ -30,12 +36,12 @@ export default function VideoShowcase({ videos }: { videos: Video[] }) {
       <p className="mt-1 text-sm text-muted">{v.text}</p>
     </div>
 
-    <div>
-      <p className="font-head text-[11px] uppercase tracking-[.16em] text-muted">Playlist · {videos.length} videos</p>
+    <div className="min-w-0">
+      <p className="font-head text-[11px] uppercase tracking-[.16em] text-muted">Playlist</p>
       <ol className="-mx-5 mt-3 flex snap-x gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] lg:mx-0 lg:max-h-[620px] lg:flex-col lg:gap-2 lg:overflow-y-auto lg:px-0 lg:pb-0">
         {videos.map((item, i) => {
           const on = i === active
-          return <li key={item.src} className="w-[46%] shrink-0 snap-start sm:w-[30%] lg:w-auto">
+          return <li key={item.src} className="w-[34%] shrink-0 snap-start sm:w-[24%] lg:w-auto">
             <button type="button" onClick={() => pick(i)} aria-current={on ? 'true' : undefined}
               className={`group flex w-full flex-col gap-2 rounded-2xl p-2 text-left transition lg:flex-row lg:items-center lg:gap-4 ${on ? 'bg-surface shadow-[0_12px_30px_-18px_rgba(17,24,39,.4)] ring-1 ring-primary/40' : 'hover:bg-surface'}`}>
               <span className="relative aspect-square w-full shrink-0 overflow-hidden rounded-xl bg-black lg:w-24">
@@ -48,7 +54,7 @@ export default function VideoShowcase({ videos }: { videos: Video[] }) {
                 </span>
               </span>
               <span className="min-w-0 px-1 lg:px-0">
-                <span className={`block text-[13px] font-semibold leading-snug lg:text-[15px] ${on ? 'text-primary' : ''}`}>{item.title}</span>
+                <span className={`block text-xs font-semibold leading-snug lg:text-[15px] ${on ? 'text-primary' : ''}`}>{item.title}</span>
                 <span className="mt-0.5 hidden text-xs text-muted lg:block">{item.text}</span>
               </span>
             </button>
@@ -56,5 +62,5 @@ export default function VideoShowcase({ videos }: { videos: Video[] }) {
         })}
       </ol>
     </div>
-  </div>
+  </div></>
 }

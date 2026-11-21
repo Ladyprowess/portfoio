@@ -15,7 +15,7 @@ export default function ServiceScene({ service: s, index, onStart }: { service: 
   return <section id={s.key} className={`scroll-mt-24 py-14 md:py-24 ${flip ? 'bg-surface-2/60' : ''}`}>
     <div className="mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-5 md:px-8 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
       <div className={flip ? 'lg:order-2' : ''}>
-        <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">0{index + 1} · {s.name}</p>
+        <p className="font-head text-[11px] uppercase tracking-[.14em] text-primary">{s.name}</p>
         <p className="mt-4 inline-block rounded-2xl rounded-bl-sm bg-surface px-4 py-2.5 text-[15px] italic text-muted shadow-sm ring-1 ring-ink-border">You: “{s.problem}”</p>
         <TypeHeading className="mt-5 font-display text-3xl font-semibold leading-[1.1] tracking-[-.04em] md:text-[2.6rem]" text={s.title} />
         <p className="mt-4 max-w-xl text-[15px] leading-7 text-muted md:text-base">{s.body}</p>

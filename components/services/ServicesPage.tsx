@@ -32,8 +32,7 @@ export default function ServicesPage() {
         <ol className="mt-9 grid gap-4 md:grid-cols-3">
           {steps.map((st, i) => <Reveal key={st.title} delay={i * 0.12}>
             <li className="h-full list-none rounded-3xl border border-border-invert bg-white/[0.03] p-6 md:p-7">
-              <span className="font-display text-4xl font-bold text-transparent [-webkit-text-stroke:1.5px_rgb(var(--accent-invert))]">0{i + 1}</span>
-              <p className="mt-5 font-display text-xl font-semibold tracking-[-.02em]">{st.title}</p>
+              <p className="font-display text-xl font-semibold tracking-[-.02em]">{st.title}</p>
               <p className="mt-2 text-sm leading-6 text-on-panel/60">{st.body}</p>
             </li>
           </Reveal>)}
