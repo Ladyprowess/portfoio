@@ -73,10 +73,10 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
       </div>
     </div>
 
-    <dl className="relative mx-auto mt-16 grid max-w-[1320px] grid-cols-3 gap-y-6 px-5 md:mt-20 md:grid-cols-5 md:px-8">
-      {[['9+', 'Years of writing and building'], ['200+', 'People trained'], ['3', 'Ventures founded'], ['11', 'Companies I have worked with'], ['-45%', 'Repeat customer issues, in support']].map(([v, l], i) => <div key={l} className={`flex-col-reverse justify-end border-l border-ink-border pl-3 md:pl-5 ${i >= 3 ? 'hidden md:flex' : 'flex'}`}>
-        <dt className="mt-1 text-[11px] leading-4 text-muted md:text-xs">{l}</dt><dd className="font-display text-2xl font-bold tracking-[-.04em] md:text-4xl">{v}</dd>
-      </div>)}
-    </dl>
+    <ul aria-label="At a glance" className="relative mx-auto mt-16 grid max-w-[1320px] grid-cols-3 gap-y-6 px-5 md:mt-20 md:grid-cols-5 md:px-8">
+      {[['9+', 'Years of writing and building'], ['200+', 'People trained'], ['3', 'Ventures founded'], ['11', 'Companies I have worked with'], ['-45%', 'Repeat customer issues, in support']].map(([v, l], i) => <li key={l} className={`flex-col border-l border-ink-border pl-3 md:pl-5 ${i >= 3 ? 'hidden md:flex' : 'flex'}`}>
+        <span className="font-display text-2xl font-bold tracking-[-.04em] md:text-4xl">{v}</span><span className="mt-1 text-[11px] leading-4 text-muted md:text-xs">{l}</span>
+      </li>)}
+    </ul>
   </section>
 }
