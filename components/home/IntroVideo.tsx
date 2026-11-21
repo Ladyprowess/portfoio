@@ -4,10 +4,9 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import posthog from 'posthog-js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-// Ngozi's video introduction, in a popup. Mounted on the homepage, /docs and
-// /recruiter: it opens on every page load or reload (on the homepage, after the
-// welcome screen closes), but not again when moving between those pages within
-// the same load. The "Watch my intro" button in the hero reopens it any time
+// Ngozi's video introduction, in a popup. Homepage only: it opens on every
+// load or reload of the homepage, after the welcome screen closes. The
+// "Watch my intro" button in the hero reopens it any time
 // (by dispatching OPEN_INTRO_EVENT).
 //
 // Browsers only autoplay muted video, so it starts muted; the captions are
