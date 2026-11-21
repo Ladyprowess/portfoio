@@ -50,10 +50,11 @@ export default function RecruiterView() {
         </ul>
       </header>
 
-      {/* One main action, plus email. Phones: two equal buttons side by side. */}
+      {/* Actions. Phones: Download CV full width, then Email and Recommendation side by side. Desktop: one row. */}
       <div className="mt-7 grid grid-cols-2 gap-3 sm:flex print:hidden">
-        <a href={CV_URL} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('recruiter_cv_opened')} className="flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim">Download CV</a>
-        <a href={`mailto:${EMAIL}?subject=Role%20at%20`} onClick={() => posthog.capture('recruiter_email_clicked')} className="flex items-center justify-center rounded-full border border-ink-border px-6 py-3 text-sm font-semibold hover:border-muted">Email me</a>
+        <a href={CV_URL} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('recruiter_cv_opened')} className="col-span-2 flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim sm:col-span-1">Download CV</a>
+        <a href={`mailto:${EMAIL}?subject=Role%20at%20`} onClick={() => posthog.capture('recruiter_email_clicked')} className="flex items-center justify-center rounded-full border border-ink-border px-5 py-3 text-sm font-semibold hover:border-muted">Email me</a>
+        <a href={RECOMMENDATION_URL} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('document_opened', { document_type: 'recommendation' })} className="flex items-center justify-center rounded-full border border-ink-border px-5 py-3 text-sm font-semibold hover:border-muted">Recommendation<span className="hidden sm:inline">&nbsp;letter</span></a>
       </div>
 
       <Section title="Profile">
@@ -122,14 +123,6 @@ export default function RecruiterView() {
         <List items={awards} />
       </Section>
 
-      <Section title="References">
-        <p className="text-[15px] leading-7 text-parchment/85">A recommendation letter is available, and further references on request.</p>
-        <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold print:hidden">
-          <a href={RECOMMENDATION_URL} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Read the recommendation letter ↗</a>
-          <button type="button" onClick={copyLink} className="text-muted hover:text-parchment">{copied ? '✓ Link copied' : 'Copy link to this CV'}</button>
-        </div>
-      </Section>
-
       <Section title="Languages">
         <p className="text-[15px]">English <span className="text-muted">· Fluent</span></p>
       </Section>
@@ -138,6 +131,8 @@ export default function RecruiterView() {
         <a href={CV_URL} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('recruiter_cv_opened', { placement: 'footer' })} className="font-semibold text-primary hover:underline">Download the full CV</a>
         <span className="mx-2" aria-hidden="true">·</span>
         <a href="/" className="font-semibold text-primary hover:underline">See the full portfolio</a>
+        <span className="mx-2" aria-hidden="true">·</span>
+        <button type="button" onClick={copyLink} className="font-semibold text-primary hover:underline">{copied ? '✓ Link copied' : 'Copy link'}</button>
       </p>
     </article>
   </main>
