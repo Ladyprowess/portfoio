@@ -35,8 +35,8 @@ export const services: {
     name: 'Product building',
     problem: 'I have an idea, but no product yet.',
     title: 'From idea to a product people use.',
-    body: 'Requirements, user journeys and an AI-assisted build, the same way I took KivoraPay from concept to launch.',
-    includes: ['Product requirements and user journeys', 'AI-assisted build and testing', 'Launch and monitoring'],
+    body: 'Requirements, user journeys, build and testing, the same way I took KivoraPay from concept to launch.',
+    includes: ['Product requirements and user journeys', 'Build and testing', 'Launch and monitoring'],
     proofTitle: 'Products I built',
     proof: [
       { label: 'KivoraPay', href: 'https://kivorapay.com/' },

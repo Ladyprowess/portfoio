@@ -7,6 +7,8 @@ import { KivoraMock } from '@/components/home/Ventures'
 import { products, python } from '@/lib/builds-content'
 import { learning, websites, writing } from '@/lib/work-content'
 import WorkNav from './WorkNav'
+import LazyLoopVideo from './LazyLoopVideo'
+import VideoShowcase from './VideoShowcase'
 
 // The Work page: the one place for proof. Every project appears here once,
 // as a picture and one line. Services (what she can do for you), About (her
@@ -15,14 +17,26 @@ import WorkNav from './WorkNav'
 const wrap = 'mx-auto max-w-[1200px] px-5 md:px-8'
 const kivora = products.find(p => p.id === 'kivorapay')!
 // Chidexun is a client website, so it lives under Websites, not Products.
-const otherProducts = products.filter(p => !['kivorapay', 'chidexun', 'portfolio'].includes(p.id))
-// Prowess Digital Solutions and Dritchwear are shown once, under Products.
-const sites = websites.filter(w => w.title !== 'Prowess Digital Solutions' && w.title !== 'Dritchwear')
+const otherProducts = products.filter(p => !['kivorapay', 'chidexun', 'portfolio', 'dritchwear'].includes(p.id))
+// Prowess Digital Solutions is shown once, under Products; Dritchwear is a website.
+const sites = websites.filter(w => w.title !== 'Prowess Digital Solutions')
+
+// Videos she made with AI tools (web copies in /public/videos; originals in Downloads/Ai videos).
+// No brand names and no links here, by request.
+const aiVideos = [
+  { src: '/videos/ai-4901.mp4', poster: '/videos/ai-4901.jpg', title: 'How we approach business problems', text: 'AI presenter video with captions.' },
+  { src: '/videos/ai-payments.mp4', poster: '/videos/ai-payments.jpg', title: 'Payments, sorted', text: 'AI presenter video with captions.' },
+  { src: '/videos/ai-bitcoin.mp4', poster: '/videos/ai-bitcoin.jpg', title: 'Buying Bitcoin? Know this first', text: 'AI presenter video for social, vertical format.' },
+  { src: '/videos/ai-4903.mp4', poster: '/videos/ai-4903.jpg', title: 'The health of a business', text: 'AI presenter video with captions.' },
+  { src: '/videos/ai-balance.mp4', poster: '/videos/ai-balance.jpg', title: 'Watching your balance', text: 'AI-generated product scene with captions.' },
+  { src: '/videos/ai-4950.mp4', poster: '/videos/ai-4950.jpg', title: 'A client needs a logo…', text: 'AI-generated story scenes with captions.' },
+]
 
 const sections = [
   { id: 'products', label: 'Products' },
   { id: 'writing', label: 'Technical writing' },
   { id: 'websites', label: 'Websites' },
+  { id: 'videos', label: 'Videos' },
   { id: 'teaching', label: 'Teaching' },
   { id: 'coding', label: 'Coding' },
 ]
@@ -58,14 +72,14 @@ export default function WorkView() {
     <WorkNav sections={sections} />
 
     {/* ── Products ─────────────────────────────────────── */}
-    <Section id="products" label="Products" title="Products I built with AI coding agents">
+    <Section id="products" label="Products" title="Products I’ve built">
       <Reveal>
         <a href={kivora.href} target="_blank" rel="noopener noreferrer" className="group grid overflow-hidden rounded-[2rem] bg-[#0E223C] text-white lg:grid-cols-[1fr_1fr]">
           <div className="flex flex-col p-7 md:p-12">
             <span className="w-max rounded-full bg-[#84CC16]/20 px-2.5 py-1 text-[11px] font-semibold text-[#BEF264]">● Live · Product lead and builder</span>
             <h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.03em] md:text-5xl">KivoraPay</h3>
             <p className="mt-4 max-w-md text-[15px] leading-7 text-white/75 md:text-base">{kivora.summary}</p>
-            <p className="mt-3 text-sm text-white/55">Web app, Android app and payment automations. 150+ commits.</p>
+            <p className="mt-3 text-sm text-white/55">Web app, Android app and payment automations.</p>
             <span className="mt-8 inline-flex w-max items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#0E223C] transition group-hover:bg-white/90">Visit KivoraPay ↗</span>
           </div>
           <div className="relative min-h-[250px] md:min-h-[320px]"><KivoraMock /></div>
@@ -106,8 +120,20 @@ export default function WorkView() {
       </Grid>
     </Section>
 
+    {/* ── Videos ───────────────────────────────────────── */}
+    <Section id="videos" label="Videos" title="Videos made with AI" tint>
+      <p className="-mt-4 mb-8 max-w-xl text-[15px] leading-7 text-muted">Short explainer videos produced with AI video tools.</p>
+      <VideoShowcase videos={aiVideos} />
+
+      <p className="mt-12 font-head text-[11px] uppercase tracking-[.16em] text-muted">Animated explainers</p>
+      <div className="mt-4 grid max-w-[640px] grid-cols-3 gap-3">
+        {['/videos/cc-1.mp4', '/videos/cc-2.mp4', '/videos/cc-3.mp4'].map(src => <LazyLoopVideo key={src} src={src}
+          className="block aspect-[4/5] w-full rounded-2xl border border-ink-border bg-black object-cover" />)}
+      </div>
+    </Section>
+
     {/* ── Teaching ─────────────────────────────────────── */}
-    <Section id="teaching" label="Teaching" title="Courses and resources" tint>
+    <Section id="teaching" label="Teaching" title="Courses and resources">
       <ul className="border-t border-ink-border">
         {learning.map(l => <li key={l.title} className="border-b border-ink-border">
           <a href={l.href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-5 py-5">
@@ -129,7 +155,7 @@ export default function WorkView() {
       </ul>
       <p className="mt-8 max-w-2xl text-sm leading-6 text-muted">
         <span className="font-semibold text-parchment">How I build: </span>
-        I direct AI coding agents (Claude Code) and write the rules they work by, then test every state before anything ships.
+        I use AI coding tools like Claude Code where they help, write the rules they work by, and test every state before anything ships.
       </p>
     </Section>
 

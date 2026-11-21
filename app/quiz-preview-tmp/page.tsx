@@ -2,6 +2,8 @@ import ArticleContent from '@/components/ArticleContent'
 import { quizBlockHtml } from '@/lib/blog-quiz'
 
 // Temporary page for checking the quiz visually. Delete after review.
+export const metadata = { robots: { index: false, follow: false } }
+
 export default function QuizPreviewPage() {
   const html = `<p>Stablecoins are crypto tokens designed to hold a steady value, usually pegged to a currency like the US dollar.</p>${quizBlockHtml({
     id: 'quiz-demo-one',

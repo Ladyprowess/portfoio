@@ -191,7 +191,7 @@ const bizSteps = [2500, 2300, 2000, 3400]
 const notes = [
   { id: 'orders', chaos: 'The idea, in a voice note', system: 'Requirements', col: 0 },
   { id: 'stock', chaos: 'Who is it for? Not sure.', system: 'User journeys', col: 0 },
-  { id: 'invoice', chaos: 'No one to build it', system: 'AI-assisted build', col: 1 },
+  { id: 'invoice', chaos: 'No one to build it', system: 'Build and test', col: 1 },
   { id: 'money', chaos: 'Will people use it?', system: 'Analytics', col: 2 },
 ]
 const scatter = ['left-[4%] top-[8%] -rotate-6', 'right-[6%] top-[14%] rotate-3', 'left-[12%] top-[48%] rotate-2', 'right-[10%] top-[52%] -rotate-3']

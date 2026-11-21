@@ -95,7 +95,7 @@ export const achievements = [
 ]
 
 export const skills = [
-  { group: 'AI & building', items: 'Building applications with Claude Code and AI coding agents, agent operating rules (AGENTS.md), AI-assisted workflows, Python automation' },
+  { group: 'AI & building', items: 'Building applications with help from AI coding tools like Claude Code, agent operating rules (AGENTS.md), AI-assisted workflows, Python automation' },
   { group: 'Writing & docs', items: 'Technical writing, API documentation, integration guides, SDK documentation, developer education' },
   { group: 'Product', items: 'Product strategy and requirements, digital product development, product operations, workflow design' },
   { group: 'Domains', items: 'Fintech and payment systems, Web3 and blockchain' },
@@ -105,7 +105,7 @@ export const skills = [
 
 export const projects = [
   { title: 'KivoraPay', text: 'End-to-end product work on a crypto-to-fiat utility and business payments platform.', href: 'https://kivorapay.com/' },
-  { title: 'Velantrii', text: 'Healthcare platform prototype for Nigeria, built with AI coding agents: consent-based records, appointments, pharmacy and SMS reminders.', href: 'https://velantrii.vercel.app/' },
+  { title: 'Velantrii', text: 'Healthcare platform prototype for Nigeria: consent-based records, appointments, pharmacy and SMS reminders.', href: 'https://velantrii.vercel.app/' },
   { title: 'Chidexun', text: 'Catalogue and quote-workflow website for a plumbing supplier, with automated Playwright release checks.', href: 'https://www.chidexun.com/' },
   { title: 'Python tools', text: 'OpenCV pipeline that auto-blurs private data in screen recordings; Playwright and ffmpeg video renderer; WCAG contrast checker.' },
   { title: 'TrustBallot', text: 'Blockchain-based voting solution; winning team at WIBAHacks 2023.' },

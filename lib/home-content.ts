@@ -50,7 +50,7 @@ export const facets: { key: FacetKey; label: string; short: string; title: strin
     label: 'Product building',
     short: 'Building',
     title: 'I turn ideas into working products.',
-    body: 'Product strategy and AI-assisted builds, tested on my own companies first.',
+    body: 'Product strategy, building and launch, tested on my own companies first.',
     proof: ['Prowess Digital Solutions', 'KivoraPay', 'Dritchwear'],
     image: '/service-proof/dritchwear.png',
     imageAlt: 'The Dritchwear store',

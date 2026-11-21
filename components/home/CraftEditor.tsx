@@ -227,7 +227,7 @@ function EducationDemo() {
 /** A product going from idea to live. */
 function BusinessDemo() {
   const nodes = ['Idea', 'Build', 'Live']
-  const tasks = ['Requirements and user journeys', 'AI agents build, I test every state', 'Launched and monitored']
+  const tasks = ['Requirements and user journeys', 'Build it, with AI tools where they help', 'Launched and monitored']
   return <div>
     <Label>Product plan · From idea to launch</Label>
     <div className="relative mt-5 flex items-center justify-between">

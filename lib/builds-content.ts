@@ -7,7 +7,7 @@
 export const answers = [
   {
     q: 'Built real applications with AI coding tools?',
-    a: 'Five production codebases built with Claude Code and other AI coding agents, from a crypto payments platform to a healthcare app.',
+    a: 'Yes. I build applications and use AI coding tools like Claude Code where they help, from a crypto payments platform to a healthcare app.',
   },
   {
     q: 'Worked with AI agents that act, not just write?',
@@ -42,7 +42,7 @@ export const products: Build[] = [
     kind: 'Fintech platform · Product lead and builder',
     summary: 'Lets people turn crypto (USDT, USDC, BTC) into naira and pay bills such as airtime, data, electricity and TV in one step.',
     did: [
-      'Directed the build with AI coding agents across 150+ commits: web app, Android app, a payments relay service and a shared database package.',
+      'A web app, an Android app, a payments relay service and a shared database package.',
       'Deposit detection, rate locking, background crypto conversion, bill payments and an admin panel, with scheduled payment and requery jobs.',
       'Wrote the complete technical documentation (v2.3) for new developers, covering architecture, API reference and deployment.',
     ],
@@ -79,7 +79,7 @@ export const products: Build[] = [
     kind: 'Learning and services platform · Founder',
     summary: 'My business platform: services, courses, jobs and opportunities, events, tools and a shared customer account.',
     did: [
-      '500+ commits building checkout, memberships, certificates, a jobs board, an events system and business-planning tools.',
+      'Checkout, memberships, certificates, a jobs board, an events system and business-planning tools.',
       'Wrote the AGENTS.md rulebook the AI agents follow: check the whole user journey, test every state and report only what was verified.',
     ],
     stack: 'Next.js, TypeScript, Supabase, payments, transactional email',
