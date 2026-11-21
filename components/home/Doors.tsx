@@ -7,7 +7,7 @@ import posthog from 'posthog-js'
 // thin dividers. Phones: one row each. Larger screens: three columns.
 const doors = [
   { href: '/recruiter', kicker: 'Hiring?', title: 'See my CV', text: 'Experience, skills and results on one page.' },
-  { href: '/work', kicker: 'Want proof?', title: 'See my work', text: 'Products, docs, websites and Python tools.' },
+  { href: '/work', kicker: 'Want proof?', title: 'See my work', text: 'Products, docs, websites and coding.' },
   { href: '/services', kicker: 'Need help?', title: 'Work with me', text: 'AI adoption, products, docs and websites.' },
 ]
 

@@ -6,6 +6,7 @@ import { Reveal } from '@/components/home/Motion'
 import { KivoraMock } from '@/components/home/Ventures'
 import { products, python } from '@/lib/builds-content'
 import { learning, websites, writing } from '@/lib/work-content'
+import WorkNav from './WorkNav'
 
 // The Work page: the one place for proof. Every project appears here once,
 // as a picture and one line. Services (what she can do for you), About (her
@@ -23,23 +24,38 @@ const sections = [
   { id: 'writing', label: 'Technical writing' },
   { id: 'websites', label: 'Websites' },
   { id: 'teaching', label: 'Teaching' },
-  { id: 'python', label: 'Python' },
+  { id: 'coding', label: 'Coding' },
 ]
 
 export default function WorkView() {
   return <main className="min-h-screen bg-bg text-parchment">
     <Nav />
 
-    <header className="relative overflow-hidden pb-10 pt-28 md:pb-14 md:pt-40">
+    <header className="relative overflow-hidden pb-12 pt-28 md:pb-16 md:pt-36">
       <div aria-hidden="true" className="desk-dots absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
-      <div className={`${wrap} relative`}>
-        <p className="font-head text-[11px] uppercase tracking-[.18em] text-primary">Work</p>
-        <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.2rem,4.6vw,3.6rem)] font-semibold leading-[1.05] tracking-[-.04em]">Things I’ve built and written.</h1>
-        <nav aria-label="On this page" className="mt-8 flex flex-wrap gap-2">
-          {sections.map(s => <a key={s.id} href={`#${s.id}`} className="rounded-full border border-ink-border bg-surface px-4 py-2 text-sm font-semibold transition hover:border-primary/50 hover:text-primary">{s.label}</a>)}
-        </nav>
+      <div aria-hidden="true" className="absolute -right-32 top-10 h-[420px] w-[420px] rounded-full bg-primary/10 blur-[110px]" />
+      <div className={`${wrap} relative grid items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16`}>
+        <div>
+          <p className="font-head text-[11px] uppercase tracking-[.18em] text-primary">Work</p>
+          <h1 className="mt-4 font-display text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-[1.02] tracking-[-.045em]">Things I’ve built <span className="text-primary">and written.</span></h1>
+          <p className="mt-5 max-w-md text-[15px] leading-7 text-muted md:text-base">Real products, published writing and live websites. Every one is linked, so you can open it and see for yourself.</p>
+        </div>
+
+        {/* Three real screenshots, fanned like cards; they spread apart on hover. */}
+        <div aria-hidden="true" className="group relative mx-auto h-[260px] w-full max-w-[520px] sm:h-[320px] lg:h-[360px]">
+          {[
+            { src: '/projects/chidexun.jpg', cls: 'left-0 top-10 -rotate-[8deg] group-hover:-translate-x-6 group-hover:-rotate-[11deg]' },
+            { src: '/service-proof/prowess-digital-solutions.png', cls: 'right-0 top-4 rotate-[7deg] group-hover:translate-x-6 group-hover:rotate-[10deg]' },
+            { src: '/projects/velantrii.jpg', cls: 'left-1/2 top-16 -translate-x-1/2 group-hover:-translate-y-3' },
+          ].map(c => <div key={c.src} className={`absolute w-[72%] overflow-hidden rounded-2xl border border-ink-border bg-surface shadow-[0_30px_70px_-30px_rgba(17,24,39,.45)] transition duration-500 ${c.cls}`}>
+            <div className="flex gap-1 border-b border-ink-border px-3 py-2"><span className="h-1.5 w-1.5 rounded-full bg-[#F87171]" /><span className="h-1.5 w-1.5 rounded-full bg-[#FBBF24]" /><span className="h-1.5 w-1.5 rounded-full bg-[#34D399]" /></div>
+            <div className="relative aspect-[16/10]"><Image src={c.src} alt="" fill sizes="380px" className="object-cover object-top" /></div>
+          </div>)}
+        </div>
       </div>
     </header>
+
+    <WorkNav sections={sections} />
 
     {/* ── Products ─────────────────────────────────────── */}
     <Section id="products" label="Products" title="Products I built with AI coding agents">
@@ -103,8 +119,8 @@ export default function WorkView() {
       </ul>
     </Section>
 
-    {/* ── Python ───────────────────────────────────────── */}
-    <Section id="python" label="Python" title="Tools that remove manual work">
+    {/* ── Coding ───────────────────────────────────────── */}
+    <Section id="coding" label="Coding" title="Tools that remove manual work">
       <ul className="overflow-hidden rounded-3xl bg-[#0B0F14] text-[#E7EDF6]">
         {python.map(t => <li key={t.id} className="grid gap-1 border-b border-white/10 px-6 py-5 last:border-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] md:gap-8 md:px-8">
           <p className="truncate font-head text-[13px]"><span className="text-[#28C840]">$</span> {t.cmd}</p>
