@@ -59,7 +59,7 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
 
       {/* The live editor: every craft, being done in real time */}
       {/* min-w-0 lets the column shrink on phones so the tab row scrolls instead of widening the page */}
-      <div className="relative mx-auto hidden w-full min-w-0 max-w-[600px] md:block lg:col-start-2 lg:row-start-1 lg:mt-4">
+      <div className="relative mx-auto w-full min-w-0 max-w-[600px] lg:col-start-2 lg:row-start-1 lg:mt-4">
         {/* The logo's arc, sweeping over the editor and ending in the pen nib */}
         <svg aria-hidden="true" viewBox="0 0 600 120" className="absolute -top-16 left-0 hidden w-full overflow-visible md:block">
           <motion.path d="M30 118 C 120 -20, 470 -30, 560 70" fill="none" stroke="rgb(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeOpacity=".7"

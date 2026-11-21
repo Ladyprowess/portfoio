@@ -77,7 +77,7 @@ export default function CraftEditor({ active, onSelect, locked }: Props) {
       </div>
 
       <div className="grid sm:grid-cols-[1fr_170px]">
-        <div className="relative min-h-[290px] bg-paper p-5 md:min-h-[320px] md:p-7 lg:min-h-[400px]" role="tabpanel">
+        <div className="relative min-h-[230px] bg-paper p-4 sm:min-h-[290px] sm:p-5 md:min-h-[320px] md:p-7 lg:min-h-[400px]" role="tabpanel">
           <div aria-hidden="true" className="desk-dots absolute inset-0 opacity-50" />
           <AnimatePresence mode="wait">
             <motion.div key={active} className="relative" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}>
