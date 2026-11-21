@@ -43,16 +43,17 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
         {/* What she does, in one line, so the first screen answers it. */}
         <p className="mt-4 max-w-[34rem] text-[15px] leading-7 text-muted md:text-base">I help businesses adopt AI, build digital products and write the documentation that makes them easy to use.</p>
         {/* Two next steps only: meet her, or see the work. */}
-        <div className="mt-7 flex flex-wrap items-center gap-3">
-        <a href="/work" className="rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-on-primary shadow-[0_12px_30px_-12px_rgb(var(--primary)/.7)] transition hover:bg-primary-dim">See my work →</a>
+        {/* Phones: side by side, half the width each. Larger screens: natural widths. */}
+        <div className="mt-7 grid grid-cols-2 items-center gap-3 sm:flex sm:flex-wrap">
+        <a href="/work" className="flex h-full items-center justify-center whitespace-nowrap rounded-full bg-primary px-4 py-3.5 text-sm font-semibold text-on-primary shadow-[0_12px_30px_-12px_rgb(var(--primary)/.7)] transition hover:bg-primary-dim sm:px-6">See my work →</a>
         {/* Reopens the video introduction (components/home/IntroVideo.tsx) */}
         <button type="button" onClick={openIntro}
-          className="group flex items-center gap-3 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-5 text-left shadow-[0_12px_30px_-18px_rgba(17,24,39,.35)] transition hover:border-primary/50">
-          <span className="relative h-10 w-14 shrink-0 overflow-hidden rounded-full">
+          className="group flex items-center gap-2.5 rounded-full border border-ink-border bg-surface py-1.5 pl-1.5 pr-4 text-left shadow-[0_12px_30px_-18px_rgba(17,24,39,.35)] transition hover:border-primary/50 sm:gap-3 sm:pr-5">
+          <span className="relative h-9 w-11 shrink-0 overflow-hidden rounded-full sm:h-10 sm:w-14">
             <Image src="/personal photo/headshot3.png" alt="" fill sizes="56px" className="object-cover object-[50%_22%]" />
             <span className="absolute inset-0 flex items-center justify-center bg-black/25"><svg viewBox="0 0 24 24" className="ml-0.5 h-4 w-4 text-white" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span>
           </span>
-          <span className="text-sm"><span className="block font-semibold">Watch my intro</span><span className="block text-xs text-muted">57 seconds</span></span>
+          <span className="whitespace-nowrap text-[13px] sm:text-sm"><span className="block font-semibold">Watch my intro</span><span className="hidden text-xs text-muted sm:block">57 seconds</span></span>
         </button>
         </div>
       </div>
