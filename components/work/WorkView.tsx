@@ -75,7 +75,7 @@ export default function WorkView() {
     <WorkNav sections={sections} />
 
     {/* ── Products ─────────────────────────────────────── */}
-    <Section id="products" label="Products" title="Products I’ve built">
+    <Section id="products" label="Products" title="Products built with a touch of AI">
       <Reveal>
         <a href={kivora.href} target="_blank" rel="noopener noreferrer" className="group grid overflow-hidden rounded-[2rem] bg-[#0E223C] text-white lg:grid-cols-[1fr_1fr]">
           <div className="flex flex-col p-7 md:p-12">
