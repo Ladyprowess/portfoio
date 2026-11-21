@@ -24,7 +24,7 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
   const lit = chosen?.facet ?? null
   const facetLabel = lit === 'support' ? 'support' : lit ? facets.find(f => f.key === lit)!.short.toLowerCase() : null
 
-  return <section id="top" className="relative overflow-hidden pb-12 pt-24 md:pb-28 md:pt-36">
+  return <section id="top" className="relative overflow-hidden pb-10 pt-24 md:pb-28 md:pt-36">
     <div aria-hidden="true" className="desk-dots absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
     <div aria-hidden="true" className="absolute -right-40 -top-24 h-[520px] w-[520px] rounded-full bg-primary/10 blur-[120px]" />
 
@@ -59,7 +59,7 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
 
       {/* The live editor: every craft, being done in real time */}
       {/* min-w-0 lets the column shrink on phones so the tab row scrolls instead of widening the page */}
-      <div className="relative mx-auto w-full min-w-0 max-w-[600px] lg:col-start-2 lg:row-start-1 lg:mt-4">
+      <div className="relative mx-auto hidden w-full min-w-0 max-w-[600px] md:block lg:col-start-2 lg:row-start-1 lg:mt-4">
         {/* The logo's arc, sweeping over the editor and ending in the pen nib */}
         <svg aria-hidden="true" viewBox="0 0 600 120" className="absolute -top-16 left-0 hidden w-full overflow-visible md:block">
           <motion.path d="M30 118 C 120 -20, 470 -30, 560 70" fill="none" stroke="rgb(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeOpacity=".7"
@@ -72,9 +72,9 @@ export default function HomeHero({ intent, onIntent, onExplore, facet, onFacet, 
       </div>
     </div>
 
-    <dl className="relative mx-auto mt-12 grid max-w-[1320px] grid-cols-2 gap-y-6 px-5 md:mt-20 md:grid-cols-5 md:px-8">
-      {[['9+', 'Years of writing and building'], ['200+', 'People trained'], ['3', 'Ventures founded'], ['11', 'Companies I have worked with'], ['−45%', 'Repeat customer issues, in support']].map(([v, l], i) => <div key={l} className={`flex flex-col-reverse border-l border-ink-border pl-5 ${i === 4 ? 'col-span-2 md:col-span-1' : ''}`}>
-        <dt className="mt-1 text-xs text-muted">{l}</dt><dd className="font-display text-3xl font-bold tracking-[-.04em] md:text-4xl">{v}</dd>
+    <dl className="relative mx-auto mt-10 grid max-w-[1320px] grid-cols-3 gap-y-6 px-5 md:mt-20 md:grid-cols-5 md:px-8">
+      {[['9+', 'Years of writing and building'], ['200+', 'People trained'], ['3', 'Ventures founded'], ['11', 'Companies I have worked with'], ['-45%', 'Repeat customer issues, in support']].map(([v, l], i) => <div key={l} className={`flex-col-reverse border-l border-ink-border pl-3 md:pl-5 ${i >= 3 ? 'hidden md:flex' : 'flex'}`}>
+        <dt className="mt-1 text-[11px] leading-4 text-muted md:text-xs">{l}</dt><dd className="font-display text-2xl font-bold tracking-[-.04em] md:text-4xl">{v}</dd>
       </div>)}
     </dl>
   </section>

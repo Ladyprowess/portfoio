@@ -10,7 +10,7 @@ export default function AboutHero() {
   const inView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
-    <section className="relative overflow-hidden border-b border-ink-border bg-surface px-6 pb-20 pt-32 sm:px-8 md:px-20 md:pb-24 md:pt-40">
+    <section className="relative overflow-hidden border-b border-ink-border bg-surface px-6 pb-16 pt-28 sm:px-8 md:px-20 md:pb-24 md:pt-40">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-60"
@@ -28,7 +28,7 @@ export default function AboutHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-            className="order-2 lg:order-1"
+            className="order-1"
           >
             <span className="mb-5 block font-head text-[0.64rem] font-bold uppercase tracking-[0.2em] text-primary">About me</span>
             <h1
@@ -75,9 +75,9 @@ export default function AboutHero() {
             initial={{ opacity: 0, y: 28 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.85, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="relative order-1 lg:order-2"
+            className="relative order-2"
           >
-            <div className="relative mx-auto max-w-[540px]">
+            <div className="relative mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[540px]">
               <div className="absolute -bottom-5 -left-5 h-32 w-32 rounded-3xl bg-primary/[0.14]" aria-hidden />
               <div className="relative overflow-hidden rounded-[2rem] border border-ink-border bg-surface p-3 shadow-[0_24px_70px_rgba(18,18,18,0.09)] sm:p-4">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.5rem] bg-surface-2 sm:aspect-[5/4]">

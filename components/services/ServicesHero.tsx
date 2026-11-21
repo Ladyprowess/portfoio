@@ -5,9 +5,9 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { services } from '@/lib/services-content'
 
-const GREETING = 'Now that you’re here, let me show you what I can do for your brand.'
+const GREETING = 'Now that you’re here, let me show you what I can do for your business.'
 
-const icons: Record<string, string> = { product: '💬', writing: '</>', web: '🖥', education: '🎓', business: '⚙︎' }
+const icons: Record<string, string> = { product: '💬', writing: '</>', web: '🖥', education: '✦', business: '⚙︎' }
 
 // Ngozi talks to the visitor: a typed message, then the problems they might
 // have, in their own words. Each one jumps to how she solves it.
@@ -43,8 +43,8 @@ export default function ServicesHero() {
         <span className="sr-only">{GREETING}</span>
         <span aria-hidden="true" className="invisible select-none [grid-area:1/1]">{GREETING}</span>
         <span aria-hidden="true" className="select-none [grid-area:1/1]">
-          {GREETING.slice(0, n).split('your brand').map((part, i, arr) => <span key={i}>{part}{i < arr.length - 1 && <span className="text-primary">your brand</span>}</span>)}
-          {/* "your brand" is only highlighted once it has been typed in full */}
+          {GREETING.slice(0, n).split('your business').map((part, i, arr) => <span key={i}>{part}{i < arr.length - 1 && <span className="text-primary">your business</span>}</span>)}
+          {/* "your business" is only highlighted once it has been typed in full */}
           {!done && n > 0 && <span className="ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.1em] animate-pulse bg-primary" />}
         </span>
       </h1>

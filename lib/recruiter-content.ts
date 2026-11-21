@@ -87,7 +87,7 @@ export const experience: Role[] = [
 
 export const achievements = [
   { label: 'Product ownership', text: 'Led KivoraPay from concept to launch preparation and ongoing monitoring.' },
-  { label: 'Developer experience', text: '+25% developer satisfaction and −15% support queries at TxFusion.' },
+  { label: 'Developer experience', text: '+25% developer satisfaction and -15% support queries at TxFusion.' },
   { label: 'Content performance', text: '+200% engagement at Bullring Finance; +50% at Cwallet.' },
   { label: 'SEO', text: '30%+ client SEO growth at Point22; 20% at Prowess Digital Solutions.' },
   { label: 'Education', text: 'Trained 100+ people in Web3 and 200+ in practical digital skills.' },

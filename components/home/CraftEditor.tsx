@@ -16,8 +16,8 @@ const files: Record<EditorKey, { file: string; note: string }> = {
   product: { file: 'launch-headline.docx', note: 'Say what it does for them, not what it is.' },
   writing: { file: 'payments-api.md', note: 'Developers skim. Lead with the answer.' },
   web: { file: 'home-page.html', note: 'One clear action, above the fold.' },
-  education: { file: 'web3-lesson-3.slides', note: 'Every lesson ends with a quick check.' },
-  business: { file: 'growth-plan.board', note: 'Build it so it runs without you.' },
+  education: { file: 'ai-adoption-plan.md', note: 'Start where AI saves time, not where it is trendy.' },
+  business: { file: 'product-plan.board', note: 'Ship it, then watch real users.' },
 }
 
 // The collaborator card cycles through these on its own, independent of the tabs.
@@ -184,7 +184,7 @@ function SupportDemo() {
       <p className="text-[12.5px] leading-5"><span className="font-semibold">New help article:</span> “Where’s my order? Track it in 3 steps”</p>
     </motion.div>
     <motion.div {...step(0, 4)} className="mt-3 flex flex-wrap gap-2 text-[11px]">
-      <span className="rounded-full bg-success/10 px-2.5 py-1 font-semibold text-success">−45% repeat issues</span>
+      <span className="rounded-full bg-success/10 px-2.5 py-1 font-semibold text-success">-45% repeat issues</span>
       <span className="rounded-full bg-surface-2 px-2.5 py-1 text-muted">Soofluffy · 2018–2020</span>
     </motion.div>
   </div>
@@ -206,24 +206,30 @@ function WebDemo() {
   </div>
 }
 
+/** An AI audit: each of a team's repeated tasks gets a verdict. */
 function EducationDemo() {
-  const options = ['Logs you into the website', 'Restores your wallet if you lose your phone', 'Makes transactions faster']
+  const tasks = [
+    { task: 'Reply to “Where is my order?”', verdict: 'AI drafts, you approve', tone: 'bg-primary/10 text-primary' },
+    { task: 'Weekly sales summary', verdict: 'Automate', tone: 'bg-success/10 text-success' },
+    { task: 'Custom pricing for big clients', verdict: 'Keep human', tone: 'bg-surface-2 text-muted' },
+  ]
   return <div>
-    <Label>Web3 basics · Module 3 of 5</Label>
-    <p className="mt-4 font-display text-[1.3rem] font-bold tracking-[-.02em]">What does a seed phrase do?</p>
-    <div className="mt-3.5 space-y-2">{options.map((o, i) => <motion.div key={o} {...step(i, 0.4)} className="flex items-center justify-between gap-2 rounded-xl border border-ink-border bg-surface px-3.5 py-2.5 text-[13px]">
-      {o}
-      {i === 1 && <motion.span initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2.4 }} className="shrink-0 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">Correct</motion.span>}
+    <Label>AI audit · Support team</Label>
+    <p className="mt-4 font-display text-[1.3rem] font-bold tracking-[-.02em]">Where should AI help first?</p>
+    <div className="mt-3.5 space-y-2">{tasks.map((t, i) => <motion.div key={t.task} {...step(i, 0.4)} className="flex items-center justify-between gap-2 rounded-xl border border-ink-border bg-surface px-3.5 py-2.5 text-[13px]">
+      {t.task}
+      <motion.span initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.6 + i * 0.45 }} className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${t.tone}`}>{t.verdict}</motion.span>
     </motion.div>)}</div>
-    <div className="mt-4 flex gap-1.5">{[0, 1, 2, 3, 4].map(i => <motion.span key={i} className={`h-1.5 flex-1 rounded-full ${i < 3 ? 'bg-primary' : 'bg-ink-border'}`} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.2 + i * 0.1 }} style={{ originX: 0 }} />)}</div>
+    <motion.p {...step(0, 3.2)} className="mt-4 text-[11px] text-muted">Biggest time saver first, then train the team ✓</motion.p>
   </div>
 }
 
+/** A product going from idea to live. */
 function BusinessDemo() {
-  const nodes = ['Offer', 'System', 'Revenue']
-  const tasks = ['Pricing page live', 'Onboarding emails automated', 'Weekly numbers in one report']
+  const nodes = ['Idea', 'Build', 'Live']
+  const tasks = ['Requirements and user journeys', 'AI agents build, I test every state', 'Launched and monitored']
   return <div>
-    <Label>Growth plan · This quarter</Label>
+    <Label>Product plan · From idea to launch</Label>
     <div className="relative mt-5 flex items-center justify-between">
       <svg aria-hidden="true" className="absolute inset-x-6 top-1/2 h-2 -translate-y-1/2" preserveAspectRatio="none" viewBox="0 0 100 2">
         <motion.line x1="0" y1="1" x2="100" y2="1" stroke="rgb(var(--primary))" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.5, duration: 1.2 }} />

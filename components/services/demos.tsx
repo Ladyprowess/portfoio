@@ -150,15 +150,15 @@ function WebsiteDemo({ active }: { active: boolean }) {
   </Frame>
 }
 
-/* ── Training: a lesson playing through to a quiz ── */
+/* ── AI adoption & training: a workshop playing through to a quick check ── */
 const teachSteps = [2500, 2500, 2800, 3200]
 function TeachingDemo({ active }: { active: boolean }) {
   const { step, replay } = useLoop(teachSteps, active)
   const slides = [
-    { icon: '🔑', title: 'A crypto wallet is like a key ring.', body: 'It does not hold your money. It holds the keys that unlock it.' },
-    { icon: '📝', title: 'Your seed phrase is the spare key.', body: 'Lose your phone? These 12 words get your wallet back. Never share them.' },
+    { icon: '🧭', title: 'Start with the work, not the tool.', body: 'List the tasks your team repeats every week.' },
+    { icon: '⚡', title: 'Then pick where AI saves real time.', body: 'Drafting replies, summarising reports, first drafts of documents.' },
   ]
-  return <Frame label="Web3 basics · Lesson 3 of 5" step={step} total={teachSteps.length} onReplay={replay}>
+  return <Frame label="AI adoption · Workshop 3 of 5" step={step} total={teachSteps.length} onReplay={replay}>
     <div className="relative flex min-h-[380px] flex-col bg-paper p-5 md:min-h-[420px] md:p-7">
       <AnimatePresence mode="wait">
         {step <= 1 && <motion.div key={step} {...fade} className="flex flex-1 flex-col items-center justify-center text-center">
@@ -168,16 +168,16 @@ function TeachingDemo({ active }: { active: boolean }) {
         </motion.div>}
         {step === 2 && <motion.div key="quiz" {...fade} className="flex-1">
           <p className="font-head text-[9px] uppercase tracking-[.16em] text-muted">Quick check</p>
-          <p className="mt-2 font-display text-lg font-semibold">What does a seed phrase do?</p>
-          <div className="mt-3 space-y-2">{['Logs you into a website', 'Restores your wallet if you lose your phone', 'Makes transactions faster'].map((o, i) => <motion.div key={o} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.15 }}
+          <p className="mt-2 font-display text-lg font-semibold">Which task should AI do first?</p>
+          <div className="mt-3 space-y-2">{['Final pricing decisions', 'Drafting replies to common questions', 'Signing contracts'].map((o, i) => <motion.div key={o} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.15 }}
             className={`flex items-center justify-between rounded-xl border px-3.5 py-2.5 text-[13px] transition-colors delay-1000 duration-300 ${i === 1 ? 'border-success/50 bg-success/10' : 'border-ink-border bg-surface'}`}>
             {o}{i === 1 && <motion.span initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.1 }} className="text-xs font-semibold text-success">✓ Correct</motion.span>}
           </motion.div>)}</div>
         </motion.div>}
         {step === 3 && <motion.div key="done" {...fade} className="flex flex-1 flex-col items-center justify-center text-center">
           <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 14 }} className="flex h-16 w-16 items-center justify-center rounded-full bg-success text-2xl text-white">✓</motion.span>
-          <p className="mt-4 font-display text-xl font-semibold">Lesson complete</p>
-          <p className="mt-1 text-sm text-muted">You can explain this to a friend now.</p>
+          <p className="mt-4 font-display text-xl font-semibold">Team trained</p>
+          <p className="mt-1 text-sm text-muted">They know when to use AI, and when not to.</p>
           <div className="mt-5 flex -space-x-2">{['/hero/mine.jpeg', '/personal photo/headshot6.jpg', '/personal photo/headshot2.png'].map(s => <span key={s} className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-paper"><Image src={s} alt="" fill sizes="32px" className="object-cover object-top" /></span>)}<span className="flex h-8 items-center rounded-full bg-primary px-3 text-[11px] font-semibold text-on-primary ring-2 ring-paper">200+ trained</span></div>
         </motion.div>}
       </AnimatePresence>
@@ -186,36 +186,36 @@ function TeachingDemo({ active }: { active: boolean }) {
   </Frame>
 }
 
-/* ── Business building: scattered tasks become a system that runs itself ── */
+/* ── Product building: a scattered idea becomes a planned, built, launched product ── */
 const bizSteps = [2500, 2300, 2000, 3400]
 const notes = [
-  { id: 'orders', chaos: 'Orders in WhatsApp chats', system: 'Order form', col: 0 },
-  { id: 'stock', chaos: 'Stock counted by memory', system: 'Live stock sheet', col: 1 },
-  { id: 'invoice', chaos: 'Invoices typed by hand', system: 'Auto invoices', col: 1 },
-  { id: 'money', chaos: 'Who paid? No idea.', system: 'Weekly report', col: 2 },
+  { id: 'orders', chaos: 'The idea, in a voice note', system: 'Requirements', col: 0 },
+  { id: 'stock', chaos: 'Who is it for? Not sure.', system: 'User journeys', col: 0 },
+  { id: 'invoice', chaos: 'No one to build it', system: 'AI-assisted build', col: 1 },
+  { id: 'money', chaos: 'Will people use it?', system: 'Analytics', col: 2 },
 ]
 const scatter = ['left-[4%] top-[8%] -rotate-6', 'right-[6%] top-[14%] rotate-3', 'left-[12%] top-[48%] rotate-2', 'right-[10%] top-[52%] -rotate-3']
 function BusinessDemo({ active }: { active: boolean }) {
   const { step, replay } = useLoop(bizSteps, active)
   const organised = step >= 1
-  return <Frame label="Your business · operations" step={step} total={bizSteps.length} onReplay={replay}>
+  return <Frame label="Your product · idea to launch" step={step} total={bizSteps.length} onReplay={replay}>
     <div className="relative min-h-[380px] bg-paper p-4 md:min-h-[420px] md:p-6">
       <LayoutGroup>
         {!organised && <div className="relative h-[300px]">
           {notes.map((n, i) => <motion.div key={n.id} layoutId={n.id} className={`absolute w-[46%] rounded-lg border border-[#FCD34D] bg-[#FEF3C7] p-3 text-[12px] font-medium text-[#78350F] shadow-md ${scatter[i]}`}>{n.chaos}</motion.div>)}
-          <motion.p {...fade} className="absolute bottom-0 left-0 text-xs font-semibold text-[#DC2626]">Everything depends on you remembering.</motion.p>
+          <motion.p {...fade} className="absolute bottom-0 left-0 text-xs font-semibold text-[#DC2626]">An idea, scattered across notes.</motion.p>
         </div>}
         {organised && <div>
-          <div className="grid grid-cols-3 gap-2 text-center font-head text-[9px] uppercase tracking-wider text-muted"><span>Sell</span><span>Track</span><span>Know</span></div>
+          <div className="grid grid-cols-3 gap-2 text-center font-head text-[9px] uppercase tracking-wider text-muted"><span>Plan</span><span>Build</span><span>Launch</span></div>
           <div className="relative mt-2 grid grid-cols-3 gap-2">
             {[0, 1, 2].map(c => <div key={c} className="min-h-[120px] space-y-2 rounded-xl border border-ink-border bg-surface-2/60 p-2">
               {notes.filter(n => n.col === c).map(n => <motion.div key={n.id} layoutId={n.id} transition={{ type: 'spring', stiffness: 180, damping: 22 }} className="rounded-lg border border-primary/30 bg-surface p-2.5 text-[11px] font-semibold shadow-sm">{n.system}</motion.div>)}
             </div>)}
             {step >= 2 && [0, 1].map(k => <motion.span key={k} aria-hidden="true" className="absolute top-1/2 h-[2px] w-2 origin-left bg-primary" style={{ left: `calc(${(k + 1) * 33.33}% - 5px)` }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: k * 0.3 }} />)}
           </div>
-          <AnimatePresence>{step >= 2 && <motion.p {...fade} className="mt-3 text-xs font-semibold text-success">✓ Runs every day, with or without you watching.</motion.p>}</AnimatePresence>
+          <AnimatePresence>{step >= 2 && <motion.p {...fade} className="mt-3 text-xs font-semibold text-success">✓ Live, tested and monitored.</motion.p>}</AnimatePresence>
           <AnimatePresence>{step >= 3 && <motion.div {...fade} className="mt-3 rounded-xl border border-ink-border bg-surface p-3">
-            <div className="flex justify-between text-[11px]"><span className="font-semibold">Weekly report</span></div>
+            <div className="flex justify-between text-[11px]"><span className="font-semibold">Weekly active users</span></div>
             <div className="mt-2 flex h-16 items-end gap-1.5">{[30, 42, 38, 55, 63, 71, 86].map((h, i) => <motion.span key={i} className="flex-1 rounded-t bg-primary/80" initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: i * 0.08, duration: 0.5 }} />)}</div>
           </motion.div>}</AnimatePresence>
         </div>}

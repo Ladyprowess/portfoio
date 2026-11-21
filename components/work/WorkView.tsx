@@ -52,7 +52,7 @@ export default function WorkView() {
             <p className="mt-3 text-sm text-white/55">Web app, Android app and payment automations. 150+ commits.</p>
             <span className="mt-8 inline-flex w-max items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#0E223C] transition group-hover:bg-white/90">Visit KivoraPay ↗</span>
           </div>
-          <div className="relative min-h-[320px]"><KivoraMock /></div>
+          <div className="relative min-h-[250px] md:min-h-[320px]"><KivoraMock /></div>
         </a>
       </Reveal>
       <div className="mt-16 space-y-16 md:space-y-24">
