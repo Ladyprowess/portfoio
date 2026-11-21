@@ -11,7 +11,7 @@ const columns = [
       { label: 'Services', href: '/services' },
       { label: 'About', href: '/about' },
       { label: 'CV', href: '/recruiter' },
-      { label: 'Contact', href: '/services#contact' },
+      { label: 'Contact', href: '/#contact' },
     ],
   },
   {

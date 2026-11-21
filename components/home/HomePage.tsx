@@ -11,10 +11,11 @@ import LogoStrip from './LogoStrip'
 import Testimonials from './Testimonials'
 import { type LatestPost } from './LatestWriting'
 import IntroVideo from './IntroVideo'
+import YourTurn from './YourTurn'
 
 // The homepage has one job: say who Ngozi is and send each visitor to the
 // right page. Hero, who she has worked with, three doors (CV, Work,
-// Services) and what clients say. Contact lives on /services. The detail lives on those pages, shown once:
+// Services), what clients say, and the email form. The detail lives on those pages, shown once:
 // skills and live demos on /services, projects on /work, her story on /about.
 // (Crafts, Journey, Ventures and LatestWriting are kept in this folder but not
 // shown here, so nothing repeats.)
@@ -48,7 +49,10 @@ export default function HomePage(_props: { posts: LatestPost[] }) {
       <HomeHero intent={intent} onIntent={chooseIntent} onExplore={explore} facet={facet} onFacet={pickFacet} locked={locked} />
       <LogoStrip />
       <div className="pt-16 md:pt-24"><Doors /></div>
-      <section className="mx-auto max-w-[1320px] px-5 pb-20 md:px-8 md:pb-28"><Testimonials /></section>
+      {/* [&>div]:mt-0 drops the top margin Testimonials carries from its old place under the logo wall. */}
+      <section className="mx-auto max-w-[1320px] px-5 pb-20 md:px-8 md:pb-28 [&>div]:mt-0"><Testimonials /></section>
+      {/* The email form: visitors type a message and it opens in their email app. */}
+      <YourTurn intent={intent} />
       <Footer />
     </main>
     <IntroVideo />
