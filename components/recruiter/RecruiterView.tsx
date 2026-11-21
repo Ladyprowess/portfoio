@@ -5,12 +5,15 @@ import posthog from 'posthog-js'
 import { useState, type ReactNode } from 'react'
 import Nav from '@/components/Nav'
 import { CV_URL, RECOMMENDATION_URL } from '@/lib/site'
-import { achievements, awards, certifications, education, experience, headline, LINKEDIN_URL, pitch, projects, skills, workTypes } from '@/lib/recruiter-content'
+import { achievements, awards, certifications, education, experience, headline, LINKEDIN_URL, pitch, projects, skills } from '@/lib/recruiter-content'
 
 const EMAIL = 'hello@ladyprowess.com'
 
 // The CV page, laid out like a printed CV: one column, a fixed label column on
 // the left, the same rhythm in every section and hairlines between them.
+const [title, ...rest] = headline.split(' · ')
+const roles = rest.join(' · ')
+
 export default function RecruiterView() {
   const [copied, setCopied] = useState(false)
 
@@ -23,31 +26,34 @@ export default function RecruiterView() {
     <div className="print:hidden"><Nav /></div>
 
     <article className="mx-auto max-w-[860px] px-5 pb-24 pt-28 md:px-8 md:pt-36 print:max-w-none print:px-0 print:pt-0">
-      {/* Header */}
-      <header className="flex flex-col gap-6 sm:flex-row sm:items-center">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full bg-surface-2 md:h-24 md:w-24">
-          <Image src="/personal photo/headshot4.png" alt="Ngozi Peace Unegbu" fill priority sizes="96px" className="object-cover object-[50%_15%]" />
+      {/* Header: the standard CV top. Name and title, availability, contact,
+          and one main action. Extras (references) live further down. */}
+      <header>
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-surface-2 md:h-24 md:w-24">
+            <Image src="/personal photo/headshot4.png" alt="Ngozi Peace Unegbu" fill priority sizes="96px" className="object-cover object-[50%_15%]" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="font-display text-[1.7rem] font-semibold leading-tight tracking-[-.03em] md:text-4xl">Ngozi Peace Unegbu</h1>
+            <p className="mt-1 text-sm font-semibold text-primary md:text-[15px]">{title}</p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <h1 className="font-display text-3xl font-semibold tracking-[-.03em] md:text-4xl">Ngozi Peace Unegbu</h1>
-          <p className="mt-1.5 text-[15px] font-medium text-primary">{headline}</p>
-          <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
-            <a href={`mailto:${EMAIL}`} className="hover:text-parchment">{EMAIL}</a>
-            <span aria-hidden="true">·</span>
-            <a href="/" className="hover:text-parchment">ladyprowess.com</a>
-            <span aria-hidden="true">·</span>
-            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="hover:text-parchment">LinkedIn</a>
-          </p>
-          <p className="mt-1 text-sm text-muted">{workTypes}</p>
-        </div>
+        <p className="mt-4 text-[15px] text-parchment/80">{roles}</p>
+        <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-success/10 px-3 py-1.5 text-xs font-semibold text-success">
+          <span className="h-1.5 w-1.5 rounded-full bg-success" />Open to remote or hybrid roles<span className="hidden sm:inline"> · full-time, part-time or contract</span>
+        </p>
+        <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <li><a href={`mailto:${EMAIL}`} className="inline-flex items-center gap-2 text-muted hover:text-parchment">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>{EMAIL}</a></li>
+          <li><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-muted hover:text-parchment">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3V9.5Zm6.5 0h3.8v1.6h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V21h-4V9.5Z" /></svg>LinkedIn</a></li>
+        </ul>
       </header>
 
-      {/* Actions */}
-      <div className="mt-8 flex flex-wrap items-center gap-3 print:hidden">
-        <a href={CV_URL} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('recruiter_cv_opened')} className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-dim">Download CV</a>
-        <a href={`mailto:${EMAIL}?subject=Role%20at%20`} onClick={() => posthog.capture('recruiter_email_clicked')} className="rounded-full border border-ink-border px-5 py-2.5 text-sm font-semibold hover:border-muted">Email me</a>
-        <a href={RECOMMENDATION_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-ink-border px-5 py-2.5 text-sm font-semibold hover:border-muted">Recommendation letter</a>
-        <button type="button" onClick={copyLink} className="text-sm font-semibold text-muted hover:text-parchment sm:ml-auto">{copied ? 'Link copied' : 'Copy page link'}</button>
+      {/* One main action, plus email. Phones: two equal buttons side by side. */}
+      <div className="mt-7 grid grid-cols-2 gap-3 sm:flex print:hidden">
+        <a href={CV_URL} target="_blank" rel="noopener noreferrer" onClick={() => posthog.capture('recruiter_cv_opened')} className="flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary-dim">Download CV</a>
+        <a href={`mailto:${EMAIL}?subject=Role%20at%20`} onClick={() => posthog.capture('recruiter_email_clicked')} className="flex items-center justify-center rounded-full border border-ink-border px-6 py-3 text-sm font-semibold hover:border-muted">Email me</a>
       </div>
 
       <Section title="Profile">
@@ -114,6 +120,14 @@ export default function RecruiterView() {
 
       <Section title="Awards">
         <List items={awards} />
+      </Section>
+
+      <Section title="References">
+        <p className="text-[15px] leading-7 text-parchment/85">A recommendation letter is available, and further references on request.</p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold print:hidden">
+          <a href={RECOMMENDATION_URL} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Read the recommendation letter ↗</a>
+          <button type="button" onClick={copyLink} className="text-muted hover:text-parchment">{copied ? '✓ Link copied' : 'Copy link to this CV'}</button>
+        </div>
       </Section>
 
       <Section title="Languages">

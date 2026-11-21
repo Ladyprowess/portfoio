@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { Callout, Code, CodeTabs, Endpoint, Faq, H2, Hotspots, Lifecycle, P, Params, Playground, RunCommand, Steps, Table } from './blocks'
 
 export type Ctx = { lang: string; setLang: (l: string) => void; go: (id: string, anchor?: string) => void; origin: string }
-export type DocPage = { id: string; group: string; title: string; lead: string; keywords?: string; toc: { id: string; label: string }[]; body: (ctx: Ctx) => ReactNode }
+export type DocPage = { id: string; group: string; title: string; lead: string; keywords?: string; /** API reference pages use the two-column layout. */ wide?: boolean; toc: { id: string; label: string }[]; body: (ctx: Ctx) => ReactNode }
 
 const EMAIL = 'mailto:hello@ladyprowess.com?subject=Technical%20writing%20enquiry'
 const KEY = 'sk_test_relay_4eC39HqLyjWD'
@@ -80,7 +80,14 @@ refund = res.json()`,
 
 const Json = ({ title, body }: { title: string; body: string }) => <CodeTabs title={title} samples={{ JSON: body }} />
 
-const Try = ({ children }: { children: ReactNode }) => <div className="mt-5 flex flex-wrap gap-2">{children}</div>
+const Try = ({ children }: { children: ReactNode }) => <div className="mt-5 flex flex-col gap-3">{children}</div>
+
+/** The standard API reference layout: explanation and parameters on the left,
+    the code sample and its live response on the right, sticky while you read. */
+const Split = ({ left, right }: { left: ReactNode; right: ReactNode }) => <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-10">
+  <div className="min-w-0">{left}</div>
+  <div className="min-w-0"><div className="lg:sticky lg:top-[5.5rem]">{right}</div></div>
+</div>
 
 export const pages: DocPage[] = [
   {
@@ -93,7 +100,7 @@ export const pages: DocPage[] = [
     body: ({ go, origin }) => (
       <>
         <H2 id="first-request">Make your first request</H2>
-        <P>The Relay API in these docs is live. Create a payment, follow it until it settles, then refund it. Each command runs in the terminal at the bottom of the page.</P>
+        <P>The Relay API in these docs is live. Create a payment, follow it until it settles, then refund it. Press Run on any command and the response appears right below it.</P>
         <Try>
           <RunCommand cmd="relay pay 5000 NGN" />
           <RunCommand cmd="relay status $LAST --watch" />
@@ -124,7 +131,21 @@ export const pages: DocPage[] = [
 
         <H2 id="experience">Experience</H2>
         <P>I have written API documentation, developer guides and technical manuals for Rootstock, Magnopus and ZKsync, and contributed to Jenkins as an open-source contributor.</P>
-        <Try>{['Rootstock', 'Magnopus', 'ZKsync', 'Jenkins'].map(n => <button key={n} type="button" onClick={() => go('projects', n.toLowerCase())} className="rounded-full border border-ink-border bg-surface px-4 py-2 text-sm font-semibold transition hover:border-primary/50 hover:text-primary">{n} →</button>)}</Try>
+        {/* Same card grid as "What I write": the project, who it was for and what I wrote. */}
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {[
+            ['rootstock', 'Rootstock', 'Zaycodes / WriteTech Hub', 'API documentation and developer guides'],
+            ['magnopus', 'Magnopus', 'Zaycodes / WriteTech Hub', 'Technical manuals and product documentation'],
+            ['zksync', 'ZKsync', 'txFusion', 'API documentation and SDK guides'],
+            ['jenkins', 'Jenkins', 'Open source · She Code Africa', 'Documentation contributions'],
+          ].map(([id, name, org, wrote]) => (
+            <button key={id} type="button" onClick={() => go('projects', id)} className="group rounded-xl border border-ink-border bg-surface p-5 text-left transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg">
+              <p className="font-display font-extrabold">{name} <span className="inline-block text-primary transition group-hover:translate-x-1">→</span></p>
+              <p className="mt-0.5 text-xs font-semibold text-muted">{org}</p>
+              <p className="mt-2 text-sm leading-6 text-parchment/80">{wrote}</p>
+            </button>
+          ))}
+        </div>
       </>
     ),
   },
@@ -138,7 +159,7 @@ export const pages: DocPage[] = [
     body: () => (
       <>
         <H2 id="workflow">Workflow</H2>
-        <Steps items={[
+        <Steps mode="timeline" items={[
           { title: 'Understand the reader', body: 'Who arrives at the page, what they already know and what they need to finish.' },
           { title: 'Learn the product hands-on', body: 'I use it, run the code, read the source and interview the engineers who built it.' },
           { title: 'Structure the information', body: 'Concepts, tasks and reference each get their own place, so readers know where to look.' },
@@ -209,7 +230,7 @@ jobs:
         <H2 id="steps">Steps</H2>
         <Steps items={[
           { title: 'Create a payment', body: <>Amounts are in the smallest currency unit, so <Code>5000</Code> NGN is ₦50.00. The response includes the payment&apos;s <Code>id</Code>; keep it for the next steps.<CodeTabs lang={lang} onLang={setLang} samples={createPayment(origin)} /></> },
-          { title: 'Check its status', body: <>A new payment is <Code>pending</Code>. It becomes <Code>confirmed</Code> after about 8 seconds and <Code>settled</Code> after about 16. Replace <Code>$PAYMENT_ID</Code> with your id; the docs terminal fills it in for you.<CodeTabs lang={lang} onLang={setLang} samples={retrievePayment(origin)} /><Try><RunCommand cmd="relay status $LAST --watch" label="Watch it settle" /></Try></> },
+          { title: 'Check its status', body: <>A new payment is <Code>pending</Code>. It becomes <Code>confirmed</Code> after about 8 seconds and <Code>settled</Code> after about 16. Replace <Code>$PAYMENT_ID</Code> with your id; Run fills it in for you.<CodeTabs lang={lang} onLang={setLang} samples={retrievePayment(origin)} /><Try><RunCommand cmd="relay status $LAST --watch" label="Watch it settle" /></Try></> },
           { title: 'Refund it', body: <>Refunds work once a payment is settled. Call this too early and you get a <Code>409</Code> that tells you the current status.<CodeTabs lang={lang} onLang={setLang} samples={refundPayment(origin)} /></> },
         ]} />
         <H2 id="next-steps">Next steps</H2>
@@ -252,8 +273,9 @@ jobs:
     lead: 'Creates a payment in the pending state. Send an idempotency key so a retried request never creates a second payment.',
     keywords: 'post payments endpoint reference idempotency parameters try it',
     toc: [{ id: 'request', label: 'Request' }, { id: 'try-it', label: 'Try it' }, { id: 'response', label: 'Response' }],
+    wide: true,
     body: ({ lang, setLang, origin }) => (
-      <>
+      <Split left={<>
         <Endpoint method="POST" path="/v1/payments" />
         <H2 id="request">Request</H2>
         <Params title="Headers" items={[
@@ -265,12 +287,13 @@ jobs:
           { name: 'currency', type: 'string', required: true, body: 'Three-letter code: NGN, USD, GHS or KES.' },
           { name: 'reference', type: 'string', body: 'Your own identifier, up to 64 characters, without full stops. Returned with the payment.' },
         ]} />
-        <CodeTabs lang={lang} onLang={setLang} samples={createPayment(origin)} />
+        <H2 id="response">Response</H2>
+        <P>Returns <Code>201</Code> with the payment, or <Code>200</Code> with the original payment when the idempotency key was used before.</P>
         <H2 id="try-it">Try it</H2>
         <P>Change the values and send. Try a negative amount or EUR to see the errors.</P>
         <Playground />
-        <H2 id="response">Response</H2>
-        <P>Returns <Code>201</Code> with the payment, or <Code>200</Code> with the original payment when the idempotency key was used before.</P>
+      </>} right={<>
+        <CodeTabs lang={lang} onLang={setLang} samples={createPayment(origin)} />
         <Json title="201 Created" body={`{
   "id": "pay_MTc5NDQwMDE0NDk3NS41MDAwLk5HTi5vcmRlcl8wMTQy",
   "object": "payment",
@@ -281,7 +304,7 @@ jobs:
   "created_at": "2026-11-11T12:29:04.975Z",
   "settled_at": null
 }`} />
-      </>
+      </>} />
     ),
   },
   {
@@ -291,13 +314,15 @@ jobs:
     lead: 'Returns a payment with its current status.',
     keywords: 'get payment status endpoint',
     toc: [{ id: 'request', label: 'Request' }, { id: 'response', label: 'Response' }],
+    wide: true,
     body: ({ lang, setLang, origin }) => (
-      <>
+      <Split right={<>
+        <CodeTabs lang={lang} onLang={setLang} samples={retrievePayment(origin)} />
+        <Try><RunCommand cmd="relay pay 2500 GHS && relay status $LAST" label="Create one, then retrieve it" /></Try>
+      </>} left={<>
         <Endpoint method="GET" path="/v1/payments/{id}" />
         <H2 id="request">Request</H2>
         <Params title="Path parameters" items={[{ name: 'id', type: 'string', required: true, body: 'The id returned when the payment was created. It starts with pay_.' }]} />
-        <CodeTabs lang={lang} onLang={setLang} samples={retrievePayment(origin)} />
-        <Try><RunCommand cmd="relay pay 2500 GHS && relay status $LAST" label="Create one, then retrieve it" /></Try>
         <H2 id="response">Response</H2>
         <Table head={['Field', 'Description']} rows={[
           [<Code key="s">status</Code>, 'pending, confirmed or settled.'],
@@ -305,7 +330,7 @@ jobs:
           [<Code key="t">settled_at</Code>, 'When the money reached your balance. null until then.'],
         ]} />
         <P>An unknown id returns <Code>404 resource_missing</Code>.</P>
-      </>
+      </>} />
     ),
   },
   {
@@ -315,22 +340,24 @@ jobs:
     lead: 'Returns all or part of a settled payment to the customer.',
     keywords: 'refund post 409 partial',
     toc: [{ id: 'request', label: 'Request' }, { id: 'rules', label: 'Rules' }],
+    wide: true,
     body: ({ lang, setLang, origin }) => (
-      <>
+      <Split left={<>
         <Endpoint method="POST" path="/v1/payments/{id}/refund" />
         <H2 id="request">Request</H2>
         <Params items={[{ name: 'amount', type: 'integer', body: 'How much to refund, in the smallest unit. Leave it out to refund the full payment.' }]} />
-        <CodeTabs lang={lang} onLang={setLang} samples={refundPayment(origin)} />
         <H2 id="rules">Rules</H2>
         <Table head={['Payment status', 'Result']} rows={[
           ['pending or confirmed', <><Code key="a">409 payment_not_settled</Code>. Wait for settlement, then try again.</>],
           ['settled', <><Code key="b">201</Code> with the refund.</>],
         ]} />
+      </>} right={<>
+        <CodeTabs lang={lang} onLang={setLang} samples={refundPayment(origin)} />
         <Try>
           <RunCommand cmd="relay pay 3000 NGN && relay refund $LAST" label="Refund too early" />
           <RunCommand cmd="relay pay 3000 NGN && relay status $LAST --watch && relay refund $LAST --amount 1000" label="Wait, then refund part" />
         </Try>
-      </>
+      </>} />
     ),
   },
   {

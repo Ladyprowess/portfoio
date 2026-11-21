@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { highlight } from './highlight'
-import { useShell } from './Shell'
+import { useShell, type Line } from './Shell'
 
 const RELAY_KEY = 'sk_test_relay_4eC39HqLyjWD'
 
@@ -55,21 +55,53 @@ function CopyButton({ text }: { text: string }) {
   )
 }
 
-/** Shell snippets can run in the docs terminal; comment-only snippets cannot. */
+/** Shell and cURL snippets can be run; comment-only snippets cannot. */
 function runnable(lang: string, code: string) {
   if (!['cURL', 'Shell', 'Terminal'].includes(lang)) return null
   const cmd = code.split('\n').filter(l => !l.trim().startsWith('#')).join('\n').trim()
   return cmd || null
 }
 
-/** Code sample with one tab per language; the chosen language is shared across the page. */
-export function CodeTabs({ samples, title, lang, onLang }: { samples: Record<string, string>; title?: string; lang?: string; onLang?: (l: string) => void }) {
+/** Runs a command and keeps its output for an inline result panel. */
+function useRunner() {
   const shell = useShell()
+  const [lines, setLines] = useState<Line[] | null>(null)
+  const [running, setRunning] = useState(false)
+  const run = async (cmd: string) => { setRunning(true); await shell.exec(cmd, l => setLines([...l])); setRunning(false) }
+  return { lines, running, run, clear: () => setLines(null) }
+}
+
+/** The response, shown right under what ran it: status first, then the body. */
+function Result({ lines, running, onClear, dark = true }: { lines: Line[] | null; running: boolean; onClear: () => void; dark?: boolean }) {
+  if (!lines && !running) return null
+  const status = lines?.find(l => /^HTTP \d+/.test(l.text) && (l.kind === 'ok' || l.kind === 'err'))
+  return <div className={`${dark ? 'border-t border-white/10' : 'mt-2 overflow-hidden rounded-xl border border-[rgb(var(--code-border))] bg-[rgb(var(--code-bg))]'} text-[rgb(var(--code-ink))]`}>
+    <div className="flex items-center justify-between px-4 py-2 text-[0.7rem]">
+      <span className="font-semibold uppercase tracking-[0.12em] text-white/50">Response</span>
+      <span className="flex items-center gap-3">
+        {running ? <span className="text-white/50">Running…</span> : status && <span className={`rounded px-1.5 py-0.5 font-head font-bold ${status.kind === 'ok' ? 'bg-[#4ADE80]/15 text-[#4ADE80]' : 'bg-[#F87171]/15 text-[#F87171]'}`}>{status.text.replace('HTTP ', '')}</span>}
+        {!running && <button type="button" onClick={onClear} className="text-white/45 hover:text-white">Clear</button>}
+      </span>
+    </div>
+    <div className="max-h-[360px] overflow-y-auto px-4 pb-4 font-head text-[0.78rem] leading-6">
+      {(lines ?? []).filter(l => l !== status).map((l, n) => <div key={n} className={`whitespace-pre-wrap break-words ${l.kind === 'err' ? 'text-[#F87171]' : l.kind === 'ok' ? 'text-[#4ADE80]' : l.kind === 'dim' ? 'text-white/45' : 'text-white/85'}`}>
+        {l.kind === 'json' ? highlight(l.text) : l.text}
+      </div>)}
+    </div>
+  </div>
+}
+
+/** Code sample with one tab per language; the chosen language is shared across the page.
+    If any tab is a runnable command, Run works from every tab and the response shows below. */
+export function CodeTabs({ samples, title, lang, onLang }: { samples: Record<string, string>; title?: string; lang?: string; onLang?: (l: string) => void }) {
+  const runner = useRunner()
   const uid = useId()
   const names = Object.keys(samples)
   const [own, setOwn] = useState(names[0])
   const active = lang && names.includes(lang) ? lang : own
   const pick = (l: string) => { setOwn(l); onLang?.(l) }
+  // The runnable version of this sample (its cURL or shell tab), whichever tab is showing.
+  const cmd = runnable(active, samples[active]) ?? names.map(n => runnable(n, samples[n])).find(Boolean) ?? null
   return (
     <div className="mt-6 overflow-hidden rounded-xl border border-[rgb(var(--code-border))] bg-[rgb(var(--code-bg))] text-[rgb(var(--code-ink))]">
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3">
@@ -83,38 +115,31 @@ export function CodeTabs({ samples, title, lang, onLang }: { samples: Record<str
           ))}
         </div>
         <div className="flex items-center gap-2">
-          {runnable(active, samples[active]) && <button type="button" onClick={() => shell.run(runnable(active, samples[active])!)} className="rounded-md bg-[#4ADE80]/15 px-2.5 py-1 text-[0.7rem] font-bold text-[#4ADE80] transition hover:bg-[#4ADE80]/25">Run ▸</button>}
+          {cmd && <button type="button" disabled={runner.running} onClick={() => runner.run(cmd)} className="rounded-md bg-[#4ADE80]/15 px-2.5 py-1 text-[0.7rem] font-bold text-[#4ADE80] transition hover:bg-[#4ADE80]/25 disabled:opacity-50">{runner.running ? 'Running…' : 'Run ▸'}</button>}
           <CopyButton text={samples[active]} />
         </div>
       </div>
       <pre className="overflow-x-auto px-5 py-4 font-head text-[0.8rem] leading-6"><code>{highlight(samples[active])}</code></pre>
+      <Result lines={runner.lines} running={runner.running} onClear={runner.clear} />
     </div>
   )
 }
 
-/** Numbered steps that can be ticked off, with progress. */
-export function Steps({ items }: { items: { title: string; body: ReactNode }[] }) {
-  const [done, setDone] = useState<boolean[]>(items.map(() => false))
-  const count = done.filter(Boolean).length
+/** Steps, the standard docs way. 'numbered' for tutorials the reader follows;
+    'timeline' (dots, no numbers) for describing a process. Nothing to click. */
+export function Steps({ items, mode = 'numbered' }: { items: { title: string; body: ReactNode }[]; mode?: 'numbered' | 'timeline' }) {
   return (
-    <div className="mt-6">
-      <div className="flex items-center gap-3 text-xs font-semibold text-muted">
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-ink-border"><motion.div className="h-full bg-success" animate={{ width: `${(count / items.length) * 100}%` }} /></div>
-        {count} of {items.length} done
-      </div>
-      <ol className="mt-5 space-y-0">
-        {items.map((s, n) => (
-          <li key={s.title} className="relative border-l-2 border-ink-border pb-8 pl-9 last:pb-0">
-            <button type="button" aria-pressed={done[n]} aria-label={`Mark step ${n + 1} done`} onClick={() => setDone(d => d.map((v, i) => (i === n ? !v : v)))}
-              className={`absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full border-2 font-head text-[0.7rem] font-bold transition ${done[n] ? 'border-success bg-success text-white' : 'border-ink-border bg-surface text-parchment hover:border-success'}`}>
-              {done[n] ? '✓' : n + 1}
-            </button>
-            <h3 className={`font-display text-[1.05rem] font-extrabold transition ${done[n] ? 'text-muted line-through decoration-2' : ''}`}>{s.title}</h3>
-            <div className="text-[0.95rem] leading-7 text-parchment/85">{s.body}</div>
-          </li>
-        ))}
-      </ol>
-    </div>
+    <ol className="mt-6">
+      {items.map((s, n) => (
+        <li key={s.title} className="relative border-l-2 border-ink-border pb-8 pl-9 last:border-transparent last:pb-0">
+          {mode === 'numbered'
+            ? <span aria-hidden="true" className="absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full border-2 border-ink-border bg-surface font-head text-[0.7rem] font-bold">{n + 1}</span>
+            : <span aria-hidden="true" className="absolute -left-[7px] top-2 h-3 w-3 rounded-full border-2 border-primary bg-surface" />}
+          <h3 className="font-display text-[1.05rem] font-extrabold">{s.title}</h3>
+          <div className="text-[0.95rem] leading-7 text-parchment/85">{s.body}</div>
+        </li>
+      ))}
+    </ol>
   )
 }
 
@@ -202,15 +227,15 @@ export function Playground() {
   )
 }
 
-/** A button that runs a command in the docs terminal. */
+/** A button that runs a command and shows the response right under it. */
 export function RunCommand({ cmd, label }: { cmd: string; label?: string }) {
-  const shell = useShell()
-  if (label === 'Run') return <button type="button" onClick={() => shell.run(cmd)} title={cmd} className="whitespace-nowrap rounded-lg bg-[rgb(var(--code-bg))] px-3 py-1.5 font-head text-[0.72rem] font-bold text-[#4ADE80] transition hover:ring-2 hover:ring-[#4ADE80]/50">Run ▸</button>
-  return (
-    <button type="button" onClick={() => shell.run(cmd)} className="group inline-flex max-w-full items-center gap-2 rounded-lg bg-[rgb(var(--code-bg))] px-3 py-2 text-left font-head text-[0.78rem] text-[rgb(var(--code-ink))] transition hover:ring-2 hover:ring-[#4ADE80]/50">
-      <span className="text-[#4ADE80]">$</span><span className="truncate">{label ?? cmd}</span><span className="ml-1 shrink-0 text-[0.68rem] font-bold text-[#4ADE80] opacity-70 group-hover:opacity-100">Run ▸</span>
+  const runner = useRunner()
+  return <div className="w-full">
+    <button type="button" disabled={runner.running} onClick={() => runner.run(cmd)} className="group inline-flex max-w-full items-center gap-2 rounded-lg bg-[rgb(var(--code-bg))] px-3 py-2 text-left font-head text-[0.78rem] text-[rgb(var(--code-ink))] transition hover:ring-2 hover:ring-[#4ADE80]/50 disabled:opacity-60">
+      <span className="text-[#4ADE80]">$</span><span className="truncate">{label && label !== 'Run' ? label : cmd}</span><span className="ml-1 shrink-0 text-[0.68rem] font-bold text-[#4ADE80] opacity-80 group-hover:opacity-100">{runner.running ? 'Running…' : 'Run ▸'}</span>
     </button>
-  )
+    <Result lines={runner.lines} running={runner.running} onClear={runner.clear} dark={false} />
+  </div>
 }
 
 /** Click a question to open its answer: the troubleshooting pattern. */
@@ -315,3 +340,4 @@ export function Table({ head, rows }: { head: string[]; rows: ReactNode[][] }) {
     </div>
   )
 }
+

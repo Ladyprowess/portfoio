@@ -6,7 +6,7 @@ export const headline = 'AI Strategy & Digital Product Specialist · Technical W
 /** How she is open to working, shown under the contact line. */
 export const workTypes = 'Open to remote or hybrid roles: full-time, part-time or contract'
 
-export const pitch = 'AI Strategy and Digital Product Specialist helping businesses adopt AI, build useful digital products and improve the way they work, with experience across technical writing, developer documentation, fintech, Web3, digital products, product operations, content strategy and digital-skills education. I combine technical communication with practical product delivery: I took KivoraPay from concept through planning, build coordination, testing and ongoing monitoring, built WordPress websites and digital workflows, and have worked with engineering, product and marketing teams across remote, international environments.'
+export const pitch = 'AI Strategy and Digital Product Specialist helping businesses adopt AI, build useful digital products and improve the way they work. I combine technical writing and developer documentation with hands-on product delivery: I took KivoraPay from concept to launch, and have worked with engineering, product and marketing teams across fintech and Web3.'
 
 export type Role = { role: string; org: string; when: string; where: string; points: string[] }
 

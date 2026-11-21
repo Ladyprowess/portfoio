@@ -77,7 +77,7 @@ export default function DocsView() {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:px-8 xl:grid-cols-[250px_minmax(0,1fr)_210px]">
+      <div className={`mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:px-8 ${page.wide ? '' : 'xl:grid-cols-[250px_minmax(0,1fr)_210px]'}`}>
         <aside className="hidden lg:block">
           <div className="sticky top-[5.5rem] max-h-[calc(100vh-7rem)] overflow-y-auto py-8 pr-2">
             <Sidebar active={page.id} go={go} />
@@ -86,7 +86,7 @@ export default function DocsView() {
 
         <article className="min-w-0 py-10 md:py-14">
           <AnimatePresence mode="wait">
-            <motion.div key={page.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="max-w-[760px]">
+            <motion.div key={page.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className={page.wide ? 'max-w-none' : 'max-w-[760px]'}>
               <p className="text-xs font-semibold text-muted">{page.group} <span className="mx-1">›</span> <span className="text-parchment">{page.title}</span></p>
               <h1 className="mt-3 font-display text-[clamp(2rem,4vw,2.9rem)] font-extrabold leading-[1.08] tracking-[-0.02em]">{page.title}</h1>
               <p className="mt-4 text-[1.08rem] leading-8 text-muted">{page.lead}</p>
@@ -100,7 +100,7 @@ export default function DocsView() {
           </AnimatePresence>
         </article>
 
-        <aside className="hidden xl:block">
+        <aside className={page.wide ? 'hidden' : 'hidden xl:block'}>
           <div className="sticky top-[5.5rem] py-8"><Toc key={page.id} page={page} /></div>
         </aside>
       </div>

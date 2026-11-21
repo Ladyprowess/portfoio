@@ -99,7 +99,7 @@ export default function WorkView() {
       <Reveal>
         <a href="/docs" className="group flex flex-col gap-6 rounded-[2rem] border border-ink-border bg-surface p-7 transition hover:border-primary/50 md:flex-row md:items-center md:justify-between md:p-10">
           <div>
-            <span className="font-head text-[11px] uppercase tracking-[.16em] text-primary">Interactive samples</span>
+            <span className="font-head text-[11px] uppercase tracking-[.16em] text-primary">Docs</span>
             <h3 className="mt-2 font-display text-2xl font-semibold tracking-[-.02em] md:text-3xl">API references, developer guides and manuals</h3>
             <p className="mt-2 text-[15px] text-muted">The same kind of docs I wrote for zkSync, TxFusion and Rootstock.</p>
           </div>
@@ -169,17 +169,19 @@ export default function WorkView() {
     </Section>
 
     {/* ── Next step ────────────────────────────────────── */}
+    {/* A light list (no boxes), the same style as the homepage's "Where would you like to start?". */}
     <section className={`${wrap} pb-24`}>
-      <div className="grid grid-cols-2 gap-3 md:gap-4">
-        <a href="/recruiter" className="group rounded-[1.5rem] bg-panel p-5 text-on-panel transition hover:opacity-95 md:rounded-[2rem] md:p-10">
-          <p className="font-head text-[11px] uppercase tracking-[.16em] text-accent-invert">Hiring?</p>
-          <p className="mt-2 font-display text-lg font-semibold tracking-[-.02em] md:mt-3 md:text-2xl">See my CV →</p>
-        </a>
-        <a href="/services" className="group rounded-[1.5rem] bg-primary p-5 text-on-primary transition hover:bg-primary-dim md:rounded-[2rem] md:p-10">
-          <p className="font-head text-[11px] uppercase tracking-[.16em] text-on-primary/70">Need help?</p>
-          <p className="mt-2 font-display text-lg font-semibold tracking-[-.02em] md:mt-3 md:text-2xl">See how I can help →</p>
-        </a>
-      </div>
+      <ul className="border-y border-ink-border md:grid md:grid-cols-2">
+        {[['/recruiter', 'Hiring?', 'See my CV'], ['/services', 'Need help?', 'See how I can help']].map(([href, kicker, title]) => <li key={href} className="border-b border-ink-border last:border-b-0 md:border-b-0 md:border-l md:px-8 md:first:border-l-0 md:first:pl-0 md:last:pr-0">
+          <a href={href} className="group flex items-center justify-between gap-4 py-5 md:py-7">
+            <span>
+              <span className="block font-head text-[11px] uppercase tracking-[.16em] text-primary">{kicker}</span>
+              <span className="mt-1.5 block font-display text-xl font-semibold tracking-[-.02em] transition-colors group-hover:text-primary md:text-2xl">{title}</span>
+            </span>
+            <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink-border text-lg transition group-hover:border-primary group-hover:bg-primary group-hover:text-on-primary">→</span>
+          </a>
+        </li>)}
+      </ul>
     </section>
 
     <Footer />

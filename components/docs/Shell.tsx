@@ -5,17 +5,19 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { highlight } from './highlight'
 
 /*
- * The docs terminal. Commands run for real: `relay` and `curl` call the Relay
- * API on this site, `docs` moves between pages, and the Hardhat commands from
- * the smart contract guide print what Hardhat prints.
+ * The docs runner. Run buttons execute for real: `relay` and `curl` call the
+ * Relay API on this site, and the Hardhat commands from the smart contract
+ * guide print what Hardhat prints. Results are shown inline, right under the
+ * button that ran them (see `exec`), the way standard API docs show a
+ * response; there is no separate terminal window.
  */
 
 const KEY = 'sk_test_relay_4eC39HqLyjWD'
 
-type Line = { kind: 'in' | 'out' | 'err' | 'ok' | 'dim' | 'json'; text: string }
-type ShellApi = { run: (cmd: string) => void; open: () => void }
+export type Line = { kind: 'in' | 'out' | 'err' | 'ok' | 'dim' | 'json'; text: string }
+type ShellApi = { run: (cmd: string) => void; open: () => void; exec: (cmd: string, onLines: (lines: Line[]) => void) => Promise<void> }
 
-const ShellContext = createContext<ShellApi>({ run: () => {}, open: () => {} })
+const ShellContext = createContext<ShellApi>({ run: () => {}, open: () => {}, exec: async () => {} })
 export const useShell = () => useContext(ShellContext)
 
 const COMMANDS = ['help', 'relay', 'curl', 'docs', 'ls', 'clear', 'echo', 'export', 'env', 'history', 'whoami', 'date', 'npx']
@@ -27,7 +29,9 @@ function tokenize(input: string) {
   let cur = ''
   let quote: string | null = null
   let started = false
-  const s = input.replace(/\\\r?\n/g, ' ')
+  // Line continuations: a backslash before a line break, or before spaces once the
+  // breaks have been flattened (as Run buttons do), just joins the lines.
+  const s = input.replace(/\\\r?\n/g, ' ').replace(/\\[ \t]+(?=\S)/g, ' ')
   for (let i = 0; i < s.length; i++) {
     const c = s[i]
     if (quote) { if (c === quote) quote = null; else if (c === '\\' && quote === '"' && i + 1 < s.length) cur += s[++i]; else cur += c; continue }
@@ -60,8 +64,11 @@ export function ShellProvider({ go, pages, children }: { go: (id: string) => voi
 
   // Set when a command prints an error or gets a 4xx/5xx, so a && chain stops like a shell.
   const failed = useRef(false)
+  // While an inline Run is in progress, output goes to that button's result panel.
+  const sink = useRef<{ lines: Line[]; onLines: (l: Line[]) => void } | null>(null)
   const print = useCallback((...ls: Line[]) => {
     if (ls.some(l => l.kind === 'err')) failed.current = true
+    if (sink.current) { sink.current.lines = [...sink.current.lines, ...ls]; sink.current.onLines(sink.current.lines); return }
     setLines(prev => [...prev, ...ls].slice(-400))
   }, [])
 
@@ -233,6 +240,25 @@ export function ShellProvider({ go, pages, children }: { go: (id: string) => voi
     input.current?.focus()
   }, [execute, print])
 
+  // Run a command and stream its output to an inline result panel.
+  const execLock = useRef(Promise.resolve())
+  const exec = useCallback((raw: string, onLines: (l: Line[]) => void) => {
+    const job = execLock.current.then(async () => {
+      sink.current = { lines: [], onLines }
+      onLines([])
+      try {
+        for (const part of raw.trim().split('&&')) {
+          failed.current = false
+          await execute(part.trim())
+          if (failed.current) break
+        }
+      } catch (e) { print({ kind: 'err', text: `error: ${(e as Error).message}` }) }
+      sink.current = null
+    })
+    execLock.current = job.catch(() => {})
+    return job
+  }, [execute, print])
+
   const run = useCallback((cmd: string) => {
     setOpen(true)
     if (busy) { queue.current = cmd; return }
@@ -268,42 +294,8 @@ export function ShellProvider({ go, pages, children }: { go: (id: string) => voi
   const suggestions = ['relay pay 5000 NGN', 'relay status $LAST --watch', 'relay refund $LAST', 'help']
 
   return (
-    <ShellContext.Provider value={{ run, open: () => setOpen(true) }}>
+    <ShellContext.Provider value={{ run, open: () => setOpen(true), exec }}>
       {children}
-      <AnimatePresence>
-        {!open && (
-          <motion.button key="pill" type="button" onClick={() => setOpen(true)} initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }}
-            className="fixed bottom-5 right-5 z-[80] flex items-center gap-2.5 rounded-full bg-[#0B0F14] py-2.5 pl-3 pr-4 font-head text-[0.8rem] font-semibold text-white shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] ring-1 ring-white/10 transition hover:-translate-y-0.5">
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#4ADE80]/15 text-[#4ADE80]">{'>_'}</span>Terminal<kbd className="hidden rounded border border-white/15 px-1.5 text-[0.62rem] text-white/50 sm:inline">Ctrl `</kbd>
-          </motion.button>
-        )}
-        {open && (
-          <motion.section key="dock" aria-label="Terminal" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 bottom-0 z-[80] flex h-[62vh] flex-col border-t border-white/10 bg-[#0B0F14] text-[#E7EDF6] shadow-[0_-30px_60px_-20px_rgba(0,0,0,0.5)] md:h-[46vh]">
-            <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2">
-              {['#FF5F57', '#FEBC2E', '#28C840'].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />)}
-              <span className="ml-2 font-head text-[0.72rem] text-white/50">relay-sandbox — bash</span>
-              <div className="ml-4 hidden gap-1.5 overflow-x-auto md:flex">
-                {suggestions.map(s => <button key={s} type="button" onClick={() => run(s)} className="whitespace-nowrap rounded-md bg-white/5 px-2 py-1 font-head text-[0.68rem] text-white/70 transition hover:bg-white/10 hover:text-white">{s}</button>)}
-              </div>
-              <button type="button" onClick={() => setLines([])} className="ml-auto rounded px-2 py-1 text-[0.72rem] text-white/50 hover:text-white">Clear</button>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close terminal" className="rounded px-2 py-1 text-[0.72rem] text-white/50 hover:text-white">Close ✕</button>
-            </div>
-            <div ref={scroller} onClick={() => input.current?.focus()} className="flex-1 overflow-y-auto px-4 py-3 font-head text-[0.8rem] leading-6">
-              {lines.map((l, n) => (
-                <div key={n} className={`whitespace-pre-wrap break-words ${l.kind === 'err' ? 'text-[#F87171]' : l.kind === 'ok' ? 'text-[#4ADE80]' : l.kind === 'dim' ? 'text-white/45' : 'text-white/85'}`}>
-                  {l.kind === 'in' ? <><span className="text-[#4ADE80]">guest@relay</span><span className="text-white/40">:~$ </span>{l.text}</> : l.kind === 'json' ? highlight(l.text) : l.text}
-                </div>
-              ))}
-              <div className="flex items-center">
-                <span className="shrink-0"><span className="text-[#4ADE80]">guest@relay</span><span className="text-white/40">:~$&nbsp;</span></span>
-                <input ref={input} value={value} onChange={e => setValue(e.target.value)} onKeyDown={onKeyDown} spellCheck={false} autoCapitalize="off" autoComplete="off" aria-label="Command"
-                  className="min-w-0 flex-1 bg-transparent text-white caret-[#4ADE80] outline-none" placeholder={busy ? 'running…' : ''} />
-              </div>
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
     </ShellContext.Provider>
   )
 }
